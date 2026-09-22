@@ -1,3 +1,10 @@
+# M2 current acceptance candidate — 0.0.12
+
+Implementation of the full PNG/GLB, runtime/rendering and Play flow is complete.
+38 local Node tests and 24 Rust tests pass. The actual Chromium pixel/restart gate
+is pending; retain 2/11 credited acceptance points until it passes. See M2_BETA.md.
+Do not treat the historical 0.0.11 evidence below as the new renderer's proof.
+
 # M2 — Axiom Beta Foundation: progress report
 
 Version 0.0.11. In progress, not a milestone closure.

@@ -27,7 +27,7 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version: `0.0.11`. Milestone 0, Architecture Lock & Bootstrap, is complete.
+Version: `0.0.12` (M2 acceptance candidate). Milestone 0, Architecture Lock & Bootstrap, is complete.
 M1, WebGPU + Engine Kernel, is complete. Active milestone: M2, Axiom Beta
 Foundation, in progress; 2/11 acceptance points passed.
 
@@ -197,3 +197,11 @@ Version 0.0.11 implementation commit `35b2a20e7f0eadc317016a419c98e5e2e03781f2`
 passed Linux/Windows bootstrap, Rust and C# Wasm CI:
 https://github.com/Krozzeo/AxiomEngine/actions/runs/35762835402
 PR #2 contains the current editor controls and scene history implementation.
+
+## Active M2 completion work
+
+PNG/GLB imports, asset placement, Rust runtime matrices, WebGPU project rendering,
+orthographic/perspective cameras, Play isolation and a full browser acceptance
+script are implemented. See M2_BETA.md. Local tests pass; do not close M2 until
+current-version browser CI proves all eleven criteria. Do not deliver another
+partial snapshot unless a concrete blocker or user-only test requires it.

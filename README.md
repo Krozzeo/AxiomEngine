@@ -6,10 +6,12 @@ daemon provides filesystem, build, asset and automation services.
 
 Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
 demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
-Axiom Beta Foundation, now has project controls and generic entity editing with
-undo/redo and explicit save. Asset imports and project-scene rendering are pending. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+Axiom Beta Foundation, now has PNG/GLB import, project-scene rendering, editing,
+undo/redo, save/reopen and isolated Play. Full browser acceptance is being verified. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
+
+Run `npm ci` before the first launch to install the pinned dependencies.
 
 Requirements: Node.js 24+, Rust 1.90.0 and the `wasm32-unknown-unknown` target.
 The pinned `rust-toolchain.toml` installs the target through rustup when needed.
@@ -83,3 +85,9 @@ in Inspector and Apply changes. Save persists the scene; Undo/Redo affect scene
 edits. The viewport remains the labelled kernel demo. See
 [the scene editor contract](docs/architecture/SCENE_EDITOR.md) and
 [the M2 progress report](docs/reports/M2_CURRENT_REPORT.md).
+
+## M2 beta candidate (0.0.12)
+
+See [M2_BETA.md](docs/architecture/M2_BETA.md) for the complete workflow, supported
+PNG/GLB features and resource limits. The candidate replaces the demo with actual
+project content. Closure requires the complete Chromium acceptance gate.

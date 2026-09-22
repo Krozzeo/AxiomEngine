@@ -24,7 +24,14 @@
         "scene.entityDeleted",
         "scene.undone",
         "scene.redone",
-        "scene.saved"
+        "scene.saved",
+        "asset.imported",
+        "asset.loaded",
+        "scene.assetPlaced",
+        "scene.cameraChanged",
+        "play.started",
+        "play.stopped",
+        "project.closed"
       ]
     },
     "sequence": {

@@ -4,7 +4,7 @@ const schema = JSON.parse(readFileSync(new URL("../schema/project-document.schem
 export const projectError = (code, message) => Object.assign(new Error(message), { code });
 
 function checkVocabulary(rule) {
-  const supported = ["$schema", "$id", "type", "required", "properties", "const", "pattern", "minLength", "maxLength", "minimum", "minItems", "maxItems", "items"];
+  const supported = ["$schema", "$id", "type", "required", "properties", "const", "pattern", "minLength", "maxLength", "minimum", "minItems", "maxItems", "items", "enum", "maximum"];
   for (const key of Object.keys(rule)) if (!supported.includes(key)) throw new Error(`Unsupported project schema keyword: ${key}`);
   for (const child of Object.values(rule.properties ?? {})) checkVocabulary(child);
   if (rule.items) checkVocabulary(rule.items);
@@ -14,6 +14,7 @@ checkVocabulary(schema);
 // Validator for the closed vocabulary used in this version's canonical schema.
 function validate(value, rule, path) {
   const fail = () => { throw projectError("AX_PROJECT_0002", `Invalid project field: ${path}`); };
+  if (rule.enum && !rule.enum.includes(value)) fail();
   if ("const" in rule && value !== rule.const) fail();
   if (rule.type === "object") {
     if (!value || typeof value !== "object" || Array.isArray(value)) fail();
@@ -27,7 +28,7 @@ function validate(value, rule, path) {
     value.forEach((entry, i) => validate(entry, rule.items, `${path}[${i}]`));
   }
   if (rule.type === "string" && (typeof value !== "string" || value.length < (rule.minLength ?? 0) || value.length > (rule.maxLength ?? Infinity) || (rule.pattern && !new RegExp(rule.pattern).test(value)))) fail();
-  if (rule.type === "number" && !Number.isFinite(value)) fail();
+  if (rule.type === "number" && (!Number.isFinite(value) || value < (rule.minimum ?? -Infinity) || value > (rule.maximum ?? Infinity))) fail();
   if (rule.type === "integer" && (!Number.isSafeInteger(value) || value < (rule.minimum ?? -Infinity))) fail();
 }
 
@@ -47,6 +48,14 @@ export function validateProject(document) {
   validate(document, schema, "project");
   const ids = document.scene.entities.map(entity => entity.id);
   if (new Set(ids).size !== ids.length) throw projectError("AX_PROJECT_0002", "Duplicate entity ID");
+  const assets=document.scene.assets??[];
+  if(new Set(assets.map(asset=>asset.id)).size!==assets.length) throw projectError("AX_PROJECT_0002","Duplicate asset ID");
+  for(const entity of document.scene.entities) {
+    if(Math.hypot(...entity.transform.rotation)<1e-8) throw projectError("AX_PROJECT_0002","Quaternion must not be zero");
+    if(entity.renderable && !assets.some(asset=>asset.id===entity.renderable.assetId && asset.kind===entity.renderable.kind)) throw projectError("AX_PROJECT_0002","Renderable references a missing or incompatible asset");
+  }
+  const camera=document.scene.camera;
+  if(camera && Math.hypot(...camera.position.map((v,i)=>v-camera.target[i]))<1e-6) throw projectError("AX_PROJECT_0002","Camera position and target must differ");
   return document;
 }
 

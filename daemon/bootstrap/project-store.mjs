@@ -76,7 +76,7 @@ export class ProjectStore {
       const handle = await open(temporary, "wx", 0o600);
       try { await handle.writeFile(bytes); await handle.sync(); } finally { await handle.close(); }
       await rename(temporary, path);
-      return { project: document };
+      return { project: JSON.parse(bytes) };
     } catch (error) {
       if (error.code === "EEXIST") throw projectError("AX_PROJECT_0004", "Project is locked by another operation");
       throw error;

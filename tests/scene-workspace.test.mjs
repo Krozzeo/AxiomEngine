@@ -100,7 +100,7 @@ async function fakeDocument() {
   const nodes = new Map([...html.matchAll(/<(\w+)[^>]*\bid="([^"]+)"/g)].map(match => [`#${match[2]}`, new Element(match[1])]));
   return { querySelector: selector => { assert.ok(nodes.has(selector), `Missing HTML selector ${selector}`); return nodes.get(selector); }, createElement: tag => new Element(tag) };
 }
-const caps = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo"].map(name => "command." + name);
+const caps = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"].map(name => "command." + name);
 
 test("editor controls create, edit, undo, save and reopen the real command workspace", async t => {
   const { send, store } = await fixture(t);

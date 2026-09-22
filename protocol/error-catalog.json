@@ -166,6 +166,29 @@
         "scene.get",
         "trace(command.traceId)"
       ]
+    },
+    {
+      "code": "AX_ASSET_0001",
+      "meaning": "Invalid, unsupported, missing or damaged project asset",
+      "inspect": [
+        "asset ID",
+        "import support limits"
+      ]
+    },
+    {
+      "code": "AX_SCENE_0005",
+      "meaning": "Stop Play before editing",
+      "inspect": [
+        "scene.get"
+      ]
+    },
+    {
+      "code": "AX_SCENE_0006",
+      "meaning": "Runtime scene resource budget exceeded",
+      "inspect": [
+        "draw count",
+        "vertex count"
+      ]
     }
   ]
 }

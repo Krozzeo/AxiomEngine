@@ -1,5 +1,8 @@
 # Authoring workspace and editor — 0.0.11
 
+Historical first editor slice. Current imports, rendering and Play are documented
+in M2_BETA.md (0.0.12).
+
 The bootstrap daemon now owns one shared in-memory authoring workspace. The editor
 negotiates its capabilities before enabling project/scene controls. Native Rust
 daemons do not yet advertise these capabilities; their controls remain disabled.

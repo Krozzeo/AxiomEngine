@@ -261,6 +261,177 @@
           "expectedSceneRevision"
         ]
       }
+    },
+    {
+      "name": "asset.import",
+      "description": "M2 bootstrap project command; see M2_BETA.md for resource, camera and Play semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "base64": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "name",
+          "base64"
+        ]
+      }
+    },
+    {
+      "name": "asset.get",
+      "description": "M2 bootstrap project command; see M2_BETA.md for resource, camera and Play semantics.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "assetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "assetId"
+        ]
+      }
+    },
+    {
+      "name": "scene.asset.place",
+      "description": "M2 bootstrap project command; see M2_BETA.md for resource, camera and Play semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "assetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "assetId"
+        ]
+      }
+    },
+    {
+      "name": "scene.camera.update",
+      "description": "M2 bootstrap project command; see M2_BETA.md for resource, camera and Play semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "camera": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "camera"
+        ]
+      }
+    },
+    {
+      "name": "play.start",
+      "description": "M2 bootstrap project command; see M2_BETA.md for resource, camera and Play semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ]
+      }
+    },
+    {
+      "name": "play.stop",
+      "description": "M2 bootstrap project command; see M2_BETA.md for resource, camera and Play semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ]
+      }
+    },
+    {
+      "name": "project.close",
+      "description": "M2 bootstrap project command; see M2_BETA.md for resource, camera and Play semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "discardChanges": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ]
+      }
     }
   ]
 }

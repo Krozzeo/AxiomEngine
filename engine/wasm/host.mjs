@@ -5,6 +5,7 @@ export async function loadKernel(bytes) {
   const id = api.axiom_create();
   if (!id) throw new Error("AX_WASM_0002: world allocation failed");
   let disposed = false;
+  let compiled = null;
   return {
     step(delta, trace, aspect) {
       if (disposed) throw new Error("AX_WASM_0003: disposed world");
@@ -27,9 +28,49 @@ export async function loadKernel(bytes) {
         nullProcessedMeshes: api.axiom_null_render(id, aspect)
       };
     },
+    compileScene(scene, assets) {
+      if(disposed) throw new Error("AX_WASM_0003: disposed world");
+      const draws=scenePrimitives(scene,assets);
+      if(api.axiom_scene_clear(id)!==0) throw new Error("AX_WASM_0006: missing authoring ABI");
+      for(const draw of draws) {
+        const hex=draw.entityId.slice(9).replaceAll("-", ""), uuid=BigInt("0x"+hex);
+        const t=draw.transform;
+        draw.handle=api.axiom_scene_add(id,uuid>>64n,uuid&0xffffffffffffffffn,draw.vertices.length/8,...t.position,...t.rotation,...t.scale);
+        if(draw.handle===0xffffffff) throw new Error("AX_WASM_0007: invalid runtime instance");
+      }
+      compiled={scene:structuredClone(scene),draws};
+      return draws;
+    },
+    stepScene(delta, trace, aspect) {
+      if(disposed||!compiled) throw new Error("AX_WASM_0003: missing compiled scene");
+      if(typeof trace!=="bigint"||trace<0n||trace>0xffffffffffffffffn) throw new Error("AX_WASM_0005: invalid trace");
+      const c=compiled.scene.camera??{position:[0,0,6],target:[0,0,0],projection:"perspective",fov:60,orthoHeight:6};
+      if(api.axiom_scene_camera(id,...c.position,...c.target,aspect,c.projection==="orthographic"?1:0,c.projection==="orthographic"?c.orthoHeight:c.fov)!==0) throw new Error("AX_WASM_0004: invalid camera");
+      if(api.axiom_tick(id,delta,trace)!==0) throw new Error("AX_TIME_0001: invalid kernel tick");
+      const draws=compiled.draws.map(draw=>({handle:draw.handle,mvp:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,1)),model:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,0))}));
+      return {draws,frame:Number(api.axiom_frame(id)),trace:api.axiom_trace(id).toString(),fixedSteps:api.axiom_fixed_steps(id),nullProcessedMeshes:api.axiom_scene_null(id)};
+    },
     dispose() {
       if (!disposed) api.axiom_destroy(id);
       disposed = true;
     }
   };
+}
+
+// Resource geometry comes from the importer; Rust owns runtime instances and matrices.
+export function scenePrimitives(scene, assets) {
+  const draws=[];
+  for(const entity of scene.entities) {
+    if(!entity.renderable) continue;
+    const asset=assets.get(entity.renderable.assetId);
+    if(!asset || asset.kind!==entity.renderable.kind) throw new Error("AX_ASSET_0001: missing runtime asset");
+    let primitives=asset.primitives;
+    if(asset.kind==="sprite") {
+      const w=asset.width/asset.height;
+      primitives=[{vertices:[-w,-1,0,0,0,1,0,1, w,-1,0,0,0,1,1,1, w,1,0,0,0,1,1,0, -w,-1,0,0,0,1,0,1, w,1,0,0,0,1,1,0, -w,1,0,0,0,1,0,0],texture:asset.dataUrl,color:[1,1,1,1],unlit:true}];
+    }
+    for(const primitive of primitives) draws.push({...primitive,entityId:entity.id,transform:entity.transform,vertices:new Float32Array(primitive.vertices)});
+  }
+  if(draws.length>1024||draws.reduce((sum,d)=>sum+d.vertices.length/8,0)>300000) throw new Error("AX_SCENE_0006: scene exceeds 1024 draw items or 300000 vertices");
+  return draws;
 }

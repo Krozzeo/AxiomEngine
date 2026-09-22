@@ -58,3 +58,8 @@ fieldset p { margin: 0 !important; }
 .vector-inputs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .vector-inputs label { color: #9fb3ce; font-size: 11px; }
 .preview-note { position: absolute; top: 12px; left: 12px; right: 12px; color: #9fb3ce; font-size: 12px; }
+
+#play-status { margin-left: auto; color: #9fb3ce; font-size: 11px; align-self: center; }
+#play-start { color: #71d5a5; }
+.project-controls h2 { padding-left: 0; }
+input[type="file"] { font-size: 11px; }

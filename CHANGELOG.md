@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.12 — M2 completion candidate
+
+- PNG/static GLB imports, content-hashed project assets and placement commands.
+- Real project rendering with Rust runtime transforms/cameras, textured sprites,
+  simple mesh materials, directional light and depth testing.
+- Isolated Play/Stop, explicit Close and preserved GPU/Null diagnostics.
+- Full Chromium acceptance flow with rendered-pixel and restart comparisons.
+- Browser CI acceptance is pending; this entry does not close M2.
+
 ## 0.0.11 — M2 editor authoring integration
 
 - Added project controls, entity hierarchy and name/position/scale Inspector.

@@ -21,6 +21,7 @@ jobs:
           cache: npm
       - name: Install pinned Rust for browser kernel
         run: rustup toolchain install 1.90.0 --profile minimal --component clippy,rustfmt --target wasm32-unknown-unknown
+      - run: npm ci
       - run: npm run check
 
   rust:
@@ -43,3 +44,24 @@ jobs:
           global-json-file: global.json
       - run: dotnet workload install wasm-tools
       - run: dotnet publish spikes/csharp-wasm/Axiom.ScriptSpike.csproj -c Release
+
+  browser-m2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install pinned Rust for browser kernel
+        run: rustup toolchain install 1.90.0 --profile minimal --target wasm32-unknown-unknown
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m2-browser-evidence
+          path: .axiom/browser-evidence

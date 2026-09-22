@@ -2,7 +2,7 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-09-22",
-  "engineVersion": "0.0.11",
+  "engineVersion": "0.0.12",
   "activeMilestone": 2,
   "milestoneStatus": "in_progress",
   "completion": {
@@ -32,11 +32,14 @@
     "renderGraph": "verified_native",
     "frameProfiler": "verified_windows_webgpu_and_null",
     "projectPersistence": "verified_bootstrap_http_restart",
-    "sceneEditor": "verified_controller_and_http"
+    "sceneEditor": "verified_controller_and_http",
+    "assetImport": "implemented_png_static_glb",
+    "projectSceneRendering": "implemented_browser_gate_pending",
+    "playMode": "implemented_isolated_runtime"
   },
   "verified": {
     "nodeTests": {
-      "passed": 34,
+      "passed": 38,
       "failed": 0
     },
     "schemaDocuments": 11,
@@ -64,10 +67,10 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 22,
+      "testsPassed": 24,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "Linux agent workspace; Rust 1.90.0; version 0.0.11"
+      "evidenceEnvironment": "Linux agent workspace; Rust 1.90.0; 0.0.12 candidate"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -151,18 +154,9 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
-      "passed": true,
-      "status": "completed",
-      "version": "0.0.11",
-      "commit": "35b2a20e7f0eadc317016a419c98e5e2e03781f2",
-      "runId": 35762835402,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/35762835402",
-      "jobs": [
-        "bootstrap (ubuntu-latest)",
-        "bootstrap (windows-latest)",
-        "rust",
-        "csharp-wasm-spike"
-      ]
+      "passed": false,
+      "status": "pending_publication",
+      "version": "0.0.12"
     },
     "m2PersistenceRemoteCi": {
       "passed": true,
@@ -184,6 +178,20 @@
       "newTestsPassed": 7,
       "environment": "Controller with simulated DOM, actual Command Bus and HTTP restart",
       "screenshotValidation": false
+    },
+    "m21RemoteCi": {
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.11",
+      "commit": "35b2a20e7f0eadc317016a419c98e5e2e03781f2",
+      "runId": 35762835402,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/35762835402",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike"
+      ]
     }
   },
   "blockedChecks": [],
@@ -208,7 +216,8 @@
     "docs/architecture/M2_PLAN.md",
     "docs/architecture/PROJECT_PERSISTENCE.md",
     "docs/architecture/SCENE_EDITOR.md",
-    "docs/reports/M2_CURRENT_REPORT.md"
+    "docs/reports/M2_CURRENT_REPORT.md",
+    "docs/architecture/M2_BETA.md"
   ],
-  "nextTask": "Compile authoring entities into the Rust runtime; then implement image/GLB imports and sprite/mesh placement. See SCENE_EDITOR.md and M2_CURRENT_REPORT.md. Native authoring parity and schema generation remain pending."
+  "nextTask": "Run full browser CI acceptance for the M2 candidate, resolve failures, and close M2 only when all eleven criteria pass. No partial deliverable unless blocked or a user-only test is necessary."
 }

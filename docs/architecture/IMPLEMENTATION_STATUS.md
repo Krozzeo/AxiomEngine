@@ -93,3 +93,10 @@ scene undo/redo are implemented. Draft mutations and disk saves have separate
 revisions and conflict protection. 34 Node tests and 22 Rust tests pass locally.
 See SCENE_EDITOR.md and reports/M2_CURRENT_REPORT.md. Runtime scene rendering,
 imports, Play and native project support remain pending.
+
+## M2 complete-flow candidate — 0.0.12
+
+PNG/GLB import, content-hashed assets, sprite/mesh placement, Rust model/camera
+matrices, WebGPU project rendering, orthographic/perspective selection and isolated
+Play are implemented. 38 Node tests and 24 Rust tests pass locally. Full Chromium
+pixel/restart acceptance is pending; no milestone closure is claimed yet.

@@ -23,7 +23,14 @@
         "scene.entity.delete",
         "scene.undo",
         "scene.redo",
-        "scene.save"
+        "scene.save",
+        "asset.import",
+        "asset.get",
+        "scene.asset.place",
+        "scene.camera.update",
+        "play.start",
+        "play.stop",
+        "project.close"
       ]
     },
     "data": {

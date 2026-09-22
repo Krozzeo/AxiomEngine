@@ -24,7 +24,7 @@ function colors(buffer) {
   return {red,green};
 }
 try {
-  browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{}),args:["--no-sandbox","--enable-unsafe-webgpu","--use-angle=swiftshader","--disable-dev-shm-usage"]});
+  browser=await chromium.launch({headless:true,channel:"chromium",...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{}),args:["--no-sandbox","--enable-gpu","--enable-unsafe-webgpu","--enable-unsafe-swiftshader","--enable-features=Vulkan","--use-angle=vulkan","--use-vulkan=swiftshader","--use-webgpu-adapter=swiftshader","--disable-vulkan-surface","--disable-dev-shm-usage"]});
   const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});page.on("pageerror",error=>errors.push(error.message));
   page.setDefaultTimeout(30000);
   await page.goto(daemon.editorUrl);
@@ -77,7 +77,7 @@ try {
 } catch(error) {
   if(browser) for(const context of browser.contexts())for(const page of context.pages()) {
     await page.screenshot({path:join(evidence,"failure.png")}).catch(()=>{});
-    const detail=await page.locator("body").innerText().catch(()=>"");await writeFile(join(evidence,"failure.txt"),detail+"\n"+error.stack+"\n"+errors.join("\n"));
+    const detail=await page.locator("body").innerText().catch(()=>"");console.error("Browser failure state:\n"+detail);await writeFile(join(evidence,"failure.txt"),detail+"\n"+error.stack+"\n"+errors.join("\n"));
   }
   throw error;
 } finally {await browser?.close();await daemon.close();await rm(root,{recursive:true,force:true});}

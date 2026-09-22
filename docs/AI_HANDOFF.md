@@ -190,3 +190,10 @@ is required for this backend-only slice.
 At milestone closure summarize achieved behavior, milestone and whole-project
 percentages, and only manual tests that cannot be equivalently automated. Keep
 partial deliveries distinct from completed milestones. See MILESTONE_REPORTING.md.
+
+## Current editor integration verification
+
+Version 0.0.11 implementation commit `35b2a20e7f0eadc317016a419c98e5e2e03781f2`
+passed Linux/Windows bootstrap, Rust and C# Wasm CI:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/35762835402
+PR #2 contains the current editor controls and scene history implementation.

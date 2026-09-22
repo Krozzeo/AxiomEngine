@@ -56,3 +56,9 @@ complete imported-scene workflow.
 M0: 100%. M1: 100%. M2: 2/11 = approximately 18.2%.
 Whole project: 5 + 6 + 7 × (2/11) = approximately 12.3%.
 Weights and reporting requirements: architecture/MILESTONE_REPORTING.md.
+
+## Remote implementation evidence
+
+CI passed all four jobs (Linux and Windows bootstrap, Rust, C# Wasm) on commit
+`35b2a20e7f0eadc317016a419c98e5e2e03781f2`:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/35762835402

@@ -104,6 +104,163 @@
         "properties": {},
         "required": []
       }
+    },
+    {
+      "name": "scene.get",
+      "description": "Bootstrap authoring workspace command; see SCENE_EDITOR.md for revision, undo and save semantics.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "scene.entity.create",
+      "description": "Bootstrap authoring workspace command; see SCENE_EDITOR.md for revision, undo and save semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ]
+      }
+    },
+    {
+      "name": "scene.entity.update",
+      "description": "Bootstrap authoring workspace command; see SCENE_EDITOR.md for revision, undo and save semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "transform": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId"
+        ]
+      }
+    },
+    {
+      "name": "scene.entity.delete",
+      "description": "Bootstrap authoring workspace command; see SCENE_EDITOR.md for revision, undo and save semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId"
+        ]
+      }
+    },
+    {
+      "name": "scene.undo",
+      "description": "Bootstrap authoring workspace command; see SCENE_EDITOR.md for revision, undo and save semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ]
+      }
+    },
+    {
+      "name": "scene.redo",
+      "description": "Bootstrap authoring workspace command; see SCENE_EDITOR.md for revision, undo and save semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ]
+      }
+    },
+    {
+      "name": "scene.save",
+      "description": "Bootstrap authoring workspace command; see SCENE_EDITOR.md for revision, undo and save semantics.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ]
+      }
     }
   ]
 }

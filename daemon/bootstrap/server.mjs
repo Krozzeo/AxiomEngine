@@ -4,6 +4,7 @@ import { createServer as createHttpServer } from "node:http";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CommandBus } from "./command-bus.mjs";
+import { SceneWorkspace } from "./scene-workspace.mjs";
 import { ProjectStore } from "./project-store.mjs";
 import { buildEditor } from "../../scripts/build-editor.mjs";
 
@@ -65,7 +66,7 @@ function mime(path) {
 export async function startServer(options = {}) {
   await ensureEditorBuild();
   const token = options.token ?? randomBytes(32).toString("base64url");
-  const bus = new CommandBus({ projects: new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects")) });
+  const bus = new CommandBus({ projects: new SceneWorkspace(new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects"))) });
   const hash = await schemaHash();
   const startedAt = performance.now();
   let requestCount = 0;
@@ -97,7 +98,7 @@ export async function startServer(options = {}) {
       }
 
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.10" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.11" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -106,8 +107,8 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.10" },
-          capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list"],
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.11" },
+          capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list", "command.scene.get", "command.scene.entity.create", "command.scene.entity.update", "command.scene.entity.delete", "command.scene.undo", "command.scene.redo", "command.scene.save"],
           limits: { requestBytes: BODY_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
       }

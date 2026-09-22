@@ -134,6 +134,38 @@
         "project ID",
         "trace(command.traceId)"
       ]
+    },
+    {
+      "code": "AX_SCENE_0001",
+      "meaning": "Project or entity is not active",
+      "inspect": [
+        "scene.get",
+        "trace(command.traceId)"
+      ]
+    },
+    {
+      "code": "AX_SCENE_0002",
+      "meaning": "Workspace revision conflict; refresh before editing",
+      "inspect": [
+        "scene.get",
+        "trace(command.traceId)"
+      ]
+    },
+    {
+      "code": "AX_SCENE_0003",
+      "meaning": "Unsaved changes require save or explicit discard",
+      "inspect": [
+        "scene.get",
+        "trace(command.traceId)"
+      ]
+    },
+    {
+      "code": "AX_SCENE_0004",
+      "meaning": "No scene history available",
+      "inspect": [
+        "scene.get",
+        "trace(command.traceId)"
+      ]
     }
   ]
 }

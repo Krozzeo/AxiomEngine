@@ -23,14 +23,14 @@ export class CommandBus {
   }
 
   async #dispatch(command) {
-    if ((typeof command?.payload?.type !== "string" || !command.payload.type.startsWith("project.")) || !this.#projects) return this.execute(command);
+    if ((typeof command?.payload?.type !== "string" || !(command.payload.type.startsWith("project.") || command.payload.type.startsWith("scene."))) || !this.#projects) return this.execute(command);
     const started = performance.now();
     const trace = { traceId: command.traceId, correlationId: command.correlationId, level: "normal",
       steps: [{ stage: "command.accepted", atMs: 0, command: command.payload.type }] };
     const context = { correlationId: command.correlationId, traceId: command.traceId, causationId: command.messageId };
     try {
       this.#validateEnvelope(command);
-      const events = { "project.create": "project.created", "project.open": "project.opened", "project.save": "project.saved", "project.list": "project.listed" };
+      const events = { "project.create": "project.created", "project.open": "project.opened", "project.save": "project.saved", "project.list": "project.listed", "scene.get": "scene.snapshot", "scene.entity.create": "scene.entityCreated", "scene.entity.update": "scene.entityUpdated", "scene.entity.delete": "scene.entityDeleted", "scene.undo": "scene.undone", "scene.redo": "scene.redone", "scene.save": "scene.saved" };
       const eventType = events[command.payload.type];
       if (!eventType) throw this.#error("AX_COMMAND_0002", "Command type is not registered", []);
       if (command.payload.expectedRevision !== undefined && command.payload.expectedRevision !== this.#revision) {
@@ -42,7 +42,7 @@ export class CommandBus {
       trace.steps.push({ stage: "event.emitted", atMs: performance.now() - started, event: eventType });
       return event;
     } catch (error) {
-      const known = ["AX_FS_0001", "AX_PROJECT_0001", "AX_PROJECT_0002", "AX_PROJECT_0003", "AX_PROJECT_0004", "AX_COMMAND_0002"];
+      const known = ["AX_SCENE_0001", "AX_SCENE_0002", "AX_SCENE_0003", "AX_SCENE_0004", "AX_FS_0001", "AX_PROJECT_0001", "AX_PROJECT_0002", "AX_PROJECT_0003", "AX_PROJECT_0004", "AX_COMMAND_0002"];
       const code = known.includes(error.code) ? error.code : error.code === "ENOENT" ? "AX_PROJECT_0001" : "AX_PROJECT_0005";
       const detail = error.axiomDiagnostic ?? diagnostic(code, "project-store",
         known.includes(error.code) ? error.message : code === "AX_PROJECT_0001" ? "Project does not exist" : "Project storage operation failed",

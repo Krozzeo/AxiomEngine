@@ -27,9 +27,9 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version: `0.0.10`. Milestone 0, Architecture Lock & Bootstrap, is complete.
+Version: `0.0.11`. Milestone 0, Architecture Lock & Bootstrap, is complete.
 M1, WebGPU + Engine Kernel, is complete. Active milestone: M2, Axiom Beta
-Foundation, in progress; no end-to-end acceptance credit yet.
+Foundation, in progress; 2/11 acceptance points passed.
 
 Implemented and locally verified:
 
@@ -41,7 +41,7 @@ Implemented and locally verified:
 - WebGPU triangle code, capability detection and device-loss hook;
 - Null Renderer Rust boundary;
 - schemas, error/tool catalogs and architecture checks;
-- 27 passing Node tests, including project persistence and same-origin browser handshake behavior,
+- 34 passing Node tests, including project persistence and same-origin browser handshake behavior,
   recovery when generated editor output is absent and the shared native parity
   corpus;
 - native Rust HTTP adapter source for static assets, health, handshake,
@@ -73,8 +73,8 @@ use real Wasm with a simulated DOM; they are not physical GPU evidence. The user
 in WebGPU and Null modes; see the report for exact screenshot values.
 Rust 1.90.0, formatting, Clippy and Wasm release build are verified locally.
 
-Current evidence-based completion: M0 **100%**; M1 **100%**; active M2 **0%**; whole project
-**11%**. See `docs/reports/M1_CURRENT_REPORT.md` for the live acceptance matrix.
+Current evidence-based completion: M0 **100%**; M1 **100%**; active M2 **18.2%**; whole project
+**12.3%**. See `docs/reports/M2_CURRENT_REPORT.md` for the live acceptance matrix.
 
 ## Repository map
 
@@ -143,11 +143,11 @@ M1 remote CI #3 passed all jobs for commit
 `0ecbc4bb4c8576d0b716dd68740257f5df256f40`:
 https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421
 
-The first M2 persistence slice is implemented in the bootstrap adapter. Read
-PROJECT_PERSISTENCE.md, then connect project controls and scene edit commands
-to the editor with defined undo semantics. Native project parity and schema code
-generation remain pending. Follow M2_PLAN.md and the
-master specification section 121. M2 has no functional credit yet. Do not repeat
+Project persistence and editor authoring controls with bounded undo/redo are
+implemented in the bootstrap adapter. Read PROJECT_PERSISTENCE.md and
+SCENE_EDITOR.md, then add authoring-to-runtime extraction and imported sprites
+and meshes. Native project parity and schema generation remain pending. Follow
+M2_PLAN.md and master specification section 121. Do not repeat
 unchanged M1 hardware gates. Review PR #1 before integrating the branch into main.
 
 ## Handoff discipline
@@ -184,3 +184,9 @@ https://github.com/Krozzeo/AxiomEngine/actions/runs/35760870433
 PR #2: https://github.com/Krozzeo/AxiomEngine/pull/2 (stacked on PR #1).
 Project persistence is ready for editor integration. No new manual browser test
 is required for this backend-only slice.
+
+## Required progress communication
+
+At milestone closure summarize achieved behavior, milestone and whole-project
+percentages, and only manual tests that cannot be equivalently automated. Keep
+partial deliveries distinct from completed milestones. See MILESTONE_REPORTING.md.

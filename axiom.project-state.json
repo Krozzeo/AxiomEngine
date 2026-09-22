@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-09-22",
-  "engineVersion": "0.0.10",
+  "engineVersion": "0.0.11",
   "activeMilestone": 2,
   "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 0,
-    "wholeProjectPercent": 11,
+    "activeMilestonePercent": 18.2,
+    "wholeProjectPercent": 12.3,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -21,7 +21,7 @@
     },
     "2": {
       "status": "in_progress",
-      "percent": 0
+      "percent": 18.2
     }
   },
   "implementation": {
@@ -31,11 +31,12 @@
     "engineKernel": "verified_native_and_real_wasm",
     "renderGraph": "verified_native",
     "frameProfiler": "verified_windows_webgpu_and_null",
-    "projectPersistence": "verified_bootstrap_http_restart"
+    "projectPersistence": "verified_bootstrap_http_restart",
+    "sceneEditor": "verified_controller_and_http"
   },
   "verified": {
     "nodeTests": {
-      "passed": 27,
+      "passed": 34,
       "failed": 0
     },
     "schemaDocuments": 11,
@@ -66,7 +67,7 @@
       "testsPassed": 22,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "Linux agent workspace; Rust 1.90.0; version 0.0.10"
+      "evidenceEnvironment": "Linux agent workspace; Rust 1.90.0; version 0.0.11"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -150,6 +151,11 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
+      "passed": false,
+      "status": "pending_publication",
+      "version": "0.0.11"
+    },
+    "m2PersistenceRemoteCi": {
       "passed": true,
       "status": "completed",
       "version": "0.0.10",
@@ -162,6 +168,13 @@
         "rust",
         "csharp-wasm-spike"
       ]
+    },
+    "sceneEditor": {
+      "passed": true,
+      "version": "0.0.11",
+      "newTestsPassed": 7,
+      "environment": "Controller with simulated DOM, actual Command Bus and HTTP restart",
+      "screenshotValidation": false
     }
   },
   "blockedChecks": [],
@@ -184,7 +197,9 @@
     "docs/architecture/M1_KERNEL.md",
     "docs/adr/0016-wasm-scalar-boundary.md",
     "docs/architecture/M2_PLAN.md",
-    "docs/architecture/PROJECT_PERSISTENCE.md"
+    "docs/architecture/PROJECT_PERSISTENCE.md",
+    "docs/architecture/SCENE_EDITOR.md",
+    "docs/reports/M2_CURRENT_REPORT.md"
   ],
-  "nextTask": "Connect project create/open/save controls and scene editing through Command Bus with undo. See PROJECT_PERSISTENCE.md and M2_PLAN.md. Native project commands and schema code generation remain pending."
+  "nextTask": "Compile authoring entities into the Rust runtime; then implement image/GLB imports and sprite/mesh placement. See SCENE_EDITOR.md and M2_CURRENT_REPORT.md. Native authoring parity and schema generation remain pending."
 }

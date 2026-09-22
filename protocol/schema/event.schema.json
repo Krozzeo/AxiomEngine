@@ -3,12 +3,40 @@
   "$id": "https://axiomengine.dev/schema/event-v1.json",
   "title": "Axiom Event v1",
   "type": "object",
-  "required": ["type", "sequence", "data"],
+  "required": [
+    "type",
+    "sequence",
+    "data"
+  ],
   "properties": {
-    "type": { "enum": ["system.pong", "demo.counterChanged", "editor.commandUndone", "project.created", "project.opened", "project.saved", "project.listed"] },
-    "sequence": { "type": "integer", "minimum": 1 },
-    "data": { "type": "object" },
-    "reasonCode": { "type": "string", "pattern": "^AX_[A-Z]+_[0-9]{4}$" }
+    "type": {
+      "enum": [
+        "system.pong",
+        "demo.counterChanged",
+        "editor.commandUndone",
+        "project.created",
+        "project.opened",
+        "project.saved",
+        "project.listed",
+        "scene.snapshot",
+        "scene.entityCreated",
+        "scene.entityUpdated",
+        "scene.entityDeleted",
+        "scene.undone",
+        "scene.redone",
+        "scene.saved"
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "data": {
+      "type": "object"
+    },
+    "reasonCode": {
+      "type": "string",
+      "pattern": "^AX_[A-Z]+_[0-9]{4}$"
+    }
   }
 }
-

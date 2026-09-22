@@ -6,8 +6,8 @@ daemon provides filesystem, build, asset and automation services.
 
 Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
 demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
-Axiom Beta Foundation, is next and will add editable, persistent projects and
-scenes. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+Axiom Beta Foundation, now has project controls and generic entity editing with
+undo/redo and explicit save. Asset imports and project-scene rendering are pending. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 
@@ -75,3 +75,11 @@ commands. See [the persistence contract](docs/architecture/PROJECT_PERSISTENCE.m
 The editor still renders the M1 demo; project controls and native daemon support
 are the next slice. Stored projects live under `.axiom/projects` within this
 checkout; keep that folder when moving to another snapshot.
+
+## M2 editor integration (0.0.11)
+
+Create/open a project in the left panel, add an entity, edit its name/position/scale
+in Inspector and Apply changes. Save persists the scene; Undo/Redo affect scene
+edits. The viewport remains the labelled kernel demo. See
+[the scene editor contract](docs/architecture/SCENE_EDITOR.md) and
+[the M2 progress report](docs/reports/M2_CURRENT_REPORT.md).

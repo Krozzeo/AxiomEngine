@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.11 — M2 editor authoring integration
+
+- Added project controls, entity hierarchy and name/position/scale Inspector.
+- Added revision-checked scene commands with 64-entry undo/redo and explicit save.
+- Protect dirty drafts from project switching and stale clients.
+- Added seven tests; 34 Node and 22 Rust tests pass locally.
+- M2 is 2/11 acceptance points (18.2%); whole-project completion is about 12.3%.
+- Project entities are not rendered yet; the viewport identifies its kernel demo.
+
 ## 0.0.10 — M2 project persistence foundation
 
 - Added versioned project documents with stable IDs and validated transforms.

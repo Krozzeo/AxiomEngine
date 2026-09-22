@@ -95,3 +95,12 @@ documentation alone. Before closing a milestone, verify that the handoff states:
 
 The handoff must never refer to undocumented chat decisions such as “as agreed
 earlier.” Any such decision belongs in an ADR or project documentation.
+
+## User-facing closing response
+
+At every milestone closure, include a concise achieved-capabilities summary, the
+milestone completion percentage, approximate whole-project completion, and only
+manual tests that cannot be performed or equivalently automated by the agent.
+For intermediate releases clearly state that the milestone remains in progress;
+report partial credit from the acceptance matrix rather than feature counts.
+This reporting format is a persistent user requirement.

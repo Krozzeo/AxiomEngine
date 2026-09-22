@@ -3,11 +3,35 @@
   "$id": "https://axiomengine.dev/schema/command-v1.json",
   "title": "Axiom Command v1",
   "type": "object",
-  "required": ["type", "data"],
+  "required": [
+    "type",
+    "data"
+  ],
   "properties": {
-    "type": { "enum": ["system.ping", "demo.increment", "editor.undo", "project.create", "project.open", "project.save", "project.list"] },
-    "data": { "type": "object" },
-    "expectedRevision": { "type": "integer", "minimum": 0 }
+    "type": {
+      "enum": [
+        "system.ping",
+        "demo.increment",
+        "editor.undo",
+        "project.create",
+        "project.open",
+        "project.save",
+        "project.list",
+        "scene.get",
+        "scene.entity.create",
+        "scene.entity.update",
+        "scene.entity.delete",
+        "scene.undo",
+        "scene.redo",
+        "scene.save"
+      ]
+    },
+    "data": {
+      "type": "object"
+    },
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 0
+    }
   }
 }
-

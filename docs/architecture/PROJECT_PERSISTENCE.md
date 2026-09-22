@@ -1,5 +1,8 @@
 # M2 project persistence — first slice (0.0.10)
 
+For the current 0.0.11 editor integration and shared draft behavior, see
+SCENE_EDITOR.md. The remaining-work section below records the 0.0.10 slice.
+
 The Node bootstrap daemon owns a fixed `.axiom/projects` root. Clients pass stable
 `project://UUID` IDs, never paths. Embedders/tests can supply `startServer`'s
 `projectRoot`; HTTP callers cannot change it. Projects do not move automatically

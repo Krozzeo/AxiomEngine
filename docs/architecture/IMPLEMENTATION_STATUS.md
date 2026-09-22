@@ -85,3 +85,11 @@ tests, including a real daemon restart over HTTP (27 Node tests total). Project
 IDs, entity transforms and extension fields round-trip. Native daemon support,
 editor integration, importers and general runtime extraction remain pending.
 See PROJECT_PERSISTENCE.md. No M2 end-to-end acceptance step is closed yet.
+
+## M2 editor authoring — 0.0.11
+
+Project controls, generic entity hierarchy, name/position/scale editing and bounded
+scene undo/redo are implemented. Draft mutations and disk saves have separate
+revisions and conflict protection. 34 Node tests and 22 Rust tests pass locally.
+See SCENE_EDITOR.md and reports/M2_CURRENT_REPORT.md. Runtime scene rendering,
+imports, Play and native project support remain pending.

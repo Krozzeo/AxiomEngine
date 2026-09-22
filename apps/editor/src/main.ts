@@ -1,3 +1,4 @@
+import { mountProjectEditor } from "./project-editor.js";
 import { FrameProfiler } from "./frame-profiler.js";
 import { loadKernel } from "./kernel-host.js";
 
@@ -35,7 +36,7 @@ async function api(path, options = {}) {
     }
   });
   const data = await response.json();
-  if (!response.ok) throw Object.assign(new Error(data.cause ?? `HTTP ${response.status}`), { data });
+  if (!response.ok) throw Object.assign(new Error(data.payload?.cause ?? data.cause ?? `HTTP ${response.status}`), { data });
   return data;
 }
 
@@ -54,17 +55,27 @@ function command(type, data = {}) {
   };
 }
 
-async function execute(type, data = {}) {
+function reportError(error) {
+  log("error", error.data?.payload?.code ?? error.data?.code ?? "AX_EDITOR_0001", error.message);
+}
+async function sendCommand(type, data = {}) {
+  const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
+  log("info", result.payload.reasonCode ?? "AX_EVENT_0001", result.payload.type);
+  if ("current" in result.payload.data) counter.value = String(result.payload.data.current);
   try {
-    const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
-    log("info", result.payload.reasonCode ?? "AX_EVENT_0001", result.payload.type, result.payload.data);
-    if ("current" in result.payload.data) counter.value = String(result.payload.data.current);
     const trace = await api(`/v1/traces/${encodeURIComponent(result.traceId)}`);
     traceOutput.textContent = JSON.stringify(trace, null, 2);
-  } catch (error) {
-    log("error", error.data?.code ?? "AX_EDITOR_0001", error.message, error.data ?? null);
-  }
+  } catch (error) { reportError(error); }
+  return result;
 }
+async function execute(type, data = {}) {
+  try { return await sendCommand(type, data); } catch (error) { reportError(error); }
+}
+let unsavedScene = false;
+const projectEditor = mountProjectEditor({ document, send: sendCommand, reportError, onDirty: value => { unsavedScene = value; } });
+addEventListener("beforeunload", event => {
+  if (unsavedScene) { event.preventDefault(); event.returnValue = ""; }
+});
 
 async function initializeWebGpu() {
   const canvas = document.querySelector("#viewport");
@@ -232,6 +243,7 @@ async function boot() {
       capabilities.append(term, description);
     }
     log("info", "AX_PROTOCOL_0004", "Capability negotiation completed", handshake.server);
+    await projectEditor.connect(handshake.capabilities);
   } catch (error) {
     connection.textContent = "Disconnected";
     connection.className = "status error";

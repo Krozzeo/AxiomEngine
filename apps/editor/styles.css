@@ -43,3 +43,18 @@ dd { margin: 0; overflow-wrap: anywhere; }
 .inspector p, .actions { margin: 4px 10px 12px; }
 .actions { display: flex; gap: 5px; }
 pre { margin: 4px 10px; padding: 8px; border-radius: 5px; background: #09101a; color: #9ec5e9; font: 10px ui-monospace, monospace; white-space: pre-wrap; max-height: 260px; overflow: auto; }
+
+button:disabled { opacity: .45; cursor: default; }
+input, select { width: 100%; min-width: 0; background: #09101a; color: #dce7f7; border: 1px solid #30435c; border-radius: 4px; padding: 6px; }
+.project-controls { padding: 0 10px; display: grid; gap: 8px; }
+.project-controls .actions { margin: 0; flex-wrap: wrap; }
+.project-controls p { margin: 0; font-size: 12px; overflow-wrap: anywhere; }
+#project-error { color: #ff7f8d; }
+#entities { display: grid; gap: 4px; padding: 0 10px 12px; }
+.entity { text-align: left; overflow-wrap: anywhere; }
+.entity.selected { border-color: #5eb5f7; background: #224b70; }
+fieldset { border: 0; padding: 0 10px 12px; display: grid; gap: 8px; min-width: 0; }
+fieldset p { margin: 0 !important; }
+.vector-inputs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.vector-inputs label { color: #9fb3ce; font-size: 11px; }
+.preview-note { position: absolute; top: 12px; left: 12px; right: 12px; color: #9fb3ce; font-size: 12px; }

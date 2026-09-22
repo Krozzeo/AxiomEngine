@@ -9,17 +9,33 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M1</span>
+      <span class="badge">M2</span>
       <span id="connection" class="status pending">Connecting…</span>
     </header>
     <main class="workspace">
       <aside class="panel hierarchy">
+        <h2>Project</h2>
+        <div class="project-controls">
+          <label for="project-name">New project name</label>
+          <input id="project-name" maxlength="128" placeholder="My project">
+          <button id="project-new" disabled>Create project</button>
+          <label for="project-list">Saved projects</label>
+          <select id="project-list" aria-label="Saved projects"></select>
+          <div class="actions"><button id="project-open" disabled>Open</button><button id="project-refresh" disabled>Refresh list</button></div>
+          <p id="project-status" role="status"></p>
+          <p id="project-error" role="alert"></p>
+          <div class="actions"><button id="scene-save" disabled>Save</button><button id="scene-undo" disabled>Undo</button><button id="scene-redo" disabled>Redo</button></div>
+          <button id="workspace-refresh" disabled>Refresh workspace</button>
+        </div>
         <h2>Hierarchy</h2>
-        <div class="empty">Demo scene · camera and triangle</div>
+        <div class="actions"><button id="scene-add" disabled>Add entity</button><button id="scene-delete" disabled>Delete</button></div>
+        <p id="entity-empty" class="empty">No entities in this project.</p>
+        <div id="entities" aria-label="Scene entities"></div>
       </aside>
       <section class="center">
         <nav class="tabs"><button class="active">Scene</button><button>Game</button></nav>
         <div class="viewport">
+          <div class="preview-note">Kernel demo preview · project entities are not rendered yet</div>
           <canvas id="viewport" width="960" height="540" aria-label="Axiom viewport"></canvas>
           <div id="gpu-state" class="viewport-message">Detecting WebGPU…</div>
         </div>
@@ -30,13 +46,22 @@
       </section>
       <aside class="panel inspector">
         <h2>Inspector</h2>
+        <form id="entity-form">
+          <fieldset id="entity-fields" disabled>
+            <label for="entity-name">Entity name</label><input id="entity-name" required maxlength="128">
+            <p>Position</p><div class="vector-inputs"><label>X<input id="position-0" type="number" step="any" required></label><label>Y<input id="position-1" type="number" step="any" required></label><label>Z<input id="position-2" type="number" step="any" required></label></div>
+            <p>Scale</p><div class="vector-inputs"><label>X<input id="scale-0" type="number" step="any" required></label><label>Y<input id="scale-1" type="number" step="any" required></label><label>Z<input id="scale-2" type="number" step="any" required></label></div>
+            <button type="submit">Apply changes</button>
+          </fieldset>
+        </form>
+        <h2>Connection</h2>
         <dl id="capabilities"></dl>
         <h2>Walking skeleton</h2>
         <p>Demo counter: <output id="counter">0</output></p>
         <div class="actions">
           <button id="ping">Ping</button>
           <button id="increment">Increment</button>
-          <button id="undo">Undo</button>
+          <button id="undo">Demo undo</button>
         </div>
         <h2>Last trace</h2>
         <pre id="trace">No trace yet.</pre>

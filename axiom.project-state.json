@@ -1,22 +1,38 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-09-21",
-  "engineVersion": "0.0.6",
-  "activeMilestone": 0,
+  "updatedAt": "2026-09-22",
+  "engineVersion": "0.0.9",
+  "activeMilestone": 1,
   "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 88,
-    "wholeProjectPercent": 4,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 11,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
+  },
+  "milestones": {
+    "0": {
+      "status": "complete",
+      "percent": 100
+    },
+    "1": {
+      "status": "in_progress",
+      "percent": 100
+    }
   },
   "implementation": {
     "nativeDaemonHttpAdapter": "verified_windows",
     "nodeBootstrapAdapter": "verified",
-    "csharpBrowserWasmSpike": "verified_publish"
+    "csharpBrowserWasmSpike": "verified_publish",
+    "engineKernel": "verified_native_and_real_wasm",
+    "renderGraph": "verified_native",
+    "frameProfiler": "verified_windows_webgpu_and_null"
   },
   "verified": {
-    "nodeTests": { "passed": 10, "failed": 0 },
+    "nodeTests": {
+      "passed": 20,
+      "failed": 0
+    },
     "schemaDocuments": 10,
     "architectureRules": 3,
     "daemonStartup": true,
@@ -27,7 +43,7 @@
       "passed": true,
       "toolchain": "rustc 1.90.0",
       "target": "wasm32-unknown-unknown",
-      "evidenceEnvironment": "Windows 10 x64"
+      "evidenceEnvironment": "Linux agent workspace; version 0.0.9"
     },
     "csharpWasmPublish": {
       "passed": true,
@@ -42,24 +58,72 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 9,
+      "testsPassed": 22,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "Windows 10 x64"
+      "evidenceEnvironment": "Linux agent workspace; Rust 1.90.0; version 0.0.9"
     },
     "nativeBrowserSmoke": {
       "passed": true,
       "protocol": 1,
       "service": "axiom-daemon",
       "crossOriginIsolated": true,
-      "commands": ["system.ping", "demo.increment", "editor.undo"]
+      "commands": [
+        "system.ping",
+        "demo.increment",
+        "editor.undo"
+      ]
+    },
+    "remoteCi": {
+      "passed": true,
+      "provider": "GitHub Actions",
+      "repository": "Krozzeo/AxiomEngine",
+      "workflow": "CI",
+      "run": 1,
+      "commit": "16c065c",
+      "durationSeconds": 69,
+      "jobs": [
+        "bootstrap",
+        "rust",
+        "csharp-wasm-spike"
+      ]
+    },
+    "browserWasmIntegration": {
+      "passed": true,
+      "version": "0.0.9",
+      "environment": "Node WebAssembly and simulated browser DOM; no physical GPU",
+      "nullModes": [
+        "forced",
+        "gpu_unavailable"
+      ],
+      "moduleBytes": 50327
+    },
+    "cargoDiscovery": {
+      "passed": true,
+      "evidence": "Windows path simulation and real Linux CARGO_HOME fallback with Cargo absent from PATH"
+    },
+    "m1BrowserSmoke": {
+      "passed": true,
+      "version": "0.0.9 plus Cargo discovery fix",
+      "source": "User screenshots in this conversation",
+      "webgpu": {
+        "frame": 840,
+        "meshes": 1,
+        "cpuTimeMsApprox": 0.165,
+        "timestampQueries": true,
+        "firstGpuSampleMs": 0
+      },
+      "null": {
+        "frame": 225,
+        "meshes": 1,
+        "cpuTimeMsApprox": 0.05,
+        "gpuTimeMs": null
+      },
+      "note": "Single snapshots, not benchmark averages. Zero GPU sample does not establish zero execution cost."
     }
   },
   "blockedChecks": [
-    "agent-rust-toolchain-unavailable",
-    "agent-dotnet-toolchain-unavailable",
-    "managed-browser-cannot-reach-workspace-loopback",
-    "remote-ci-not-run"
+    "remote-ci-current-m1-not-run"
   ],
   "protocolVersions": {
     "command": 1,
@@ -75,7 +139,10 @@
     "docs/architecture/NATIVE_DAEMON.md",
     "axiom.architecture.json",
     "docs/architecture/IMPLEMENTATION_STATUS.md",
-    "docs/reports/M0_CURRENT_REPORT.md"
+    "docs/reports/M0_CURRENT_REPORT.md",
+    "docs/reports/M1_CURRENT_REPORT.md",
+    "docs/architecture/M1_KERNEL.md",
+    "docs/adr/0016-wasm-scalar-boundary.md"
   ],
-  "nextTask": "Run the checked-in GitHub Actions workflow against commit 0.0.6 and archive the green CI evidence to close Milestone 0."
+  "nextTask": "Run remote CI for the tested M1 snapshot, record the result, then close M1 and plan M2 from the master specification. No repeat browser smoke required for unchanged code."
 }

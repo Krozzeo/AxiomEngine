@@ -1,14 +1,14 @@
-# Milestone 0 current report
+# Milestone 0 closure report
 
-Date: 2026-09-21. Status: in progress.
+Date: 2026-09-22. Status: complete.
 
 ## Outcome
 
 The repository, architecture records, schemas, secure bootstrap daemon,
 TypeScript-compatible editor shell, command/event/trace walking skeleton,
-WebGPU probe, Null Renderer boundary and automated Node checks exist. Rust and
-.NET sources are present but their toolchains are unavailable in the current
-environment.
+WebGPU probe, Null Renderer boundary and automated Node checks exist. The full
+Node, Rust, Rust/Wasm and C# browser-Wasm matrix passes across the agent,
+documented Windows evidence machine and GitHub Actions environments.
 
 ## Acceptance criteria
 
@@ -18,15 +18,15 @@ environment.
 | Editor shell starts in a supported browser | Passed | Chrome 153 on Windows 10 rendered the WebGPU triangle |
 | Daemon starts | Passed | Node and native Rust `/health` verified |
 | Browser client connects to daemon | Passed | Chrome connects to both adapters with protocol v1 and isolation enabled |
-| CI is green | Blocked | Workflow created but no remote run exists yet |
+| CI is green | Passed | GitHub Actions CI #1, commit `16c065c`, green in 1 min 9 s |
 | Architecture tests work | Passed | Three dependency rules pass |
 | Demo command returns a correlated event | Passed | End-to-end HTTP integration test and trace pass |
 | Documentation explains local execution | Passed | README, protocol, security and status documents |
 
-Current milestone completion: **7 / 8 = 88%** (rounded).
+Current milestone completion: **8 / 8 = 100%**.
 
-Weighted whole-project completion: **4%** (rounded). M0 has 5% roadmap weight;
-88% of that weight is currently evidenced.
+Weighted whole-project completion: **5%**. M0 has 5% roadmap weight and is fully
+evidenced.
 
 ## Automated evidence
 
@@ -49,21 +49,15 @@ Weighted whole-project completion: **4%** (rounded). M0 has 5% roadmap weight;
 - `Cargo.lock` fixes 98 packages total: 4 workspace crates and 94 third-party
   packages; Rust compile/test gates enforce `--locked`.
 - Git baseline commit is clean.
+- GitHub Actions CI #1 passed all `bootstrap`, `rust` and `csharp-wasm-spike`
+  jobs for commit `16c065c` in 69 seconds.
 
 ## Manual tests requested from the user
 
 ### Current manual requirement
 
-None. All local and developer-machine gates are green. Do not ask the user to
-repeat Node, Rust, .NET, browser or WebGPU checks. The only remaining acceptance
-criterion is a remote CI run, which is infrastructure evidence rather than a
-manual product test.
-
-### Optional native toolchain gates
-
-If Rust 1.90 and .NET 10 with `wasm-tools` are installed, run the commands under
-`Optional native checks` in the README and the C# spike publish command. Return
-complete failing output if any gate fails.
+None. All M0 local, developer-machine, browser and remote-CI gates are green.
+Do not ask the user to repeat Node, Rust, .NET, browser or WebGPU checks for M0.
 
 ## User-provided hardware evidence
 
@@ -83,8 +77,7 @@ complete failing output if any gate fails.
 ## Known limitations
 
 - Rust/.NET remain unavailable in the agent environment, but their pinned gates
-  passed on the documented Windows evidence machine.
-- Remote CI has not run, so M0 cannot close yet.
-- WebGPU is verified on the supported browser; forced device-loss recovery and
-  the native adapter browser path still need evidence.
+  passed on the documented Windows evidence machine and in remote CI.
+- WebGPU is verified on the supported browser; forced device-loss recovery is
+  later renderer work rather than an M0 closure criterion.
 - Full copy-on-write workspaces are later work; M0 implements atomic scoped writes.

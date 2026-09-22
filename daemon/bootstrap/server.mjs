@@ -15,7 +15,7 @@ const SECURITY_HEADERS = {
   "Cross-Origin-Resource-Policy": "same-origin",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "no-referrer",
-  "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
 };
 
 async function ensureEditorBuild() {
@@ -96,7 +96,7 @@ export async function startServer(options = {}) {
       }
 
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.6" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.9" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -105,7 +105,7 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.6" },
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.9" },
           capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace"],
           limits: { requestBytes: BODY_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });

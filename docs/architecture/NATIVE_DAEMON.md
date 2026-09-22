@@ -1,8 +1,8 @@
 # Native daemon adapter
 
 The Rust daemon is the target production adapter. The Node daemon remains a
-temporary executable oracle until the pinned Rust gate and browser smoke test
-are green.
+compatibility bootstrap and executable oracle while the default-runtime
+transition is planned.
 
 ## Contract
 
@@ -42,6 +42,6 @@ cargo check --locked -p axiom-core --target wasm32-unknown-unknown
 npm run dev:native
 ```
 
-Formatting, Clippy, all nine Rust tests, the Wasm core check and the Chrome
-native smoke flow passed on the Windows evidence machine. Remote CI remains the
-promotion gate, so `npm run dev` intentionally launches the Node adapter.
+Formatting, Clippy, all M0 Rust tests, the Wasm core check and the Chrome native
+smoke flow passed on the Windows evidence machine and in GitHub Actions CI #1.
+`npm run dev` intentionally remains the compatibility entry point during M1.

@@ -5,6 +5,8 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
+[dependencies]
+axiom-core = { path = "../core" }
+
 [lints]
 workspace = true
-

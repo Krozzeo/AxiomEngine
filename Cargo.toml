@@ -4,11 +4,12 @@ members = [
   "engine/core",
   "engine/diagnostics",
   "engine/renderer",
+  "engine/wasm",
   "daemon/axiom-daemon"
 ]
 
 [workspace.package]
-version = "0.0.6"
+version = "0.0.9"
 edition = "2024"
 license = "Apache-2.0"
 rust-version = "1.90"

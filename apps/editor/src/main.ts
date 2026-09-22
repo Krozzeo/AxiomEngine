@@ -1,11 +1,16 @@
+import { FrameProfiler } from "./frame-profiler.js";
+import { loadKernel } from "./kernel-host.js";
+
 const token = new URLSearchParams(location.hash.slice(1)).get("token");
-history.replaceState(null, "", location.pathname);
+history.replaceState(null, "", location.pathname + location.search);
 
 const connection = document.querySelector("#connection");
 const logs = document.querySelector("#logs");
 const counter = document.querySelector("#counter");
 const traceOutput = document.querySelector("#trace");
 const capabilities = document.querySelector("#capabilities");
+const frameTraceOutput = document.querySelector("#frame-trace");
+const frameProfiler = new FrameProfiler(120);
 
 function log(level, code, message, data = null) {
   const item = document.createElement("li");
@@ -64,29 +69,80 @@ async function execute(type, data = {}) {
 async function initializeWebGpu() {
   const canvas = document.querySelector("#viewport");
   const state = document.querySelector("#gpu-state");
+  const response = await fetch("/axiom-kernel.wasm");
+  if (!response.ok) throw new Error(`AX_WASM_0001: HTTP ${response.status}`);
+  const kernel = await loadKernel(await response.arrayBuffer());
+  let running = true;
+  let animationId = null;
+  let nullActive = false;
+  let disposed = false;
+  addEventListener("pagehide", () => {
+    running = false;
+    nullActive = false;
+    disposed = true;
+    if (animationId !== null) cancelAnimationFrame(animationId);
+    kernel.dispose();
+  }, { once: true });
+  let previousTime = null;
+  let traceSequence = 0n;
+  function kernelStep(now) {
+    const delta = previousTime === null ? 0 : (now - previousTime) / 1000;
+    previousTime = now;
+    return kernel.step(delta, ++traceSequence, canvas.width / canvas.height);
+  }
+  function startNull(reason) {
+    if (nullActive || disposed) return;
+    running = false;
+    nullActive = true;
+    state.textContent = `Null Renderer · ${reason}`;
+    function nullFrame(now) {
+      if (!nullActive) return;
+      const frame = frameProfiler.begin(performance.now());
+      const packet = kernelStep(now);
+      frame.kernel = { frame: packet.frame, trace: packet.trace, fixedSteps: packet.fixedSteps, meshes: packet.nullProcessedMeshes, renderer: "null" };
+      frameProfiler.finish(frame, performance.now(), "null");
+      if (packet.frame === 1 || packet.frame % 15 === 0) frameTraceOutput.textContent = JSON.stringify(frame, null, 2);
+      animationId = requestAnimationFrame(nullFrame);
+    }
+    animationId = requestAnimationFrame(nullFrame);
+  }
+  if (new URLSearchParams(location.search).get("renderer") === "null") {
+    startNull("selected explicitly");
+    return;
+  }
   if (!navigator.gpu) {
-    state.textContent = "No GPU mode · WebGPU unavailable; project tools remain active.";
-    log("warning", "AX_RENDERER_0001", "WebGPU is unavailable; Null Renderer selected");
+    startNull("WebGPU unavailable");
+    log("warning", "AX_RENDERER_0001", "WebGPU is unavailable; preview disabled");
     return;
   }
   const adapter = await navigator.gpu.requestAdapter({ powerPreference: "high-performance" });
   if (!adapter) {
-    state.textContent = "No GPU mode · no compatible adapter.";
-    log("warning", "AX_RENDERER_0002", "No compatible WebGPU adapter; Null Renderer selected");
+    startNull("no compatible adapter");
+    log("warning", "AX_RENDERER_0002", "No compatible WebGPU adapter; preview disabled");
     return;
   }
-  const device = await adapter.requestDevice();
+  const timestampQuerySupported = adapter.features.has("timestamp-query");
+  let device;
+  try {
+    device = await adapter.requestDevice({ requiredFeatures: timestampQuerySupported ? ["timestamp-query"] : [] });
+  } catch (error) {
+    log("warning", "AX_RENDERER_0005", error.message);
+    startNull("device creation failed");
+    return;
+  }
   device.lost.then((info) => {
+    running = false;
+    if (animationId !== null) cancelAnimationFrame(animationId);
     state.textContent = `WebGPU device lost · ${info.reason}`;
     log("error", "AX_RENDERER_0003", "WebGPU device lost", { reason: info.reason, message: info.message });
+    startNull("GPU device lost");
   });
   const context = canvas.getContext("webgpu");
   const format = navigator.gpu.getPreferredCanvasFormat();
   context.configure({ device, format, alphaMode: "opaque" });
   const module = device.createShaderModule({ code: `
-    @vertex fn vs(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {
-      let p = array(vec2f(0.0, 0.62), vec2f(-0.58, -0.48), vec2f(0.58, -0.48));
-      return vec4f(p[i], 0.0, 1.0);
+    @vertex fn vs(@location(0) position: vec4f) -> @builtin(position) vec4f {
+      return position;
     }
     @fragment fn fs() -> @location(0) vec4f {
       return vec4f(0.38, 0.74, 1.0, 1.0);
@@ -97,21 +153,70 @@ async function initializeWebGpu() {
   if (errors.length) throw new Error(errors.map((item) => item.message).join("; "));
   const pipeline = device.createRenderPipeline({
     layout: "auto",
-    vertex: { module, entryPoint: "vs" },
+    vertex: { module, entryPoint: "vs", buffers: [{ arrayStride: 16, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x4" }] }] },
     fragment: { module, entryPoint: "fs", targets: [{ format }] },
     primitive: { topology: "triangle-list" }
   });
-  const encoder = device.createCommandEncoder({ label: "axiom-m0-frame" });
-  const pass = encoder.beginRenderPass({
-    colorAttachments: [{ view: context.getCurrentTexture().createView(), clearValue: { r: 0.025, g: 0.035, b: 0.055, a: 1 }, loadOp: "clear", storeOp: "store" }]
-  });
-  pass.setPipeline(pipeline);
-  pass.draw(3);
-  pass.end();
-  device.queue.submit([encoder.finish()]);
-  state.textContent = `WebGPU active · ${format}${device.features.has("timestamp-query") ? " · GPU timestamps" : " · timestamps unavailable"}`;
+  const vertexBuffer = device.createBuffer({ size: 48, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
+  const timestampQuery = device.features.has("timestamp-query");
+  const querySet = timestampQuery ? device.createQuerySet({ type: "timestamp", count: 2 }) : null;
+  const queryResolveBuffer = timestampQuery ? device.createBuffer({ size: 16, usage: GPUBufferUsage.QUERY_RESOLVE | GPUBufferUsage.COPY_SRC }) : null;
+  const queryReadBuffer = timestampQuery ? device.createBuffer({ size: 16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ }) : null;
+  let lastTimestampFrame = 0;
+  let timestampReadPending = false;
+  let gpuTimingSample = null;
+
+  function renderFrame(now) {
+    if (!running) return;
+    try {
+    const started = performance.now();
+    const frame = frameProfiler.begin(started);
+    const packet = kernelStep(now);
+    frame.kernel = { frame: packet.frame, trace: packet.trace, fixedSteps: packet.fixedSteps, meshes: packet.nullProcessedMeshes, renderer: "webgpu" };
+    device.queue.writeBuffer(vertexBuffer, 0, packet.vertices);
+    const encoder = device.createCommandEncoder({ label: "axiom-m1-frame" });
+    const pass = encoder.beginRenderPass({
+      colorAttachments: [{ view: context.getCurrentTexture().createView(), clearValue: { r: 0.025, g: 0.035, b: 0.055, a: 1 }, loadOp: "clear", storeOp: "store" }],
+      ...(timestampQuery && lastTimestampFrame === 0 ? { timestampWrites: { querySet, beginningOfPassWriteIndex: 0, endOfPassWriteIndex: 1 } } : {})
+    });
+    pass.setPipeline(pipeline);
+    pass.setVertexBuffer(0, vertexBuffer);
+    pass.draw(3);
+    pass.end();
+    if (timestampQuery && lastTimestampFrame === 0) {
+      encoder.resolveQuerySet(querySet, 0, 2, queryResolveBuffer, 0);
+      encoder.copyBufferToBuffer(queryResolveBuffer, 0, queryReadBuffer, 0, 16);
+      lastTimestampFrame = frame.frameSequence;
+    }
+    device.queue.submit([encoder.finish()]);
+    frameProfiler.finish(frame, performance.now());
+    if (timestampQuery && lastTimestampFrame === frame.frameSequence && !timestampReadPending) {
+      timestampReadPending = true;
+      queryReadBuffer.mapAsync(GPUMapMode.READ).then(() => {
+        const timestamps = new BigUint64Array(queryReadBuffer.getMappedRange().slice(0));
+        gpuTimingSample = {
+          frameSequence: lastTimestampFrame,
+          milliseconds: Number(timestamps[1] - timestamps[0]) / 1_000_000
+        };
+        queryReadBuffer.unmap();
+        frameProfiler.attachGpuTiming(lastTimestampFrame, gpuTimingSample.milliseconds);
+      }).catch((error) => log("warning", "AX_RENDERER_0006", "GPU timestamp read failed", { message: error.message }));
+    }
+    if (frame.frameSequence === 1 || frame.frameSequence % 15 === 0) {
+      frameTraceOutput.textContent = JSON.stringify({ ...frameProfiler.latest(), gpuTimingSample, retainedFrames: Math.min(frame.frameSequence, 120), droppedFrames: frameProfiler.dropped }, null, 2);
+    }
+    animationId = requestAnimationFrame(renderFrame);
+    } catch (error) {
+      running = false;
+      state.textContent = "Rendering stopped · inspect the console.";
+      log("error", "AX_RENDERER_0005", error.message);
+    }
+  }
+
+  animationId = requestAnimationFrame(renderFrame);
+  state.textContent = `WebGPU active · ${format}${timestampQuery ? " · GPU timestamps" : " · CPU timing only"}`;
   state.classList.add("success");
-  log("info", "AX_RENDERER_0004", "WebGPU spike rendered a triangle", { format, timestampQuery: device.features.has("timestamp-query") });
+  log("info", "AX_RENDERER_0004", "WebGPU engine loop rendering triangle scene", { format, timestampQuery });
 }
 
 async function boot() {
@@ -135,7 +240,7 @@ async function boot() {
   try {
     await initializeWebGpu();
   } catch (error) {
-    document.querySelector("#gpu-state").textContent = "Renderer initialization failed; Null Renderer selected.";
+    document.querySelector("#gpu-state").textContent = "Renderer initialization failed; preview disabled.";
     log("error", "AX_RENDERER_0005", error.message);
   }
 }
@@ -145,4 +250,3 @@ document.querySelector("#increment").addEventListener("click", () => execute("de
 document.querySelector("#undo").addEventListener("click", () => execute("editor.undo"));
 document.querySelector("#clear").addEventListener("click", () => logs.replaceChildren());
 boot();
-

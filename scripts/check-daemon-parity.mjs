@@ -43,7 +43,9 @@ for (const header of ["Cross-Origin-Opener-Policy", "Cross-Origin-Embedder-Polic
   if (!bootstrap.toLowerCase().includes(header.toLowerCase())) failures.push(`bootstrap is missing ${header}`);
   if (!native.toLowerCase().includes(header.toLowerCase())) failures.push(`native daemon is missing ${header}`);
 }
-if (/Command::new|0\.0\.0\.0|\bunsafe\b/.test(native)) {
+// CSP's narrow Wasm compilation permission is not Rust unsafe code (ADR-0016).
+const nativePolicySource = native.replaceAll("'wasm-unsafe-eval'", "");
+if (/Command::new|0\.0\.0\.0|\bunsafe\b/.test(nativePolicySource)) {
   failures.push("native daemon violates the M0 deny-by-default source policy");
 }
 if (!Array.isArray(vectors) || vectors.length < 6) {

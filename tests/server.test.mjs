@@ -32,6 +32,16 @@ test("daemon rebuilds and serves editor assets when dist is absent", async (cont
   const response = await fetch(instance.origin);
   assert.equal(response.status, 200);
   assert.match(await response.text(), /<title>Axiom Engine<\/title>/);
+  const profilerModule = await fetch(`${instance.origin}/frame-profiler.js`);
+  assert.equal(profilerModule.status, 200);
+  assert.match(profilerModule.headers.get("content-type"), /text\/javascript/);
+  assert.match(await profilerModule.text(), /export class FrameProfiler/);
+  const policy = response.headers.get("content-security-policy");
+  assert.ok(policy.includes("'wasm-unsafe-eval'"));
+  assert.ok(!policy.includes("'unsafe-eval'"));
+  const wasmResponse = await fetch(`${instance.origin}/axiom-kernel.wasm`);
+  assert.equal(wasmResponse.status, 200);
+  assert.equal(WebAssembly.validate(await wasmResponse.arrayBuffer()), true);
 });
 
 test("browser-to-daemon walking skeleton negotiates, commands and traces", async (context) => {

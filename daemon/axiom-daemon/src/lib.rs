@@ -699,7 +699,7 @@ fn with_security_headers(mut response: Response) -> Response {
         ("referrer-policy", "no-referrer"),
         (
             "content-security-policy",
-            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+            "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
         ),
     ] {
         headers.insert(

@@ -11,6 +11,7 @@
     "activeMilestone": { "type": "integer", "minimum": 0, "maximum": 19 },
     "milestoneStatus": { "enum": ["not_started", "in_progress", "blocked", "complete"] },
     "completion": { "type": "object" },
+    "milestones": { "type": "object" },
     "implementation": { "type": "object" },
     "verified": { "type": "object" },
     "blockedChecks": { "type": "array", "items": { "type": "string" } },

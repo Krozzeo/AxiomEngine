@@ -1,0 +1,20 @@
+[package]
+name = "axiom-wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+axiom-core = { path = "../core" }
+axiom-renderer = { path = "../renderer" }
+
+# Symbol export attributes are the sole exception; see ADR-0016.
+[lints.rust]
+unsafe_code = "deny"
+
+[lints.clippy]
+all = "deny"

@@ -27,7 +27,9 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version: `0.0.6`. Active milestone: M0, Architecture Lock & Bootstrap.
+Version: `0.0.9`. Milestone 0, Architecture Lock & Bootstrap, is complete.
+M1, WebGPU + Engine Kernel, is complete. Active milestone: M2, Axiom Beta
+Foundation, not started.
 
 Implemented and locally verified:
 
@@ -39,21 +41,18 @@ Implemented and locally verified:
 - WebGPU triangle code, capability detection and device-loss hook;
 - Null Renderer Rust boundary;
 - schemas, error/tool catalogs and architecture checks;
-- ten passing Node tests, including same-origin browser handshake behavior,
+- sixteen passing Node tests, including same-origin browser handshake behavior,
   recovery when generated editor output is absent and the shared native parity
   corpus;
 - native Rust HTTP adapter source for static assets, health, handshake,
   commands, event deltas, traces and metrics;
 - shared security/error/command surface enforcement across both adapters.
 
-Not yet verified or complete:
+Not yet implemented:
 
-- Rust 1.90 and .NET 10 are unavailable in the current execution environment;
-- native Rust adapter has not compiled because Rust is unavailable locally;
-- native adapter browser smoke testing waits for a green Rust compile gate;
-- CI workflow exists but has not produced a remote green run;
-- schema-to-Rust/TypeScript/C# generation is not implemented;
-- content-addressed transactional COW overlays are later work.
+- schema-to-Rust/TypeScript/C# generation from one declarative model;
+- content-addressed transactional COW overlays;
+- later-milestone engine, editor and scripting systems.
 
 External Windows evidence uses `rustc/cargo 1.90.0` and .NET SDK `10.0.400`.
 The `axiom-core` crate passed `cargo check` for `wasm32-unknown-unknown`.
@@ -63,16 +62,27 @@ protocol, security-isolation, health, Ping, Increment and Undo smoke flow. The
 .NET `wasm-tools` workload restored successfully and the Release C#
 browser-Wasm publish passed with zero warnings and errors in 48.9 seconds.
 `Cargo.lock` is committed and Rust build/test gates use `--locked`.
+GitHub Actions CI #1 passed the `bootstrap`, `rust` and `csharp-wasm-spike` jobs
+for commit `16c065c` in 69 seconds.
 
-Current evidence-based completion: M0 **75%**; whole project **4%**. See
-`docs/reports/M0_CURRENT_REPORT.md` for the acceptance matrix and manual test.
+M1 now loads a real Rust/Wasm kernel in the editor. The demo mesh and camera
+projection feed WebGPU's vertex buffer; forced Null mode and absent GPU execute
+the same kernel and the Rust Null Renderer. Trace IDs and fixed clocks cross the
+scalar ABI. Sixteen Node tests and twenty-two Rust tests pass. Two editor tests
+use real Wasm with a simulated DOM; they are not physical GPU evidence. The user has now verified the new shader/vertex-buffer path and timing panel
+in WebGPU and Null modes; see the report for exact screenshot values.
+Rust 1.90.0, formatting, Clippy and Wasm release build are verified locally.
+
+Current evidence-based completion: M0 **100%**; M1 **100%**; active M2 **0%**; whole project
+**11%**. See `docs/reports/M1_CURRENT_REPORT.md` for the live acceptance matrix.
 
 ## Repository map
 
 - `apps/editor/`: browser UI and WebGPU bootstrap.
 - `daemon/bootstrap/`: currently verified HTTP adapter and command bus.
 - `daemon/axiom-daemon/`: native Rust daemon shell and security policy.
-- `engine/core/`: IDs and time primitives.
+- `engine/core/`: IDs, clocks, resource/jobs primitives and the demo scene.
+- `engine/wasm/`: ABI v1 exports and host wrapper (ADR-0016).
 - `engine/diagnostics/`: bounded trace primitives.
 - `engine/renderer/`: renderer boundary and Null Renderer.
 - `protocol/schema/`: canonical schema inputs.
@@ -102,7 +112,8 @@ npm run check
 npm run dev
 ```
 
-`npm run dev` performs the editor build automatically. The daemon also rebuilds
+Node 24+ and Rust 1.90 with the Wasm target are now required.
+`npm run dev` compiles the Wasm module and builds the editor automatically. The daemon also rebuilds
 missing editor assets when started directly, so a source-only snapshot must not
 depend on a pre-existing `dist/` directory.
 
@@ -113,11 +124,12 @@ npm run check:native
 npm run dev:native
 ```
 
-Do not switch the default `dev` command to Rust until formatting, clippy, tests
-and a real browser run against the native adapter all pass.
+The Node adapter remains the compatibility bootstrap while M1 plans the default
+runtime transition. Both adapters have passed formatting/compile, parity,
+security and real-browser M0 gates.
 
-Optional native gates are documented in the root README. Do not claim them as
-passing without executed output.
+Optional native commands are documented in the root README. M0 already has
+executed local, Windows and CI evidence; rerun them only when relevant code changes.
 
 ## Protocol and format versions
 
@@ -127,12 +139,14 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Run the checked-in GitHub Actions workflow against the current commit. All
-equivalent local and Windows gates are green; do not repeat them. Archive the
-workflow URL/status as evidence, mark the CI acceptance criterion passed, close
-M0 and begin the remaining M1 work.
-After that, execute the .NET browser-Wasm spike and obtain the first remote
-green CI run. Only then close M0 and begin the rest of M1.
+M1 remote CI #3 passed all jobs for commit
+`0ecbc4bb4c8576d0b716dd68740257f5df256f40`:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421
+
+Begin M2 with the versioned authoring scene contract, stable resource IDs and
+project create/open plus save/load through commands. Follow M2_PLAN.md and the
+master specification section 121. M2 has no functional credit yet. Do not repeat
+unchanged M1 hardware gates. Review PR #1 before integrating the branch into main.
 
 ## Handoff discipline
 
@@ -150,3 +164,12 @@ Preserve that versioned layout in all Windows instructions; do not require the
 repository files to live directly in the parent directory. Request manual tests
 only for behavior that cannot be executed or equivalently automated in the
 agent environment.
+
+## Windows startup follow-up
+
+A Windows run exposed `spawnSync cargo ENOENT`. The build script now tries
+`cargo.exe`, then CARGO_HOME/bin and USERPROFILE/.cargo/bin, without a shell.
+Four discovery regressions pass, bringing the Node suite to 20 tests. The actual
+CARGO_HOME fallback also built Wasm on Linux with Cargo absent from PATH.
+Windows startup and both browser modes are confirmed by user screenshots. For an existing m1.1 extraction, replace only
+`scripts/build-editor.mjs` with the corrected file and run `npm.cmd run dev`.

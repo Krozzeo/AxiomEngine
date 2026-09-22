@@ -5,8 +5,8 @@ const checks = [
   ["node", process.execPath, ["--version"], true],
   ["npm", windows ? "npm.cmd" : "npm", ["--version"], true],
   ["git", windows ? "git.exe" : "git", ["--version"], false],
-  ["cargo", windows ? "cargo.exe" : "cargo", ["--version"], false],
-  ["rustc", windows ? "rustc.exe" : "rustc", ["--version"], false],
+  ["cargo", windows ? "cargo.exe" : "cargo", ["--version"], true],
+  ["rustc", windows ? "rustc.exe" : "rustc", ["--version"], true],
   ["dotnet", windows ? "dotnet.exe" : "dotnet", ["--version"], false]
 ];
 

@@ -1,15 +1,40 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { resolve, win32, posix } from "node:path";
+import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 const root = resolve(import.meta.dirname, "..");
 const destination = resolve(root, "dist/editor");
 
+export function runCargo(args, {
+  platform = process.platform, env = process.env, home = homedir(), execute = execFileSync
+} = {}) {
+  const path = platform === "win32" ? win32 : posix;
+  const executable = platform === "win32" ? "cargo.exe" : "cargo";
+  const candidates = [executable];
+  if (env.CARGO_HOME) candidates.push(path.join(env.CARGO_HOME, "bin", executable));
+  candidates.push(path.join(platform === "win32" ? env.USERPROFILE || home : home, ".cargo", "bin", executable));
+  for (const candidate of new Set(candidates)) {
+    try {
+      return execute(candidate, args, { cwd: root, env, stdio: "inherit" });
+    } catch (error) {
+      // A compiler failure must remain visible; only missing executables allow fallback.
+      if (error.code !== "ENOENT") throw error;
+    }
+  }
+  throw new Error(`AX_BUILD_0001: Cargo was not found. Tried: ${candidates.join(", ")}. Install Rust 1.90 through rustup or set CARGO_HOME to its installation directory, then reopen the terminal.`);
+}
+
 export async function buildEditor() {
+  runCargo(["build", "--locked", "--release", "-p", "axiom-wasm", "--target", "wasm32-unknown-unknown"]);
   await rm(destination, { recursive: true, force: true });
   await mkdir(destination, { recursive: true });
+  await cp(resolve(root, "target/wasm32-unknown-unknown/release/axiom_wasm.wasm"), resolve(destination, "axiom-kernel.wasm"));
+  await cp(resolve(root, "engine/wasm/host.mjs"), resolve(destination, "kernel-host.js"));
   await cp(resolve(root, "apps/editor/index.html"), resolve(destination, "index.html"));
   await cp(resolve(root, "apps/editor/styles.css"), resolve(destination, "styles.css"));
+  await cp(resolve(root, "apps/editor/src/frame-profiler.mjs"), resolve(destination, "frame-profiler.js"));
   const source = await readFile(resolve(root, "apps/editor/src/main.ts"), "utf8");
   if (/\binterface\s+|:\s*(string|number|boolean)\b/.test(source)) {
     throw new Error("Bootstrap TypeScript must remain directly executable until the compiler toolchain is installed");

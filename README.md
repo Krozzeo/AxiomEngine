@@ -4,24 +4,27 @@ Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.
 
-This repository currently implements the Milestone 0 walking skeleton and the
-first technical risk spikes. It is intentionally a small executable kernel,
-not a feature-complete engine.
+Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
+demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
+Axiom Beta Foundation, is next and will add editable, persistent projects and
+scenes. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 
-Requirements: Node.js 24+.
+Requirements: Node.js 24+, Rust 1.90.0 and the `wasm32-unknown-unknown` target.
+The pinned `rust-toolchain.toml` installs the target through rustup when needed.
 
 ```bash
 npm run dev
 ```
 
-`npm run dev` builds the editor automatically before starting the daemon, so it
+`npm run dev` compiles the Rust/Wasm kernel and builds the editor before starting the daemon, so it
 works immediately after extracting a source snapshot. Run `npm run check` when
 you also want the complete automated validation suite.
 
-The verified Node adapter remains the default until the native daemon passes
-the pinned Rust CI gate. With Rust 1.90 installed, run the native adapter with:
+The Node adapter remains the compatibility default while M1 plans the runtime
+transition. The native daemon has passed pinned Rust CI, shared parity tests and
+a real Chrome smoke test. With Rust 1.90 installed, run it with:
 
 ```bash
 npm run dev:native
@@ -29,6 +32,10 @@ npm run dev:native
 
 Both adapters expose the same protocol surface and execute the shared command
 parity vectors in `protocol/fixtures/command-parity.json`.
+
+The demo camera and mesh now come from Rust/Wasm. Use `?renderer=null` before
+the launch URL's `#token=...` fragment to run the same kernel without a GPU.
+See `docs/architecture/M1_KERNEL.md` for the Wasm ABI and current limits.
 
 The daemon prints a one-time editor URL containing a session token. It binds
 only to `127.0.0.1`, validates request origins, applies cross-origin isolation

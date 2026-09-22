@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+members = [
+  "engine/core",
+  "engine/diagnostics",
+  "engine/renderer",
+  "daemon/axiom-daemon"
+]
+
+[workspace.package]
+version = "0.0.6"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.90"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "deny"

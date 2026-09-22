@@ -1,0 +1,35 @@
+{
+  "$schema": "./component-definition.schema.json",
+  "schemaVersion": 1,
+  "name": "Transform",
+  "componentId": "component://axiom/transform",
+  "unknownFieldPolicy": "preserve",
+  "properties": [
+    {
+      "name": "position",
+      "type": "vec3",
+      "unit": "meter",
+      "default": [0, 0, 0],
+      "runtimeEditable": true,
+      "serializable": true,
+      "aiDescription": "Local position relative to the parent entity."
+    },
+    {
+      "name": "rotation",
+      "type": "quat",
+      "default": [0, 0, 0, 1],
+      "runtimeEditable": true,
+      "serializable": true,
+      "aiDescription": "Normalized local orientation quaternion."
+    },
+    {
+      "name": "scale",
+      "type": "vec3",
+      "default": [1, 1, 1],
+      "runtimeEditable": true,
+      "serializable": true,
+      "aiDescription": "Local non-uniform scale."
+    }
+  ]
+}
+

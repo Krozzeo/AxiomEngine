@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Axiom Engine</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <strong>Axiom Engine</strong>
+      <span class="badge">M0</span>
+      <span id="connection" class="status pending">Connecting…</span>
+    </header>
+    <main class="workspace">
+      <aside class="panel hierarchy">
+        <h2>Hierarchy</h2>
+        <div class="empty">No scene loaded</div>
+      </aside>
+      <section class="center">
+        <nav class="tabs"><button class="active">Scene</button><button>Game</button></nav>
+        <div class="viewport">
+          <canvas id="viewport" width="960" height="540" aria-label="Axiom viewport"></canvas>
+          <div id="gpu-state" class="viewport-message">Detecting WebGPU…</div>
+        </div>
+        <section class="console panel">
+          <div class="panel-title"><h2>Structured Console</h2><button id="clear">Clear</button></div>
+          <ol id="logs"></ol>
+        </section>
+      </section>
+      <aside class="panel inspector">
+        <h2>Inspector</h2>
+        <dl id="capabilities"></dl>
+        <h2>Walking skeleton</h2>
+        <p>Demo counter: <output id="counter">0</output></p>
+        <div class="actions">
+          <button id="ping">Ping</button>
+          <button id="increment">Increment</button>
+          <button id="undo">Undo</button>
+        </div>
+        <h2>Last trace</h2>
+        <pre id="trace">No trace yet.</pre>
+      </aside>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
+

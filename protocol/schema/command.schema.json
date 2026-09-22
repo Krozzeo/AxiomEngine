@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/command-v1.json",
+  "title": "Axiom Command v1",
+  "type": "object",
+  "required": ["type", "data"],
+  "properties": {
+    "type": { "enum": ["system.ping", "demo.increment", "editor.undo"] },
+    "data": { "type": "object" },
+    "expectedRevision": { "type": "integer", "minimum": 0 }
+  }
+}
+

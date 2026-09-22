@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/project-state-v1.json",
+  "title": "Axiom machine-readable project state",
+  "type": "object",
+  "required": ["stateVersion", "updatedAt", "engineVersion", "activeMilestone", "milestoneStatus", "completion", "verified", "blockedChecks", "protocolVersions", "canonicalDocs", "nextTask"],
+  "properties": {
+    "stateVersion": { "const": 1 },
+    "updatedAt": { "type": "string", "format": "date" },
+    "engineVersion": { "type": "string" },
+    "activeMilestone": { "type": "integer", "minimum": 0, "maximum": 19 },
+    "milestoneStatus": { "enum": ["not_started", "in_progress", "blocked", "complete"] },
+    "completion": { "type": "object" },
+    "implementation": { "type": "object" },
+    "verified": { "type": "object" },
+    "blockedChecks": { "type": "array", "items": { "type": "string" } },
+    "protocolVersions": { "type": "object" },
+    "canonicalDocs": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "nextTask": { "type": "string", "minLength": 1 }
+  }
+}

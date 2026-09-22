@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/protocol-envelope-v1.json",
+  "title": "Axiom Protocol Envelope v1",
+  "type": "object",
+  "required": ["protocolVersion", "messageId", "kind", "timestamp", "correlationId", "traceId", "payload"],
+  "properties": {
+    "protocolVersion": { "const": 1 },
+    "messageId": { "type": "string", "format": "uuid" },
+    "kind": { "enum": ["command", "event", "error"] },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "correlationId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "traceId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "causationId": { "type": ["string", "null"] },
+    "actor": {
+      "type": "object",
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "enum": ["human", "agent", "system", "test"] },
+        "id": { "type": "string" }
+      }
+    },
+    "payload": { "type": "object" }
+  }
+}
+

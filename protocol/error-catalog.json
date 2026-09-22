@@ -1,0 +1,17 @@
+{
+  "catalogVersion": 1,
+  "errors": [
+    { "code": "AX_PROTOCOL_0001", "meaning": "Invalid command envelope", "inspect": ["protocol envelope", "client protocol version"] },
+    { "code": "AX_PROTOCOL_0002", "meaning": "Required identity field missing", "inspect": ["messageId", "correlationId", "traceId"] },
+    { "code": "AX_PROTOCOL_0003", "meaning": "Protocol version is incompatible", "inspect": ["handshake supported range"] },
+    { "code": "AX_SECURITY_0001", "meaning": "Request origin is not authorized", "inspect": ["daemon origin allowlist"] },
+    { "code": "AX_SECURITY_0002", "meaning": "Session token is invalid", "inspect": ["editor launch URL", "daemon session"] },
+    { "code": "AX_COMMAND_0002", "meaning": "Command type is not registered", "inspect": ["command catalog"] },
+    { "code": "AX_COMMAND_0003", "meaning": "Optimistic revision conflict", "inspect": ["current revision", "expected revision"] },
+    { "code": "AX_COMMAND_0004", "meaning": "Increment amount is not a non-zero safe integer", "inspect": ["command data", "numeric bounds"] },
+    { "code": "AX_COMMAND_0005", "meaning": "Undo history is empty", "inspect": ["command history", "current revision"] },
+    { "code": "AX_DIAGNOSTICS_0001", "meaning": "Requested trace is no longer retained", "inspect": ["trace buffer limit", "trace ID"] },
+    { "code": "AX_FS_0001", "meaning": "Path escapes authorized workspace", "inspect": ["workspace root", "relative path"] },
+    { "code": "AX_RENDERER_0001", "meaning": "WebGPU is unavailable", "inspect": ["browser capabilities", "adapter"] }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "./protocol/schema/architecture-manifest.schema.json",
+  "manifestVersion": 1,
+  "engine": {
+    "language": "rust",
+    "target": "wasm32-unknown-unknown",
+    "runtimeModel": "data-oriented-ecs",
+    "authoringModel": "hierarchical-component-model"
+  },
+  "editor": {
+    "language": "typescript",
+    "runtime": "browser",
+    "framework": "web-components-no-framework-bootstrap"
+  },
+  "renderer": {
+    "api": "webgpu",
+    "shaderLanguage": "wgsl",
+    "fallback": "null-renderer"
+  },
+  "daemon": {
+    "language": "rust",
+    "transportAdapters": ["http-json", "mcp-future"],
+    "defaultBind": "127.0.0.1",
+    "security": "capability-scoped"
+  },
+  "gameplay": {
+    "primaryLanguage": "csharp",
+    "runtimeAbstraction": "ScriptRuntime",
+    "target": "dotnet-wasm"
+  },
+  "protocolVersions": {
+    "command": 1,
+    "event": 1,
+    "diagnostics": 1,
+    "scene": 1,
+    "asset": 1,
+    "mcp": 1
+  },
+  "constraints": [
+    "engine-core-must-not-depend-on-editor",
+    "runtime-must-not-depend-on-dom",
+    "physics-must-not-depend-on-editor",
+    "daemon-must-not-contain-gameplay",
+    "ai-tools-use-public-engine-apis",
+    "renderer-must-not-own-gameplay-state",
+    "filesystem-access-is-daemon-scoped"
+  ],
+  "identity": {
+    "persistent": "uuid-v7-compatible-128-bit",
+    "runtime": "generational-handle",
+    "causal": "trace-and-correlation-id"
+  },
+  "schema": {
+    "source": "protocol/schema",
+    "unknownFieldPolicy": "preserve-when-technically-possible"
+  }
+}
+

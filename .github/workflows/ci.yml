@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm run check
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.90.0 --profile minimal --component clippy,rustfmt --target wasm32-unknown-unknown
+      - run: cargo +1.90.0 fmt --check
+      - run: cargo +1.90.0 clippy --locked --workspace --all-targets -- -D warnings
+      - run: cargo +1.90.0 test --locked --workspace
+      - run: cargo +1.90.0 check --locked -p axiom-core --target wasm32-unknown-unknown
+
+  csharp-wasm-spike:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet workload install wasm-tools
+      - run: dotnet publish spikes/csharp-wasm/Axiom.ScriptSpike.csproj -c Release

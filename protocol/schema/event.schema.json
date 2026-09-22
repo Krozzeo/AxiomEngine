@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/event-v1.json",
+  "title": "Axiom Event v1",
+  "type": "object",
+  "required": ["type", "sequence", "data"],
+  "properties": {
+    "type": { "enum": ["system.pong", "demo.counterChanged", "editor.commandUndone"] },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "data": { "type": "object" },
+    "reasonCode": { "type": "string", "pattern": "^AX_[A-Z]+_[0-9]{4}$" }
+  }
+}
+

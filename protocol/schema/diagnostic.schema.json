@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/diagnostic-v1.json",
+  "title": "Axiom Structured Diagnostic v1",
+  "type": "object",
+  "required": ["code", "subsystem", "severity", "cause", "evidence", "suggestedInspections"],
+  "properties": {
+    "code": { "type": "string", "pattern": "^AX_[A-Z]+_[0-9]{4}$" },
+    "subsystem": { "type": "string" },
+    "severity": { "enum": ["info", "warning", "error", "fatal"] },
+    "resource": { "type": ["string", "null"] },
+    "location": { "type": ["object", "null"] },
+    "cause": { "type": "string" },
+    "evidence": { "type": "array", "items": { "type": "object" } },
+    "suggestedInspections": { "type": "array", "items": { "type": "string" } },
+    "humanMessage": { "type": "string" }
+  }
+}
+

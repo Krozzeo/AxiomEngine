@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/handshake-v1.json",
+  "title": "Axiom Capability Handshake v1",
+  "type": "object",
+  "required": ["protocol", "schemaHash", "server", "capabilities", "limits"],
+  "properties": {
+    "protocol": {
+      "type": "object",
+      "required": ["min", "max", "selected"],
+      "properties": {
+        "min": { "type": "integer" },
+        "max": { "type": "integer" },
+        "selected": { "type": "integer" }
+      }
+    },
+    "schemaHash": { "type": "string" },
+    "server": { "type": "object" },
+    "capabilities": { "type": "array", "items": { "type": "string" } },
+    "limits": { "type": "object" }
+  }
+}
+

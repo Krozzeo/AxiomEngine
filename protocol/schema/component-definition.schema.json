@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/component-definition-v1.json",
+  "title": "Axiom Component Definition v1",
+  "type": "object",
+  "required": ["schemaVersion", "name", "componentId", "properties"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "name": { "type": "string" },
+    "componentId": { "type": "string", "pattern": "^component://" },
+    "properties": { "type": "array", "items": { "type": "object" } },
+    "unknownFieldPolicy": { "const": "preserve" }
+  }
+}
+

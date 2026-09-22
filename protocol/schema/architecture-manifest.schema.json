@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/architecture-manifest-v1.json",
+  "title": "Axiom architecture manifest",
+  "type": "object",
+  "required": ["manifestVersion", "engine", "editor", "renderer", "daemon", "protocolVersions", "constraints"],
+  "properties": {
+    "manifestVersion": { "const": 1 },
+    "engine": { "type": "object" },
+    "editor": { "type": "object" },
+    "renderer": { "type": "object" },
+    "daemon": { "type": "object" },
+    "gameplay": { "type": "object" },
+    "protocolVersions": { "type": "object" },
+    "constraints": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "identity": { "type": "object" },
+    "schema": { "type": "object" }
+  }
+}
+

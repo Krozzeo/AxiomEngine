@@ -1,0 +1,24 @@
+{
+  "catalogVersion": 1,
+  "tools": [
+    {
+      "name": "system.ping",
+      "description": "Validate the complete command/event/trace path without mutating project data.",
+      "mutates": false,
+      "inputSchema": { "type": "object", "properties": { "echo": {} } }
+    },
+    {
+      "name": "demo.increment",
+      "description": "Mutate the bounded bootstrap demo state and create an undo record.",
+      "mutates": true,
+      "inputSchema": { "type": "object", "properties": { "amount": { "type": "integer" } }, "required": ["amount"] }
+    },
+    {
+      "name": "editor.undo",
+      "description": "Apply the most recent inverse command in the bootstrap workspace.",
+      "mutates": true,
+      "inputSchema": { "type": "object" }
+    }
+  ]
+}
+

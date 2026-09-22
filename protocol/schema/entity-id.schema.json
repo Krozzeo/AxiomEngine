@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/entity-id-v1.json",
+  "title": "Persistent Entity ID",
+  "description": "Stable authoring identity. Runtime systems use a separate generational handle.",
+  "type": "string",
+  "pattern": "^entity://[0-9a-fA-F-]{36}$"
+}
+

@@ -1,0 +1,84 @@
+[
+  {
+    "name": "ping echoes data without mutation",
+    "type": "system.ping",
+    "data": { "echo": "parity" },
+    "expectedKind": "event",
+    "expectedType": "system.pong",
+    "expectedCounter": 0,
+    "expectedRevision": 0
+  },
+  {
+    "name": "increment mutates state",
+    "type": "demo.increment",
+    "data": { "amount": 3 },
+    "expectedKind": "event",
+    "expectedType": "demo.counterChanged",
+    "expectedCounter": 3,
+    "expectedRevision": 1
+  },
+  {
+    "name": "stale revision is rejected",
+    "type": "demo.increment",
+    "data": { "amount": 1 },
+    "expectedRevisionInput": 0,
+    "expectedKind": "error",
+    "expectedCode": "AX_COMMAND_0003",
+    "expectedCounter": 3,
+    "expectedRevision": 1
+  },
+  {
+    "name": "undo restores the previous value",
+    "type": "editor.undo",
+    "data": {},
+    "expectedKind": "event",
+    "expectedType": "editor.commandUndone",
+    "expectedCounter": 0,
+    "expectedRevision": 2
+  },
+  {
+    "name": "empty undo is a stable error",
+    "type": "editor.undo",
+    "data": {},
+    "expectedKind": "error",
+    "expectedCode": "AX_COMMAND_0005",
+    "expectedCounter": 0,
+    "expectedRevision": 2
+  },
+  {
+    "name": "unknown command is a stable error",
+    "type": "unknown.command",
+    "data": {},
+    "expectedKind": "error",
+    "expectedCode": "AX_COMMAND_0002",
+    "expectedCounter": 0,
+    "expectedRevision": 2
+  },
+  {
+    "name": "null increment amount uses the default",
+    "type": "demo.increment",
+    "data": { "amount": null },
+    "expectedKind": "event",
+    "expectedType": "demo.counterChanged",
+    "expectedCounter": 1,
+    "expectedRevision": 3
+  },
+  {
+    "name": "numeric strings are rejected instead of coerced",
+    "type": "demo.increment",
+    "data": { "amount": "2" },
+    "expectedKind": "error",
+    "expectedCode": "AX_COMMAND_0004",
+    "expectedCounter": 1,
+    "expectedRevision": 3
+  },
+  {
+    "name": "undo remains valid after a rejected command",
+    "type": "editor.undo",
+    "data": {},
+    "expectedKind": "event",
+    "expectedType": "editor.commandUndone",
+    "expectedCounter": 0,
+    "expectedRevision": 4
+  }
+]

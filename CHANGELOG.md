@@ -1,5 +1,12 @@
 # Changelog
 
+## M1 closure
+
+- GitHub Actions CI #3 passed bootstrap, Rust and C# Wasm jobs on commit
+  0ecbc4bb4c8576d0b716dd68740257f5df256f40.
+- Closed all seven M1 criteria with local tests and user browser evidence.
+- Activated M2 as not started; whole-project evidenced completion is 11%.
+
 ## M1 browser acceptance evidence
 
 - Recorded successful Windows startup after Cargo discovery correction.

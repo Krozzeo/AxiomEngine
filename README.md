@@ -4,10 +4,10 @@ Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.
 
-Milestone 0 is complete. Milestone 1, WebGPU + Engine Kernel, is in progress:
-the repository now includes the minimal scene/kernel, render-graph and bounded
-frame-profiler foundations. The project remains an executable technical-preview
-kernel, not a feature-complete engine.
+Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
+demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
+Axiom Beta Foundation, is next and will add editable, persistent projects and
+scenes. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 

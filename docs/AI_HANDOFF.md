@@ -28,7 +28,8 @@ Non-negotiable foundations:
 ## Current state
 
 Version: `0.0.9`. Milestone 0, Architecture Lock & Bootstrap, is complete.
-Active milestone: M1, WebGPU + Engine Kernel, in progress.
+M1, WebGPU + Engine Kernel, is complete. Active milestone: M2, Axiom Beta
+Foundation, not started.
 
 Implemented and locally verified:
 
@@ -72,7 +73,7 @@ use real Wasm with a simulated DOM; they are not physical GPU evidence. The user
 in WebGPU and Null modes; see the report for exact screenshot values.
 Rust 1.90.0, formatting, Clippy and Wasm release build are verified locally.
 
-Current evidence-based completion: M0 **100%**; active M1 functional criteria **100%**; whole project
+Current evidence-based completion: M0 **100%**; M1 **100%**; active M2 **0%**; whole project
 **11%**. See `docs/reports/M1_CURRENT_REPORT.md` for the live acceptance matrix.
 
 ## Repository map
@@ -138,11 +139,14 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Run remote CI on the current M1 snapshot. All seven functional criteria now
-pass, including user WebGPU and Null screenshots. Formal M1 closure awaits CI.
-Do not repeat the browser smoke for unchanged code. Once CI passes, record the
-result and start M2 from the master specification. GPU sample 0 ms is not a
-benchmark claim. Read M1_KERNEL.md and ADR-0016 for the supported scope.
+M1 remote CI #3 passed all jobs for commit
+`0ecbc4bb4c8576d0b716dd68740257f5df256f40`:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421
+
+Begin M2 with the versioned authoring scene contract, stable resource IDs and
+project create/open plus save/load through commands. Follow M2_PLAN.md and the
+master specification section 121. M2 has no functional credit yet. Do not repeat
+unchanged M1 hardware gates. Review PR #1 before integrating the branch into main.
 
 ## Handoff discipline
 

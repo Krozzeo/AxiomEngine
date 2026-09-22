@@ -69,18 +69,12 @@ Wasm and tests the editor's Null flow with a simulated DOM. This proves the
 kernel/host boundary and headless frame trace, not hardware rendering. The M0 CI
 record remains historical. See the M1 report for the new physical GPU smoke.
 
-## Next implementation
+## Closure and next implementation
 
-Verify the changed WebGPU viewport and GPU timing sample before closing M1.
-Then audit the master-spec feature list, record remaining limitations and start
-the next milestone only with an accurate handoff. General scene extraction and
-schema generation must replace demo-specific bindings before API lock-in.
+The user verified Windows startup, WebGPU geometry and the Null backend for
+0.0.9 with the Cargo discovery fix. CI #3 passed all jobs on commit
+`0ecbc4bb4c8576d0b716dd68740257f5df256f40`. M1 is complete.
 
-## User evidence update
-
-Windows startup, WebGPU triangle and Null rendering were confirmed by the user
-for 0.0.9 with the Cargo discovery fix. Screenshots show frames 840 and 225,
-one mesh in each backend, finite CPU timings and a first GPU sample of 0 ms.
-Earlier references to pending visual evidence above are superseded by this
-record. The remaining closure gate is current remote CI. Do not repeat the
-browser smoke for unchanged code. Zero GPU sample is not a zero-cost claim.
+M2 is planned in M2_PLAN.md. General scene extraction and schema generation
+must replace demo-specific bindings before API lock-in. The 0 ms GPU sample
+is recorded as observed, not interpreted as zero execution cost.

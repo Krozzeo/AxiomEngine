@@ -1,6 +1,6 @@
-# Milestone 1 current report
+# Milestone 1 closure report
 
-Date: 2026-09-22. Version: 0.0.9. Status: functional criteria passed; remote CI pending.
+Date: 2026-09-22. Version: 0.0.9. Status: complete.
 
 ## Outcome
 
@@ -27,8 +27,8 @@ fixed camera and one mesh, not a full scene editor or ECS renderer.
 | Engine contains no editor logic | Passed | Architecture rules pass; Wasm host has no DOM dependency |
 
 Functional acceptance: **7/7 = 100%**. Whole-project functional completion:
-**11%** (M0 5% + M1 6%). Formal closure awaits a green remote CI run for this
-snapshot; the historical M0 run does not certify M1.
+**11%** (M0 5% + M1 6%). Remote CI #3 passed all three jobs for commit
+`0ecbc4bb4c8576d0b716dd68740257f5df256f40`. M1 is closed.
 
 ## Automated evidence
 
@@ -55,7 +55,7 @@ No additional manual browser test is required for unchanged code.
 
 ## Limitations and next work
 
-- Remote GitHub Actions has not run 0.0.9 yet; its Rust gates pass locally.
+- Remote CI #3 is green: https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421
 - The camera is fixed at the origin. Demo transforms support position/scale;
   rotation, scene editing, parenting and multiple meshes remain future work.
 - The render graph is a deterministic skeleton, not a GPU resource allocator.
@@ -71,3 +71,9 @@ Four discovery regressions pass, bringing the Node suite to 20 tests. The actual
 CARGO_HOME fallback also built Wasm on Linux with Cargo absent from PATH.
 The user confirmed startup and supplied WebGPU/Null screenshots after replacing
 the build script. That regression is verified; no repeated manual steps needed.
+
+## Next milestone
+
+M2 (Axiom Beta Foundation) is active but not started. See M2_PLAN.md for
+its exact user-flow criteria and first implementation slice. No M2 credit is
+claimed from this plan.

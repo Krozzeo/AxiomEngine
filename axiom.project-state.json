@@ -3,10 +3,10 @@
   "stateVersion": 1,
   "updatedAt": "2026-09-22",
   "engineVersion": "0.0.9",
-  "activeMilestone": 1,
-  "milestoneStatus": "in_progress",
+  "activeMilestone": 2,
+  "milestoneStatus": "not_started",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 11,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -16,8 +16,12 @@
       "percent": 100
     },
     "1": {
-      "status": "in_progress",
+      "status": "complete",
       "percent": 100
+    },
+    "2": {
+      "status": "not_started",
+      "percent": 0
     }
   },
   "implementation": {
@@ -79,9 +83,10 @@
       "provider": "GitHub Actions",
       "repository": "Krozzeo/AxiomEngine",
       "workflow": "CI",
-      "run": 1,
-      "commit": "16c065c",
-      "durationSeconds": 69,
+      "run": 3,
+      "runId": 35726990421,
+      "commit": "0ecbc4bb4c8576d0b716dd68740257f5df256f40",
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421",
       "jobs": [
         "bootstrap",
         "rust",
@@ -120,11 +125,23 @@
         "gpuTimeMs": null
       },
       "note": "Single snapshots, not benchmark averages. Zero GPU sample does not establish zero execution cost."
+    },
+    "m0RemoteCi": {
+      "passed": true,
+      "provider": "GitHub Actions",
+      "repository": "Krozzeo/AxiomEngine",
+      "workflow": "CI",
+      "run": 1,
+      "commit": "16c065c",
+      "durationSeconds": 69,
+      "jobs": [
+        "bootstrap",
+        "rust",
+        "csharp-wasm-spike"
+      ]
     }
   },
-  "blockedChecks": [
-    "remote-ci-current-m1-not-run"
-  ],
+  "blockedChecks": [],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -142,7 +159,8 @@
     "docs/reports/M0_CURRENT_REPORT.md",
     "docs/reports/M1_CURRENT_REPORT.md",
     "docs/architecture/M1_KERNEL.md",
-    "docs/adr/0016-wasm-scalar-boundary.md"
+    "docs/adr/0016-wasm-scalar-boundary.md",
+    "docs/architecture/M2_PLAN.md"
   ],
-  "nextTask": "Run remote CI for the tested M1 snapshot, record the result, then close M1 and plan M2 from the master specification. No repeat browser smoke required for unchanged code."
+  "nextTask": "Begin M2 with the versioned authoring scene contract and project create/open plus save/load through the Command Bus. Follow docs/architecture/M2_PLAN.md; do not repeat unchanged M1 browser gates."
 }

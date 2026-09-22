@@ -53,12 +53,10 @@ spike results before API lock-in.
 
 ## Next gates
 
-1. Verify the new Wasm-fed WebGPU viewport and timing sample on a real browser.
-2. Audit remaining M1 features against the master specification; the real-Wasm
-   Null path and editor diagnostics have automated integration evidence.
-3. Publish the increment and run the existing GitHub Actions workflow.
-4. Add schema code generation from one parsed declarative model.
-5. Record C# browser-Wasm output size and startup measurements.
+1. Implement M2 authoring scene contract and project create/open/save/load.
+2. Route scene edits through Command Bus, events and undo/redo.
+3. Add image/GLB imports and 2D/3D runtime compilation, then Play Mode.
+4. Execute M2's eleven user-flow acceptance points; see M2_PLAN.md.
 
 ## Release slices
 
@@ -71,14 +69,11 @@ spike results before API lock-in.
 
 The editor build compiles axiom-wasm in release mode. Sixteen Node tests execute
 real Wasm and the editor Null loop; twenty-two Rust tests pass. WebGPU now consumes
-Rust-projected mesh vertices. The GPU path needs fresh visual evidence; historical
-M0 triangle evidence does not validate this changed pipeline. See M1_KERNEL.md.
+Rust-projected mesh vertices. The changed GPU path now has user screenshot evidence (see the M1 report). See M1_KERNEL.md.
 
-## User evidence update
 
-Windows startup, WebGPU triangle and Null rendering were confirmed by the user
-for 0.0.9 with the Cargo discovery fix. Screenshots show frames 840 and 225,
-one mesh in each backend, finite CPU timings and a first GPU sample of 0 ms.
-Earlier references to pending visual evidence above are superseded by this
-record. The remaining closure gate is current remote CI. Do not repeat the
-browser smoke for unchanged code. Zero GPU sample is not a zero-cost claim.
+## M1 closure
+
+User screenshots verified WebGPU and Null on Windows after the Cargo fix.
+CI #3 passed all jobs for 0ecbc4bb4c8576d0b716dd68740257f5df256f40.
+M1 is complete; M2 is not started. No new manual M1 checks are required.

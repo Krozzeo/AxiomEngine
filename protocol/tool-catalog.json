@@ -5,20 +5,105 @@
       "name": "system.ping",
       "description": "Validate the complete command/event/trace path without mutating project data.",
       "mutates": false,
-      "inputSchema": { "type": "object", "properties": { "echo": {} } }
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "echo": {}
+        }
+      }
     },
     {
       "name": "demo.increment",
       "description": "Mutate the bounded bootstrap demo state and create an undo record.",
       "mutates": true,
-      "inputSchema": { "type": "object", "properties": { "amount": { "type": "integer" } }, "required": ["amount"] }
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      }
     },
     {
       "name": "editor.undo",
       "description": "Apply the most recent inverse command in the bootstrap workspace.",
       "mutates": true,
-      "inputSchema": { "type": "object" }
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "project.create",
+      "description": "Create an empty persistent project. Bootstrap adapter only; not undoable.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "project.open",
+      "description": "Load a project by stable ID. Bootstrap adapter only.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "project.save",
+      "description": "Atomically save a scene at the expected persisted revision. Bootstrap only; editor.undo does not revert disk saves.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "scene": {
+            "$ref": "https://axiomengine.dev/schema/project-document-v1.json#/properties/scene"
+          }
+        },
+        "required": [
+          "id",
+          "expectedRevision",
+          "scene"
+        ]
+      }
+    },
+    {
+      "name": "project.list",
+      "description": "List up to 256 persistent projects. Bootstrap adapter only.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
     }
   ]
 }
-

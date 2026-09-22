@@ -4,6 +4,7 @@ import { createServer as createHttpServer } from "node:http";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CommandBus } from "./command-bus.mjs";
+import { ProjectStore } from "./project-store.mjs";
 import { buildEditor } from "../../scripts/build-editor.mjs";
 
 const ROOT = resolve(fileURLToPath(new URL("../..", import.meta.url)));
@@ -51,7 +52,7 @@ async function readJson(request) {
 }
 
 async function schemaHash() {
-  const files = ["command.schema.json", "event.schema.json", "protocol-envelope.schema.json"];
+  const files = ["command.schema.json", "event.schema.json", "protocol-envelope.schema.json", "project-document.schema.json"];
   const hash = createHash("sha256");
   for (const file of files) hash.update(await readFile(join(ROOT, "protocol/schema", file)));
   return `sha256:${hash.digest("hex")}`;
@@ -64,7 +65,7 @@ function mime(path) {
 export async function startServer(options = {}) {
   await ensureEditorBuild();
   const token = options.token ?? randomBytes(32).toString("base64url");
-  const bus = new CommandBus();
+  const bus = new CommandBus({ projects: new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects")) });
   const hash = await schemaHash();
   const startedAt = performance.now();
   let requestCount = 0;
@@ -96,7 +97,7 @@ export async function startServer(options = {}) {
       }
 
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.9" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.10" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -105,15 +106,15 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.9" },
-          capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace"],
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.10" },
+          capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list"],
           limits: { requestBytes: BODY_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
       }
 
       if (request.method === "POST" && url.pathname === "/v1/commands") {
         const command = await readJson(request);
-        const result = bus.execute(command);
+        const result = await bus.dispatch(command);
         return json(response, result.kind === "error" ? 422 : 200, result);
       }
 

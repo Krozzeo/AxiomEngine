@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["type", "sequence", "data"],
   "properties": {
-    "type": { "enum": ["system.pong", "demo.counterChanged", "editor.commandUndone"] },
+    "type": { "enum": ["system.pong", "demo.counterChanged", "editor.commandUndone", "project.created", "project.opened", "project.saved", "project.listed"] },
     "sequence": { "type": "integer", "minimum": 1 },
     "data": { "type": "object" },
     "reasonCode": { "type": "string", "pattern": "^AX_[A-Z]+_[0-9]{4}$" }

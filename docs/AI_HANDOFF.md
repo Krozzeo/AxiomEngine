@@ -27,9 +27,9 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version: `0.0.9`. Milestone 0, Architecture Lock & Bootstrap, is complete.
+Version: `0.0.10`. Milestone 0, Architecture Lock & Bootstrap, is complete.
 M1, WebGPU + Engine Kernel, is complete. Active milestone: M2, Axiom Beta
-Foundation, not started.
+Foundation, in progress; no end-to-end acceptance credit yet.
 
 Implemented and locally verified:
 
@@ -41,7 +41,7 @@ Implemented and locally verified:
 - WebGPU triangle code, capability detection and device-loss hook;
 - Null Renderer Rust boundary;
 - schemas, error/tool catalogs and architecture checks;
-- sixteen passing Node tests, including same-origin browser handshake behavior,
+- 27 passing Node tests, including project persistence and same-origin browser handshake behavior,
   recovery when generated editor output is absent and the shared native parity
   corpus;
 - native Rust HTTP adapter source for static assets, health, handshake,
@@ -143,8 +143,10 @@ M1 remote CI #3 passed all jobs for commit
 `0ecbc4bb4c8576d0b716dd68740257f5df256f40`:
 https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421
 
-Begin M2 with the versioned authoring scene contract, stable resource IDs and
-project create/open plus save/load through commands. Follow M2_PLAN.md and the
+The first M2 persistence slice is implemented in the bootstrap adapter. Read
+PROJECT_PERSISTENCE.md, then connect project controls and scene edit commands
+to the editor with defined undo semantics. Native project parity and schema code
+generation remain pending. Follow M2_PLAN.md and the
 master specification section 121. M2 has no functional credit yet. Do not repeat
 unchanged M1 hardware gates. Review PR #1 before integrating the branch into main.
 

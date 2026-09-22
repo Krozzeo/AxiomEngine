@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.10 — M2 project persistence foundation
+
+- Added versioned project documents with stable IDs and validated transforms.
+- Added bootstrap Command Bus create/open/save/list with atomic replacement,
+  cross-process locks, persisted revision conflicts and unknown-field retention.
+- Added seven tests for restart, corruption, concurrent writes and HTTP security.
+- Added Windows bootstrap CI coverage; native project commands and editor controls
+  remain pending. M2 end-to-end acceptance remains 0/11.
+
 ## M1 closure
 
 - GitHub Actions CI #3 passed bootstrap, Rust and C# Wasm jobs on commit

@@ -1,6 +1,6 @@
 # M2 — Axiom Beta Foundation
 
-Status: not started (0%). Source: master specification section 121.
+Status: in progress (0/11 end-to-end acceptance steps). Source: master specification section 121.
 M0 and M1 are complete; this document awards no M2 functional credit.
 
 ## Goal and acceptance
@@ -43,3 +43,11 @@ Read SECURITY.md, PROTOCOL_V1.md, schema ADR-0010, and M1_KERNEL.md before editi
 Implement the schema-backed project/scene model and daemon command round-trip for
 create, save and load, with stable IDs and atomic persistence. Do not begin with
 cosmetic editor panels or infer completion from scaffold directories.
+
+## First slice delivered — 0.0.10
+
+Schema-backed project create/open/save/list now runs through the bootstrap Command
+Bus and authenticated HTTP adapter. Restart, preservation, stale writes, locks,
+invalid documents and unauthorized calls are tested. See PROJECT_PERSISTENCE.md.
+The editor still displays the M1 demo. Next: project controls, scene commands and
+transform editing with undo; then native daemon parity and runtime extraction.

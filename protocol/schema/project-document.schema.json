@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/project-document-v1.json",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "revision", "scene"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^project://[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "revision": { "type": "integer", "minimum": 0 },
+    "scene": {
+      "type": "object", "required": ["schemaVersion", "id", "entities"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "id": { "type": "string", "pattern": "^scene://[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+        "entities": { "type": "array", "maxItems": 1024, "items": {
+          "type": "object", "required": ["id", "name", "transform"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^entity://[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+            "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "transform": {
+              "type": "object", "required": ["position", "rotation", "scale"],
+              "properties": {
+                "position": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } },
+                "rotation": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number" } },
+                "scale": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } }
+              }
+            }
+          }
+        } }
+      }
+    }
+  }
+}

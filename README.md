@@ -67,3 +67,11 @@ known limitations, and next gates.
 Every milestone closes using the evidence and percentage method defined in
 `docs/architecture/MILESTONE_REPORTING.md`, including any manual tests that the
 user must perform on hardware unavailable to the implementation environment.
+
+## M2 persistence foundation (0.0.10)
+
+The bootstrap daemon supports project create/open/save/list through authenticated
+commands. See [the persistence contract](docs/architecture/PROJECT_PERSISTENCE.md).
+The editor still renders the M1 demo; project controls and native daemon support
+are the next slice. Stored projects live under `.axiom/projects` within this
+checkout; keep that folder when moving to another snapshot.

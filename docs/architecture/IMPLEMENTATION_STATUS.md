@@ -77,3 +77,11 @@ Rust-projected mesh vertices. The changed GPU path now has user screenshot evide
 User screenshots verified WebGPU and Null on Windows after the Cargo fix.
 CI #3 passed all jobs for 0ecbc4bb4c8576d0b716dd68740257f5df256f40.
 M1 is complete; M2 is not started. No new manual M1 checks are required.
+
+## M2 first slice — 0.0.10
+
+Bootstrap project persistence is implemented and locally verified by seven new
+tests, including a real daemon restart over HTTP (27 Node tests total). Project
+IDs, entity transforms and extension fields round-trip. Native daemon support,
+editor integration, importers and general runtime extraction remain pending.
+See PROJECT_PERSISTENCE.md. No M2 end-to-end acceptance step is closed yet.

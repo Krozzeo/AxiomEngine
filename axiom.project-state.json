@@ -150,9 +150,18 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
-      "passed": false,
-      "status": "pending_publication",
-      "version": "0.0.10"
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.10",
+      "commit": "6756396825e476e28557494ef18153e5095a912f",
+      "runId": 35760870433,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/35760870433",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike"
+      ]
     }
   },
   "blockedChecks": [],

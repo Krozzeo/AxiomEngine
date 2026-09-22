@@ -175,3 +175,12 @@ Four discovery regressions pass, bringing the Node suite to 20 tests. The actual
 CARGO_HOME fallback also built Wasm on Linux with Cargo absent from PATH.
 Windows startup and both browser modes are confirmed by user screenshots. For an existing m1.1 extraction, replace only
 `scripts/build-editor.mjs` with the corrected file and run `npm.cmd run dev`.
+
+## M2 persistence verification
+
+Implementation commit `6756396825e476e28557494ef18153e5095a912f` passed CI #7
+including bootstrap tests on Linux and Windows, Rust and C# Wasm.
+https://github.com/Krozzeo/AxiomEngine/actions/runs/35760870433
+PR #2: https://github.com/Krozzeo/AxiomEngine/pull/2 (stacked on PR #1).
+Project persistence is ready for editor integration. No new manual browser test
+is required for this backend-only slice.

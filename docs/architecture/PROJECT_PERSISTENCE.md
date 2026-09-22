@@ -81,3 +81,9 @@ with undo, native project parity, asset imports and authoring-to-runtime convers
 are pending. Disk create/save are persistence operations without undo; future
 scene edit commands must supply their inverse operations. M2 remains 0/11 for the
 full user acceptance workflow; groundwork is not credited as completed UX.
+
+Remote CI #7 passed all four jobs on implementation commit
+`6756396825e476e28557494ef18153e5095a912f`:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/35760870433
+This includes the project command tests on Linux and Windows, plus Rust and C#
+Wasm. PR #2 targets the M1 branch while PR #1 remains unmerged.

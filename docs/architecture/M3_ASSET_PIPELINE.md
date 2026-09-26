@@ -1,6 +1,6 @@
 # M3 asset pipeline — 0.0.13
 
-Status: acceptance candidate; browser hot-reload gate pending.
+Status: complete; all seven acceptance criteria pass in CI, including browser hot reload.
 
 ## Database, identity and dependency graph
 

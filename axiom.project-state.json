@@ -4,10 +4,10 @@
   "updatedAt": "2026-09-26",
   "engineVersion": "0.0.13",
   "activeMilestone": 3,
-  "milestoneStatus": "in_progress",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 0,
-    "wholeProjectPercent": 18,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 24,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -24,7 +24,11 @@
       "percent": 100
     },
     "3": {
-      "status": "in_progress",
+      "status": "complete",
+      "percent": 100
+    },
+    "4": {
+      "status": "not_started",
       "percent": 0
     }
   },
@@ -39,11 +43,12 @@
     "sceneEditor": "verified_controller_and_http",
     "assetImport": "verified_png_static_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
-    "playMode": "verified_isolated_runtime"
+    "playMode": "verified_isolated_runtime",
+    "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload"
   },
   "verified": {
     "nodeTests": {
-      "passed": 38,
+      "passed": 42,
       "failed": 0
     },
     "schemaDocuments": 11,
@@ -158,9 +163,19 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
-      "passed": false,
-      "status": "pending",
-      "version": "0.0.13"
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.13",
+      "commit": "869af6d1b9d2525a754b8e65a43e286b83a41156",
+      "runId": 36268402446,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36268402446",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike",
+        "browser-milestones"
+      ]
     },
     "m2PersistenceRemoteCi": {
       "passed": true,
@@ -226,6 +241,21 @@
         "csharp-wasm-spike",
         "browser-m2"
       ]
+    },
+    "m3Acceptance": {
+      "passed": true,
+      "criteriaPassed": 7,
+      "criteriaTotal": 7,
+      "backgroundImportTests": 4,
+      "browserHotReloadWithoutNavigation": true,
+      "dependentResourcesRebuilt": 2,
+      "independentResourcesUnchanged": 1,
+      "bluePixels": 43553,
+      "stableIds": true,
+      "restartPreserved": true,
+      "diagnostics": true,
+      "evidence": "docs/reports/m3-browser-evidence.json",
+      "hardwarePerformanceMeasured": false
     }
   },
   "blockedChecks": [],
@@ -255,7 +285,8 @@
     "docs/architecture/M3_PLAN.md",
     "docs/architecture/M3_ASSET_PIPELINE.md",
     "docs/reports/M3_CURRENT_REPORT.md",
-    "docs/adr/0017-stable-asset-source-and-derived-identity.md"
+    "docs/adr/0017-stable-asset-source-and-derived-identity.md",
+    "docs/architecture/M4_PLAN.md"
   ],
-  "nextTask": "Complete M3 CI and actual browser hot-reload acceptance; fix failures before milestone closure. No partial release."
+  "nextTask": "Begin M4 C# Gameplay Runtime per docs/architecture/M4_PLAN.md. First establish measured real-browser ScriptRuntime integration from the existing publish spike; do not claim gameplay from publish success. PR #3 is stacked on unmerged M2 PR #2."
 }

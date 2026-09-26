@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.0.13 — M3 Asset Pipeline candidate
+## 0.0.13 — M3 Asset Pipeline complete
 
 - Stable asset source revisions, explicit texture dependencies and versioned derived cache.
 - Background imports, bounded jobs, cancellation and revision-safe publication.
 - PCM WAV source metadata, resource explanations and editor hot reload.
-- CI/browser acceptance pending.
+- 42 Node tests, 24 Rust tests and five CI jobs pass; browser M2/M3 gates pass.
+- M3: 100% (7/7); weighted whole-project completion: approximately 24%.
 
 ## 0.0.12 — M2 Beta Foundation complete
 

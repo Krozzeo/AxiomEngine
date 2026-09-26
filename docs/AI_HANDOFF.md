@@ -27,8 +27,9 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.13`: M0, M1 and M2 are complete. M2 passed 11/11 acceptance
-criteria; weighted whole-project completion is 18%. M3 pipeline is implemented; CI/browser acceptance is pending. Read M3_ASSET_PIPELINE.md and M3_CURRENT_REPORT.md. See `docs/reports/M2_CURRENT_REPORT.md`
+Version `0.0.13`: M0–M3 are complete. M3 passed 7/7 acceptance criteria;
+weighted whole-project completion is 24%. M4 has not started. Read
+M3_ASSET_PIPELINE.md and ../reports/M3_CURRENT_REPORT.md for the current contract. See `docs/reports/M2_CURRENT_REPORT.md`
 and `axiom.project-state.json` for exact evidence and completion percentages.
 
 Implemented: authenticated loopback daemon; schema-backed atomic project
@@ -38,8 +39,12 @@ editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
 simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-38 Node tests and 24 Rust tests pass. All five CI jobs passed on `96386db8ab406eb29d90f91c41f109377915b40d`
-([implementation evidence](https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412)); browser acceptance is 11/11. The five CI jobs cover Linux and Windows
+42 Node tests and 24 Rust tests pass. All five CI jobs passed on
+`869af6d1b9d2525a754b8e65a43e286b83a41156`
+([implementation evidence](https://github.com/Krozzeo/AxiomEngine/actions/runs/36268402446)).
+M2 regressions and M3 browser hot reload both pass. Local targeted Node tests
+also pass; this session's sandbox could not launch rustc, so current clean builds
+and pinned Rust/.NET checks are evidenced by CI. The five CI jobs cover Linux and Windows
 bootstrap, Rust, C# Wasm publish and actual Chromium rendering. Current browser
 validation uses software Vulkan under Xvfb, not a physical GPU benchmark.
 Earlier Windows WebGPU/Null screenshots establish M1 hardware evidence only.
@@ -48,8 +53,10 @@ The Node bootstrap is the M2 authoring path. Native Rust daemon capabilities
 cover the M0 HTTP/protocol/security surface and shared parity corpus; native
 project authoring is not implemented. The editor gates controls by capabilities.
 C# is a successful publish spike, not gameplay execution (planned for M4).
-General schema code generation, transactional COW workspaces, the production
-asset pipeline and later engine systems remain future work.
+The M3 Asset DB, stable source revisions, dependency cache, worker jobs,
+PNG/GLB/PCM WAV imports, hot reload and resource diagnostics are implemented.
+General schema code generation, transactional COW workspaces and later engine
+systems remain future work.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
 unsaved edits/history are memory-only. Assets support PNG and a bounded static
@@ -62,7 +69,7 @@ folders, when moving snapshots. IDs are stable; paths are never client authority
 - `daemon/bootstrap/`: currently verified HTTP adapter and command bus.
 - `daemon/axiom-daemon/`: native Rust daemon shell and security policy.
 - `engine/core/`: IDs, clocks, resource/jobs primitives and authoring runtime matrices.
-- `engine/assets/`: bounded PNG/GLB importers.
+- `engine/assets/`: bounded PNG/GLB/PCM WAV importers and fixed worker entry.
 - `engine/wasm/`: ABI v1 exports and host wrapper (ADR-0016).
 - `engine/diagnostics/`: bounded trace primitives.
 - `engine/renderer/`: renderer boundary and Null Renderer.
@@ -122,12 +129,13 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Finish M3 CI/browser acceptance following M3_PLAN.md and master specification section 122. Begin with
-stable logical asset identity, dependency edges and deterministic cache keys on
-top of M2's existing immutable source store; do not duplicate that store.
+Begin M4 per M4_PLAN.md and master specification section 123. Establish measured
+browser ScriptRuntime integration from the .NET publish spike before selecting
+packaging and lifecycle. Follow SECURITY.md before enabling fixed compiler tasks.
+Generate bindings from canonical metadata; do not duplicate hand-written schemas.
 
-PR #2 (M2) is stacked on PR #1 (M1). Both remain unmerged; review/integrate M1
-before M2. Never assume a successful branch CI means main was updated.
+PR #3 (M3) is stacked on PR #2 (M2), itself on PR #1 (M1). They remain unmerged;
+review/integrate in order. Branch CI success does not mean main was updated.
 
 ## Handoff discipline
 

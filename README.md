@@ -7,7 +7,7 @@ daemon provides filesystem, build, asset and automation services.
 Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
 demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
 Axiom Beta Foundation, now has PNG/GLB import, project-scene rendering, editing,
-undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M2 is complete; weighted roadmap progress is approximately 18%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; weighted roadmap progress is approximately 24%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 
@@ -81,3 +81,16 @@ See [M2_BETA.md](docs/architecture/M2_BETA.md) for supported formats and limits,
 [the persistence contract](docs/architecture/PROJECT_PERSISTENCE.md), and
 [the acceptance report](docs/reports/M2_CURRENT_REPORT.md). Keep the complete
 `.axiom/projects` directory, including asset folders, when changing snapshots.
+
+## M3 asset pipeline (0.0.13)
+
+Import PNG, static GLB or PCM WAV sources. Select a mesh and a texture to bind its
+base-color dependency. To update a source, choose the replacement file, select
+the existing asset and click **Replace selected source**. Background jobs rebuild
+only affected assets and refresh the scene; IDs stay stable. Cancel interrupts
+pending work, and Explain shows dependency/rebuild evidence. Save persists the
+updated sources; Undo/Redo restores previous source revisions.
+
+See [M3_ASSET_PIPELINE.md](docs/architecture/M3_ASSET_PIPELINE.md) and
+[the M3 closure report](docs/reports/M3_CURRENT_REPORT.md). WAV import provides
+metadata, not audio playback. Keep the complete project asset folder on upgrades.

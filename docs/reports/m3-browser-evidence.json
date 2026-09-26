@@ -1,0 +1,40 @@
+{
+  "criteria": [
+    "open Axiom",
+    "create project",
+    "import image and GLB",
+    "place sprite",
+    "place mesh",
+    "move both objects",
+    "save",
+    "close",
+    "reopen",
+    "see same scene",
+    "Play without changing authoring state"
+  ],
+  "backend": "WebGPU · project scene · GPU timestamps",
+  "pipeline": {
+    "hotReloadWithoutNavigation": true,
+    "bluePixels": 43553,
+    "rebuilt": [
+      "asset://053d8d805c2bbbfa0d150f3a32208849d2e95c128d4d59ff08361ebec37fca3c",
+      "asset://9e997a0492496635d00d7ae6bcebdc43f785e4ee872a3b88bfce35920682adcc"
+    ],
+    "unchanged": [
+      "asset://c4ec0bfafc85ac83dd665b73238fb5d3da2b79fbae21ac954b0be930d77c0f9a"
+    ],
+    "stableIds": true,
+    "restartPreserved": true,
+    "diagnostics": true
+  },
+  "pixelEvidence": {
+    "red": 25815,
+    "green": 14850
+  },
+  "nullParity": true,
+  "passed": true,
+  "version": "0.0.13",
+  "commit": "869af6d1b9d2525a754b8e65a43e286b83a41156",
+  "runId": 36268402446,
+  "environment": "Chromium / Xvfb / SwiftShader software Vulkan"
+}

@@ -1,4 +1,5 @@
 // Static glTF 2.0/PNG import. No external resource fetches or executable content.
+import { parseWav } from "./audio.mjs";
 import { PNG } from "pngjs";
 export const ASSET_BYTES = 8 * 1024 * 1024;
 const fail = message => { throw Object.assign(new Error(message), { code: "AX_ASSET_0001" }); };
@@ -126,5 +127,6 @@ export function parseGlb(bytes) {
 export function decodeAsset(bytes) {
   check(bytes.length>0&&bytes.length<=ASSET_BYTES,"Asset size must be between 1 byte and 8 MiB");
   if(bytes[0]===137) return {kind:"sprite",...pngInfo(bytes),dataUrl:`data:image/png;base64,${bytes.toString("base64")}`};
+  if(bytes.toString("ascii",0,4)==="RIFF")return parseWav(bytes);
   return parseGlb(bytes);
 }

@@ -146,8 +146,21 @@
               "kind": {
                 "enum": [
                   "sprite",
-                  "mesh"
+                  "mesh",
+                  "audio"
                 ]
+              },
+              "sourceId": {
+                "type": "string",
+                "pattern": "^asset://[0-9a-f]{64}$"
+              },
+              "textureId": {
+                "type": "string",
+                "pattern": "^asset://[0-9a-f]{64}$"
+              },
+              "buildKey": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
               }
             }
           }
@@ -199,6 +212,9 @@
               "maximum": 150
             }
           }
+        },
+        "assetDbVersion": {
+          "const": 1
         }
       }
     }

@@ -1,7 +1,7 @@
 # M3 — Asset Pipeline
 
-Status: not started. Source: master specification section 122.
-M2 is complete; this is the next milestone.
+Status: complete (7/7 criteria). See ../reports/M3_CURRENT_REPORT.md. Source: master specification section 122.
+M0–M3 are complete; the next milestone is M4.
 
 ## Goal
 

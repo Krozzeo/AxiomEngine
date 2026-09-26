@@ -13,7 +13,9 @@ export class CommandBus {
   #projects;
   #pending = Promise.resolve();
 
-  constructor({ projects } = {}) { this.#projects = projects; }
+  constructor({ projects } = {}) { this.#projects = projects;
+    if(projects) projects.onAssetEvent=(job,context)=>this.#recordEvent(envelope("event",{type:"asset.jobFinished",data:job,sequence:++this.#sequence},context));
+  }
 
   // HTTP callers serialize disk operations and ordinary commands in arrival order.
   dispatch(command) {
@@ -30,13 +32,13 @@ export class CommandBus {
     const context = { correlationId: command.correlationId, traceId: command.traceId, causationId: command.messageId };
     try {
       this.#validateEnvelope(command);
-      const events = { "project.create": "project.created", "project.open": "project.opened", "project.save": "project.saved", "project.list": "project.listed", "scene.get": "scene.snapshot", "scene.entity.create": "scene.entityCreated", "scene.entity.update": "scene.entityUpdated", "scene.entity.delete": "scene.entityDeleted", "scene.undo": "scene.undone", "scene.redo": "scene.redone", "scene.save": "scene.saved", "asset.import":"asset.imported", "asset.get":"asset.loaded", "scene.asset.place":"scene.assetPlaced", "scene.camera.update":"scene.cameraChanged", "play.start":"play.started", "play.stop":"play.stopped", "project.close":"project.closed" };
+      const events = { "project.create": "project.created", "project.open": "project.opened", "project.save": "project.saved", "project.list": "project.listed", "scene.get": "scene.snapshot", "scene.entity.create": "scene.entityCreated", "scene.entity.update": "scene.entityUpdated", "scene.entity.delete": "scene.entityDeleted", "scene.undo": "scene.undone", "scene.redo": "scene.redone", "scene.save": "scene.saved", "asset.job.start":"asset.jobStarted", "asset.job.get":"asset.jobStatus", "asset.job.cancel":"asset.jobCancelRequested", "asset.explain":"asset.explained", "asset.import":"asset.imported", "asset.get":"asset.loaded", "scene.asset.place":"scene.assetPlaced", "scene.camera.update":"scene.cameraChanged", "play.start":"play.started", "play.stop":"play.stopped", "project.close":"project.closed" };
       const eventType = events[command.payload.type];
       if (!eventType) throw this.#error("AX_COMMAND_0002", "Command type is not registered", []);
       if (command.payload.expectedRevision !== undefined && command.payload.expectedRevision !== this.#revision) {
         throw this.#error("AX_COMMAND_0003", "Expected command revision does not match", []);
       }
-      const data = await this.#projects.run(command.payload.type, command.payload.data);
+      const data = await this.#projects.run(command.payload.type, command.payload.data,context);
       const event = envelope("event", { type: eventType, data, sequence: ++this.#sequence }, context);
       this.#recordEvent(event);
       trace.steps.push({ stage: "event.emitted", atMs: performance.now() - started, event: eventType });

@@ -45,7 +45,7 @@ jobs:
       - run: dotnet workload install wasm-tools
       - run: dotnet publish spikes/csharp-wasm/Axiom.ScriptSpike.csproj -c Release
 
-  browser-m2:
+  browser-milestones:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -67,5 +67,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: m2-browser-evidence
-          path: .axiom/browser-evidence
+          name: milestone-browser-evidence
+          path: |
+            .axiom/browser-evidence
+            .axiom/browser-m3-evidence

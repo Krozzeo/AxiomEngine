@@ -1,3 +1,4 @@
+import { AssetPipeline, importInWorker } from "./asset-pipeline.mjs";
 import { AssetStore } from "./asset-store.mjs";
 import { randomUUID } from "node:crypto";
 import { validateProject, projectError } from "../../protocol/src/project-document.mjs";
@@ -10,6 +11,9 @@ export class SceneWorkspace {
   constructor(store) {
     this.store = store;
     this.assets = new AssetStore(store);
+    this.pipeline = new AssetPipeline(this.assets);
+    this.jobs = new Map();
+    this.activeJob = null;
     this.playing = false;
     this.project = null;
     this.revision = 0;
@@ -22,7 +26,7 @@ export class SceneWorkspace {
     for(const entity of scene.entities) {
       if(!entity.renderable)continue;
       const id=entity.renderable.assetId;
-      if(!resources.has(id))resources.set(id,await this.assets.read(this.project.id,id));
+      if(!resources.has(id))resources.set(id,await this.pipeline.resource(this.project.id,scene,id));
       const resource=resources.get(id);
       if(resource.kind!==entity.renderable.kind)fail("AX_ASSET_0001","Asset kind does not match the entity component");
       vertices+=resource.kind==="sprite"?6:resource.vertexCount;
@@ -47,18 +51,70 @@ export class SceneWorkspace {
     if (!this.project || data.id !== this.project.id) fail("AX_SCENE_0001", "Open this project in the workspace first");
     if (data.expectedSceneRevision !== this.revision) fail("AX_SCENE_0002", "Scene changed; refresh before editing");
   }
-  async run(type, data) {
+  commitScene(scene) {
+    validateProject({...this.project,scene});
+    if(Buffer.byteLength(JSON.stringify({...this.project,scene},null,2)+"\n")>192*1024)fail("AX_PROJECT_0002","Project size exceeds limit");
+    this.past.push(copy(this.project.scene));if(this.past.length>64)this.past.shift();
+    this.future=[];this.project.scene=scene;this.revision++;
+  }
+  startJob(data,context) {
+    if(this.activeJob)fail("AX_ASSET_0001","An asset job is already running");
+    if(!["import","replace","bindTexture"].includes(data.operation))fail("AX_ASSET_0001","Unknown asset job operation");
+    const scene=copy(this.project.scene),previous=copy(scene.assets??[]),projectId=this.project.id,revision=this.revision;
+    const job={id:randomUUID(),projectId,assetId:data.assetId??null,operation:data.operation,status:"queued",traceId:context?.traceId??null};
+    this.jobs.set(job.id,job);if(this.jobs.size>64)this.jobs.delete(this.jobs.keys().next().value);
+    const controller=new AbortController();this.activeJob={id:job.id,controller};
+    // Return the receipt before CPU work begins. Commit only against the captured revision.
+    setImmediate(async()=>{
+      try {
+        job.status="running";
+        if(controller.signal.aborted)fail("AX_ASSET_0001","Import cancelled");
+        scene.assets??=[];
+        let record=scene.assets.find(a=>a.id===data.assetId);
+        if(data.operation!=="import"&&!record)fail("AX_ASSET_0001","Asset is not in this project");
+        if(data.operation==="bindTexture") {record.textureId=data.textureId;validateProject({...this.project,scene});}
+        else {
+          const imported=await this.assets.put(projectId,data.name??record?.name,data.base64,bytes=>importInWorker(bytes,controller.signal));
+          if(data.operation==="replace") {if(imported.kind!==record.kind)fail("AX_ASSET_0001","Replacement source changes asset kind");record.sourceId=imported.id;}
+          else {
+            if(scene.assets.length>=128)fail("AX_ASSET_0001","Project asset limit is 128");
+            record=scene.assets.find(a=>a.id===imported.id);
+            if(!record){record=imported;scene.assets.push(record);}
+            job.assetId=record.id;
+          }
+        }
+        validateProject({...this.project,scene});
+        job.build=await this.pipeline.build(projectId,scene,previous,controller.signal);
+        if(this.project?.id!==projectId||this.revision!==revision||this.playing)fail("AX_SCENE_0002","Scene changed during import; retry on the current revision");
+        await this.validateResources(scene);
+        if(controller.signal.aborted)fail("AX_ASSET_0001","Import cancelled");
+        if(this.project?.id!==projectId||this.revision!==revision||this.playing)fail("AX_SCENE_0002","Scene changed during import; retry on the current revision");
+        this.commitScene(scene);job.status="completed";job.sceneRevision=this.revision;
+      } catch(error){job.status=controller.signal.aborted?"cancelled":"failed";job.error={code:error.code??"AX_ASSET_0001",message:error.message};}
+      finally {this.activeJob=null;this.onAssetEvent?.(copy(job),context);}
+    });
+    return {job:copy(job)};
+  }
+  async run(type, data, context) {
     if (!data || typeof data !== "object" || Array.isArray(data)) fail("AX_PROJECT_0002", "Expected command data");
+    if(["asset.job.get","asset.job.cancel","asset.explain"].includes(type)) {
+      if(!this.project||data.id!==this.project.id)fail("AX_SCENE_0001","Open this project first");
+      if(type==="asset.explain")return this.pipeline.explain(data.id,this.project.scene,data.assetId,[...this.jobs.values()].filter(j=>j.projectId===data.id));
+      const job=this.jobs.get(data.jobId);if(!job||job.projectId!==data.id)fail("AX_ASSET_0001","Job is not available");
+      if(type==="asset.job.cancel"&&this.activeJob?.id===job.id)this.activeJob.controller.abort();
+      return {job:copy(job)};
+    }
     if (type === "asset.get") {
       if(!this.project || data.id!==this.project.id || !this.project.scene.assets?.some(asset=>asset.id===data.assetId)) fail("AX_ASSET_0001","Asset is not part of this project");
-      return {assetId:data.assetId, asset:await this.assets.read(data.id,data.assetId)};
+      return {assetId:data.assetId, asset:await this.pipeline.resource(data.id,this.project.scene,data.assetId)};
     }
+    if(this.activeJob && ["project.create","project.open","project.close","project.save","scene.save"].includes(type))fail("AX_ASSET_0001","Wait for or cancel the active asset job first");
     if (this.playing && !["scene.get", "play.stop", "project.list"].includes(type)) fail("AX_SCENE_0005", "Stop Play before editing or switching projects");
     if (type === "project.list") return this.store.run(type, data);
     if (["project.create", "project.open"].includes(type)) {
       if (this.dirty && (data.discardChanges !== true || data.expectedSceneRevision !== this.revision)) fail("AX_SCENE_0003", "Save or explicitly discard unsaved scene changes first");
       const result = await this.store.run(type, data);
-      for(const asset of result.project.scene.assets??[]) await this.assets.read(result.project.id,asset.id);
+      await this.pipeline.build(result.project.id,result.project.scene,result.project.scene.assets??[]);
       return this.activate(result.project);
     }
     if (type === "project.save") {
@@ -68,6 +124,7 @@ export class SceneWorkspace {
     }
     if (type === "scene.get") return this.snapshot();
     this.check(data);
+    if(type==="asset.job.start")return this.startJob(data,context);
     if(type==="play.start" || type==="play.stop") {
       if(type==="play.start")await this.validateResources(this.project.scene);
       this.playing=type==="play.start";
@@ -99,13 +156,14 @@ export class SceneWorkspace {
     const index = scene.entities.findIndex(entity => entity.id === data.entityId);
     if(type==="asset.import") {
       if((scene.assets?.length??0)>=128) fail("AX_ASSET_0001","Project asset limit is 128");
-      const asset=await this.assets.put(this.project.id,data.name,data.base64);
+      const asset=await this.assets.put(this.project.id,data.name,data.base64,importInWorker);
       scene.assets??=[];
       if(!scene.assets.some(item=>item.id===asset.id)) scene.assets.push(asset);
     } else if(type==="scene.asset.place") {
       const asset=scene.assets?.find(item=>item.id===data.assetId);
       if(!asset) fail("AX_ASSET_0001","Import the asset before placing it");
-      const resource=await this.assets.read(this.project.id,asset.id);
+      if(asset.kind==="audio")fail("AX_ASSET_0001","Audio sources cannot be placed as renderables");
+      const resource=await this.pipeline.resource(this.project.id,scene,asset.id);
       const center=resource.bounds?resource.bounds.minimum.map((v,i)=>(v+resource.bounds.maximum[i])/2):[0,0,0];
       const size=resource.bounds?Math.max(...resource.bounds.maximum.map((v,i)=>v-resource.bounds.minimum[i])):2*Math.max(1,resource.width/resource.height);
       const scale=size>1e-6?2/size:1;
@@ -126,14 +184,12 @@ export class SceneWorkspace {
         }
       }
     } else fail("AX_COMMAND_0002", "Command type is not registered");
+    if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     validateProject({ ...this.project, scene });
     if(type==="scene.asset.place")await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
-    this.past.push(copy(this.project.scene));
-    if (this.past.length > 64) this.past.shift();
-    this.future = [];
-    this.project.scene = scene;
-    this.revision++;
+    this.check(data);
+    this.commitScene(scene);
     return this.snapshot();
   }
 }

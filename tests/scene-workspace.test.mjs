@@ -107,8 +107,8 @@ test("editor controls create, edit, undo, save and reopen the real command works
   const document = await fakeDocument();
   const $ = id => document.querySelector("#" + id);
   const errors = [];
-  let discard = false;
-  const editor = mountProjectEditor({ document, send, reportError: error => errors.push(error), confirmDiscard: () => discard });
+  let discard = false, held=null;
+  const editor = mountProjectEditor({ document, send:async(...args)=>{if(held)await held;return send(...args);}, reportError: error => errors.push(error), confirmDiscard: () => discard });
   await editor.connect(caps);
   $("project-name").value = "UI Project";
   await $("project-new").fire("click");
@@ -132,6 +132,11 @@ test("editor controls create, edit, undo, save and reopen the real command works
   assert.equal($("position-0").value, "5");
   assert.equal($("entity-name").value, "Player");
   assert.equal($("scene-undo").disabled, true);
+  let release;held=new Promise(resolve=>{release=resolve;});
+  const refreshing=editor.refreshAssets();
+  assert.equal(await editor.refreshAssets(),false,"A busy editor must retain refresh for retry");
+  release();assert.equal(await refreshing,true);held=null;
+  assert.equal(await editor.refreshAssets(),true);
   assert.deepEqual(errors, []);
 });
 

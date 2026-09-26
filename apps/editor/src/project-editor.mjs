@@ -82,6 +82,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     try { await operation(); succeeded = true; }
     catch (error) { $("project-error").textContent = error.message; reportError(error); }
     finally { busy = false; draw(succeeded); }
+    return succeeded;
   }
   async function run(type, data = {}) {
     const event = await send(type, data);
@@ -165,7 +166,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   });
   draw();
   return {
-    async refreshAssets() {if(enabled&&!busy)await act(()=>run("scene.get"));},
+    async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},
     async connect(capabilities) {
       pipelineEnabled=["asset.job.start","asset.job.get","asset.job.cancel","asset.explain"].every(c=>capabilities.includes(`command.${c}`));
       enabled = supported.every(command => capabilities.includes(`command.${command}`));

@@ -106,12 +106,13 @@ async function boot() {
     log("info", "AX_PROTOCOL_0004", "Capability negotiation completed", handshake.server);
     await projectEditor.connect(handshake.capabilities);
     if(handshake.capabilities.includes("command.asset.job.start")) {
-      let sequence=0,stopped=false;
+      let sequence=0,stopped=false,pendingRefresh=false;
       addEventListener("pagehide",()=>{stopped=true;},{once:true});
       const poll=async()=>{try{
         const {events}=await api(`/v1/events?since=${sequence}`);
         for(const event of events)sequence=Math.max(sequence,event.payload.sequence);
-        if(events.some(e=>e.payload.type==="asset.jobFinished"&&e.payload.data.status==="completed"))await projectEditor.refreshAssets();
+        if(events.some(e=>e.payload.type==="asset.jobFinished"&&e.payload.data.status==="completed"))pendingRefresh=true;
+        if(pendingRefresh && await projectEditor.refreshAssets())pendingRefresh=false;
       }catch(error){if(!stopped)reportError(error);}finally{if(!stopped)setTimeout(poll,750);}};
       void poll();
     }

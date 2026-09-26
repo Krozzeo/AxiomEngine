@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-09-22",
-  "engineVersion": "0.0.9",
+  "updatedAt": "2026-09-26",
+  "engineVersion": "0.0.12",
   "activeMilestone": 2,
-  "milestoneStatus": "not_started",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 0,
-    "wholeProjectPercent": 11,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 18,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -20,6 +20,10 @@
       "percent": 100
     },
     "2": {
+      "status": "complete",
+      "percent": 100
+    },
+    "3": {
       "status": "not_started",
       "percent": 0
     }
@@ -30,14 +34,19 @@
     "csharpBrowserWasmSpike": "verified_publish",
     "engineKernel": "verified_native_and_real_wasm",
     "renderGraph": "verified_native",
-    "frameProfiler": "verified_windows_webgpu_and_null"
+    "frameProfiler": "verified_windows_webgpu_and_null",
+    "projectPersistence": "verified_bootstrap_http_restart",
+    "sceneEditor": "verified_controller_and_http",
+    "assetImport": "verified_png_static_glb",
+    "projectSceneRendering": "verified_chromium_software_webgpu",
+    "playMode": "verified_isolated_runtime"
   },
   "verified": {
     "nodeTests": {
-      "passed": 20,
+      "passed": 38,
       "failed": 0
     },
-    "schemaDocuments": 10,
+    "schemaDocuments": 11,
     "architectureRules": 3,
     "daemonStartup": true,
     "httpStaticDelivery": true,
@@ -62,10 +71,10 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 22,
+      "testsPassed": 24,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "Linux agent workspace; Rust 1.90.0; version 0.0.9"
+      "evidenceEnvironment": "Linux local and GitHub CI; Rust 1.90.0; 0.0.12"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -139,6 +148,79 @@
         "rust",
         "csharp-wasm-spike"
       ]
+    },
+    "projectPersistence": {
+      "passed": true,
+      "version": "0.0.10",
+      "environment": "Linux Node; Command Bus and HTTP restart",
+      "newTestsPassed": 7,
+      "nativeParity": false,
+      "editorIntegration": false
+    },
+    "currentRemoteCi": {
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.12",
+      "commit": "96386db8ab406eb29d90f91c41f109377915b40d",
+      "runId": 36249049412,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike",
+        "browser-m2"
+      ]
+    },
+    "m2PersistenceRemoteCi": {
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.10",
+      "commit": "6756396825e476e28557494ef18153e5095a912f",
+      "runId": 35760870433,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/35760870433",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike"
+      ]
+    },
+    "sceneEditor": {
+      "passed": true,
+      "version": "0.0.11",
+      "newTestsPassed": 7,
+      "environment": "Controller with simulated DOM, actual Command Bus and HTTP restart",
+      "screenshotValidation": false
+    },
+    "m21RemoteCi": {
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.11",
+      "commit": "35b2a20e7f0eadc317016a419c98e5e2e03781f2",
+      "runId": 35762835402,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/35762835402",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike"
+      ]
+    },
+    "m2BrowserAcceptance": {
+      "passed": true,
+      "criteriaPassed": 11,
+      "criteriaTotal": 11,
+      "environment": "Chromium 141, Ubuntu CI, Xvfb and SwiftShader software Vulkan",
+      "samePixelsAfterDaemonRestart": true,
+      "playAuthoringIsolation": true,
+      "effectiveControlsDisabledDuringPlay": true,
+      "nullParity": true,
+      "pageErrors": 0,
+      "visualReview": "CI Play screenshot reviewed",
+      "redPixels": 25815,
+      "greenPixels": 14850,
+      "runId": 36249049412
     }
   },
   "blockedChecks": [],
@@ -160,7 +242,12 @@
     "docs/reports/M1_CURRENT_REPORT.md",
     "docs/architecture/M1_KERNEL.md",
     "docs/adr/0016-wasm-scalar-boundary.md",
-    "docs/architecture/M2_PLAN.md"
+    "docs/architecture/M2_PLAN.md",
+    "docs/architecture/PROJECT_PERSISTENCE.md",
+    "docs/architecture/SCENE_EDITOR.md",
+    "docs/reports/M2_CURRENT_REPORT.md",
+    "docs/architecture/M2_BETA.md",
+    "docs/architecture/M3_PLAN.md"
   ],
-  "nextTask": "Begin M2 with the versioned authoring scene contract and project create/open plus save/load through the Command Bus. Follow docs/architecture/M2_PLAN.md; do not repeat unchanged M1 browser gates."
+  "nextTask": "Begin M3 per docs/architecture/M3_PLAN.md: stable logical asset IDs, dependency graph and deterministic derived-cache keys atop existing immutable sources. M2 is complete. PR #2 remains stacked on unmerged PR #1."
 }

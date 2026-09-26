@@ -1,7 +1,7 @@
 # M2 — Axiom Beta Foundation
 
-Status: not started (0%). Source: master specification section 121.
-M0 and M1 are complete; this document awards no M2 functional credit.
+Status: complete (11/11 acceptance steps; 100%). Source: master specification section 121.
+M0 and M1 are complete. See ../reports/M2_CURRENT_REPORT.md for executable evidence.
 
 ## Goal and acceptance
 
@@ -9,7 +9,7 @@ The user must be able to: (1) open Axiom, (2) create a project, (3) import an
 image and GLB, (4) place a sprite, (5) place a mesh, (6) move them, (7) save,
 (8) close, (9) reopen, (10) see the same scene and (11) enter Play Mode.
 Each step needs executable evidence; inherited shell code alone does not prove
-this complete persistent-scene workflow. Report 0/11 until tested slices exist.
+this complete persistent-scene workflow. Credit only acceptance points supported by tested slices.
 
 ## Ordered implementation slices
 
@@ -38,8 +38,31 @@ semantics. Project, Hierarchy, Inspector, Console, Scene and Game panels must ac
 on real state. No arbitrary filesystem or process execution is exposed to clients.
 Read SECURITY.md, PROTOCOL_V1.md, schema ADR-0010, and M1_KERNEL.md before editing.
 
-## First concrete task
+## Initial task (completed in 0.0.10)
 
 Implement the schema-backed project/scene model and daemon command round-trip for
 create, save and load, with stable IDs and atomic persistence. Do not begin with
 cosmetic editor panels or infer completion from scaffold directories.
+
+## First slice delivered — 0.0.10
+
+Schema-backed project create/open/save/list now runs through the bootstrap Command
+Bus and authenticated HTTP adapter. Restart, preservation, stale writes, locks,
+invalid documents and unauthorized calls are tested. See PROJECT_PERSISTENCE.md.
+The editor still displays the M1 demo. Next: project controls, scene commands and
+transform editing with undo; then native daemon parity and runtime extraction.
+
+## Second slice delivered — 0.0.11
+
+Project controls and generic entity editing are integrated with the Command Bus,
+explicit save and a 64-entry undo/redo history. SCENE_EDITOR.md defines the shared
+workspace and conflict behavior. Opening Axiom and creating projects are now
+proven acceptance points (2/11). Next: runtime extraction and imported content.
+
+## Closure — 0.0.12
+
+All slices and eleven acceptance actions are complete on the Node beta path.
+Chromium CI verifies actual pixels, daemon restart, Play isolation and Null parity.
+The earlier slice descriptions above are historical. Native authoring parity and
+general schema code generation are not claimed. See M2_BETA.md and the closure
+report for exact scope and evidence. Next: M3_PLAN.md.

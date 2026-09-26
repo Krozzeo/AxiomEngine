@@ -27,61 +27,42 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version: `0.0.9`. Milestone 0, Architecture Lock & Bootstrap, is complete.
-M1, WebGPU + Engine Kernel, is complete. Active milestone: M2, Axiom Beta
-Foundation, not started.
+Version `0.0.12`: M0, M1 and M2 are complete. M2 passed 11/11 acceptance
+criteria; weighted whole-project completion is 18%. M3 has not started. See `docs/reports/M2_CURRENT_REPORT.md`
+and `axiom.project-state.json` for exact evidence and completion percentages.
 
-Implemented and locally verified:
+Implemented: authenticated loopback daemon; schema-backed atomic project
+persistence; shared authoring workspace; bounded undo/redo; PNG and static GLB
+imports with content-hashed sources; sprite/mesh placement; position/scale/name
+editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
+simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
+matching real Rust Null processing; causal events and bounded diagnostics.
 
-- editor build and static shell;
-- secure Node bootstrap daemon bound to loopback;
-- capability handshake and protocol v1 envelopes;
-- command, event, error, revision, undo and trace behavior;
-- scoped atomic writes and traversal rejection;
-- WebGPU triangle code, capability detection and device-loss hook;
-- Null Renderer Rust boundary;
-- schemas, error/tool catalogs and architecture checks;
-- sixteen passing Node tests, including same-origin browser handshake behavior,
-  recovery when generated editor output is absent and the shared native parity
-  corpus;
-- native Rust HTTP adapter source for static assets, health, handshake,
-  commands, event deltas, traces and metrics;
-- shared security/error/command surface enforcement across both adapters.
+38 Node tests and 24 Rust tests pass. All five CI jobs passed on `96386db8ab406eb29d90f91c41f109377915b40d`
+([implementation evidence](https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412)); browser acceptance is 11/11. The five CI jobs cover Linux and Windows
+bootstrap, Rust, C# Wasm publish and actual Chromium rendering. Current browser
+validation uses software Vulkan under Xvfb, not a physical GPU benchmark.
+Earlier Windows WebGPU/Null screenshots establish M1 hardware evidence only.
 
-Not yet implemented:
+The Node bootstrap is the M2 authoring path. Native Rust daemon capabilities
+cover the M0 HTTP/protocol/security surface and shared parity corpus; native
+project authoring is not implemented. The editor gates controls by capabilities.
+C# is a successful publish spike, not gameplay execution (planned for M4).
+General schema code generation, transactional COW workspaces, the production
+asset pipeline and later engine systems remain future work.
 
-- schema-to-Rust/TypeScript/C# generation from one declarative model;
-- content-addressed transactional COW overlays;
-- later-milestone engine, editor and scripting systems.
-
-External Windows evidence uses `rustc/cargo 1.90.0` and .NET SDK `10.0.400`.
-The `axiom-core` crate passed `cargo check` for `wasm32-unknown-unknown`.
-`check:native` passes formatting, Clippy with warnings denied and all nine Rust
-tests on Windows 10 with Rust 1.90.0. The native daemon also passes the Chrome
-protocol, security-isolation, health, Ping, Increment and Undo smoke flow. The
-.NET `wasm-tools` workload restored successfully and the Release C#
-browser-Wasm publish passed with zero warnings and errors in 48.9 seconds.
-`Cargo.lock` is committed and Rust build/test gates use `--locked`.
-GitHub Actions CI #1 passed the `bootstrap`, `rust` and `csharp-wasm-spike` jobs
-for commit `16c065c` in 69 seconds.
-
-M1 now loads a real Rust/Wasm kernel in the editor. The demo mesh and camera
-projection feed WebGPU's vertex buffer; forced Null mode and absent GPU execute
-the same kernel and the Rust Null Renderer. Trace IDs and fixed clocks cross the
-scalar ABI. Sixteen Node tests and twenty-two Rust tests pass. Two editor tests
-use real Wasm with a simulated DOM; they are not physical GPU evidence. The user has now verified the new shader/vertex-buffer path and timing panel
-in WebGPU and Null modes; see the report for exact screenshot values.
-Rust 1.90.0, formatting, Clippy and Wasm release build are verified locally.
-
-Current evidence-based completion: M0 **100%**; M1 **100%**; active M2 **0%**; whole project
-**11%**. See `docs/reports/M1_CURRENT_REPORT.md` for the live acceptance matrix.
+Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
+unsaved edits/history are memory-only. Assets support PNG and a bounded static
+GLB subset. Preserve the complete `.axiom/projects` directory, including asset
+folders, when moving snapshots. IDs are stable; paths are never client authority.
 
 ## Repository map
 
 - `apps/editor/`: browser UI and WebGPU bootstrap.
 - `daemon/bootstrap/`: currently verified HTTP adapter and command bus.
 - `daemon/axiom-daemon/`: native Rust daemon shell and security policy.
-- `engine/core/`: IDs, clocks, resource/jobs primitives and the demo scene.
+- `engine/core/`: IDs, clocks, resource/jobs primitives and authoring runtime matrices.
+- `engine/assets/`: bounded PNG/GLB importers.
 - `engine/wasm/`: ABI v1 exports and host wrapper (ADR-0016).
 - `engine/diagnostics/`: bounded trace primitives.
 - `engine/renderer/`: renderer boundary and Null Renderer.
@@ -100,13 +81,15 @@ Current evidence-based completion: M0 **100%**; M1 **100%**; active M2 **0%**; w
 | Protocol/agent API | `PROTOCOL_V1.md`, all protocol schemas, ADR-0007 |
 | Daemon/filesystem | `SECURITY.md`, ADR-0003, ADR-0011 |
 | Native HTTP adapter | `NATIVE_DAEMON.md`, `PROTOCOL_V1.md`, shared parity vectors |
-| Renderer/WebGPU | ADR-0002, renderer crate, editor WebGPU bootstrap |
+| Renderer/WebGPU | ADR-0002, M2_BETA.md, renderer crate, scene-renderer.mjs |
+| Assets/projects | M2_BETA.md, PROJECT_PERSISTENCE.md, M3_PLAN.md, schema ADR-0010 |
 | C# scripting | ADR-0005 and `spikes/csharp-wasm/README.md` |
 | Milestone closure | `MILESTONE_REPORTING.md` and current report |
 
 ## Commands
 
 ```bash
+npm ci
 npm run doctor
 npm run check
 npm run dev
@@ -124,9 +107,9 @@ npm run check:native
 npm run dev:native
 ```
 
-The Node adapter remains the compatibility bootstrap while M1 plans the default
-runtime transition. Both adapters have passed formatting/compile, parity,
-security and real-browser M0 gates.
+Use `npm run dev` for M2 authoring; `dev:native` runs the M0 native protocol
+demo. `npm run test:browser` requires Playwright Chromium and the Linux graphics
+dependencies documented in M2_BETA.md and .github/workflows/ci.yml.
 
 Optional native commands are documented in the root README. M0 already has
 executed local, Windows and CI evidence; rerun them only when relevant code changes.
@@ -139,14 +122,12 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-M1 remote CI #3 passed all jobs for commit
-`0ecbc4bb4c8576d0b716dd68740257f5df256f40`:
-https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421
+Begin M3 following M3_PLAN.md and master specification section 122. Begin with
+stable logical asset identity, dependency edges and deterministic cache keys on
+top of M2's existing immutable source store; do not duplicate that store.
 
-Begin M2 with the versioned authoring scene contract, stable resource IDs and
-project create/open plus save/load through commands. Follow M2_PLAN.md and the
-master specification section 121. M2 has no functional credit yet. Do not repeat
-unchanged M1 hardware gates. Review PR #1 before integrating the branch into main.
+PR #2 (M2) is stacked on PR #1 (M1). Both remain unmerged; review/integrate M1
+before M2. Never assume a successful branch CI means main was updated.
 
 ## Handoff discipline
 
@@ -165,11 +146,17 @@ repository files to live directly in the parent directory. Request manual tests
 only for behavior that cannot be executed or equivalently automated in the
 agent environment.
 
-## Windows startup follow-up
+## Windows startup
 
-A Windows run exposed `spawnSync cargo ENOENT`. The build script now tries
-`cargo.exe`, then CARGO_HOME/bin and USERPROFILE/.cargo/bin, without a shell.
-Four discovery regressions pass, bringing the Node suite to 20 tests. The actual
-CARGO_HOME fallback also built Wasm on Linux with Cargo absent from PATH.
-Windows startup and both browser modes are confirmed by user screenshots. For an existing m1.1 extraction, replace only
-`scripts/build-editor.mjs` with the corrected file and run `npm.cmd run dev`.
+Use a sibling milestone directory under the user's existing project parent.
+Run `npm.cmd ci`, then `npm.cmd run dev`. Build discovers Cargo through PATH,
+CARGO_HOME/bin and USERPROFILE/.cargo/bin. The pinned rustup toolchain and Wasm
+target must be available. Do not copy node_modules, target or dist from another
+snapshot; preserve `.axiom/projects` with all asset folders for existing projects.
+
+## Required progress communication
+
+At milestone closure summarize achieved behavior, milestone and whole-project
+percentages, and only manual tests that cannot be equivalently automated.
+Continue until the full active milestone is complete. A partial delivery needs
+a concrete blocker or necessary user-only test. See MILESTONE_REPORTING.md.

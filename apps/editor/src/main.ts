@@ -1,5 +1,5 @@
-import { FrameProfiler } from "./frame-profiler.js";
-import { loadKernel } from "./kernel-host.js";
+import { mountProjectEditor } from "./project-editor.js";
+import { createSceneRenderer } from "./scene-renderer.js";
 
 const token = new URLSearchParams(location.hash.slice(1)).get("token");
 history.replaceState(null, "", location.pathname + location.search);
@@ -10,7 +10,8 @@ const counter = document.querySelector("#counter");
 const traceOutput = document.querySelector("#trace");
 const capabilities = document.querySelector("#capabilities");
 const frameTraceOutput = document.querySelector("#frame-trace");
-const frameProfiler = new FrameProfiler(120);
+let renderer=null;
+let pendingSnapshot=null;
 
 function log(level, code, message, data = null) {
   const item = document.createElement("li");
@@ -35,7 +36,7 @@ async function api(path, options = {}) {
     }
   });
   const data = await response.json();
-  if (!response.ok) throw Object.assign(new Error(data.cause ?? `HTTP ${response.status}`), { data });
+  if (!response.ok) throw Object.assign(new Error(data.payload?.cause ?? data.cause ?? `HTTP ${response.status}`), { data });
   return data;
 }
 
@@ -54,169 +55,39 @@ function command(type, data = {}) {
   };
 }
 
-async function execute(type, data = {}) {
+function reportError(error) {
+  log("error", error.data?.payload?.code ?? error.data?.code ?? "AX_EDITOR_0001", error.message);
+}
+async function sendCommand(type, data = {}) {
+  const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
+  log("info", result.payload.reasonCode ?? "AX_EVENT_0001", result.payload.type);
+  if ("current" in result.payload.data) counter.value = String(result.payload.data.current);
   try {
-    const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
-    log("info", result.payload.reasonCode ?? "AX_EVENT_0001", result.payload.type, result.payload.data);
-    if ("current" in result.payload.data) counter.value = String(result.payload.data.current);
     const trace = await api(`/v1/traces/${encodeURIComponent(result.traceId)}`);
     traceOutput.textContent = JSON.stringify(trace, null, 2);
-  } catch (error) {
-    log("error", error.data?.code ?? "AX_EDITOR_0001", error.message, error.data ?? null);
-  }
+  } catch (error) { reportError(error); }
+  return result;
 }
+async function execute(type, data = {}) {
+  try { return await sendCommand(type, data); } catch (error) { reportError(error); }
+}
+let unsavedScene = false;
+const projectEditor = mountProjectEditor({ document, send: sendCommand, reportError, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
+  pendingSnapshot=snapshot;
+  if(renderer) await renderer.setSnapshot(snapshot);
+} });
+addEventListener("beforeunload", event => {
+  if (unsavedScene) { event.preventDefault(); event.returnValue = ""; }
+});
 
 async function initializeWebGpu() {
-  const canvas = document.querySelector("#viewport");
-  const state = document.querySelector("#gpu-state");
-  const response = await fetch("/axiom-kernel.wasm");
-  if (!response.ok) throw new Error(`AX_WASM_0001: HTTP ${response.status}`);
-  const kernel = await loadKernel(await response.arrayBuffer());
-  let running = true;
-  let animationId = null;
-  let nullActive = false;
-  let disposed = false;
-  addEventListener("pagehide", () => {
-    running = false;
-    nullActive = false;
-    disposed = true;
-    if (animationId !== null) cancelAnimationFrame(animationId);
-    kernel.dispose();
-  }, { once: true });
-  let previousTime = null;
-  let traceSequence = 0n;
-  function kernelStep(now) {
-    const delta = previousTime === null ? 0 : (now - previousTime) / 1000;
-    previousTime = now;
-    return kernel.step(delta, ++traceSequence, canvas.width / canvas.height);
-  }
-  function startNull(reason) {
-    if (nullActive || disposed) return;
-    running = false;
-    nullActive = true;
-    state.textContent = `Null Renderer · ${reason}`;
-    function nullFrame(now) {
-      if (!nullActive) return;
-      const frame = frameProfiler.begin(performance.now());
-      const packet = kernelStep(now);
-      frame.kernel = { frame: packet.frame, trace: packet.trace, fixedSteps: packet.fixedSteps, meshes: packet.nullProcessedMeshes, renderer: "null" };
-      frameProfiler.finish(frame, performance.now(), "null");
-      if (packet.frame === 1 || packet.frame % 15 === 0) frameTraceOutput.textContent = JSON.stringify(frame, null, 2);
-      animationId = requestAnimationFrame(nullFrame);
-    }
-    animationId = requestAnimationFrame(nullFrame);
-  }
-  if (new URLSearchParams(location.search).get("renderer") === "null") {
-    startNull("selected explicitly");
-    return;
-  }
-  if (!navigator.gpu) {
-    startNull("WebGPU unavailable");
-    log("warning", "AX_RENDERER_0001", "WebGPU is unavailable; preview disabled");
-    return;
-  }
-  const adapter = await navigator.gpu.requestAdapter({ powerPreference: "high-performance" });
-  if (!adapter) {
-    startNull("no compatible adapter");
-    log("warning", "AX_RENDERER_0002", "No compatible WebGPU adapter; preview disabled");
-    return;
-  }
-  const timestampQuerySupported = adapter.features.has("timestamp-query");
-  let device;
-  try {
-    device = await adapter.requestDevice({ requiredFeatures: timestampQuerySupported ? ["timestamp-query"] : [] });
-  } catch (error) {
-    log("warning", "AX_RENDERER_0005", error.message);
-    startNull("device creation failed");
-    return;
-  }
-  device.lost.then((info) => {
-    running = false;
-    if (animationId !== null) cancelAnimationFrame(animationId);
-    state.textContent = `WebGPU device lost · ${info.reason}`;
-    log("error", "AX_RENDERER_0003", "WebGPU device lost", { reason: info.reason, message: info.message });
-    startNull("GPU device lost");
-  });
-  const context = canvas.getContext("webgpu");
-  const format = navigator.gpu.getPreferredCanvasFormat();
-  context.configure({ device, format, alphaMode: "opaque" });
-  const module = device.createShaderModule({ code: `
-    @vertex fn vs(@location(0) position: vec4f) -> @builtin(position) vec4f {
-      return position;
-    }
-    @fragment fn fs() -> @location(0) vec4f {
-      return vec4f(0.38, 0.74, 1.0, 1.0);
-    }
-  ` });
-  const compilation = await module.getCompilationInfo();
-  const errors = compilation.messages.filter((item) => item.type === "error");
-  if (errors.length) throw new Error(errors.map((item) => item.message).join("; "));
-  const pipeline = device.createRenderPipeline({
-    layout: "auto",
-    vertex: { module, entryPoint: "vs", buffers: [{ arrayStride: 16, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x4" }] }] },
-    fragment: { module, entryPoint: "fs", targets: [{ format }] },
-    primitive: { topology: "triangle-list" }
-  });
-  const vertexBuffer = device.createBuffer({ size: 48, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
-  const timestampQuery = device.features.has("timestamp-query");
-  const querySet = timestampQuery ? device.createQuerySet({ type: "timestamp", count: 2 }) : null;
-  const queryResolveBuffer = timestampQuery ? device.createBuffer({ size: 16, usage: GPUBufferUsage.QUERY_RESOLVE | GPUBufferUsage.COPY_SRC }) : null;
-  const queryReadBuffer = timestampQuery ? device.createBuffer({ size: 16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ }) : null;
-  let lastTimestampFrame = 0;
-  let timestampReadPending = false;
-  let gpuTimingSample = null;
-
-  function renderFrame(now) {
-    if (!running) return;
-    try {
-    const started = performance.now();
-    const frame = frameProfiler.begin(started);
-    const packet = kernelStep(now);
-    frame.kernel = { frame: packet.frame, trace: packet.trace, fixedSteps: packet.fixedSteps, meshes: packet.nullProcessedMeshes, renderer: "webgpu" };
-    device.queue.writeBuffer(vertexBuffer, 0, packet.vertices);
-    const encoder = device.createCommandEncoder({ label: "axiom-m1-frame" });
-    const pass = encoder.beginRenderPass({
-      colorAttachments: [{ view: context.getCurrentTexture().createView(), clearValue: { r: 0.025, g: 0.035, b: 0.055, a: 1 }, loadOp: "clear", storeOp: "store" }],
-      ...(timestampQuery && lastTimestampFrame === 0 ? { timestampWrites: { querySet, beginningOfPassWriteIndex: 0, endOfPassWriteIndex: 1 } } : {})
-    });
-    pass.setPipeline(pipeline);
-    pass.setVertexBuffer(0, vertexBuffer);
-    pass.draw(3);
-    pass.end();
-    if (timestampQuery && lastTimestampFrame === 0) {
-      encoder.resolveQuerySet(querySet, 0, 2, queryResolveBuffer, 0);
-      encoder.copyBufferToBuffer(queryResolveBuffer, 0, queryReadBuffer, 0, 16);
-      lastTimestampFrame = frame.frameSequence;
-    }
-    device.queue.submit([encoder.finish()]);
-    frameProfiler.finish(frame, performance.now());
-    if (timestampQuery && lastTimestampFrame === frame.frameSequence && !timestampReadPending) {
-      timestampReadPending = true;
-      queryReadBuffer.mapAsync(GPUMapMode.READ).then(() => {
-        const timestamps = new BigUint64Array(queryReadBuffer.getMappedRange().slice(0));
-        gpuTimingSample = {
-          frameSequence: lastTimestampFrame,
-          milliseconds: Number(timestamps[1] - timestamps[0]) / 1_000_000
-        };
-        queryReadBuffer.unmap();
-        frameProfiler.attachGpuTiming(lastTimestampFrame, gpuTimingSample.milliseconds);
-      }).catch((error) => log("warning", "AX_RENDERER_0006", "GPU timestamp read failed", { message: error.message }));
-    }
-    if (frame.frameSequence === 1 || frame.frameSequence % 15 === 0) {
-      frameTraceOutput.textContent = JSON.stringify({ ...frameProfiler.latest(), gpuTimingSample, retainedFrames: Math.min(frame.frameSequence, 120), droppedFrames: frameProfiler.dropped }, null, 2);
-    }
-    animationId = requestAnimationFrame(renderFrame);
-    } catch (error) {
-      running = false;
-      state.textContent = "Rendering stopped · inspect the console.";
-      log("error", "AX_RENDERER_0005", error.message);
-    }
-  }
-
-  animationId = requestAnimationFrame(renderFrame);
-  state.textContent = `WebGPU active · ${format}${timestampQuery ? " · GPU timestamps" : " · CPU timing only"}`;
-  state.classList.add("success");
-  log("info", "AX_RENDERER_0004", "WebGPU engine loop rendering triangle scene", { format, timestampQuery });
+  const response=await fetch("/axiom-kernel.wasm");
+  if(!response.ok)throw new Error("AX_WASM_0001: failed to load kernel");
+  renderer=await createSceneRenderer({canvas:document.querySelector("#viewport"),stateElement:document.querySelector("#gpu-state"),traceOutput:frameTraceOutput,bytes:await response.arrayBuffer(),reportError,
+    forceNull:new URLSearchParams(location.search).get("renderer")==="null",
+    loadAsset:async(id,assetId)=>{const asset=(await sendCommand("asset.get",{id,assetId})).payload.data.asset;for(const warning of asset.warnings??[])log("warning","AX_ASSET_0002",warning);return asset;}});
+  addEventListener("pagehide",()=>renderer.dispose(),{once:true});
+  if(pendingSnapshot)await renderer.setSnapshot(pendingSnapshot);
 }
 
 async function boot() {
@@ -232,6 +103,7 @@ async function boot() {
       capabilities.append(term, description);
     }
     log("info", "AX_PROTOCOL_0004", "Capability negotiation completed", handshake.server);
+    await projectEditor.connect(handshake.capabilities);
   } catch (error) {
     connection.textContent = "Disconnected";
     connection.className = "status error";

@@ -35,6 +35,8 @@ export async function buildEditor() {
   await cp(resolve(root, "apps/editor/index.html"), resolve(destination, "index.html"));
   await cp(resolve(root, "apps/editor/styles.css"), resolve(destination, "styles.css"));
   await cp(resolve(root, "apps/editor/src/frame-profiler.mjs"), resolve(destination, "frame-profiler.js"));
+  await cp(resolve(root, "apps/editor/src/project-editor.mjs"), resolve(destination, "project-editor.js"));
+  await cp(resolve(root, "apps/editor/src/scene-renderer.mjs"), resolve(destination, "scene-renderer.js"));
   const source = await readFile(resolve(root, "apps/editor/src/main.ts"), "utf8");
   if (/\binterface\s+|:\s*(string|number|boolean)\b/.test(source)) {
     throw new Error("Bootstrap TypeScript must remain directly executable until the compiler toolchain is installed");

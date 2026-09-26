@@ -95,3 +95,62 @@ test("browser same-origin GET handshake works when Origin is omitted", async (co
   assert.equal(response.status, 200);
   assert.equal((await response.json()).protocol.selected, 1);
 });
+
+test("authenticated project commands survive daemon restart and deny cross-origin saves", async context => {
+  const { mkdtemp, readdir } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const projectRoot = await mkdtemp(join(tmpdir(), "axiom-http-project-"));
+  let instance = await startServer({ projectRoot });
+  context.after(async () => { await instance.close(); await rm(projectRoot, { recursive: true, force: true }); });
+  const post = (type, data, overrides = {}) => fetch(`${instance.origin}/v1/commands`, {
+    method: "POST", headers: { ...headers(instance, overrides), "Content-Type": "application/json" },
+    body: JSON.stringify({ ...command(type), payload: { type, data } })
+  });
+  const capabilities = await (await fetch(`${instance.origin}/v1/handshake`, { headers: headers(instance) })).json();
+  assert.ok(capabilities.capabilities.includes("command.project.save"));
+  assert.equal((await post("project.create", { name: "Blocked" }, { Authorization: "Bearer wrong" })).status, 401);
+  assert.deepEqual(await readdir(projectRoot), []);
+  const created = await (await post("project.create", { name: "HTTP scene" })).json();
+  assert.equal(created.kind, "event");
+  const project = created.payload.data.project;
+  const data = { id: project.id, expectedRevision: 0, scene: { ...project.scene, plugin: { saved: true } } };
+  assert.equal((await post("project.save", data, { Origin: "https://attacker.example" })).status, 403);
+  const saved = await (await post("project.save", data)).json();
+  assert.equal(saved.payload.data.project.revision, 1);
+  assert.equal((await post("project.save", data)).status, 422);
+  await instance.close();
+  instance = await startServer({ projectRoot });
+  const opened = await (await post("project.open", { id: project.id })).json();
+  assert.deepEqual(opened.payload.data.project, saved.payload.data.project);
+});
+
+test("HTTP scene editing rejects stale tabs and persists only on save", async context => {
+  const { mkdtemp } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const projectRoot = await mkdtemp(join(tmpdir(), "axiom-http-scene-"));
+  let instance = await startServer({ projectRoot });
+  context.after(async () => { await instance.close(); await rm(projectRoot, { recursive: true, force: true }); });
+  const post = async (type, data = {}) => {
+    const response = await fetch(`${instance.origin}/v1/commands`, {
+      method: "POST", headers: { ...headers(instance), "Content-Type": "application/json" },
+      body: JSON.stringify({ ...command(type), payload: { type, data } })
+    });
+    return { status: response.status, result: await response.json() };
+  };
+  let state = (await post("project.create", { name: "HTTP draft" })).result.payload.data;
+  const original = { id: state.project.id, expectedSceneRevision: state.sceneRevision };
+  state = (await post("scene.entity.create", { ...original, name: "Player" })).result.payload.data;
+  assert.equal(state.dirty, true);
+  assert.equal((await post("scene.entity.create", original)).result.payload.code, "AX_SCENE_0002");
+  state = (await post("scene.save", { id: state.project.id, expectedSceneRevision: state.sceneRevision })).result.payload.data;
+  assert.equal(state.dirty, false);
+  await instance.close();
+  instance = await startServer({ projectRoot });
+  const opened = await post("project.open", { id: state.project.id });
+  assert.deepEqual(opened.result.payload.data.project, state.project);
+  const module = await fetch(`${instance.origin}/project-editor.js`);
+  assert.equal(module.status, 200);
+  assert.match(await module.text(), /export function mountProjectEditor/);
+});

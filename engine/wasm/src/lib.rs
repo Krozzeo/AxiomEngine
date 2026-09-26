@@ -1,5 +1,9 @@
 //! Scalar, versioned host boundary. No pointer or shared-memory API.
-use axiom_core::{TraceId, demo::DemoKernel};
+use axiom_core::{
+    PersistentId, Quat, TraceId, Transform, Vec3,
+    authoring::{Matrix, RuntimeMesh, RuntimeScene, camera, model, multiply},
+    demo::DemoKernel,
+};
 use axiom_renderer::{NullRenderer, RenderFrame, Renderer};
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -8,6 +12,8 @@ use std::collections::BTreeMap;
 struct Registry {
     next: u32,
     worlds: BTreeMap<u32, DemoKernel>,
+    scenes: BTreeMap<u32, RuntimeScene>,
+    cameras: BTreeMap<u32, Matrix>,
 }
 
 thread_local! {
@@ -41,6 +47,8 @@ mod exports {
     pub extern "C" fn axiom_destroy(id: u32) {
         REGISTRY.with_borrow_mut(|registry| {
             registry.worlds.remove(&id);
+            registry.scenes.remove(&id);
+            registry.cameras.remove(&id);
         });
     }
 
@@ -104,6 +112,142 @@ mod exports {
                         .copied()
                 })
                 .unwrap_or(f32::NAN)
+        })
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn axiom_scene_clear(id: u32) -> u32 {
+        REGISTRY.with_borrow_mut(|registry| {
+            if !registry.worlds.contains_key(&id) {
+                return 1;
+            }
+            registry.scenes.insert(id, RuntimeScene::default());
+            0
+        })
+    }
+    #[unsafe(no_mangle)]
+    #[allow(clippy::too_many_arguments)]
+    pub extern "C" fn axiom_scene_add(
+        id: u32,
+        hi: u64,
+        lo: u64,
+        count: u32,
+        px: f32,
+        py: f32,
+        pz: f32,
+        qx: f32,
+        qy: f32,
+        qz: f32,
+        qw: f32,
+        sx: f32,
+        sy: f32,
+        sz: f32,
+    ) -> u32 {
+        REGISTRY.with_borrow_mut(|registry| {
+            let Some(scene) = registry.scenes.get_mut(&id) else {
+                return u32::MAX;
+            };
+            let qlen = qx * qx + qy * qy + qz * qz + qw * qw;
+            if scene.meshes.len() >= 1024
+                || count == 0
+                || count > 150000
+                || ![px, py, pz, qx, qy, qz, qw, sx, sy, sz]
+                    .iter()
+                    .all(|v| v.is_finite())
+                || !qlen.is_finite()
+                || qlen < 1e-12
+            {
+                return u32::MAX;
+            }
+            let transform = Transform {
+                position: Vec3 {
+                    x: px,
+                    y: py,
+                    z: pz,
+                },
+                rotation: Quat {
+                    x: qx,
+                    y: qy,
+                    z: qz,
+                    w: qw,
+                },
+                scale: Vec3 {
+                    x: sx,
+                    y: sy,
+                    z: sz,
+                },
+            };
+            let handle = scene.meshes.len() as u32;
+            scene.meshes.push(RuntimeMesh {
+                entity: PersistentId((u128::from(hi) << 64) | u128::from(lo)),
+                transform,
+                vertices: count,
+            });
+            handle
+        })
+    }
+    #[unsafe(no_mangle)]
+    #[allow(clippy::too_many_arguments)]
+    pub extern "C" fn axiom_scene_camera(
+        id: u32,
+        px: f32,
+        py: f32,
+        pz: f32,
+        tx: f32,
+        ty: f32,
+        tz: f32,
+        aspect: f32,
+        ortho: u32,
+        extent: f32,
+    ) -> u32 {
+        REGISTRY.with_borrow_mut(|registry| {
+            let Some(matrix) = camera([px, py, pz], [tx, ty, tz], aspect, ortho != 0, extent)
+            else {
+                return 1;
+            };
+            if !registry.scenes.contains_key(&id) {
+                return 1;
+            }
+            registry.cameras.insert(id, matrix);
+            0
+        })
+    }
+    #[unsafe(no_mangle)]
+    pub extern "C" fn axiom_scene_matrix(id: u32, mesh: u32, index: u32, projection: u32) -> f32 {
+        REGISTRY.with_borrow(|registry| {
+            let Some(mesh) = registry
+                .scenes
+                .get(&id)
+                .and_then(|s| s.meshes.get(mesh as usize))
+            else {
+                return f32::NAN;
+            };
+            let mut matrix = model(mesh.transform);
+            if projection != 0 {
+                let Some(camera) = registry.cameras.get(&id) else {
+                    return f32::NAN;
+                };
+                matrix = multiply(*camera, matrix);
+            }
+            matrix.get(index as usize).copied().unwrap_or(f32::NAN)
+        })
+    }
+    #[unsafe(no_mangle)]
+    pub extern "C" fn axiom_scene_null(id: u32) -> u32 {
+        REGISTRY.with_borrow(|registry| {
+            let Some(scene) = registry.scenes.get(&id) else {
+                return 0;
+            };
+            NullRenderer
+                .render(&RenderFrame {
+                    sequence: registry
+                        .worlds
+                        .get(&id)
+                        .and_then(|w| w.step)
+                        .map_or(0, |s| s.variable.frame),
+                    visible_items: scene.meshes.len() as u32,
+                })
+                .processed_items
         })
     }
 

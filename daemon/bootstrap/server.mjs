@@ -4,11 +4,14 @@ import { createServer as createHttpServer } from "node:http";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CommandBus } from "./command-bus.mjs";
+import { SceneWorkspace } from "./scene-workspace.mjs";
+import { ProjectStore } from "./project-store.mjs";
 import { buildEditor } from "../../scripts/build-editor.mjs";
 
 const ROOT = resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const DIST = join(ROOT, "dist/editor");
 const BODY_LIMIT = 256 * 1024;
+const IMPORT_LIMIT = 12 * 1024 * 1024;
 const SECURITY_HEADERS = {
   "Cross-Origin-Opener-Policy": "same-origin",
   "Cross-Origin-Embedder-Policy": "require-corp",
@@ -40,18 +43,21 @@ async function readJson(request) {
   const chunks = [];
   for await (const chunk of request) {
     total += chunk.length;
-    if (total > BODY_LIMIT) throw Object.assign(new Error("Request body too large"), { status: 413 });
+    if (total > IMPORT_LIMIT) throw Object.assign(new Error("Request body too large"), { status: 413 });
     chunks.push(chunk);
   }
   try {
-    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
-  } catch {
+    const value=JSON.parse(Buffer.concat(chunks).toString("utf8"));
+    if(total>BODY_LIMIT && value?.payload?.type!=="asset.import") throw Object.assign(new Error("Request body too large"), {status:413});
+    return value;
+  } catch (error) {
+    if(error.status===413) throw error;
     throw Object.assign(new Error("Malformed JSON"), { status: 400 });
   }
 }
 
 async function schemaHash() {
-  const files = ["command.schema.json", "event.schema.json", "protocol-envelope.schema.json"];
+  const files = ["command.schema.json", "event.schema.json", "protocol-envelope.schema.json", "project-document.schema.json"];
   const hash = createHash("sha256");
   for (const file of files) hash.update(await readFile(join(ROOT, "protocol/schema", file)));
   return `sha256:${hash.digest("hex")}`;
@@ -64,7 +70,7 @@ function mime(path) {
 export async function startServer(options = {}) {
   await ensureEditorBuild();
   const token = options.token ?? randomBytes(32).toString("base64url");
-  const bus = new CommandBus();
+  const bus = new CommandBus({ projects: new SceneWorkspace(new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects"))) });
   const hash = await schemaHash();
   const startedAt = performance.now();
   let requestCount = 0;
@@ -96,7 +102,7 @@ export async function startServer(options = {}) {
       }
 
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.9" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.12" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -105,15 +111,15 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.9" },
-          capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace"],
-          limits: { requestBytes: BODY_LIMIT, retainedEvents: 512, retainedTraces: 128 }
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.12" },
+          capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list", "command.scene.get", "command.scene.entity.create", "command.scene.entity.update", "command.scene.entity.delete", "command.scene.undo", "command.scene.redo", "command.scene.save", "command.asset.import", "command.asset.get", "command.scene.asset.place", "command.scene.camera.update", "command.play.start", "command.play.stop", "command.project.close"],
+          limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
       }
 
       if (request.method === "POST" && url.pathname === "/v1/commands") {
         const command = await readJson(request);
-        const result = bus.execute(command);
+        const result = await bus.dispatch(command);
         return json(response, result.kind === "error" ? 422 : 200, result);
       }
 
@@ -140,7 +146,7 @@ export async function startServer(options = {}) {
         if (relative.includes("..") || relative.includes("\\")) return json(response, 400, { code: "AX_HTTP_0001" });
         const path = join(DIST, relative);
         const content = await readFile(path);
-        response.writeHead(200, { ...SECURITY_HEADERS, "Content-Type": mime(path), "Cache-Control": relative === "index.html" ? "no-store" : "public, max-age=60" });
+        response.writeHead(200, { ...SECURITY_HEADERS, "Content-Type": mime(path), "Cache-Control": "no-store" });
         return response.end(content);
       }
 

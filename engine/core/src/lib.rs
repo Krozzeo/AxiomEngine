@@ -3,6 +3,7 @@
 use core::fmt;
 use std::collections::VecDeque;
 
+pub mod authoring;
 pub mod demo;
 
 /// Stable, serialized identity. This is deliberately separate from a runtime handle.

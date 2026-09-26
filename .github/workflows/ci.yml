@@ -43,7 +43,18 @@ jobs:
         with:
           global-json-file: global.json
       - run: dotnet workload install wasm-tools
-      - run: dotnet publish spikes/csharp-wasm/Axiom.ScriptSpike.csproj -c Release
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/browser/csharp-spike.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: csharp-runtime-spike
+          path: .axiom/csharp-spike-evidence
 
   browser-milestones:
     runs-on: ubuntu-latest

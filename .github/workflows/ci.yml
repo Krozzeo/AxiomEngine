@@ -59,7 +59,11 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build
-      - run: npm run test:browser
+      - name: Install software Vulkan and virtual display
+        run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
+      - run: xvfb-run -a -s "-screen 0 1440x1000x24" npm run test:browser
+        env:
+          AXIOM_HEADLESS: "false"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

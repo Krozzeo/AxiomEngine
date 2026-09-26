@@ -62,9 +62,17 @@ try {
   assert.deepEqual((await state()).project,saved);report.criteria.push("reopen");
   const reopenedImage=await page.locator("#viewport").screenshot({path:join(evidence,"reopened.png")});
   assert.deepEqual(pixels(reopenedImage).data,pixels(savedImage).data,"Saved and reopened scene pixels must match exactly");report.criteria.push("see same scene");
+  await page.locator("#entities button").filter({hasText:"cube.glb"}).click();
+  assert.equal(await page.locator("#position-0").isEnabled(),true);
   await page.locator("#play-start").click();await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.mode==="play"&&k.frame>=15&&k.meshes===2;}catch{return false;}});
-  assert.equal(await page.locator("#entity-fields").isDisabled(),true);assert.equal(await page.locator("#asset-import").isDisabled(),true);
-  await page.screenshot({path:join(evidence,"play-editor.png")});
+  for(const field of await page.locator("#entity-fields input, #entity-fields button").all()) assert.equal(await field.isDisabled(),true);
+  assert.equal(await page.locator("#asset-import").isDisabled(),true);
+  const editorImage=await page.screenshot({path:join(evidence,"play-editor.png")});
+  if(process.env.CI) {
+    const full=pixels(editorImage),preview=new PNG({width:720,height:500});
+    for(let y=0;y<500;y++)for(let x=0;x<720;x++)full.data.copy(preview.data,(y*720+x)*4,((y*2)*full.width+x*2)*4,((y*2)*full.width+x*2)*4+4);
+    console.log("M2_PREVIEW_PNG="+PNG.sync.write(preview).toString("base64"));
+  }
   await page.locator("#play-stop").click();await page.waitForFunction(()=>document.querySelector("#play-stop").disabled);
   assert.deepEqual((await state()).project,saved);report.criteria.push("Play without changing authoring state");
   await page.goto(daemon.origin+"/?renderer=null#token="+daemon.token);

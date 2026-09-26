@@ -77,7 +77,7 @@ try {
   assert.deepEqual((await state()).project,saved);report.criteria.push("Play without changing authoring state");
   await page.goto(daemon.origin+"/?renderer=null#token="+daemon.token);
   await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.renderer==="null"&&k.meshes===2&&k.frame>=15;}catch{return false;}});
-  assert.match(await page.locator("#gpu-state").textContent,/Null Renderer/);
+  assert.match(await page.locator("#gpu-state").textContent(),/Null Renderer/);
   assert.deepEqual(errors,[]);
   report.pixelEvidence=colors(savedImage);report.nullParity=true;report.passed=report.criteria.length===11;
   await writeFile(join(evidence,"report.json"),JSON.stringify(report,null,2));

@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -19,7 +19,7 @@
     "dev:native": "npm run build && cargo run -p axiom-daemon",
     "check:native": "cargo fmt --check && cargo clippy --locked --workspace --all-targets -- -D warnings && cargo test --locked --workspace",
     "check": "npm run build && npm run check:schema && npm run check:architecture && npm run check:daemon-parity && npm test",
-    "test:browser": "node tests/browser/m2.mjs"
+    "test:browser": "node tests/browser/m2.mjs && node tests/browser/m3.mjs"
   },
   "dependencies": {
     "pngjs": "7.0.0"

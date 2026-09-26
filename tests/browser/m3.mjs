@@ -7,8 +7,8 @@ import { tmpdir } from "node:os";
 import { startServer } from "../../daemon/bootstrap/server.mjs";
 import { imageFixture,glbFixture } from "../fixtures.mjs";
 import { envelope } from "../../protocol/src/protocol.ts";
-const root=await mkdtemp(join(tmpdir(),"axiom-browser-m2-"));
-const evidence=resolve(".axiom/browser-evidence");await mkdir(evidence,{recursive:true});
+const root=await mkdtemp(join(tmpdir(),"axiom-browser-m3-"));
+const evidence=resolve(".axiom/browser-m3-evidence");await mkdir(evidence,{recursive:true});
 let daemon=await startServer({projectRoot:root});
 let browser;
 const errors=[];
@@ -32,8 +32,8 @@ try {
   await page.waitForFunction(()=>/^WebGPU/.test(document.querySelector("#gpu-state").textContent));
   report.backend=await page.locator("#gpu-state").textContent();
   assert.match(report.backend,/^WebGPU/);report.criteria.push("open Axiom");
-  await page.locator("#project-name").fill("M2 browser acceptance");await page.locator("#project-new").click();
-  await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("M2 browser acceptance"));report.criteria.push("create project");
+  await page.locator("#project-name").fill("M3 pipeline acceptance");await page.locator("#project-new").click();
+  await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("M3 pipeline acceptance"));report.criteria.push("create project");
   for(const [name,mimeType,buffer] of [["checker.png","image/png",imageFixture()],["cube.glb","model/gltf-binary",glbFixture()]]) {
     await page.locator("#asset-file").setInputFiles({name,mimeType,buffer});await page.locator("#asset-import").click();
     await page.waitForFunction(name=>[...document.querySelector("#asset-list").options].some(option=>option.textContent.includes(name)),name);
@@ -71,10 +71,53 @@ try {
   if(process.env.CI && process.env.AXIOM_LOG_PREVIEW==="true") {
     const full=pixels(editorImage),preview=new PNG({width:720,height:500});
     for(let y=0;y<500;y++)for(let x=0;x<720;x++)full.data.copy(preview.data,(y*720+x)*4,((y*2)*full.width+x*2)*4,((y*2)*full.width+x*2)*4+4);
-    console.log("M2_PREVIEW_PNG="+PNG.sync.write(preview).toString("base64"));
+    console.log("M3_PREVIEW_PNG="+PNG.sync.write(preview).toString("base64"));
   }
   await page.locator("#play-stop").click();await page.waitForFunction(()=>document.querySelector("#play-stop").disabled);
   assert.deepEqual((await state()).project,saved);report.criteria.push("Play without changing authoring state");
+  // M3: update a source image shared by a sprite and a mesh, leaving a third source unchanged.
+  async function command(type,data={}) {
+    const response=await fetch(daemon.origin+"/v1/commands",{method:"POST",headers:{Origin:daemon.origin,Authorization:`Bearer ${daemon.token}`,"Content-Type":"application/json"},body:JSON.stringify(envelope("command",{type,data}))});
+    const result=await response.json();assert.equal(result.kind,"event",JSON.stringify(result));return result.payload.data;
+  }
+  let current=await state();
+  const texture=current.project.scene.assets.find(a=>a.kind==="sprite"),mesh=current.project.scene.assets.find(a=>a.kind==="mesh");
+  const independent=glbFixture(d=>{d.materials[0].pbrMetallicRoughness.baseColorFactor=[.1,.8,.2,1];});
+  await command("asset.import",{id:saved.id,expectedSceneRevision:current.sceneRevision,name:"independent.glb",base64:independent.toString("base64")});
+  await page.locator("#workspace-refresh").click();
+  await page.waitForFunction(()=>document.querySelector("#asset-list").options.length===3);
+  await page.locator("#asset-list").selectOption(mesh.id);await page.locator("#asset-texture").selectOption(texture.id);
+  await page.locator("#asset-bind").click();
+  await page.waitForFunction(()=>document.querySelector("#asset-job-status").textContent==="Import completed"&&!document.querySelector("#asset-bind").disabled);
+  const before=await state(),other=before.project.scene.assets.find(a=>a.name==="independent.glb");
+  const beforeImage=await page.locator("#viewport").screenshot({path:join(evidence,"before-update.png")});
+  const blue=new PNG({width:32,height:32});for(let i=0;i<blue.data.length;i+=4)blue.data.set([20,40,245,255],i);
+  const source=PNG.sync.write(blue);
+  const pageIdentity=await page.evaluate(()=>{globalThis.m3PageIdentity=crypto.randomUUID();return globalThis.m3PageIdentity;});
+  // Use a second API client: event polling must refresh the existing editor without navigation.
+  let job=(await command("asset.job.start",{id:saved.id,expectedSceneRevision:before.sceneRevision,operation:"replace",assetId:texture.id,name:"blue.png",base64:source.toString("base64")})).job;
+  for(let i=0;i<200&&["queued","running"].includes(job.status);i++){await new Promise(r=>setTimeout(r,50));job=(await command("asset.job.get",{id:saved.id,jobId:job.id})).job;}
+  assert.equal(job.status,"completed",JSON.stringify(job));assert.deepEqual(new Set(job.build.rebuilt),new Set([texture.id,mesh.id]));assert.deepEqual(job.build.unchanged,[other.id]);
+  await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Unsaved"));
+  // Wait for the new blue texture on both sprite and mesh, not just an updated document.
+  let updatedImage;let bluePixels=0;
+  for(let tries=0;tries<100;tries++) {
+    updatedImage=await page.locator("#viewport").screenshot();const data=pixels(updatedImage).data;bluePixels=0;
+    for(let i=0;i<data.length;i+=4)if(data[i+2]>100&&data[i+2]>data[i]*2&&data[i+2]>data[i+1]*2)bluePixels++;
+    if(bluePixels>40000)break;await new Promise(r=>setTimeout(r,100));
+  }
+  assert.ok(bluePixels>40000,`Expected sprite and dependent mesh to change: ${bluePixels} blue pixels`);
+  assert.notDeepEqual(pixels(updatedImage).data,pixels(beforeImage).data);await writeFile(join(evidence,"after-update.png"),updatedImage);
+  assert.equal(await page.evaluate(()=>globalThis.m3PageIdentity),pageIdentity);
+  current=await state();assert.deepEqual(current.project.scene.assets.map(a=>a.id),before.project.scene.assets.map(a=>a.id));assert.equal(current.project.scene.assets.find(a=>a.id===other.id).buildKey,other.buildKey);
+  const why=await command("asset.explain",{id:saved.id,assetId:texture.id});assert.deepEqual(why.whatUses.assets,[mesh.id]);assert.equal(why.whatUses.entities.length,2);
+  await page.locator("#scene-save").click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);
+  const updated=(await state()).project;
+  await page.locator("#project-close").click();await page.waitForFunction(()=>document.querySelectorAll("#entities button").length===0);
+  await daemon.close();daemon=await startServer({projectRoot:root});await page.goto(daemon.editorUrl);await page.locator("#project-list").selectOption(saved.id);await page.locator("#project-open").click();
+  await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
+  assert.deepEqual((await state()).project,updated);assert.deepEqual(pixels(await page.locator("#viewport").screenshot()).data,pixels(updatedImage).data);
+  report.pipeline={hotReloadWithoutNavigation:true,bluePixels,rebuilt:job.build.rebuilt,unchanged:job.build.unchanged,stableIds:true,restartPreserved:true,diagnostics:true};
   await page.goto(daemon.origin+"/?renderer=null#token="+daemon.token);
   await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.renderer==="null"&&k.meshes===2&&k.frame>=15;}catch{return false;}});
   assert.match(await page.locator("#gpu-state").textContent(),/Null Renderer/);

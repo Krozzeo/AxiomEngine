@@ -27,8 +27,8 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.12`: M0, M1 and M2 are complete. M2 passed 11/11 acceptance
-criteria; weighted whole-project completion is 18%. M3 has not started. See `docs/reports/M2_CURRENT_REPORT.md`
+Version `0.0.13`: M0, M1 and M2 are complete. M2 passed 11/11 acceptance
+criteria; weighted whole-project completion is 18%. M3 pipeline is implemented; CI/browser acceptance is pending. Read M3_ASSET_PIPELINE.md and M3_CURRENT_REPORT.md. See `docs/reports/M2_CURRENT_REPORT.md`
 and `axiom.project-state.json` for exact evidence and completion percentages.
 
 Implemented: authenticated loopback daemon; schema-backed atomic project
@@ -122,7 +122,7 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M3 following M3_PLAN.md and master specification section 122. Begin with
+Finish M3 CI/browser acceptance following M3_PLAN.md and master specification section 122. Begin with
 stable logical asset identity, dependency edges and deterministic cache keys on
 top of M2's existing immutable source store; do not duplicate that store.
 

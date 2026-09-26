@@ -32,7 +32,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let querySet=null,queryResolve=null,queryRead=null,sampleDone=false,readPending=false,gpuSample=null;
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
-  let textures=new Map(), assets=new Map();
+  let textures=new Map(), assets=new Map(), assetKeys=new Map();
   kernel.compileScene({entities:[]},new Map());
   function destroyResources(items) { for(const item of items) {item.vertex?.destroy();item.uniform?.destroy();} }
   function clearTextures() {for(const texture of textures.values())texture.destroy();textures=new Map();}
@@ -91,13 +91,13 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     const ticket=++generation;
     const project=snapshot.project;
     const scene=structuredClone(project?.scene??{entities:[]});
-    if(currentProject!==project?.id) { assets=new Map(); }
+    if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
     const referenced=new Set(scene.entities.map(entity=>entity.renderable?.assetId));
     let totalVertices=0;
     for(const metadata of (scene.assets??[]).filter(asset=>referenced.has(asset.id))) {
-      let asset=assets.get(metadata.id);
-      if(!asset) {asset=await loadAsset(project.id,metadata.id);if(ticket!==generation||disposed)return;assets.set(metadata.id,asset);}
+      let asset=assetKeys.get(metadata.id)===(metadata.buildKey??metadata.id)?assets.get(metadata.id):null;
+      if(!asset) {asset=await loadAsset(project.id,metadata.id);if(ticket!==generation||disposed)return;assets.set(metadata.id,asset);assetKeys.set(metadata.id,metadata.buildKey??metadata.id);}
       totalVertices+=(asset.kind==="sprite"?6:asset.vertexCount)*scene.entities.filter(entity=>entity.renderable?.assetId===metadata.id).length;
       if(totalVertices>300000)throw new Error("AX_SCENE_0006: scene exceeds 300000 vertices");
       localAssets.set(metadata.id,asset);

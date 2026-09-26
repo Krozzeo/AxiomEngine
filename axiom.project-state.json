@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-09-26",
-  "engineVersion": "0.0.12",
-  "activeMilestone": 2,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.13",
+  "activeMilestone": 3,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 18,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -24,7 +24,7 @@
       "percent": 100
     },
     "3": {
-      "status": "not_started",
+      "status": "in_progress",
       "percent": 0
     }
   },
@@ -158,19 +158,9 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
-      "passed": true,
-      "status": "completed",
-      "version": "0.0.12",
-      "commit": "96386db8ab406eb29d90f91c41f109377915b40d",
-      "runId": 36249049412,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412",
-      "jobs": [
-        "bootstrap (ubuntu-latest)",
-        "bootstrap (windows-latest)",
-        "rust",
-        "csharp-wasm-spike",
-        "browser-m2"
-      ]
+      "passed": false,
+      "status": "pending",
+      "version": "0.0.13"
     },
     "m2PersistenceRemoteCi": {
       "passed": true,
@@ -221,6 +211,21 @@
       "redPixels": 25815,
       "greenPixels": 14850,
       "runId": 36249049412
+    },
+    "m2RemoteCi": {
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.12",
+      "commit": "96386db8ab406eb29d90f91c41f109377915b40d",
+      "runId": 36249049412,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike",
+        "browser-m2"
+      ]
     }
   },
   "blockedChecks": [],
@@ -247,7 +252,10 @@
     "docs/architecture/SCENE_EDITOR.md",
     "docs/reports/M2_CURRENT_REPORT.md",
     "docs/architecture/M2_BETA.md",
-    "docs/architecture/M3_PLAN.md"
+    "docs/architecture/M3_PLAN.md",
+    "docs/architecture/M3_ASSET_PIPELINE.md",
+    "docs/reports/M3_CURRENT_REPORT.md",
+    "docs/adr/0017-stable-asset-source-and-derived-identity.md"
   ],
-  "nextTask": "Begin M3 per docs/architecture/M3_PLAN.md: stable logical asset IDs, dependency graph and deterministic derived-cache keys atop existing immutable sources. M2 is complete. PR #2 remains stacked on unmerged PR #1."
+  "nextTask": "Complete M3 CI and actual browser hot-reload acceptance; fix failures before milestone closure. No partial release."
 }

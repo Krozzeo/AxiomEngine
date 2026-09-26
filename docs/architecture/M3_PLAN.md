@@ -1,6 +1,6 @@
 # M3 — Asset Pipeline
 
-Status: not started. Source: master specification section 122.
+Status: implemented candidate; CI/browser acceptance pending. Source: master specification section 122.
 M2 is complete; this is the next milestone.
 
 ## Goal

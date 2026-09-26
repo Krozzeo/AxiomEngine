@@ -22,6 +22,7 @@ function log(level, code, message, data = null) {
   body.textContent = `${code} · ${message}${data ? ` · ${JSON.stringify(data)}` : ""}`;
   item.append(time, body);
   logs.prepend(item);
+  while(logs.children?.length>256)logs.lastElementChild.remove();
 }
 
 async function api(path, options = {}) {
@@ -104,6 +105,16 @@ async function boot() {
     }
     log("info", "AX_PROTOCOL_0004", "Capability negotiation completed", handshake.server);
     await projectEditor.connect(handshake.capabilities);
+    if(handshake.capabilities.includes("command.asset.job.start")) {
+      let sequence=0,stopped=false;
+      addEventListener("pagehide",()=>{stopped=true;},{once:true});
+      const poll=async()=>{try{
+        const {events}=await api(`/v1/events?since=${sequence}`);
+        for(const event of events)sequence=Math.max(sequence,event.payload.sequence);
+        if(events.some(e=>e.payload.type==="asset.jobFinished"&&e.payload.data.status==="completed"))await projectEditor.refreshAssets();
+      }catch(error){if(!stopped)reportError(error);}finally{if(!stopped)setTimeout(poll,750);}};
+      void poll();
+    }
   } catch (error) {
     connection.textContent = "Disconnected";
     connection.className = "status error";

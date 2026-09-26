@@ -9,7 +9,7 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M2</span>
+      <span class="badge">M3</span>
       <span id="connection" class="status pending">Connecting…</span>
     </header>
     <main class="workspace">
@@ -28,10 +28,16 @@
           <button id="workspace-refresh" disabled>Refresh workspace</button>
           <button id="project-close" disabled>Close project</button>
           <h2>Assets</h2>
-          <label for="asset-file">PNG image or GLB model · up to 8 MiB</label>
-          <input id="asset-file" type="file" accept=".png,.glb" disabled>
+          <label for="asset-file">PNG, GLB or PCM WAV · up to 8 MiB</label>
+          <input id="asset-file" type="file" accept=".png,.glb,.wav" disabled>
           <button id="asset-import" disabled>Import asset</button>
           <select id="asset-list" aria-label="Project assets"></select>
+          <button id="asset-replace" disabled>Replace selected source</button>
+          <label for="asset-texture">Mesh texture dependency</label><select id="asset-texture"></select>
+          <button id="asset-bind" disabled>Use texture on selected mesh</button>
+          <button id="asset-explain" disabled>Explain selected asset</button>
+          <p id="asset-job-status" role="status"></p><button id="asset-cancel" disabled>Cancel import</button>
+          <pre id="asset-explanation"></pre>
           <button id="asset-place" disabled>Place selected asset</button>
           <label for="camera-projection">Camera</label>
           <select id="camera-projection" disabled><option value="perspective">Perspective · 3D</option><option value="orthographic">Orthographic · 2D</option></select>

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.13 — M3 Asset Pipeline candidate
+
+- Stable asset source revisions, explicit texture dependencies and versioned derived cache.
+- Background imports, bounded jobs, cancellation and revision-safe publication.
+- PCM WAV source metadata, resource explanations and editor hot reload.
+- CI/browser acceptance pending.
+
 ## 0.0.12 — M2 Beta Foundation complete
 
 - PNG/static GLB imports, content-hashed project assets and placement commands.

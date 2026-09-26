@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-09-22",
+  "updatedAt": "2026-09-26",
   "engineVersion": "0.0.12",
   "activeMilestone": 2,
-  "milestoneStatus": "in_progress",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 18.2,
-    "wholeProjectPercent": 12.3,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 18,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -20,8 +20,12 @@
       "percent": 100
     },
     "2": {
-      "status": "in_progress",
-      "percent": 18.2
+      "status": "complete",
+      "percent": 100
+    },
+    "3": {
+      "status": "not_started",
+      "percent": 0
     }
   },
   "implementation": {
@@ -33,9 +37,9 @@
     "frameProfiler": "verified_windows_webgpu_and_null",
     "projectPersistence": "verified_bootstrap_http_restart",
     "sceneEditor": "verified_controller_and_http",
-    "assetImport": "implemented_png_static_glb",
-    "projectSceneRendering": "implemented_browser_gate_pending",
-    "playMode": "implemented_isolated_runtime"
+    "assetImport": "verified_png_static_glb",
+    "projectSceneRendering": "verified_chromium_software_webgpu",
+    "playMode": "verified_isolated_runtime"
   },
   "verified": {
     "nodeTests": {
@@ -70,7 +74,7 @@
       "testsPassed": 24,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "Linux agent workspace; Rust 1.90.0; 0.0.12 candidate"
+      "evidenceEnvironment": "Linux local and GitHub CI; Rust 1.90.0; 0.0.12"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -154,9 +158,19 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
-      "passed": false,
-      "status": "pending_publication",
-      "version": "0.0.12"
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.12",
+      "commit": "96386db8ab406eb29d90f91c41f109377915b40d",
+      "runId": 36249049412,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412",
+      "jobs": [
+        "bootstrap (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "rust",
+        "csharp-wasm-spike",
+        "browser-m2"
+      ]
     },
     "m2PersistenceRemoteCi": {
       "passed": true,
@@ -192,6 +206,21 @@
         "rust",
         "csharp-wasm-spike"
       ]
+    },
+    "m2BrowserAcceptance": {
+      "passed": true,
+      "criteriaPassed": 11,
+      "criteriaTotal": 11,
+      "environment": "Chromium 141, Ubuntu CI, Xvfb and SwiftShader software Vulkan",
+      "samePixelsAfterDaemonRestart": true,
+      "playAuthoringIsolation": true,
+      "effectiveControlsDisabledDuringPlay": true,
+      "nullParity": true,
+      "pageErrors": 0,
+      "visualReview": "CI Play screenshot reviewed",
+      "redPixels": 25815,
+      "greenPixels": 14850,
+      "runId": 36249049412
     }
   },
   "blockedChecks": [],
@@ -217,7 +246,8 @@
     "docs/architecture/PROJECT_PERSISTENCE.md",
     "docs/architecture/SCENE_EDITOR.md",
     "docs/reports/M2_CURRENT_REPORT.md",
-    "docs/architecture/M2_BETA.md"
+    "docs/architecture/M2_BETA.md",
+    "docs/architecture/M3_PLAN.md"
   ],
-  "nextTask": "Run full browser CI acceptance for the M2 candidate, resolve failures, and close M2 only when all eleven criteria pass. No partial deliverable unless blocked or a user-only test is necessary."
+  "nextTask": "Begin M3 per docs/architecture/M3_PLAN.md: stable logical asset IDs, dependency graph and deterministic derived-cache keys atop existing immutable sources. M2 is complete. PR #2 remains stacked on unmerged PR #1."
 }

@@ -1,6 +1,6 @@
 # M2 beta implementation (0.0.12)
 
-Status: implemented, full browser acceptance pending. See M2_CURRENT_REPORT.md.
+Status: complete; all eleven acceptance points passed in Chromium CI. See ../reports/M2_CURRENT_REPORT.md.
 
 ## End-to-end flow
 
@@ -74,6 +74,9 @@ in Chromium with software WebGPU, verifies actual sprite/mesh pixel colors,
 compares screenshots byte-for-byte after restart/reopen, checks Play isolation,
 and checks Null item parity. Install its browser with
 `npx playwright install --with-deps chromium` on a supported CI machine.
+On Linux CI, install `xvfb xauth libvulkan1 mesa-vulkan-drivers` and run
+`AXIOM_HEADLESS=false xvfb-run -a -s "-screen 0 1440x1000x24" npm run test:browser`.
+This uses a virtual display with software Vulkan; physical GPU performance is not measured.
 Evidence is written to `.axiom/browser-evidence` and uploaded by CI.
 
 GLB interpretation follows the Khronos glTF 2.0 specification:

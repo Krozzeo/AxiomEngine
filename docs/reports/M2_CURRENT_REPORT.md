@@ -1,71 +1,78 @@
-# M2 current acceptance candidate — 0.0.12
+# M2 — Axiom Beta Foundation: closure report
 
-Implementation of the full PNG/GLB, runtime/rendering and Play flow is complete.
-38 local Node tests and 24 Rust tests pass. The actual Chromium pixel/restart gate
-is pending; retain 2/11 credited acceptance points until it passes. See M2_BETA.md.
-Do not treat the historical 0.0.11 evidence below as the new renderer's proof.
-
-# M2 — Axiom Beta Foundation: progress report
-
-Version 0.0.11. In progress, not a milestone closure.
+Version 0.0.12. Completed 2026-09-26. All 11 required acceptance points pass.
 
 ## Outcome
 
-The editor creates/opens projects, lists real entities and edits name, position
-and scale through commands. Scene undo/redo, dirty-state handling and explicit
-atomic save are implemented. IDs and transforms survive reopening and daemon
-restart. The viewport still displays the labelled M1 kernel demo.
+The editor creates projects, imports PNG images and static GLB models, places
+sprites/meshes, edits transforms, switches perspective/orthographic cameras and
+saves the composed scene. Closing and restarting the daemon preserves IDs,
+assets, transforms and exact rendered pixels. Play creates an isolated Rust/Wasm
+runtime; edits are disabled until Stop and authoring state remains unchanged.
+
+Project, Hierarchy, Inspector, Scene, Game and Console act on real state. Edits
+use revision-checked commands, causal events and bounded undo/redo. Sources use
+content hashes; project saves are atomic and scoped to project IDs. Simple
+materials, a directional light and depth testing support the 3D/2D beta scene.
 
 ## Acceptance matrix
 
-| # | Required user action | Status | Evidence or remaining work |
+| # | Required user action | Result | Executed evidence |
 | --- | --- | --- | --- |
-| 1 | Open Axiom | Passed | Static delivery, boot/handshake and real-Wasm editor tests; prior Windows browser evidence |
-| 2 | Create project | Passed | Editor controller drives real commands; HTTP persistence tests |
-| 3 | Import image and GLB | Blocked | Importers not implemented |
-| 4 | Place sprite | Blocked | Sprite authoring/rendering not implemented |
-| 5 | Place mesh | Blocked | Asset mesh authoring/rendering not implemented |
-| 6 | Move placed content | Blocked | Generic transforms work; imported sprite/mesh path remains unimplemented |
-| 7 | Save the composed scene | Blocked | Generic entities save; complete imported-content workflow remains unverified |
-| 8 | Close that project | Blocked | Full composed-scene workflow pending |
-| 9 | Reopen that project | Blocked | Generic entities reopen; full composed-scene workflow pending |
-| 10 | See the same scene | Blocked | Authoring-to-renderer extraction pending |
-| 11 | Enter Play | Blocked | Play isolation/runtime conversion pending |
+| 1 | Open Axiom | Passed | Chromium opens editor, connects and initializes WebGPU |
+| 2 | Create project | Passed | UI creates named project through Command Bus |
+| 3 | Import image and GLB | Passed | PNG and cube GLB uploaded through actual file input |
+| 4 | Place sprite | Passed | Sprite entity and colored image pixels verified |
+| 5 | Place mesh | Passed | Mesh entity, draw count and colored geometry verified |
+| 6 | Move them | Passed | Both positions edited; camera switched; pixels change |
+| 7 | Save | Passed | Saved state contains both imported entities |
+| 8 | Close | Passed | Project closes and hierarchy empties |
+| 9 | Open | Passed | Daemon restarts; stored project reopens with identical data |
+| 10 | See same scene | Passed | Reopened viewport RGBA equals saved viewport byte-for-byte |
+| 11 | Enter Play | Passed | At least 15 runtime frames, two draws, disabled edit fields, Stop preserves authoring |
 
 ## Automated evidence
 
-- npm run check: 34 Node tests passed, zero failures; 11 schema documents,
-  three architecture rules and M0 daemon parity checks passed.
-- npm run check:native: formatting and Clippy passed; 22 Rust tests passed.
-- Seven new tests cover scene history, conflicts, editor controls and HTTP restart.
-- Current-version remote CI is recorded separately in axiom.project-state.json;
-  historical CI results are not presented as this version's results.
+Implementation/test commit: `96386db8ab406eb29d90f91c41f109377915b40d`.
+[GitHub Actions run](https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412) passed all five jobs:
+Linux and Windows bootstrap, Rust, C# Wasm publish and browser-m2.
 
-## Manual tests
+- `npm run check`: 38 Node tests, zero failures; 11 schema documents,
+  three architecture rules and shared M0 daemon parity checks.
+- Rust: 24 tests, formatting, Clippy with warnings denied and core Wasm check.
+- Browser: 11/11 acceptance actions, exact pixel comparison after daemon restart,
+  Play isolation, effective field disabling and real Rust Null item parity.
+- Saved viewport contains 25,815 red-classified and 14,850 green-classified pixels.
+  These are visibility assertions for deterministic fixtures, not image-quality scores.
+- No uncaught page errors. CI captures scene.png, reopened.png, play-editor.png
+  and report.json in the m2-browser-evidence artifact. Play screenshot reviewed.
 
-None required for this slice: command behavior and controller interactions have
-equivalent automation. The existing hardware renderer is unchanged. Browser
-layout has not been screenshot-validated in this environment.
+The runner uses Chromium 141 with Xvfb and SwiftShader software Vulkan. Installing
+Mesa/Vulkan dependencies resolved the earlier runner device loss. Two test
+assertions were corrected (fieldset detection and invoking textContent); no
+rendering or persistence criterion was relaxed. This is not a physical GPU benchmark.
 
-## Limitations and next work
+## Manual tests requested
 
-Generic authoring entities are not rendered. Imports, sprites, meshes, Play,
-native daemon parity and schema code generation remain pending. One shared
-workspace per daemon has no automatic cross-tab event subscription. Drafts and
-history are memory-only until Save; history is bounded to 64 snapshots.
+None. The required user flow has equivalent automated browser coverage. No
+additional Windows hardware claim is inferred from software-rendered CI evidence.
 
-Next: compile authoring entities into the Rust runtime, then import/place image
-sprites and GLB meshes. Do not count generic entity persistence as proof of the
-complete imported-scene workflow.
+## Known limitations
 
-## Completion
+The verified M2 path is the Node bootstrap daemon. Native authoring parity and
+general schema code generation remain unimplemented. Imports support PNG and a
+bounded static GLB subset; see ../architecture/M2_BETA.md. C# gameplay is M4;
+Play currently executes the static scene and engine clocks. Lighting is basic,
+not production PBR. One shared workspace per daemon has no automatic cross-tab
+subscription; drafts/history are memory-only until Save (64 history entries).
+Unused imported source files remain for the future asset pipeline's cleanup.
 
-M0: 100%. M1: 100%. M2: 2/11 = approximately 18.2%.
-Whole project: 5 + 6 + 7 × (2/11) = approximately 12.3%.
-Weights and reporting requirements: architecture/MILESTONE_REPORTING.md.
+## Completion and next milestone
 
-## Remote implementation evidence
+M0: 100%. M1: 100%. **M2: 11/11 = 100%.**
+Whole-project estimate: **5 + 6 + 7 = 18%** of the weighted roadmap.
+This measures accepted milestone scope, not elapsed time or feature count.
+Method: ../architecture/MILESTONE_REPORTING.md.
 
-CI passed all four jobs (Linux and Windows bootstrap, Rust, C# Wasm) on commit
-`35b2a20e7f0eadc317016a419c98e5e2e03781f2`:
-https://github.com/Krozzeo/AxiomEngine/actions/runs/35762835402
+Next is M3 Asset Pipeline; see ../architecture/M3_PLAN.md. PR #2 is ready for
+review and remains stacked on unmerged PR #1. This closure does not merge main.

@@ -1,102 +1,66 @@
 # Implementation status
 
-Last updated: 2026-09-22.
+Last updated: 2026-09-26. Version 0.0.12.
+M0, M1 and M2 are complete. M2: 11/11 acceptance criteria (100%).
+Weighted whole-project progress: 18%. M3 Asset Pipeline is next, not started.
 
-## Implemented and locally verified
+## Implemented and verified
 
-- dependency-free TypeScript-compatible editor shell;
-- secure loopback bootstrap daemon over HTTP/JSON;
-- protocol/schema/capability negotiation;
-- separate commands, events and structured errors;
-- correlation, trace, causation and message identity;
-- bounded event and trace retention;
-- demo mutation, revision check and undo;
-- atomic project-file primitive with traversal protection;
-- WebGPU capability probe, device-loss hook and triangle spike;
-- explicit Null Renderer behavior in engine interfaces;
-- Rust workspace source for core, diagnostics, renderer and daemon shell;
-- declarative schemas, architecture manifest and dependency checks;
-- architecture, security, protocol and ADR documentation;
-- automated Node integration/unit tests.
+- Secure loopback Node daemon with Origin/token checks and scoped file operations.
+- Versioned command envelopes, capability handshake, causal events/traces,
+  revisions, bounded history and stable resource identity.
+- Rust/Wasm core clocks, runtime instances, model/camera matrices and Null Renderer.
+- Project create/open/save/close; schema-backed documents and atomic persistence.
+- PNG/static GLB import, immutable content-hashed sources and sprite/mesh placement.
+- Project/Hierarchy/Inspector/Scene/Game/Console with real state, transform editing,
+  undo/redo, explicit dirty handling, perspective and orthographic cameras.
+- WebGPU project rendering: textured sprites, simple mesh materials, basic light,
+  depth testing, optional GPU timings, bounded diagnostics and device-loss fallback.
+- Play/Stop compiles an isolated runtime; edits are blocked and authoring is preserved.
+- Native Rust M0 HTTP/security adapter and shared protocol parity tests.
+- C# browser-Wasm publish spike; it does not execute gameplay in the editor.
 
-## Milestone 0 verification evidence
+## Current evidence
 
-M0 gates were executed on the documented Windows evidence machine and in GitHub
-Actions. During M1, Rust 1.90.0 was also installed in the agent workspace;
-the current 22 Rust tests, formatting, Clippy and Wasm target check pass locally.
-.NET validation remains the recorded M0 Windows/CI evidence.
+`npm run check` passes 38 Node tests, 11 schema documents, three architecture
+rules and M0 daemon parity checks. Rust passes 24 tests, formatting, Clippy with
+warnings denied and core Wasm compilation. Linux/Windows bootstrap, Rust,
+C# publish and actual Chromium acceptance all pass in CI:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/36249049412
+Implementation/test commit: `96386db8ab406eb29d90f91c41f109377915b40d`.
 
-On the Windows evidence machine, Rust 1.90.0 is installed and `axiom-core`
-passes `cargo check --target wasm32-unknown-unknown`. The first full native gate
-stopped at `cargo fmt --check`; its complete deterministic diff was applied in
-0.0.4. After the four Clippy fixes in 0.0.5, formatting, Clippy with denied
-warnings and all nine Rust tests passed. The native daemon then passed the
-Chrome protocol, isolation, command and health smoke flow. .NET SDK 10.0.400
-restored `wasm-tools` and published the C# browser-Wasm spike in Release with
-zero warnings/errors. `Cargo.lock` now fixes the 94 third-party packages and
-all compile/test gates enforce `--locked`.
+Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,
+visible imported assets, identical saved/reopened pixels after daemon restart,
+Play isolation, effective disabled controls and Null draw-count parity. The Play
+screenshot was reviewed. This is functional coverage, not physical GPU performance.
+Earlier user Windows screenshots establish the M1 hardware path; see M1_CURRENT_REPORT.md.
+No additional manual test is required for M2 closure.
 
-The managed browser used for visual QA cannot access this workspace's loopback
-server. A Windows 10 developer-machine run verified Chrome, WebGPU,
-cross-origin isolation, protocol negotiation, commands, Undo and the patched
-clean-extraction startup.
+## Known boundaries
 
-The native Rust daemon contains the HTTP adapter and Rust tests. Its source and
-CI build cover the same endpoints, security policy and command semantics as the
-bootstrap, with shared parity vectors consumed by Node and Rust tests. GitHub
-Actions CI #1 passed `bootstrap`, `rust` and `csharp-wasm-spike` for commit
-`16c065c` in 69 seconds.
+Node is the verified M2 beta path. Native daemon project/asset authoring, general
+schema code generation, asset dependency/rebuild pipeline, C# gameplay embedding,
+physics, production rendering and later milestone systems are not implemented.
+Supported import formats and resource limits are in M2_BETA.md. A shared daemon
+workspace has memory-only unsaved drafts and 64 history entries; saves persist
+explicitly. Preserve project JSON and its complete asset folder together.
 
-The C# spike validates publish-to-browser-Wasm only. Runtime embedding, engine
-interop, lifecycle and hot reload remain Milestone 4 work and require measured
-spike results before API lock-in.
+## Next work and reports
 
-## Next gates
+Follow M3_PLAN.md and master specification section 122: stable logical asset IDs,
+dependency graph, deterministic derived cache, background import jobs and hot reload.
+Changing a texture must rebuild only dependent resources without restarting the editor.
 
-1. Implement M2 authoring scene contract and project create/open/save/load.
-2. Route scene edits through Command Bus, events and undo/redo.
-3. Add image/GLB imports and 2D/3D runtime compilation, then Play Mode.
-4. Execute M2's eleven user-flow acceptance points; see M2_PLAN.md.
+- M0 evidence: ../reports/M0_CURRENT_REPORT.md.
+- M1 evidence: ../reports/M1_CURRENT_REPORT.md.
+- M2 acceptance and limits: ../reports/M2_CURRENT_REPORT.md and M2_BETA.md.
+- Completion weights and delivery rules: MILESTONE_REPORTING.md.
 
-## Release slices
+PR #2 remains stacked on unmerged PR #1. CI success does not imply main was merged.
+
+## Roadmap release slices
 
 - Technical Preview: M0–M2.
 - Agent-native Alpha: M3–M6.
 - Engine Beta: M7–M14.
 - Complete MVP/0.1: M15–M19.
-
-## M1 browser integration (0.0.9)
-
-The editor build compiles axiom-wasm in release mode. Sixteen Node tests execute
-real Wasm and the editor Null loop; twenty-two Rust tests pass. WebGPU now consumes
-Rust-projected mesh vertices. The changed GPU path now has user screenshot evidence (see the M1 report). See M1_KERNEL.md.
-
-
-## M1 closure
-
-User screenshots verified WebGPU and Null on Windows after the Cargo fix.
-CI #3 passed all jobs for 0ecbc4bb4c8576d0b716dd68740257f5df256f40.
-M1 is complete; M2 is not started. No new manual M1 checks are required.
-
-## M2 first slice — 0.0.10
-
-Bootstrap project persistence is implemented and locally verified by seven new
-tests, including a real daemon restart over HTTP (27 Node tests total). Project
-IDs, entity transforms and extension fields round-trip. Native daemon support,
-editor integration, importers and general runtime extraction remain pending.
-See PROJECT_PERSISTENCE.md. No M2 end-to-end acceptance step is closed yet.
-
-## M2 editor authoring — 0.0.11
-
-Project controls, generic entity hierarchy, name/position/scale editing and bounded
-scene undo/redo are implemented. Draft mutations and disk saves have separate
-revisions and conflict protection. 34 Node tests and 22 Rust tests pass locally.
-See SCENE_EDITOR.md and reports/M2_CURRENT_REPORT.md. Runtime scene rendering,
-imports, Play and native project support remain pending.
-
-## M2 complete-flow candidate — 0.0.12
-
-PNG/GLB import, content-hashed assets, sprite/mesh placement, Rust model/camera
-matrices, WebGPU project rendering, orthographic/perspective selection and isolated
-Play are implemented. 38 Node tests and 24 Rust tests pass locally. Full Chromium
-pixel/restart acceptance is pending; no milestone closure is claimed yet.

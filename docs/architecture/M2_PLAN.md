@@ -1,7 +1,7 @@
 # M2 — Axiom Beta Foundation
 
-Status: in progress (2/11 acceptance steps; approximately 18.2%). Source: master specification section 121.
-M0 and M1 are complete. See reports/M2_CURRENT_REPORT.md for executable evidence.
+Status: complete (11/11 acceptance steps; 100%). Source: master specification section 121.
+M0 and M1 are complete. See ../reports/M2_CURRENT_REPORT.md for executable evidence.
 
 ## Goal and acceptance
 
@@ -58,3 +58,11 @@ Project controls and generic entity editing are integrated with the Command Bus,
 explicit save and a 64-entry undo/redo history. SCENE_EDITOR.md defines the shared
 workspace and conflict behavior. Opening Axiom and creating projects are now
 proven acceptance points (2/11). Next: runtime extraction and imported content.
+
+## Closure — 0.0.12
+
+All slices and eleven acceptance actions are complete on the Node beta path.
+Chromium CI verifies actual pixels, daemon restart, Play isolation and Null parity.
+The earlier slice descriptions above are historical. Native authoring parity and
+general schema code generation are not claimed. See M2_BETA.md and the closure
+report for exact scope and evidence. Next: M3_PLAN.md.

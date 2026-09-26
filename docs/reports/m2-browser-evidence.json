@@ -1,0 +1,26 @@
+{
+  "criteria": [
+    "open Axiom",
+    "create project",
+    "import image and GLB",
+    "place sprite",
+    "place mesh",
+    "move both objects",
+    "save",
+    "close",
+    "reopen",
+    "see same scene",
+    "Play without changing authoring state"
+  ],
+  "backend": "WebGPU · project scene · GPU timestamps",
+  "pixelEvidence": {
+    "red": 25815,
+    "green": 14850
+  },
+  "nullParity": true,
+  "passed": true,
+  "version": "0.0.12",
+  "commit": "96386db8ab406eb29d90f91c41f109377915b40d",
+  "runId": 36249049412,
+  "environment": "Chromium 141 / Xvfb / SwiftShader software Vulkan"
+}

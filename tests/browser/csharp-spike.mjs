@@ -13,7 +13,7 @@ const begin=performance.now();
 execFileSync('dotnet',['publish','spikes/csharp-wasm/Axiom.ScriptSpike.csproj','-c','Release','-o',output,'--disable-build-servers',...(mode==='aot'?['-p:RunAOTCompilation=true','-p:WasmBuildNative=true']:[])],{stdio:'inherit',timeout:mode==='aot'?600000:180000});
 const publishMs=performance.now()-begin;
 async function files(path){const result=[];for(const item of await readdir(path,{withFileTypes:true})){const p=join(path,item.name);result.push(...item.isDirectory()?await files(p):[p]);}return result;}
-const paths=await files(output),boot=paths.find(p=>p.endsWith('/_framework/dotnet.js'));assert.ok(boot,'Publish must include _framework/dotnet.js');
+const paths=await files(output),boot=paths.find(p=>p.replaceAll('\\','/').endsWith('/_framework/dotnet.js'));assert.ok(boot,'Publish must include _framework/dotnet.js');
 const framework=dirname(boot);let rawBytes=0,gzipBytes=0;
 for(const p of paths.filter(p=>!p.endsWith('.gz')&&!p.endsWith('.br'))){const b=await readFile(p);rawBytes+=b.length;gzipBytes+=gzipSync(b).length;}
 // Register through addEventListener: .NET 10 treats a truthy global onmessage as a pthread worker.

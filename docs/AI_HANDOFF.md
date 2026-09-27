@@ -27,10 +27,10 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.13`: M0–M3 are complete. M3 passed 7/7 acceptance criteria;
-weighted whole-project completion is 24%. M4 has not started. Read
-M3_ASSET_PIPELINE.md and ../reports/M3_CURRENT_REPORT.md for the current contract. See `docs/reports/M2_CURRENT_REPORT.md`
-and `axiom.project-state.json` for exact evidence and completion percentages.
+Version `0.0.14`: M0–M4 acceptance is complete. M4 passed 8/8 criteria;
+weighted whole-project completion is 30%. M5 AI Control Layer is next.
+Read `M4_SCRIPT_RUNTIME.md`, `M4_CURRENT_REPORT.md` and machine-readable state
+for contracts, evidence and limitations. Final release CI includes Windows C#.
 
 Implemented: authenticated loopback daemon; schema-backed atomic project
 persistence; shared authoring workspace; bounded undo/redo; PNG and static GLB
@@ -39,28 +39,31 @@ editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
 simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-42 Node tests and 24 Rust tests pass. All five CI jobs passed on
-`869af6d1b9d2525a754b8e65a43e286b83a41156`
-([implementation evidence](https://github.com/Krozzeo/AxiomEngine/actions/runs/36268402446)).
-M2 regressions and M3 browser hot reload both pass. Local targeted Node tests
-also pass; this session's sandbox could not launch rustc, so current clean builds
-and pinned Rust/.NET checks are evidenced by CI. The five CI jobs cover Linux and Windows
-bootstrap, Rust, C# Wasm publish and actual Chromium rendering. Current browser
-validation uses software Vulkan under Xvfb, not a physical GPU benchmark.
-Earlier Windows WebGPU/Null screenshots establish M1 hardware evidence only.
+53 Node tests, 25 Rust tests, 13 schema documents and three architecture rules
+pass. M4 implementation CI run 36354561101 passed all nine jobs, including the
+complete M2/M3/M4 Chromium flow and development/AOT C# execution. Reports live
+under `docs/reports/m4-*`. This environment cannot launch the installed rustc
+or .NET, so clean builds are proven in CI; do not claim a local full build.
+Browser rendering uses software Vulkan under Xvfb, not physical GPU benchmarks.
+The actual editor and C# movement screenshots were reviewed. Earlier Windows
+WebGPU/Null screenshots establish M1 hardware evidence only.
 
 The Node bootstrap is the M2 authoring path. Native Rust daemon capabilities
 cover the M0 HTTP/protocol/security surface and shared parity corpus; native
 project authoring is not implemented. The editor gates controls by capabilities.
-C# is a successful publish spike, not gameplay execution (planned for M4).
+C# executes in a disposable worker with generated Transform bindings,
+Input, movement, runtime spawning and lifecycle logs. Editor source compilation,
+error locations, cancel/stale protection, safe reset/reload and saved bundles
+are implemented. Native Rust contains an internal named compiler capability;
+it is not exposed as a native project/editor HTTP API.
 The M3 Asset DB, stable source revisions, dependency cache, worker jobs,
 PNG/GLB/PCM WAV imports, hot reload and resource diagnostics are implemented.
-General schema code generation, transactional COW workspaces and later engine
+Broader schema code generation, transactional COW workspaces and later engine
 systems remain future work.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
 unsaved edits/history are memory-only. Assets support PNG and a bounded static
-GLB subset. Preserve the complete `.axiom/projects` directory, including asset
+GLB subset. Preserve the complete `.axiom/projects` directory, including asset and script
 folders, when moving snapshots. IDs are stable; paths are never client authority.
 
 ## Repository map
@@ -70,6 +73,8 @@ folders, when moving snapshots. IDs are stable; paths are never client authority
 - `daemon/axiom-daemon/`: native Rust daemon shell and security policy.
 - `engine/core/`: IDs, clocks, resource/jobs primitives and authoring runtime matrices.
 - `engine/assets/`: bounded PNG/GLB/PCM WAV importers and fixed worker entry.
+- `engine/scripting/`: generated C# SDK, worker lifecycle and validated operations.
+- `daemon/bootstrap/scripting/`: fixed compiler capability and bundle validation.
 - `engine/wasm/`: ABI v1 exports and host wrapper (ADR-0016).
 - `engine/diagnostics/`: bounded trace primitives.
 - `engine/renderer/`: renderer boundary and Null Renderer.
@@ -90,7 +95,7 @@ folders, when moving snapshots. IDs are stable; paths are never client authority
 | Native HTTP adapter | `NATIVE_DAEMON.md`, `PROTOCOL_V1.md`, shared parity vectors |
 | Renderer/WebGPU | ADR-0002, M2_BETA.md, renderer crate, scene-renderer.mjs |
 | Assets/projects | M2_BETA.md, PROJECT_PERSISTENCE.md, M3_PLAN.md, schema ADR-0010 |
-| C# scripting | ADR-0005 and `spikes/csharp-wasm/README.md` |
+| C# scripting | ADR-0005, M4_SCRIPT_RUNTIME.md, canonical component metadata and generated bindings |
 | Milestone closure | `MILESTONE_REPORTING.md` and current report |
 
 ## Commands
@@ -129,11 +134,12 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M4 per M4_PLAN.md and master specification section 123. Establish measured
-browser ScriptRuntime integration from the .NET publish spike before selecting
-packaging and lifecycle. Follow SECURITY.md before enabling fixed compiler tasks.
-Generate bindings from canonical metadata; do not duplicate hand-written schemas.
+Begin M5 per M5_PLAN.md and master specification section 124. Inventory real
+semantic capabilities and generate tool schemas before implementing the initial
+MCP adapter. Automate the external-agent scene workflow. Preserve revisions,
+authority boundaries, runtime isolation and bounded context. M5 weighs 6%.
 
+M4 branch `codex/m4-csharp-gameplay` is stacked on M3, not main.
 PR #3 (M3) is stacked on PR #2 (M2), itself on PR #1 (M1). They remain unmerged;
 review/integrate in order. Branch CI success does not mean main was updated.
 
@@ -160,7 +166,9 @@ Use a sibling milestone directory under the user's existing project parent.
 Run `npm.cmd ci`, then `npm.cmd run dev`. Build discovers Cargo through PATH,
 CARGO_HOME/bin and USERPROFILE/.cargo/bin. The pinned rustup toolchain and Wasm
 target must be available. Do not copy node_modules, target or dist from another
-snapshot; preserve `.axiom/projects` with all asset folders for existing projects.
+snapshot; preserve `.axiom/projects` with all asset and script folders for existing projects.
+For C# install .NET 10 SDK and run `dotnet workload install wasm-tools` once.
+The default Development mode is the rapid iteration path; AOT is opt-in.
 
 ## Required progress communication
 

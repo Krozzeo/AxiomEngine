@@ -110,7 +110,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
     scriptRuntime=null;
     if(oldRuntime) {
-      try {await scriptFlight;const result=await oldRuntime.execute({action:"stop",generation:oldGeneration,entities:oldScene.entities,keys:[]});for(const op of result.operations??[])if(op.kind==="log")reportScriptLog(op.message,{generation:oldGeneration,phase:"stop"});}
+      try {await scriptFlight;const result=await oldRuntime.execute({action:"stop",generation:oldGeneration,entities:oldScene.entities,keys:[]});for(const op of result.operations??[])if(op.kind==="log")reportScriptLog(op.message,{generation:oldGeneration,phase:"stop",buildId:oldScene.script?.build.id});}
       catch(error){if(!oldRuntime.closed)reportError(error);}finally{oldRuntime.dispose();}
     }
     if(ticket!==generation||disposed)return;
@@ -135,7 +135,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         await nextRuntime.initialize(`/script-runtime/${project.id.slice(10)}/${scene.script.build.id}/dotnet.js`);
         const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:scene.entities,keys:[],attachments:scene.script.attachments});
         const result=applyScriptOperations(scene,packet,ticket);scene=result.scene;nextSpawned=result.spawned;
-        for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start"});
+        for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start",buildId:scene.script.build.id});
       }
       const draws=replacement.compileScene(scene,localAssets);
       pending=await buildResources(draws,ticket);
@@ -157,8 +157,9 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(playing&&scriptRuntime) {
         const active=scriptRuntime;
         try {
+          const scriptStart=performance.now();
           scriptFlight=active.execute({action:"step",generation:ticket,entities:runtimeScene.entities,keys:[...keys],delta});
-          const packet=await scriptFlight;
+          const packet=await scriptFlight;diagnostic.scriptRoundTripMs=performance.now()-scriptStart;
           if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
           const result=applyScriptOperations(runtimeScene,packet,ticket,spawned);
           if(result.changedTopology) {
@@ -166,7 +167,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
             try {const draws=candidate.compileScene(result.scene,assets);next=await buildResources(draws,ticket);if(ticket!==generation||disposed)throw new Error("Runtime generation changed");kernel.dispose();kernel=candidate;destroyResources(resources);resources=next;}
             catch(error){candidate.dispose();destroyResources(next);throw error;}
           }else kernel.setPositions(result.positions);
-          runtimeScene=result.scene;spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",trace:trace.toString()});
+          runtimeScene=result.scene;spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
         finally{scriptFlight=null;}
       }

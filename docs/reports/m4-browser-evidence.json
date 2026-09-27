@@ -1,0 +1,19 @@
+{
+  "criteria": [
+    "compile generated SDK and attach C#",
+    "Transform and Input move rendered Rust world",
+    "spawn runtime entity",
+    "authoring isolation",
+    "compile error locations and last good runtime",
+    "edit compile reload without page navigation",
+    "causal lifecycle logs",
+    "saved script bundle reopens",
+    "infinite script terminated and editor remains responsive"
+  ],
+  "passed": true,
+  "backend": "WebGPU \u00b7 project scene \u00b7 GPU timestamps",
+  "errors": [],
+  "runId": 36354561101,
+  "commit": "62a7c66ed9fba6008c3c16e52733e7bc80df6824",
+  "visualReview": "Actual CI editor and C# movement screenshots reviewed"
+}

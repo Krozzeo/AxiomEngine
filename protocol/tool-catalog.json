@@ -432,6 +432,86 @@
           "expectedSceneRevision"
         ]
       }
+    },
+    {
+      "name": "script.compile",
+      "description": "Compile fixed Game.cs and attach it to current project entities; commits only at the captured scene revision.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer"
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "attachments": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string"
+            }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "development",
+              "aot"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "source",
+          "attachments"
+        ]
+      }
+    },
+    {
+      "name": "script.job.get",
+      "description": "Read bounded compiler status and source diagnostics.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "script.job.cancel",
+      "description": "Cancel the active owned compiler process without replacing the current build.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "jobId"
+        ]
+      }
     }
   ]
 }

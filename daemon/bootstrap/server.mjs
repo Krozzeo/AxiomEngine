@@ -116,7 +116,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.13" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.14" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -126,7 +126,7 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.13" },
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.14" },
           capabilities: ["command.script.compile", "command.script.job.get", "command.script.job.cancel", "command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list", "command.scene.get", "command.scene.entity.create", "command.scene.entity.update", "command.scene.entity.delete", "command.scene.undo", "command.scene.redo", "command.scene.save", "command.asset.job.start", "command.asset.job.get", "command.asset.job.cancel", "command.asset.explain", "command.asset.import", "command.asset.get", "command.scene.asset.place", "command.scene.camera.update", "command.play.start", "command.play.stop", "command.project.close"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });

@@ -1,33 +1,87 @@
-# M4 ScriptRuntime integration contract (in progress)
+# M4 ScriptRuntime integration
 
-M4 is not complete. Browser spike evidence is required before the SDK expands.
+Status: all eight acceptance criteria passed. See
+`docs/reports/M4_CURRENT_REPORT.md` for evidence and limitations.
 
-## Acceptance matrix
+## Developer workflow
 
-1. Generated C# bindings and capability-scoped, bounded daemon compilation.
-2. C# reads Transform and moves a runtime entity through the Rust/Wasm boundary.
-3. C# reads keyboard Input supplied by the editor.
-4. C# spawns an entity without persisting it into authoring state.
-5. Script component lifecycle and causal logs/errors work in Play.
-6. Edit → compile → execute replaces a runtime generation without editor reload.
-7. Compile/runtime failures retain authoring and preserve the last good build;
-   stale handles/responses cannot mutate a replacement runtime generation.
-8. Development build and release AOT foundation have executed, measured evidence.
+Install .NET 10 SDK and `dotnet workload install wasm-tools`. Start the usual
+`npm run dev` editor. Create/open a project, select an entity, edit `Game.cs` in
+Inspector and choose **Compile & attach**. Play executes `Game.GameScript`.
+The included example reads Transform, clones the attached entity at an offset,
+logs lifecycle messages and moves the original with Left/Right arrow keys.
+Keyboard input is ignored while typing in editor fields. Stop discards runtime
+positions and spawned entities. Save persists source, attachments and build ID.
 
-## Proposed isolation
+Compilation during Play is supported. A successful build creates a new worker
+and resets Play from the authoring scene; it does not preserve script fields or
+runtime entities. Compilation failure leaves the previous source/build and
+running worker intact. Runtime exceptions and two-second call timeouts stop the
+worker, preserve authoring data and leave the editor responsive. Accepted source
+edits remain undoable after Stop; runtime failure does not silently erase them.
 
-ScriptRuntime runs .NET in a dedicated module worker. The daemon compiles only a
-fixed project template containing generated bindings, a fixed host and Game.cs.
-Clients supply C# source and authoring entity IDs, not compiler paths/arguments,
-MSBuild files, packages or filesystem paths. Processes have output/time limits,
-a fixed working directory and cancellation. Compiled artifacts are immutable.
+## Generated contract and API
 
-The browser supplies bounded entity/input snapshots and accepts validated output
-operations. Worker code receives no daemon command token and no DOM access.
-Worker replacement is the reload boundary; script static fields and runtime state
-reset. Compile failure leaves the current runtime/build available. Play Transform
-and spawn operations never write the authoring scene.
+`protocol/schema/transform.component.json` is canonical component metadata.
+`script-bindings.json` selects components and limits. Run
+`node scripts/generate-script-bindings.mjs` to regenerate C# Transform fields and
+runtime limits. `npm run check:bindings` rejects stale generated output.
 
-The scope is local, user-authored project scripts. Browser workers provide fault
-isolation and responsiveness; they are not a claim of a hardened hostile-code
-sandbox. Commands and bundle serving must retain project authority boundaries.
+The bounded M4 SDK provides `Script.OnStart`, `OnUpdate(deltaSeconds)`, `OnStop`,
+`Entity.Transform`, `Entity.SetPosition`, `Entity.Move`, `Entity.Spawn`,
+`Input.IsDown`, `Input.Axis`, and `Log.Info`. One GameScript type can be attached
+to up to 32 entities through the protocol; the editor attaches to the selected
+entity. Spawning clones an existing runtime entity, including its renderable.
+It does not attach another GameScript instance automatically. Script fields and
+static data reset on worker replacement. Arbitrary component reflection,
+packages, multiple source files and managed state migration are not M4 features.
+
+## Compilation authority
+
+`script.compile` takes project ID, expected scene revision, source, attachment
+IDs and mode (`development` or `aot`). It returns a job receipt. Poll
+`script.job.get` or consume `script.jobFinished`; `script.job.cancel` cancels it.
+The command token and exact Origin check remain required. Named capability
+`script.compile.csharp` has fixed executable/argument templates, no shell and no
+client-supplied paths, MSBuild files or packages. Fixed templates disable ambient
+Directory.Build.props/targets and build servers. Only Game.cs is user authored.
+
+Compilation occurs below the project UUID's `.scripts` directory. Files are
+created exclusively; compiler output and manifests reject links, traversal and
+non-ordinary files. Publication checks the captured scene revision. Project
+switch/save is blocked during compilation; other edits make its result stale.
+Job completion preserves the initiating correlation, trace and causation IDs.
+The native daemon has the equivalent internal named compiler capability; its
+HTTP surface remains M0-only and does not advertise editor/project commands.
+The Node bootstrap remains the supported editor adapter.
+
+Browser runtime files require a separate HttpOnly, SameSite=Strict cookie scoped
+to `/script-runtime/`, established only by an authenticated handshake. Serving
+also checks same-origin context and the active project's current build identity.
+No bearer token is passed to the worker or placed in runtime URLs. Source and
+MSBuild files are not served by that route. Preserve the complete project
+folder, including `.assets` and `.scripts`, when moving a saved project.
+
+## Runtime boundary and budgets
+
+.NET runs in a disposable module worker, using `addEventListener` rather than a
+global `onmessage` handler (dotnet/runtime#114918 sidecar detection). The host
+passes bounded snapshots and accepts operation batches only for its generation.
+All operations are validated before applying any to the runtime. Movement uses
+Rust/Wasm `axiom_scene_position`; spawning recompiles the bounded draw instances.
+GPU resources are replaced/disposed as needed. Authoring never receives Play
+position or spawn operations. Frame diagnostics include generation, positions,
+spawn count, fault and script round-trip latency. CPU elapsed frame timing also
+includes asynchronous worker turnaround; it is not a CPU-utilization measurement.
+
+Limits: source 64 KiB; compiler diagnostics 256 KiB; published output 128 MiB and
+1024 files; each served file 64 MiB; 64 job receipts; one compilation per workspace;
+180 seconds development / 600 seconds AOT; runtime startup 60 seconds and calls
+2 seconds; 1024 entities; 64 spawns per generation; 128 operations and 32 logs per
+call; 2048 characters per log; scene geometry 1024 draws / 300000 vertices.
+
+Worker isolation protects responsiveness; it is not a hardened sandbox for
+hostile downloaded code. The scope is local user-authored scripts. M4's AOT
+foundation is measured on Linux CI, not a claim of production packaging or
+cross-device performance. Build directories are retained for saved projects and
+undo; automatic compiler-cache garbage collection remains a limitation.

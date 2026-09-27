@@ -36,3 +36,13 @@ Mutation commands may include `expectedRevision`. A stale revision produces
 M0 retains bounded event and trace rings. Responses advertise their limits.
 Clients consume deltas by sequence and must tolerate expired diagnostic data.
 
+
+## M4 script commands
+
+`script.compile` validates project/scene revision and returns a bounded job
+receipt. `script.job.get` reads status and Game.cs line/column diagnostics;
+`script.job.cancel` terminates the owned process. `script.jobFinished` carries
+the originating correlation/trace/causation identities. Only a successful build
+on the captured revision updates source, attachments and build metadata. These
+capabilities are advertised by the Node editor adapter. Native HTTP remains M0.
+See M4_SCRIPT_RUNTIME.md and the canonical tool catalog for limits and schemas.

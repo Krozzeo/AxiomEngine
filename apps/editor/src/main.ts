@@ -57,7 +57,7 @@ function command(type, data = {}) {
 }
 
 function reportError(error) {
-  log("error", error.data?.payload?.code ?? error.data?.code ?? "AX_EDITOR_0001", error.message);
+  log("error", error.data?.payload?.code ?? error.data?.code ?? error.code ?? error.message?.match(/^AX_[A-Z]+_\d{4}/)?.[0] ?? "AX_EDITOR_0001", error.message);
 }
 async function sendCommand(type, data = {}) {
   const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
@@ -74,8 +74,9 @@ async function execute(type, data = {}) {
 }
 let unsavedScene = false;
 const projectEditor = mountProjectEditor({ document, send: sendCommand, reportError, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
+  const changed=!pendingSnapshot||pendingSnapshot.sceneRevision!==snapshot.sceneRevision||pendingSnapshot.project?.id!==snapshot.project?.id;
   pendingSnapshot=snapshot;
-  if(renderer) await renderer.setSnapshot(snapshot);
+  if(renderer&&changed) await renderer.setSnapshot(snapshot);
 } });
 addEventListener("beforeunload", event => {
   if (unsavedScene) { event.preventDefault(); event.returnValue = ""; }

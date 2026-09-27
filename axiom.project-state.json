@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-09-26",
-  "engineVersion": "0.0.13",
-  "activeMilestone": 3,
+  "updatedAt": "2026-09-27",
+  "engineVersion": "0.0.14",
+  "activeMilestone": 4,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 24,
+    "wholeProjectPercent": 30,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -28,6 +28,10 @@
       "percent": 100
     },
     "4": {
+      "status": "complete",
+      "percent": 100
+    },
+    "5": {
       "status": "not_started",
       "percent": 0
     }
@@ -35,7 +39,7 @@
   "implementation": {
     "nativeDaemonHttpAdapter": "verified_windows",
     "nodeBootstrapAdapter": "verified",
-    "csharpBrowserWasmSpike": "verified_publish",
+    "csharpBrowserWasmSpike": "verified_browser_development_and_aot",
     "engineKernel": "verified_native_and_real_wasm",
     "renderGraph": "verified_native",
     "frameProfiler": "verified_windows_webgpu_and_null",
@@ -44,14 +48,15 @@
     "assetImport": "verified_png_static_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
-    "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload"
+    "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload",
+    "csharpGameplay": "verified_editor_compile_reload_isolated_runtime"
   },
   "verified": {
     "nodeTests": {
-      "passed": 42,
+      "passed": 53,
       "failed": 0
     },
-    "schemaDocuments": 11,
+    "schemaDocuments": 13,
     "architectureRules": 3,
     "daemonStartup": true,
     "httpStaticDelivery": true,
@@ -76,10 +81,10 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 24,
+      "testsPassed": 25,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "Linux local and GitHub CI; Rust 1.90.0; 0.0.12"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M4 implementation"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -165,16 +170,20 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.13",
-      "commit": "869af6d1b9d2525a754b8e65a43e286b83a41156",
-      "runId": 36268402446,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36268402446",
+      "version": "M4 implementation before release version bump",
+      "commit": "62a7c66ed9fba6008c3c16e52733e7bc80df6824",
+      "runId": 36354561101,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36354561101",
       "jobs": [
         "bootstrap (ubuntu-latest)",
         "bootstrap (windows-latest)",
         "rust",
-        "csharp-wasm-spike",
-        "browser-milestones"
+        "csharp-wasm-spike (development)",
+        "csharp-wasm-spike (aot)",
+        "browser-milestones",
+        "script-boundaries (ubuntu-latest)",
+        "script-boundaries (windows-latest)",
+        "script-boundaries (macos-latest)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -256,6 +265,15 @@
       "diagnostics": true,
       "evidence": "docs/reports/m3-browser-evidence.json",
       "hardwarePerformanceMeasured": false
+    },
+    "m4Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "runId": 36354561101,
+      "evidence": "docs/reports/m4-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -286,7 +304,10 @@
     "docs/architecture/M3_ASSET_PIPELINE.md",
     "docs/reports/M3_CURRENT_REPORT.md",
     "docs/adr/0017-stable-asset-source-and-derived-identity.md",
-    "docs/architecture/M4_PLAN.md"
+    "docs/architecture/M4_PLAN.md",
+    "docs/architecture/M4_SCRIPT_RUNTIME.md",
+    "docs/reports/M4_CURRENT_REPORT.md",
+    "docs/architecture/M5_PLAN.md"
   ],
-  "nextTask": "Begin M4 C# Gameplay Runtime per docs/architecture/M4_PLAN.md. First establish measured real-browser ScriptRuntime integration from the existing publish spike; do not claim gameplay from publish success. PR #3 is stacked on unmerged M2 PR #2."
+  "nextTask": "Begin M5 AI Control Layer per docs/architecture/M5_PLAN.md after final M4 release verification. Generate discoverable schemas from actual semantic capabilities and automate the external-agent scene workflow. M4 is stacked on unmerged M3; do not merge main implicitly."
 }

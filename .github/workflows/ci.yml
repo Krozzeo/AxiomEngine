@@ -52,8 +52,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mode: [development, aot]
-    runs-on: ubuntu-latest
+        include:
+          - os: ubuntu-latest
+            mode: development
+          - os: ubuntu-latest
+            mode: aot
+          - os: windows-latest
+            mode: development
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -76,7 +82,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: csharp-runtime-spike-${{ matrix.mode }}
+          name: csharp-runtime-spike-${{ matrix.os }}-${{ matrix.mode }}
           path: .axiom/csharp-spike-evidence
 
   browser-milestones:

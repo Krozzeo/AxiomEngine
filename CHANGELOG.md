@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.14 — M4 C# Gameplay Runtime
+
+- Generated C# Transform bindings, lifecycle, Input, movement, spawning and logs.
+- Fixed daemon compilation with source diagnostics, cancellation and revision checks.
+- Disposable .NET workers, Play recompilation/reset, saved bundles and timeout recovery.
+- Actual development/AOT execution and complete Chromium editor acceptance.
+- 53 Node tests, 25 Rust tests and existing M2/M3 browser regressions pass.
+- M4: 100% (8/8); weighted whole-project completion: approximately 30%.
+
 ## 0.0.13 — M3 Asset Pipeline complete
 
 - Stable asset source revisions, explicit texture dependencies and versioned derived cache.

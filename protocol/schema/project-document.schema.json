@@ -215,6 +215,53 @@
         },
         "assetDbVersion": {
           "const": 1
+        },
+        "script": {
+          "type": "object",
+          "required": [
+            "source",
+            "attachments",
+            "build"
+          ],
+          "properties": {
+            "source": {
+              "type": "string",
+              "maxLength": 65536
+            },
+            "attachments": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "string",
+                "pattern": "^entity://[0-9a-f-]{36}$"
+              }
+            },
+            "build": {
+              "type": "object",
+              "required": [
+                "id",
+                "sourceHash",
+                "mode"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "sourceHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "aot"
+                  ]
+                }
+              }
+            }
+          }
         }
       }
     }

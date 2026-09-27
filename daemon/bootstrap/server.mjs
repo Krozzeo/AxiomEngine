@@ -70,7 +70,9 @@ function mime(path) {
 export async function startServer(options = {}) {
   await ensureEditorBuild();
   const token = options.token ?? randomBytes(32).toString("base64url");
-  const bus = new CommandBus({ projects: new SceneWorkspace(new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects"))) });
+  const workspace = new SceneWorkspace(new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects")));
+  const bus = new CommandBus({ projects: workspace });
+  const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();
   let requestCount = 0;
@@ -101,6 +103,18 @@ export async function startServer(options = {}) {
         }
       }
 
+      if(url.pathname.startsWith("/script-runtime/")) {
+        const origin=request.headers.origin;
+        if(request.method!=="GET"||(origin?!allowedOrigins.has(origin):request.headers["sec-fetch-site"]!=="same-origin")||!request.headers.cookie?.split("; ").includes("axiom-runtime="+runtimeCookie))return json(response,403,{code:"AX_SECURITY_0001"});
+        const match=url.pathname.match(/^\/script-runtime\/([0-9a-f-]{36})\/([0-9a-f-]{36})\/([a-zA-Z0-9_.-]+)$/);
+        const project=workspace.project,build=project?.scene.script?.build;
+        if(!match||project?.id!=="project://"+match[1]||build?.id!==match[2])return json(response,404,{code:"AX_SCRIPT_0001"});
+        try {
+          const content=await workspace.compiler.read(project.id,build,match[3]);
+          const type=({".js":"text/javascript",".json":"application/json",".wasm":"application/wasm"})[extname(match[3])]??"application/octet-stream";
+          response.writeHead(200,{...SECURITY_HEADERS,"Content-Type":type,"Cache-Control":"private, no-store"});return response.end(content);
+        }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
+      }
       if (request.method === "GET" && url.pathname === "/health") {
         return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.13" });
       }
@@ -108,11 +122,12 @@ export async function startServer(options = {}) {
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
         const requested = Number(request.headers["axiom-protocol-version"] ?? 1);
         if (requested !== 1) return json(response, 409, { code: "AX_PROTOCOL_0003", supported: { min: 1, max: 1 } });
+        response.setHeader("Set-Cookie",`axiom-runtime=${runtimeCookie}; HttpOnly; SameSite=Strict; Path=/script-runtime/`);
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
           server: { name: "axiom-daemon-bootstrap", version: "0.0.13" },
-          capabilities: ["command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list", "command.scene.get", "command.scene.entity.create", "command.scene.entity.update", "command.scene.entity.delete", "command.scene.undo", "command.scene.redo", "command.scene.save", "command.asset.job.start", "command.asset.job.get", "command.asset.job.cancel", "command.asset.explain", "command.asset.import", "command.asset.get", "command.scene.asset.place", "command.scene.camera.update", "command.play.start", "command.play.stop", "command.project.close"],
+          capabilities: ["command.script.compile", "command.script.job.get", "command.script.job.cancel", "command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list", "command.scene.get", "command.scene.entity.create", "command.scene.entity.update", "command.scene.entity.delete", "command.scene.undo", "command.scene.redo", "command.scene.save", "command.asset.job.start", "command.asset.job.get", "command.asset.job.cancel", "command.asset.explain", "command.asset.import", "command.asset.get", "command.scene.asset.place", "command.scene.camera.update", "command.play.start", "command.play.stop", "command.project.close"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
       }

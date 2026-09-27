@@ -1,3 +1,5 @@
+import {ScriptRuntime} from "./script-runtime.js";
+import {applyScriptOperations} from "./script-operations.mjs";
 import { loadKernel } from "./kernel-host.js";
 import { FrameProfiler } from "./frame-profiler.js";
 
@@ -26,12 +28,17 @@ struct Out { @builtin(position) position: vec4f, @location(0) normal: vec3f, @lo
   return vec4f(base.rgb * select(light,1.0,data.flags.x > 0.5),base.a);
 }`;
 
-export async function createSceneRenderer({ canvas, stateElement, traceOutput, bytes, loadAsset, reportError, forceNull=false, gpu=navigator.gpu }) {
+export async function createSceneRenderer({ canvas, stateElement, traceOutput, bytes, loadAsset, reportError, reportScriptLog=()=>{}, forceNull=false, gpu=navigator.gpu }) {
   const profiler=new FrameProfiler(120);
   let device=null, context=null, pipeline=null, sampler=null, depth=null;
   let querySet=null,queryResolve=null,queryRead=null,sampleDone=false,readPending=false,gpuSample=null;
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
+  let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
+  const keys=new Set();
+  const keydown=event=>{if(!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
+  const keyup=event=>keys.delete(event.code),blur=()=>keys.clear();
+  globalThis.addEventListener?.("keydown",keydown);globalThis.addEventListener?.("keyup",keyup);globalThis.addEventListener?.("blur",blur);
   let textures=new Map(), assets=new Map(), assetKeys=new Map();
   kernel.compileScene({entities:[]},new Map());
   function destroyResources(items) { for(const item of items) {item.vertex?.destroy();item.uniform?.destroy();} }
@@ -87,10 +94,28 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     }
     textures.set(key,texture);return texture;
   }
+  async function buildResources(draws,ticket) {
+    const pending=[];
+    try {if(device)for(const draw of draws) {
+      const texture=await textureFor(draw.texture);
+      if(ticket!==generation||disposed||!device)throw new Error("Renderer generation changed");
+      const vertex=device.createBuffer({size:draw.vertices.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST});
+      device.queue.writeBuffer(vertex,0,draw.vertices);
+      const uniform=device.createBuffer({size:160,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+      const bind=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:uniform}},{binding:1,resource:sampler},{binding:2,resource:texture.createView()}]});
+      pending.push({vertex,uniform,bind,count:draw.vertices.length/8,color:draw.color,unlit:draw.unlit});
+    }return pending;}catch(error){destroyResources(pending);throw error;}
+  }
   async function setSnapshot(snapshot) {
-    const ticket=++generation;
+    const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
+    scriptRuntime=null;
+    if(oldRuntime) {
+      try {await scriptFlight;const result=await oldRuntime.execute({action:"stop",generation:oldGeneration,entities:oldScene.entities,keys:[]});for(const op of result.operations??[])if(op.kind==="log")reportScriptLog(op.message,{generation:oldGeneration,phase:"stop"});}
+      catch(error){if(!oldRuntime.closed)reportError(error);}finally{oldRuntime.dispose();}
+    }
+    if(ticket!==generation||disposed)return;
     const project=snapshot.project;
-    const scene=structuredClone(project?.scene??{entities:[]});
+    let scene=structuredClone(project?.scene??{entities:[]});
     if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
     const referenced=new Set(scene.entities.map(entity=>entity.renderable?.assetId));
@@ -102,31 +127,50 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(totalVertices>300000)throw new Error("AX_SCENE_0006: scene exceeds 300000 vertices");
       localAssets.set(metadata.id,asset);
     }
-    const replacement=await loadKernel(bytes), pending=[];
+    const replacement=await loadKernel(bytes);let pending=[],nextRuntime=null;
+    let nextSpawned=0;
     try {
-      const draws=replacement.compileScene(scene,localAssets);
-      if(device) for(const draw of draws) {
-        const texture=await textureFor(draw.texture);
-        if(ticket!==generation||disposed||!device) {replacement.dispose();destroyResources(pending);return;}
-        const vertex=device.createBuffer({size:draw.vertices.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST});
-        device.queue.writeBuffer(vertex,0,draw.vertices);
-        const uniform=device.createBuffer({size:160,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
-        const bind=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:uniform}},{binding:1,resource:sampler},{binding:2,resource:texture.createView()}]});
-        pending.push({vertex,uniform,bind,count:draw.vertices.length/8,color:draw.color,unlit:draw.unlit});
+      if(snapshot.playing&&scene.script?.attachments.length) {
+        nextRuntime=new ScriptRuntime();
+        await nextRuntime.initialize(`/script-runtime/${project.id.slice(10)}/${scene.script.build.id}/dotnet.js`);
+        const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:scene.entities,keys:[],attachments:scene.script.attachments});
+        const result=applyScriptOperations(scene,packet,ticket);scene=result.scene;nextSpawned=result.spawned;
+        for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start"});
       }
-      if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);return;}
+      const draws=replacement.compileScene(scene,localAssets);
+      pending=await buildResources(draws,ticket);
+      if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
       kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;
+      runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=null;
       assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set(draws.map(draw=>draw.texture??"white"));
       for(const [key,texture] of textures)if(!used.has(key)){texture.destroy();textures.delete(key);}
-    } catch(error) {replacement.dispose();destroyResources(pending);throw error;}
+    } catch(error) {nextRuntime?.dispose();replacement.dispose();destroyResources(pending);throw error;}
   }
-  function frame(now) {
+  async function frame(now) {
     if(disposed)return;
+    const ticket=generation;
     try {
       const delta=previousTime===null?0:Math.min((now-previousTime)/1000,0.25);previousTime=now;
       const diagnostic=profiler.begin(performance.now());
+      if(playing&&scriptRuntime) {
+        const active=scriptRuntime;
+        try {
+          scriptFlight=active.execute({action:"step",generation:ticket,entities:runtimeScene.entities,keys:[...keys],delta});
+          const packet=await scriptFlight;
+          if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
+          const result=applyScriptOperations(runtimeScene,packet,ticket,spawned);
+          if(result.changedTopology) {
+            const candidate=await loadKernel(bytes);let next=[];
+            try {const draws=candidate.compileScene(result.scene,assets);next=await buildResources(draws,ticket);if(ticket!==generation||disposed)throw new Error("Runtime generation changed");kernel.dispose();kernel=candidate;destroyResources(resources);resources=next;}
+            catch(error){candidate.dispose();destroyResources(next);throw error;}
+          }else kernel.setPositions(result.positions);
+          runtimeScene=result.scene;spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",trace:trace.toString()});
+        }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
+        finally{scriptFlight=null;}
+      }
+      if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
       const packet=kernel.stepScene(delta,++trace,canvas.width/canvas.height);
       if(device) {
         const encoder=device.createCommandEncoder({label:"axiom-m2-scene"});
@@ -153,11 +197,12 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }
       }
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"scene",sceneId};
+      diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
       if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
     } catch(error) {reportError(error);stateElement.textContent="Rendering stopped · inspect the console";return;}
     animationId=requestAnimationFrame(frame);
   }
   animationId=requestAnimationFrame(frame);
-  return {setSnapshot,dispose(){disposed=true;generation++;if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();destroyResources(resources);clearTextures();depth?.destroy();querySet?.destroy();queryResolve?.destroy();queryRead?.destroy();device?.destroy();}};
+  return {setSnapshot,dispose(){disposed=true;generation++;scriptRuntime?.dispose();globalThis.removeEventListener?.("keydown",keydown);globalThis.removeEventListener?.("keyup",keyup);globalThis.removeEventListener?.("blur",blur);if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();destroyResources(resources);clearTextures();depth?.destroy();querySet?.destroy();queryResolve?.destroy();queryRead?.destroy();device?.destroy();}};
 }

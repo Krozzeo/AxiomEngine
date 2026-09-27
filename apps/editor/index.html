@@ -69,6 +69,12 @@
             <button type="submit">Apply changes</button>
           </fieldset>
         </form>
+        <h2>C# gameplay</h2>
+        <p>Compile GameScript and attach it to the selected entity. Recompiling during Play resets runtime state.</p>
+        <label for="script-source">Game.cs</label><textarea id="script-source" rows="14" spellcheck="false" disabled></textarea>
+        <label for="script-mode">Build mode</label><select id="script-mode" disabled><option value="development">Development</option><option value="aot">Release AOT</option></select>
+        <div class="actions"><button id="script-compile" disabled>Compile &amp; attach</button><button id="script-cancel" disabled>Cancel compile</button></div>
+        <p id="script-status" role="status"></p><pre id="script-diagnostics" role="alert"></pre>
         <h2>Connection</h2>
         <dl id="capabilities"></dl>
         <h2>Walking skeleton</h2>

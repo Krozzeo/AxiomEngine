@@ -33,3 +33,15 @@ test("Wasm instances isolate state and reject invalid inputs without ticking", a
   first.dispose();
   second.dispose();
 });
+
+test('runtime position updates cross the Rust boundary without altering authoring',async()=>{
+ const kernel=await loadKernel(bytes),id='entity://11111111-1111-4111-8111-111111111111';
+ const scene={entities:[{id,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:'sprite',assetId:'image'}}]};
+ kernel.compileScene(scene,new Map([['image',{kind:'sprite',width:1,height:1,dataUrl:''}]]));
+ const first=kernel.stepScene(0,1n,1);
+ kernel.setPositions(new Map([[id,[2,3,4]]]));const moved=kernel.stepScene(0,2n,1);
+ assert.deepEqual([...moved.draws[0].model.slice(12,15)],[2,3,4]);assert.notDeepEqual(moved.draws[0].mvp,first.draws[0].mvp);
+ assert.deepEqual(scene.entities[0].transform.position,[0,0,0]);
+ assert.throws(()=>kernel.setPositions(new Map([[id,[NaN,0,0]]])),/invalid/);
+ kernel.dispose();assert.throws(()=>kernel.setPositions(new Map()),/missing/);
+});

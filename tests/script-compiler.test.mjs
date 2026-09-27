@@ -18,3 +18,12 @@ test('C# diagnostics expose source line/column and remain bounded',()=>{
  const entries=compileDiagnostics('/project/build/Game.cs(12,8): error CS1002: ; expected [/project/build/Axiom.Game.csproj]\n/project/build/Game.cs(3,4): warning CS0169: unused field [Axiom.Game.csproj]');
  assert.deepEqual(entries[0],{file:'Game.cs',line:12,column:8,severity:'error',code:'CS1002',message:'; expected'});assert.equal(entries[1].severity,'warning');assert.equal(compileDiagnostics('Game.cs(1,1): error CS1002: test\n'.repeat(100)).length,64);
 });
+
+test('compiler capability accepts only fixed development and AOT templates',async()=>{
+ const {compilerArguments,CSHARP_COMPILER}=await import('../daemon/bootstrap/scripting/capability.mjs');
+ assert.equal(CSHARP_COMPILER.executable,'dotnet');
+ assert.ok(compilerArguments().includes('-p:RunAOTCompilation=false'));
+ assert.ok(compilerArguments('aot').includes('-p:RunAOTCompilation=true'));
+ assert.ok(compilerArguments().includes('--disable-build-servers'));
+ for(const mode of ['../escape','development -p:CustomAfterMicrosoftCommonTargets=evil',null,{}])assert.throws(()=>compilerArguments(mode),/Unsupported/);
+});

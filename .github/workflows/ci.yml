@@ -48,6 +48,10 @@ jobs:
       - run: cargo +1.90.0 check --locked -p axiom-core --target wasm32-unknown-unknown
 
   csharp-wasm-spike:
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        mode: [development, aot]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -62,10 +66,12 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: node tests/browser/csharp-spike.mjs
+        env:
+          AXIOM_CSHARP_MODE: ${{ matrix.mode }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: csharp-runtime-spike
+          name: csharp-runtime-spike-${{ matrix.mode }}
           path: .axiom/csharp-spike-evidence
 
   browser-milestones:

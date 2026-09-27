@@ -10,7 +10,7 @@ assert.ok(['development','aot'].includes(mode));
 const output=resolve('.axiom/csharp-spike-publish-'+mode),evidence=resolve('.axiom/csharp-spike-evidence/'+mode);
 await mkdir(evidence,{recursive:true});
 const begin=performance.now();
-execFileSync('dotnet',['publish','spikes/csharp-wasm/Axiom.ScriptSpike.csproj','-c','Release','-o',output,'--disable-build-servers',`-p:RunAOTCompilation=${mode==='aot'}`,`-p:WasmBuildNative=${mode==='aot'}`],{stdio:'inherit',timeout:mode==='aot'?600000:180000});
+execFileSync('dotnet',['publish','spikes/csharp-wasm/Axiom.ScriptSpike.csproj','-c','Release','-o',output,'--disable-build-servers',...(mode==='aot'?['-p:RunAOTCompilation=true','-p:WasmBuildNative=true']:[])],{stdio:'inherit',timeout:mode==='aot'?600000:180000});
 const publishMs=performance.now()-begin;
 async function files(path){const result=[];for(const item of await readdir(path,{withFileTypes:true})){const p=join(path,item.name);result.push(...item.isDirectory()?await files(p):[p]);}return result;}
 const paths=await files(output),boot=paths.find(p=>p.endsWith('/_framework/dotnet.js'));assert.ok(boot,'Publish must include _framework/dotnet.js');

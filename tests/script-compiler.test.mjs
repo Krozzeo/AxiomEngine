@@ -22,7 +22,7 @@ test('C# diagnostics expose source line/column and remain bounded',()=>{
 test('compiler capability accepts only fixed development and AOT templates',async()=>{
  const {compilerArguments,CSHARP_COMPILER}=await import('../daemon/bootstrap/scripting/capability.mjs');
  assert.equal(CSHARP_COMPILER.executable,'dotnet');
- assert.ok(compilerArguments().includes('-p:RunAOTCompilation=false'));
+ assert.ok(!compilerArguments().some(arg=>arg.startsWith('-p:RunAOTCompilation=')));
  assert.ok(compilerArguments('aot').includes('-p:RunAOTCompilation=true'));
  assert.ok(compilerArguments().includes('--disable-build-servers'));
  for(const mode of ['../escape','development -p:CustomAfterMicrosoftCommonTargets=evil',null,{}])assert.throws(()=>compilerArguments(mode),/Unsupported/);

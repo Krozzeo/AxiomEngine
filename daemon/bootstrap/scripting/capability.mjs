@@ -8,6 +8,5 @@ export function compilerArguments(mode='development') {
  return ['publish','Axiom.Game.csproj','-c','Release','-o','publish',
   '--disable-build-servers','-p:ImportDirectoryBuildProps=false','-p:ImportDirectoryBuildTargets=false',
   '-p:EnableDefaultCompileItems=false','-p:WasmEnableHotReload=false',
-  '-p:InvariantGlobalization=false',`-p:WasmBuildNative=${mode==='aot'}`,
-  `-p:RunAOTCompilation=${mode==='aot'}`];
+  ...(mode==='aot'?['-p:WasmBuildNative=true','-p:RunAOTCompilation=true']:[])];
 }

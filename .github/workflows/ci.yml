@@ -50,6 +50,7 @@ jobs:
   csharp-wasm-spike:
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         mode: [development, aot]
     runs-on: ubuntu-latest
@@ -65,7 +66,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: node scripts/generate-script-bindings.mjs --check
       - run: node tests/browser/csharp-spike.mjs
+        env:
+          AXIOM_CSHARP_MODE: ${{ matrix.mode }}
+      - run: node tests/browser/csharp-gameplay.mjs
         env:
           AXIOM_CSHARP_MODE: ${{ matrix.mode }}
       - uses: actions/upload-artifact@v4

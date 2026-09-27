@@ -43,9 +43,6 @@ jobs:
       - name: Install pinned Rust toolchain
         run: rustup toolchain install 1.90.0 --profile minimal --component clippy,rustfmt --target wasm32-unknown-unknown
       - run: cargo +1.90.0 fmt --check
-      - name: Compiler format diagnostic
-        if: failure()
-        run: rustup run 1.90.0 rustfmt --edition 2024 --emit stdout daemon/axiom-daemon/src/compiler.rs
       - run: cargo +1.90.0 clippy --locked --workspace --all-targets -- -D warnings
       - run: cargo +1.90.0 test --locked --workspace
       - run: cargo +1.90.0 check --locked -p axiom-core --target wasm32-unknown-unknown

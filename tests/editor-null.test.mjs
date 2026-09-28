@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import vm from "node:vm";
 import { readFile } from "node:fs/promises";
 import { webcrypto } from "node:crypto";
+import { mountProposalEditor } from "../apps/editor/src/proposal-editor.mjs";
 import { mountProjectEditor } from "../apps/editor/src/project-editor.mjs";
 import { FrameProfiler } from "../apps/editor/src/frame-profiler.mjs";
 import { loadKernel } from "../engine/wasm/host.mjs";
@@ -22,7 +23,7 @@ for (const mode of ["forced", "unavailable"]) {
       return { width: 960, height: 540, textContent: "", append() {}, prepend() {}, addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
     }
     const context = vm.createContext({
-      FrameProfiler, loadKernel, mountProjectEditor, URLSearchParams, crypto: webcrypto, performance, structuredClone,
+      FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor, URLSearchParams, crypto: webcrypto, performance, structuredClone,
       location: { hash: "#token=test", pathname: "/", search: mode === "forced" ? "?renderer=null" : "" },
       history: { replaceState(_state, _title, url) { replacedUrl = url; } },
       navigator: mode === "forced" ? { gpu: { requestAdapter() { throw new Error("forced Null must bypass GPU"); } } } : {},

@@ -1,0 +1,13 @@
+export function mountProposalEditor({document,send,reportError}){
+ const $=id=>document.querySelector('#'+id);let items=[],review=null,busy=false;
+ function refresh(next){items=next;const selected=$('proposal-list').value;$('proposal-list').replaceChildren();for(const item of items){const option=document.createElement('option');option.value=item.id;option.textContent=item.name+(item.preview?' · preview':'')+(item.busy?' · job running':'');$('proposal-list').append(option);}if(items.some(i=>i.id===selected))$('proposal-list').value=selected;const current=items.find(i=>i.id===$('proposal-list').value);if(review&&(!current||review.workspace.id!==current.id||review.workspace.revision!==current.revision)){review=null;$('proposal-status').textContent='Proposal changed. Review the current differences.';}for(const id of ['proposal-review','proposal-preview','proposal-continue','proposal-reject'])$(id).disabled=busy||!current||current.busy;$('proposal-accept').disabled=busy||!review||!current||current.busy;}
+ async function act(fn){if(busy)return;busy=true;refresh(items);try{await fn();}catch(e){$('proposal-status').textContent=e.message;reportError(e);}finally{busy=false;refresh(items);}}
+ $('proposal-list').addEventListener('change',()=>{review=null;$('proposal-diff').textContent='';refresh(items);});
+ $('proposal-review').addEventListener('click',()=>act(async()=>{
+  const workspaceId=$('proposal-list').value;let offset=0,text='',result,hash;
+  do{result=(await send('workspace.diff',{workspaceId,offset,limit:50,maxBytes:65536})).payload.data;if(hash&&hash!==result.reviewHash)throw Error('Proposal changed while reviewing; retry');hash=result.reviewHash;for(const change of result.items)text+=`${change.path}${change.offset?' @'+change.offset:''}\n− ${change.before||'∅'}\n+ ${change.after||'∅'}\n\n`;offset=result.nextOffset;}while(offset!==null);
+  review=result;$('proposal-diff').textContent=text||'No scene changes.';$('proposal-status').textContent=`Reviewed revision ${result.workspace.revision}. Accept changes the draft; Save persists it.`;
+ }));
+ for(const action of ['preview','continue','reject','accept'])$('proposal-'+action).addEventListener('click',()=>act(async()=>{const current=items.find(i=>i.id===$('proposal-list').value);if(!current)return;const args={workspaceId:current.id,expectedWorkspaceRevision:current.revision,...(action==='accept'?{reviewHash:review.reviewHash}:{})};const result=(await send('workspace.'+action,args)).payload.data;review=null;$('proposal-diff').textContent='';$('proposal-status').textContent=result.status??(action==='preview'?'Running isolated proposal.':'Returned to source. Continue editing the proposal through its workspace ID.');}));
+ refresh([]);return {refresh};
+}

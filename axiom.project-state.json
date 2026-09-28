@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-09-28",
-  "engineVersion": "0.0.15",
-  "activeMilestone": 5,
+  "engineVersion": "0.0.16",
+  "activeMilestone": 6,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 36,
+    "wholeProjectPercent": 41,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -36,6 +36,10 @@
       "percent": 100
     },
     "6": {
+      "status": "complete",
+      "percent": 100
+    },
+    "7": {
       "status": "not_started",
       "percent": 0
     }
@@ -54,11 +58,12 @@
     "playMode": "verified_isolated_runtime",
     "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload",
     "csharpGameplay": "verified_editor_compile_reload_isolated_runtime",
-    "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture"
+    "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
+    "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart"
   },
   "verified": {
     "nodeTests": {
-      "passed": 60,
+      "passed": 68,
       "failed": 0
     },
     "schemaDocuments": 14,
@@ -175,10 +180,10 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.15",
-      "commit": "324f0504a6f408d854d0c9a0cc13e948ddb454f4",
-      "runId": 36425589992,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36425589992",
+      "version": "0.0.16",
+      "commit": "960bc7b966ff84a24854b5c398d9bcbfb417a952",
+      "runId": 36475358942,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36475358942",
       "jobs": [
         "bootstrap (ubuntu-latest)",
         "bootstrap (windows-latest)",
@@ -289,6 +294,15 @@
       "evidence": "docs/reports/m5-browser-evidence.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m6Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "runId": 36475358942,
+      "evidence": "docs/reports/m6-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -326,7 +340,11 @@
     "docs/architecture/M5_AGENT_CONTROL.md",
     "docs/reports/M5_CURRENT_REPORT.md",
     "docs/adr/0018-initial-mcp-and-renderer-capture.md",
-    "docs/architecture/M6_PLAN.md"
+    "docs/architecture/M6_PLAN.md",
+    "docs/architecture/M6_WORKSPACES.md",
+    "docs/reports/M6_CURRENT_REPORT.md",
+    "docs/adr/0019-reviewed-proposal-publication.md",
+    "docs/architecture/M7_PLAN.md"
   ],
-  "nextTask": "Begin M6 Transactional AI Workspaces per docs/architecture/M6_PLAN.md. Build isolated proposals with reviewable diffs, preview, accept/reject and conflict detection. M5 is stacked on unmerged M4; never implicitly merge MAIN."
+  "nextTask": "Begin M7 Physics Foundation per docs/architecture/M7_PLAN.md and master specification section 126. Preserve M6 isolation and unmerged stacked PRs."
 }

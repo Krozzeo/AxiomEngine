@@ -4,9 +4,10 @@ import projectSchema from '../../../protocol/schema/project-document.schema.json
 export class AgentService {
  constructor({workspace,bus,bridge}){Object.assign(this,{workspace,bus,bridge});}
  has(type){return toolMap.get(type)?.route==='agent';}
- async run(type,data){
+ async run(type,data,context){
   const tool=toolMap.get(type);validate(tool.inputSchema,data);
-  const w=this.workspace,project=w.project,summary={project:project?{id:project.id,name:project.name,revision:project.revision}:null,sceneRevision:w.revision,dirty:w.dirty,playing:w.playing};
+  if(type.startsWith('workspace.'))return this.proposals.run(type,data,context);
+  const w=data.workspaceId?this.proposals.get(data.workspaceId).child:this.workspace,project=w.project,summary={project:project?{id:project.id,name:project.name,revision:project.revision}:null,sceneRevision:w.revision,dirty:w.dirty,playing:w.playing};
   if(['scene.query','entity.query','asset.query','renderer.capture'].includes(type)&&(!project||data.id!==project.id))throw agentError('AX_SCENE_0001','Open this project first');
   if(['entity.query','asset.query','renderer.capture'].includes(type))w.check(data);
   switch(type){

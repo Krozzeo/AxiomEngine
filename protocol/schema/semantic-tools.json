@@ -150,7 +150,12 @@
       "mutates": false,
       "inputSchema": {
         "type": "object",
-        "properties": {},
+        "properties": {
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
         "required": [],
         "additionalProperties": false
       },
@@ -176,6 +181,10 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -214,6 +223,10 @@
           "transform": {
             "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/transform",
             "partial": true
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -244,6 +257,10 @@
           "entityId": {
             "type": "string",
             "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -270,6 +287,10 @@
           "expectedSceneRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -295,6 +316,10 @@
           "expectedSceneRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -320,6 +345,10 @@
           "expectedSceneRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -329,7 +358,7 @@
         "additionalProperties": false
       },
       "route": "workspace",
-      "mcp": true
+      "mcp": false
     },
     {
       "name": "asset.import",
@@ -354,6 +383,10 @@
           "base64": {
             "type": "string",
             "maxLength": 11184812
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -385,6 +418,10 @@
           "assetId": {
             "type": "string",
             "pattern": "^asset://[0-9a-f]{64}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -414,6 +451,10 @@
           "assetId": {
             "type": "string",
             "pattern": "^asset://[0-9a-f]{64}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -444,6 +485,10 @@
           "camera": {
             "$ref": "project-document.schema.json#/properties/scene/properties/camera",
             "partial": true
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -470,6 +515,10 @@
           "expectedSceneRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -495,6 +544,10 @@
           "expectedSceneRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -532,7 +585,7 @@
         "additionalProperties": false
       },
       "route": "workspace",
-      "mcp": true
+      "mcp": false
     },
     {
       "name": "script.compile",
@@ -566,6 +619,10 @@
               "development",
               "aot"
             ]
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -592,6 +649,10 @@
           },
           "jobId": {
             "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -616,6 +677,10 @@
           },
           "jobId": {
             "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -656,6 +721,10 @@
           },
           "value": {
             "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/renderable"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -694,6 +763,10 @@
             "enum": [
               "Renderable"
             ]
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -745,6 +818,10 @@
           "base64": {
             "type": "string",
             "maxLength": 11184812
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -771,6 +848,10 @@
           "jobId": {
             "type": "string",
             "maxLength": 128
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -796,6 +877,10 @@
           "jobId": {
             "type": "string",
             "maxLength": 128
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -821,6 +906,10 @@
           "assetId": {
             "type": "string",
             "pattern": "^asset://[0-9a-f]{64}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -875,6 +964,10 @@
             "type": "integer",
             "minimum": 1024,
             "maximum": 65536
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -928,6 +1021,10 @@
               "Transform",
               "Renderable"
             ]
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -950,6 +1047,10 @@
             "type": "integer",
             "minimum": 1024,
             "maximum": 65536
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [],
@@ -993,6 +1094,10 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 32
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -1158,11 +1263,231 @@
           "name": {
             "type": "string",
             "maxLength": 128
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [
           "id",
           "expectedSceneRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.begin",
+      "description": "Create an isolated proposal from a saved, stopped project. Source remains unchanged.",
+      "mutates": true,
+      "mcp": true,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.list",
+      "description": "List up to eight isolated proposals.",
+      "mutates": false,
+      "mcp": true,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.diff",
+      "description": "Inspect paged changes and a revision-bound review hash.",
+      "mutates": false,
+      "mcp": true,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "maxBytes": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 65536
+          }
+        },
+        "required": [
+          "workspaceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.log",
+      "description": "Inspect the bounded proposal action log.",
+      "mutates": false,
+      "mcp": true,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "maxBytes": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 65536
+          }
+        },
+        "required": [
+          "workspaceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.preview",
+      "description": "Run a proposal in the editor without changing the source.",
+      "mutates": true,
+      "mcp": true,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "expectedWorkspaceRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "workspaceId",
+          "expectedWorkspaceRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.continue",
+      "description": "Stop preview and continue editing the isolated proposal.",
+      "mutates": true,
+      "mcp": true,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "expectedWorkspaceRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "workspaceId",
+          "expectedWorkspaceRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.reject",
+      "description": "Discard a proposal and its private files; source remains unchanged.",
+      "mutates": true,
+      "mcp": true,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "expectedWorkspaceRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "workspaceId",
+          "expectedWorkspaceRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workspace.accept",
+      "description": "Human-only acceptance of the reviewed change set into the authoring draft. Save explicitly to persist.",
+      "mutates": true,
+      "mcp": false,
+      "route": "agent",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "expectedWorkspaceRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reviewHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "workspaceId",
+          "expectedWorkspaceRevision",
+          "reviewHash"
         ],
         "additionalProperties": false
       }

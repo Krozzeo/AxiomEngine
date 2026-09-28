@@ -1,5 +1,9 @@
 # M5 agent control
 
+Historical 0.0.15 contract. M6 requires workspaceId for agent mutations and
+removes source Save/close and acceptance from MCP. Read M6_WORKSPACES.md for
+the current authority and lifecycle rules.
+
 The Node daemon exposes generated semantic tools through authenticated
 `GET /v1/tools` and `POST /v1/tools/call` (`{name, arguments}`). These share the
 public Command Bus, causal envelopes, scene revisions and workspace history.

@@ -71,7 +71,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("entity-name").value = entity?.name ?? "";
     for (const group of ["position", "scale"]) for (let i = 0; i < 3; i++) $(`${group}-${i}`).value = String(entity?.transform[group][i] ?? (group === "scale" ? 1 : 0));
     }
-    onDirty(state.dirty);
+    if(state.workspaceId){for(const id of ["project-new","project-open","project-close","scene-save"])$(id).disabled=true;$("preview-note").textContent="Isolated AI proposal · "+(state.playing?"running":"editing");}
+    onDirty(state.dirty&&!state.workspaceId);
   }
   function adopt(data) {
     if (!("project" in data)) return;
@@ -193,7 +194,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   });
   draw();
   return {
-    async synchronize(snapshot){if(!enabled||busy||snapshot.sceneRevision<=state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
+    async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
     async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},
     async connect(capabilities) {

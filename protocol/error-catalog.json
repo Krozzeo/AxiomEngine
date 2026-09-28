@@ -273,6 +273,15 @@
       "inspect": [
         "events.query"
       ]
+    },
+    {
+      "code": "AX_WORKSPACE_0001",
+      "meaning": "Proposal authority, revision, review or lifecycle conflict",
+      "inspect": [
+        "workspace.diff",
+        "workspace.log",
+        "workspace.list"
+      ]
     }
   ]
 }

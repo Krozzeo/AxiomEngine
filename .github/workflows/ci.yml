@@ -43,6 +43,17 @@ jobs:
       - name: Install pinned Rust toolchain
         run: rustup toolchain install 1.90.0 --profile minimal --component clippy,rustfmt --target wasm32-unknown-unknown
       - run: cargo +1.90.0 fmt --check
+      - name: Collect formatting correction when needed
+        if: failure()
+        run: |
+          cargo +1.90.0 fmt
+          mkdir -p .axiom
+          git diff > .axiom/rustfmt.patch
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rustfmt-correction
+          path: .axiom/rustfmt.patch
       - run: cargo +1.90.0 clippy --locked --workspace --all-targets -- -D warnings
       - run: cargo +1.90.0 test --locked --workspace
       - run: cargo +1.90.0 check --locked -p axiom-core --target wasm32-unknown-unknown

@@ -1,3 +1,6 @@
+import {tools,toolMap,validate,bounded} from './agent/contracts.mjs';
+import {AgentService,compactResult} from './agent/service.mjs';
+import {EditorBridge} from './agent/editor-bridge.mjs';
 import { createHash, randomBytes } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import { createServer as createHttpServer } from "node:http";
@@ -48,7 +51,7 @@ async function readJson(request) {
   }
   try {
     const value=JSON.parse(Buffer.concat(chunks).toString("utf8"));
-    if(total>BODY_LIMIT && !["asset.import","asset.job.start"].includes(value?.payload?.type)) throw Object.assign(new Error("Request body too large"), {status:413});
+    if(total>BODY_LIMIT && !["asset.import","asset.job.start"].includes(value?.payload?.type) && !["asset.import","asset.job.start"].includes(value?.name) && !value?.clientId) throw Object.assign(new Error("Request body too large"), {status:413});
     return value;
   } catch (error) {
     if(error.status===413) throw error;
@@ -72,6 +75,8 @@ export async function startServer(options = {}) {
   const token = options.token ?? randomBytes(32).toString("base64url");
   const workspace = new SceneWorkspace(new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects")));
   const bus = new CommandBus({ projects: workspace });
+  const bridge=new EditorBridge(workspace,error=>bus.recordError(error));
+  bus.agentService=new AgentService({workspace,bus,bridge});
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();
@@ -116,7 +121,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.14" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.15" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -126,14 +131,26 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.14" },
-          capabilities: ["command.script.compile", "command.script.job.get", "command.script.job.cancel", "command.system.ping", "command.demo.increment", "command.editor.undo", "events.delta", "diagnostics.trace", "command.project.create", "command.project.open", "command.project.save", "command.project.list", "command.scene.get", "command.scene.entity.create", "command.scene.entity.update", "command.scene.entity.delete", "command.scene.undo", "command.scene.redo", "command.scene.save", "command.asset.job.start", "command.asset.job.get", "command.asset.job.cancel", "command.asset.explain", "command.asset.import", "command.asset.get", "command.scene.asset.place", "command.scene.camera.update", "command.play.start", "command.play.stop", "command.project.close"],
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.15" },
+          capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
       }
 
+      if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
+      if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,bridge.sync(await readJson(request)));
+      if(request.method==='POST'&&url.pathname==='/v1/tools/call'){
+        const call=await readJson(request),tool=toolMap.get(call.name);
+        if(!tool?.mcp)return json(response,404,{code:'AX_AGENT_0004',cause:'Tool is unavailable'});
+        validate(tool.inputSchema,call.arguments??{});
+        const {envelope}=await import('../../protocol/src/protocol.ts');
+        const result=await bus.dispatch(envelope('command',{type:call.name,data:call.arguments??{}},{actor:{kind:'agent',id:'mcp-client'}}));
+        return json(response,200,tool.route==='workspace'?bounded(compactResult(result),65536):result);
+      }
       if (request.method === "POST" && url.pathname === "/v1/commands") {
         const command = await readJson(request);
+        const tool=toolMap.get(command?.payload?.type);
+        if(tool?.mcp)validate(tool.inputSchema,command.payload.data??{});
         const result = await bus.dispatch(command);
         return json(response, result.kind === "error" ? 422 : 200, result);
       }
@@ -167,7 +184,9 @@ export async function startServer(options = {}) {
 
       return json(response, 404, { code: "AX_HTTP_0002", cause: "Route not found" });
     } catch (error) {
-      return json(response, error.status ?? 500, { code: error.status === 413 ? "AX_HTTP_0003" : "AX_SYSTEM_0002", cause: error.message });
+      const known=typeof error.code==='string'&&/^(AX_AGENT_|AX_SCENE_)/.test(error.code);
+      if(known)bus.recordError({code:error.code,cause:error.message});
+      return json(response, error.status ?? (known?422:500), { code: known?error.code:error.status === 413 ? "AX_HTTP_0003" : "AX_SYSTEM_0002", cause: error.message });
     }
   });
 
@@ -183,7 +202,7 @@ export async function startServer(options = {}) {
     token,
     origin,
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
-    close: () => new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()))
+    close: () => {bridge.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
   };
 }
 

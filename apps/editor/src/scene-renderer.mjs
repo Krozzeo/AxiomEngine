@@ -35,6 +35,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
+  let sceneRevision=-1,lastFrame=null,captureRequest=null;
   const keys=new Set();
   const keydown=event=>{if(!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
   const keyup=event=>keys.delete(event.code),blur=()=>keys.clear();
@@ -107,6 +108,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     }return pending;}catch(error){destroyResources(pending);throw error;}
   }
   async function setSnapshot(snapshot) {
+    if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
+    lastFrame=null;
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
     scriptRuntime=null;
     if(oldRuntime) {
@@ -141,7 +144,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       pending=await buildResources(draws,ticket);
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
       kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;
-      runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=null;
+      sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=null;
       assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set(draws.map(draw=>draw.texture??"white"));
@@ -204,10 +207,26 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"scene",sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
+      lastFrame={projectId:currentProject,sceneRevision,frame:packet.frame,renderer:device?'webgpu':'null',playing,generation,fault:scriptFault};
+      if(captureRequest){
+        const request=captureRequest;captureRequest=null;
+        try{
+          if(!device||request.args.expectedSceneRevision!==sceneRevision||request.args.id!==currentProject)throw new Error('Capture unavailable or stale');
+          const {width,height,maxEntities}=request.args;
+          const target=document.createElement('canvas');target.width=width;target.height=height;
+          target.getContext('2d').drawImage(canvas,0,0,width,height);
+          const value={...lastFrame,width,height,semantic:{sceneId,entityCount:runtimeScene.entities.length,entities:runtimeScene.entities.slice(0,maxEntities).map(e=>({id:e.id,name:e.name,position:e.transform.position,renderable:e.renderable??null})),omittedEntities:Math.max(0,runtimeScene.entities.length-maxEntities),channel:'color'}};
+          target.toBlob(async blob=>{try{if(!blob||blob.size>512*1024)throw new Error('Capture exceeds 512 KiB');if(disposed||generation!==ticket)throw new Error('Capture generation changed');const data=new Uint8Array(await blob.arrayBuffer());let raw='';for(let i=0;i<data.length;i+=8192)raw+=String.fromCharCode(...data.subarray(i,i+8192));request.resolve({...value,base64:btoa(raw)});}catch(error){request.reject(error);}},'image/png');
+        }catch(error){request.reject(error);}
+      }
       if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
     } catch(error) {reportError(error);stateElement.textContent="Rendering stopped · inspect the console";return;}
     animationId=requestAnimationFrame(frame);
   }
   animationId=requestAnimationFrame(frame);
-  return {setSnapshot,dispose(){disposed=true;generation++;scriptRuntime?.dispose();globalThis.removeEventListener?.("keydown",keydown);globalThis.removeEventListener?.("keyup",keyup);globalThis.removeEventListener?.("blur",blur);if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();destroyResources(resources);clearTextures();depth?.destroy();querySet?.destroy();queryResolve?.destroy();queryRead?.destroy();device?.destroy();}};
+  function capture(args){
+    if(disposed||!device||captureRequest||!lastFrame) return Promise.reject(new Error('WebGPU capture unavailable'));
+    return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{if(captureRequest?.args===args)captureRequest=null;reject(new Error('Capture timed out'));},4000);captureRequest={args,resolve:value=>{clearTimeout(timer);resolve(value);},reject:error=>{clearTimeout(timer);reject(error);}};});
+  }
+  return {setSnapshot,capture,status:()=>lastFrame??{},dispose(){captureRequest?.reject(new Error('Renderer disposed'));captureRequest=null;disposed=true;generation++;scriptRuntime?.dispose();globalThis.removeEventListener?.("keydown",keydown);globalThis.removeEventListener?.("keyup",keyup);globalThis.removeEventListener?.("blur",blur);if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();destroyResources(resources);clearTextures();depth?.destroy();querySet?.destroy();queryResolve?.destroy();queryRead?.destroy();device?.destroy();}};
 }

@@ -19,7 +19,7 @@
   },
   "daemon": {
     "language": "rust",
-    "transportAdapters": ["http-json", "mcp-future"],
+    "transportAdapters": ["http-json", "mcp-stdio-node"],
     "defaultBind": "127.0.0.1",
     "security": "capability-scoped"
   },

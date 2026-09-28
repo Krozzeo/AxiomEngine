@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-09-28",
-  "engineVersion": "0.0.14",
-  "activeMilestone": 4,
+  "engineVersion": "0.0.15",
+  "activeMilestone": 5,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 30,
+    "wholeProjectPercent": 36,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -32,6 +32,10 @@
       "percent": 100
     },
     "5": {
+      "status": "complete",
+      "percent": 100
+    },
+    "6": {
       "status": "not_started",
       "percent": 0
     }
@@ -49,14 +53,15 @@
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
     "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload",
-    "csharpGameplay": "verified_editor_compile_reload_isolated_runtime"
+    "csharpGameplay": "verified_editor_compile_reload_isolated_runtime",
+    "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture"
   },
   "verified": {
     "nodeTests": {
-      "passed": 53,
+      "passed": 60,
       "failed": 0
     },
-    "schemaDocuments": 13,
+    "schemaDocuments": 14,
     "architectureRules": 3,
     "daemonStartup": true,
     "httpStaticDelivery": true,
@@ -170,10 +175,10 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.14",
-      "commit": "00ffa6f8aceff1d44095a753db24b2c69ec3fde7",
-      "runId": 36375697380,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36375697380",
+      "version": "0.0.15",
+      "commit": "324f0504a6f408d854d0c9a0cc13e948ddb454f4",
+      "runId": 36425589992,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36425589992",
       "jobs": [
         "bootstrap (ubuntu-latest)",
         "bootstrap (windows-latest)",
@@ -275,6 +280,15 @@
       "evidence": "docs/reports/m4-browser-evidence.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m5Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "runId": 36425589992,
+      "evidence": "docs/reports/m5-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -308,7 +322,11 @@
     "docs/architecture/M4_PLAN.md",
     "docs/architecture/M4_SCRIPT_RUNTIME.md",
     "docs/reports/M4_CURRENT_REPORT.md",
-    "docs/architecture/M5_PLAN.md"
+    "docs/architecture/M5_PLAN.md",
+    "docs/architecture/M5_AGENT_CONTROL.md",
+    "docs/reports/M5_CURRENT_REPORT.md",
+    "docs/adr/0018-initial-mcp-and-renderer-capture.md",
+    "docs/architecture/M6_PLAN.md"
   ],
-  "nextTask": "Begin M5 AI Control Layer per docs/architecture/M5_PLAN.md. Generate discoverable schemas from actual semantic capabilities and automate the external-agent scene workflow. M4 is stacked on unmerged M3; do not merge main implicitly."
+  "nextTask": "Begin M6 Transactional AI Workspaces per docs/architecture/M6_PLAN.md. Build isolated proposals with reviewable diffs, preview, accept/reject and conflict detection. M5 is stacked on unmerged M4; never implicitly merge MAIN."
 }

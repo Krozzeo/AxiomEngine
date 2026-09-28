@@ -46,3 +46,14 @@ the originating correlation/trace/causation identities. Only a successful build
 on the captured revision updates source, attachments and build metadata. These
 capabilities are advertised by the Node editor adapter. Native HTTP remains M0.
 See M4_SCRIPT_RUNTIME.md and the canonical tool catalog for limits and schemas.
+
+## M5 semantic adapter
+
+Authenticated GET `/v1/tools` returns generated implemented tool contracts.
+POST `/v1/tools/call` accepts `{name, arguments}`, validates the canonical schema
+and dispatches the same causal command envelope as editor operations. Mutation
+responses are compact receipts; use bounded queries for further context.
+The stdio MCP adapter pins MCP 2025-11-25 independently of Axiom protocol v1.
+POST `/v1/editor/sync` is a browser renderer bridge, not an agent tool. It has the
+same session authority, a five-second single-tab lease and bounded capture
+reports. See M5_AGENT_CONTROL.md for query budgets, deltas and capture semantics.

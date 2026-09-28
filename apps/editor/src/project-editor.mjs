@@ -193,6 +193,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   });
   draw();
   return {
+    async synchronize(snapshot){if(!enabled||busy||snapshot.sceneRevision<=state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
     async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},
     async connect(capabilities) {

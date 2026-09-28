@@ -202,6 +202,16 @@ export class SceneWorkspace {
       const size=resource.bounds?Math.max(...resource.bounds.maximum.map((v,i)=>v-resource.bounds.minimum[i])):2*Math.max(1,resource.width/resource.height);
       const scale=size>1e-6?2/size:1;
       scene.entities.push({id:`entity://${randomUUID()}`,name:asset.name,transform:{position:[(asset.kind==="sprite"?-1.5:1.5)-center[0]*scale,-center[1]*scale,-center[2]*scale],rotation:[0,0,0,1],scale:[scale,scale,scale]},renderable:{kind:asset.kind,assetId:asset.id}});
+    } else if(type==="scene.component.add" || type==="scene.component.remove") {
+      if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
+      if(data.component!=="Renderable")fail("AX_PROJECT_0002","Only the optional Renderable component is supported");
+      if(type==="scene.component.remove")delete scene.entities[index].renderable;
+      else {
+        if(scene.entities[index].renderable)fail("AX_PROJECT_0002","Renderable already exists");
+        const asset=scene.assets?.find(a=>a.id===data.value?.assetId);
+        if(!asset||asset.kind!==data.value.kind||asset.kind==="audio")fail("AX_ASSET_0001","Component requires an imported sprite or mesh");
+        scene.entities[index].renderable=copy(data.value);
+      }
     } else if(type==="scene.camera.update") {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
       scene.camera={projection:"perspective",position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
@@ -220,7 +230,7 @@ export class SceneWorkspace {
     } else fail("AX_COMMAND_0002", "Command type is not registered");
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     validateProject({ ...this.project, scene });
-    if(type==="scene.asset.place")await this.validateResources(scene);
+    if(["scene.asset.place","scene.component.add"].includes(type))await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
     this.check(data);
     this.commitScene(scene);

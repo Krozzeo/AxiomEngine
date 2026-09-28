@@ -1,0 +1,22 @@
+{
+  "criteria": [
+    "MCP subprocess initialization and paginated schema discovery",
+    "create entity, import asset, add component and edit through MCP",
+    "stale revision, context limit, unavailable tool and absent renderer rejection",
+    "play and stop synchronized to real editor without clicks",
+    "renderer-owned PNG plus same-frame semantic capture",
+    "bounded error and event deltas",
+    "external edits refresh an already-open editor"
+  ],
+  "pageErrors": [],
+  "passed": true,
+  "capture": {
+    "width": 640,
+    "height": 360,
+    "colors": 48,
+    "bytes": 7095
+  },
+  "runId": 36425180314,
+  "commit": "324f0504a6f408d854d0c9a0cc13e948ddb454f4",
+  "visualReview": "Actual renderer capture and editor screenshots reviewed"
+}

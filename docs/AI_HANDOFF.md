@@ -27,10 +27,10 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.14`: M0–M4 acceptance is complete. M4 passed 8/8 criteria;
-weighted whole-project completion is 30%. M5 AI Control Layer is next.
-Read `M4_SCRIPT_RUNTIME.md`, `M4_CURRENT_REPORT.md` and machine-readable state
-for contracts, evidence and limitations. Release CI includes Windows C#.
+Version `0.0.15`: M0–M5 acceptance is complete. M5 passed 8/8 criteria;
+weighted whole-project completion is 36%. M6 Transactional AI Workspaces is next.
+Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
+evidence and limitations. MCP uses the shared draft; M6 adds isolated proposals.
 
 Implemented: authenticated loopback daemon; schema-backed atomic project
 persistence; shared authoring workspace; bounded undo/redo; PNG and static GLB
@@ -39,14 +39,16 @@ editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
 simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-53 Node tests, 25 Rust tests, 13 schema documents and three architecture rules
-pass. M4 implementation CI run 36375697380 passed all ten jobs, including the
-complete M2/M3/M4 Chromium flow and development/AOT C# execution. Reports live
-under `docs/reports/m4-*`. This environment cannot launch the installed rustc
-or .NET, so clean builds are proven in CI; do not claim a local full build.
-Browser rendering uses software Vulkan under Xvfb, not physical GPU benchmarks.
-The actual editor and C# movement screenshots were reviewed. Earlier Windows
-WebGPU/Null screenshots establish M1 hardware evidence only.
+60 Node tests, 25 Rust tests, 14 schema documents, both generated catalogs and
+three architecture rules pass. M5 release CI run 36425589992 passed all ten
+jobs at code commit 324f0504a6f408d854d0c9a0cc13e948ddb454f4, including M2–M5
+Chromium workflows and development/AOT C# execution (Windows development included).
+The MCP acceptance launches a separate stdio client process, creates/edits a scene
+without editor clicks, synchronizes Play/Stop and obtains a real WebGPU PNG plus
+same-frame semantic context. Screenshot evidence was reviewed.
+This workspace cannot launch its installed rustc or .NET; clean builds are proven
+in CI. Browser rendering uses software Vulkan under Xvfb, not physical GPU
+benchmarks. Earlier Windows WebGPU/Null screenshots establish M1 hardware only.
 
 The Node bootstrap is the M2 authoring path. Native Rust daemon capabilities
 cover the M0 HTTP/protocol/security surface and shared parity corpus; native
@@ -58,7 +60,10 @@ are implemented. Native Rust contains an internal named compiler capability;
 it is not exposed as a native project/editor HTTP API.
 The M3 Asset DB, stable source revisions, dependency cache, worker jobs,
 PNG/GLB/PCM WAV imports, hot reload and resource diagnostics are implemented.
-Broader schema code generation, transactional COW workspaces and later engine
+M5 generates semantic tools from canonical metadata and component schemas.
+The stdio MCP adapter uses authenticated loopback HTTP and the public Command Bus.
+Bounded queries, context budgets, deltas, error introspection and actual renderer
+capture are implemented. Broader schema generation, transactional COW workspaces and later engine
 systems remain future work.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
@@ -78,6 +83,8 @@ folders, when moving snapshots. IDs are stable; paths are never client authority
 - `engine/wasm/`: ABI v1 exports and host wrapper (ADR-0016).
 - `engine/diagnostics/`: bounded trace primitives.
 - `engine/renderer/`: renderer boundary and Null Renderer.
+- `daemon/mcp/`: MCP stdio transport over the authenticated daemon.
+- `daemon/bootstrap/agent/`: bounded queries, validation and renderer lease.
 - `protocol/schema/`: canonical schema inputs.
 - `protocol/src/`: bootstrap protocol helpers.
 - `spikes/csharp-wasm/`: early .NET browser-Wasm risk gate.
@@ -129,19 +136,20 @@ executed local, Windows and CI evidence; rerun them only when relevant code chan
 ## Protocol and format versions
 
 Command, event, diagnostics, scene, asset and MCP protocol numbers are currently
-`1`; MCP has no implementation yet. The architecture manifest is version `1`.
+`1`. Axiom MCP semantic API v1 uses external MCP protocol `2025-11-25` over
+stdio. The architecture manifest is version `1`.
 Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M5 per M5_PLAN.md and master specification section 124. Inventory real
-semantic capabilities and generate tool schemas before implementing the initial
-MCP adapter. Automate the external-agent scene workflow. Preserve revisions,
-authority boundaries, runtime isolation and bounded context. M5 weighs 6%.
+Begin M6 per M6_PLAN.md and master specification section 125. Define isolated
+proposal snapshots and COW overlays, bounded action logs/change sets, preview,
+continue, accept and reject. Preserve revision conflicts and all M5 tool/context
+contracts. Never silently mutate the authoritative project or MAIN. M6 weighs 5%.
 
-M4 PR #4 (`codex/m4-csharp-gameplay`) is stacked on M3, not main.
-PR #3 (M3) is stacked on PR #2 (M2), itself on PR #1 (M1). They remain unmerged;
-review/integrate in order. Branch CI success does not mean main was updated.
+M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and
+M1 #1. All remain unmerged; review/integrate in order. CI success does not mean
+main was updated.
 
 ## Handoff discipline
 

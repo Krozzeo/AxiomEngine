@@ -1,4 +1,4 @@
-import {page} from "./agent/contracts.mjs";
+import {page,toolMap} from "./agent/contracts.mjs";
 import { envelope, diagnostic } from "../../protocol/src/protocol.ts";
 
 const MAX_EVENTS = 512;
@@ -43,13 +43,15 @@ export class CommandBus {
       if (command.payload.expectedRevision !== undefined && command.payload.expectedRevision !== this.#revision) {
         throw this.#error("AX_COMMAND_0003", "Expected command revision does not match", []);
       }
-      const data = this.agentService?.has(command.payload.type) ? await this.agentService.run(command.payload.type,command.payload.data) : await this.#projects.run(command.payload.type, command.payload.data,context);
+      const type=command.payload.type,args=command.payload.data;
+      if(context.actor?.kind==='agent'&&toolMap.get(type)?.route==='workspace'&&toolMap.get(type)?.mutates&&!args?.workspaceId&&!['project.create','project.open'].includes(type))throw Object.assign(new Error('Agent edits require an explicit proposal workspace'),{code:'AX_WORKSPACE_0001'});
+      const data = this.agentService?.has(type) ? await this.agentService.run(type,args,context) : args?.workspaceId ? await this.agentService.proposals.execute(type,args,context) : await this.#projects.run(type,args,context);
       const event = envelope("event", { type: eventType, data, sequence: ++this.#sequence }, context);
       this.#recordEvent(event);
       trace.steps.push({ stage: "event.emitted", atMs: performance.now() - started, event: eventType });
       return event;
     } catch (error) {
-      const known = ["AX_AGENT_0001","AX_AGENT_0002","AX_AGENT_0003","AX_AGENT_0004","AX_SCRIPT_0001","AX_ASSET_0001", "AX_SCENE_0005", "AX_SCENE_0006", "AX_SCENE_0001", "AX_SCENE_0002", "AX_SCENE_0003", "AX_SCENE_0004", "AX_FS_0001", "AX_PROJECT_0001", "AX_PROJECT_0002", "AX_PROJECT_0003", "AX_PROJECT_0004", "AX_COMMAND_0002"];
+      const known = ["AX_WORKSPACE_0001","AX_AGENT_0001","AX_AGENT_0002","AX_AGENT_0003","AX_AGENT_0004","AX_SCRIPT_0001","AX_ASSET_0001", "AX_SCENE_0005", "AX_SCENE_0006", "AX_SCENE_0001", "AX_SCENE_0002", "AX_SCENE_0003", "AX_SCENE_0004", "AX_FS_0001", "AX_PROJECT_0001", "AX_PROJECT_0002", "AX_PROJECT_0003", "AX_PROJECT_0004", "AX_COMMAND_0002"];
       const code = known.includes(error.code) ? error.code : error.code === "ENOENT" ? "AX_PROJECT_0001" : "AX_PROJECT_0005";
       const detail = error.axiomDiagnostic ?? diagnostic(code, "project-store",
         known.includes(error.code) ? error.message : code === "AX_PROJECT_0001" ? "Project does not exist" : "Project storage operation failed",

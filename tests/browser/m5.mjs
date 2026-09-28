@@ -12,9 +12,9 @@ const daemon=await startServer({projectRoot:root});let browser,page,client;const
 try{
  client=await mcpClient(daemon);
  const available=[];let cursor;do{const r=await client.request('tools/list',cursor?{cursor}:{});available.push(...r.result.tools);cursor=r.result.nextCursor;}while(cursor);assert.ok(available.some(t=>t.name==='renderer.capture'));assert.ok(!available.some(t=>t.name==='shell'));report.criteria.push('MCP subprocess initialization and paginated schema discovery');
- const call=async(name,args={})=>(await client.call(name,args)).structuredContent.payload.data;
- const created=await call('project.create',{name:'External agent scene'});const id=created.project.id;
- const mutation=async()=>({id,expectedSceneRevision:(await call('scene.query',{id})).sceneRevision});
+ let workspaceId;const call=async(name,args={})=>(await client.call(name,workspaceId&&/^(scene|asset|entity|runtime|renderer|play|script)\./.test(name)?{...args,workspaceId}:args)).structuredContent.payload.data;
+ const created=await call('project.create',{name:'External agent scene'});const id=created.project.id;workspaceId=(await call('workspace.begin',{id,expectedSceneRevision:created.sceneRevision})).id;
+ const mutation=async()=>({id,workspaceId,expectedSceneRevision:(await call('scene.query',{id})).sceneRevision});
  await call('scene.entity.create',{...await mutation(),name:'Agent sprite'});
  const entity=(await call('entity.query',{...await mutation(),name:'Agent sprite'})).items[0];
  await call('asset.import',{...await mutation(),name:'agent.png',base64:imageFixture().toString('base64')});const asset=(await call('asset.query',await mutation())).items[0];
@@ -36,7 +36,7 @@ try{
  await call('play.stop',await mutation());assert.equal((await ready()).editor.playing,false);
  // External edits must update the already-open editor, not merely a daemon snapshot.
  await call('scene.entity.update',{...await mutation(),entityId:entity.id,transform:{position:[-1,0,0]}});await ready();const next=await client.call('renderer.capture',await mutation());assert.notEqual(next.content.find(c=>c.type==='image').data,shot.content.find(c=>c.type==='image').data);
- await call('scene.save',await mutation());await assert.rejects(client.call('renderer.capture',{...await mutation(),channel:'depth'}),/AX_AGENT_0001/);
+ await call('workspace.continue',{workspaceId,expectedWorkspaceRevision:(await mutation()).expectedSceneRevision});await assert.rejects(client.call('renderer.capture',{...await mutation(),channel:'depth'}),/AX_AGENT_0001/);
  assert.deepEqual(report.pageErrors,[]);await page.screenshot({path:join(evidence,'editor.png')});
  report.criteria.push('play and stop synchronized to real editor without clicks','renderer-owned PNG plus same-frame semantic capture','bounded error and event deltas','external edits refresh an already-open editor');report.passed=true;report.capture={width:png.width,height:png.height,colors:colors.size,bytes:pixels.length};console.log('M5_BROWSER='+JSON.stringify(report));
 }catch(error){report.failure=error.message;if(page){console.error(await page.locator('body').innerText());await page.screenshot({path:join(evidence,'failure.png')}).catch(()=>{});}throw error;}

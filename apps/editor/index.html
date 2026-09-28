@@ -9,7 +9,7 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M5</span>
+      <span class="badge">M6</span>
       <span id="connection" class="status pending">Connecting…</span>
     </header>
     <main class="workspace">
@@ -27,6 +27,12 @@
           <div class="actions"><button id="scene-save" disabled>Save</button><button id="scene-undo" disabled>Undo</button><button id="scene-redo" disabled>Redo</button></div>
           <button id="workspace-refresh" disabled>Refresh workspace</button>
           <button id="project-close" disabled>Close project</button>
+          <h2>AI proposals</h2>
+          <select id="proposal-list" aria-label="AI proposals"></select>
+          <button id="proposal-review" disabled>Review differences</button>
+          <div class="actions"><button id="proposal-preview" disabled>Run proposal</button><button id="proposal-continue" disabled>Return to source</button></div>
+          <div class="actions"><button id="proposal-accept" disabled>Accept reviewed changes</button><button id="proposal-reject" disabled>Reject proposal</button></div>
+          <p id="proposal-status" role="status"></p><pre id="proposal-diff"></pre>
           <h2>Assets</h2>
           <label for="asset-file">PNG, GLB or PCM WAV · up to 8 MiB</label>
           <input id="asset-file" type="file" accept=".png,.glb,.wav" disabled>

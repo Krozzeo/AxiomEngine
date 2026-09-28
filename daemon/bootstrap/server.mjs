@@ -1,3 +1,4 @@
+import {ProposalManager} from './workspaces/manager.mjs';
 import {tools,toolMap,validate,bounded} from './agent/contracts.mjs';
 import {AgentService,compactResult} from './agent/service.mjs';
 import {EditorBridge} from './agent/editor-bridge.mjs';
@@ -75,8 +76,10 @@ export async function startServer(options = {}) {
   const token = options.token ?? randomBytes(32).toString("base64url");
   const workspace = new SceneWorkspace(new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects")));
   const bus = new CommandBus({ projects: workspace });
-  const bridge=new EditorBridge(workspace,error=>bus.recordError(error));
-  bus.agentService=new AgentService({workspace,bus,bridge});
+  const proposals=new ProposalManager(workspace);await proposals.initialize();
+  const view={get project(){return proposals.active.project;},get revision(){return proposals.active.revision;},get workspaceId(){return proposals.previewId;},snapshot:()=>proposals.view()};
+  const bridge=new EditorBridge(view,error=>bus.recordError(error));
+  bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();
@@ -112,16 +115,16 @@ export async function startServer(options = {}) {
         const origin=request.headers.origin;
         if(request.method!=="GET"||(origin?!allowedOrigins.has(origin):request.headers["sec-fetch-site"]!=="same-origin")||!request.headers.cookie?.split("; ").includes("axiom-runtime="+runtimeCookie))return json(response,403,{code:"AX_SECURITY_0001"});
         const match=url.pathname.match(/^\/script-runtime\/([0-9a-f-]{36})\/([0-9a-f-]{36})\/([a-zA-Z0-9_.-]+)$/);
-        const project=workspace.project,build=project?.scene.script?.build;
+        const serving=proposals.active;const project=serving.project,build=project?.scene.script?.build;
         if(!match||project?.id!=="project://"+match[1]||build?.id!==match[2])return json(response,404,{code:"AX_SCRIPT_0001"});
         try {
-          const content=await workspace.compiler.read(project.id,build,match[3]);
+          const content=await serving.compiler.read(project.id,build,match[3]);
           const type=({".js":"text/javascript",".json":"application/json",".wasm":"application/wasm"})[extname(match[3])]??"application/octet-stream";
           response.writeHead(200,{...SECURITY_HEADERS,"Content-Type":type,"Cache-Control":"private, no-store"});return response.end(content);
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.15" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.16" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -131,14 +134,14 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.15" },
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.16" },
           capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
       }
 
       if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
-      if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,bridge.sync(await readJson(request)));
+      if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,{...bridge.sync(await readJson(request)),proposals:proposals.list()});
       if(request.method==='POST'&&url.pathname==='/v1/tools/call'){
         const call=await readJson(request),tool=toolMap.get(call.name);
         if(!tool?.mcp)return json(response,404,{code:'AX_AGENT_0004',cause:'Tool is unavailable'});
@@ -184,7 +187,7 @@ export async function startServer(options = {}) {
 
       return json(response, 404, { code: "AX_HTTP_0002", cause: "Route not found" });
     } catch (error) {
-      const known=typeof error.code==='string'&&/^(AX_AGENT_|AX_SCENE_)/.test(error.code);
+      const known=typeof error.code==='string'&&/^(AX_AGENT_|AX_SCENE_|AX_WORKSPACE_)/.test(error.code);
       if(known)bus.recordError({code:error.code,cause:error.message});
       return json(response, error.status ?? (known?422:500), { code: known?error.code:error.status === 413 ? "AX_HTTP_0003" : "AX_SYSTEM_0002", cause: error.message });
     }
@@ -202,7 +205,7 @@ export async function startServer(options = {}) {
     token,
     origin,
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
-    close: () => {bridge.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
+    close: async () => {bridge.close();await proposals.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
   };
 }
 

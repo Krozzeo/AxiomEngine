@@ -48,7 +48,7 @@ jobs:
       - run: cargo +1.90.0 check --locked -p axiom-core --target wasm32-unknown-unknown
 
   csharp-wasm-spike:
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -112,6 +112,7 @@ jobs:
         env:
           AXIOM_HEADLESS: "false"
       - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m5.mjs
+      - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m6.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -121,3 +122,4 @@ jobs:
             .axiom/browser-m3-evidence
             .axiom/browser-m4-evidence
             .axiom/browser-m5-evidence
+            .axiom/browser-m6-evidence

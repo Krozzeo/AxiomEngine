@@ -8,12 +8,16 @@ use axiom_renderer::{NullRenderer, RenderFrame, Renderer};
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 
+#[allow(unsafe_code)]
+mod physics_abi;
+
 #[derive(Default)]
 struct Registry {
     next: u32,
     worlds: BTreeMap<u32, DemoKernel>,
     scenes: BTreeMap<u32, RuntimeScene>,
     cameras: BTreeMap<u32, Matrix>,
+    physics: BTreeMap<u32, axiom_core::physics::World>,
 }
 
 thread_local! {
@@ -49,6 +53,7 @@ mod exports {
             registry.worlds.remove(&id);
             registry.scenes.remove(&id);
             registry.cameras.remove(&id);
+            registry.physics.remove(&id);
         });
     }
 

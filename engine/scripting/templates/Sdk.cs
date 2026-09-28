@@ -12,6 +12,8 @@ public readonly record struct Quat(double X, double Y, double Z, double W) {
 }
 public readonly record struct Entity(string Id, int Generation) {
  public Transform Transform => Context.Read(this);
+ public RigidBody RigidBody => Context.ReadBody(this);
+ public void SetVelocity(Vec3 velocity) => Context.Velocity(this,velocity);
  public void Move(Vec3 delta) => SetPosition(Transform.Position+delta);
  public void SetPosition(Vec3 position) => Context.Move(this,position);
  public Entity Spawn(Vec3 position) => Context.Spawn(this,position);
@@ -31,12 +33,20 @@ internal readonly record struct Operation(string Kind,string Id,string? Template
 internal static class Context {
  internal static int Generation;
  internal static readonly Dictionary<string,Transform> Entities = new();
+ internal static readonly Dictionary<string,RigidBody> Bodies = new();
  internal static readonly HashSet<string> Keys = new();
  internal static readonly List<Operation> Operations = new();
  internal static int Spawned,Logs;
  internal static Transform Read(Entity entity) {
   if(entity.Generation!=Generation||!Entities.TryGetValue(entity.Id,out var value))throw new InvalidOperationException("AX_SCRIPT_0002: stale entity handle");
   return value;
+ }
+ internal static RigidBody ReadBody(Entity entity) {
+  _=Read(entity);if(!Bodies.TryGetValue(entity.Id,out var body))throw new InvalidOperationException("AX_PHYSICS_0001: entity has no rigid body");return body;
+ }
+ internal static void Velocity(Entity entity,Vec3 velocity) {
+  _=ReadBody(entity);Position(velocity);if(Math.Max(Math.Abs(velocity.X),Math.Max(Math.Abs(velocity.Y),Math.Abs(velocity.Z)))>10000)throw new ArgumentException("AX_PHYSICS_0001: invalid velocity");
+  Add(new("velocity",entity.Id,null,velocity,null));Bodies[entity.Id]=new RigidBody(velocity);
  }
  private static void Add(Operation operation) {
   if(Operations.Count>=Limits.Operations)throw new InvalidOperationException("AX_SCRIPT_0003: operation limit exceeded");
@@ -51,16 +61,17 @@ internal static class Context {
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
   if(Spawned>=Limits.Spawns||Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
-  var id="entity://"+Guid.NewGuid();Add(new("spawn",id,template.Id,position,null));Spawned++;Entities.Add(id,value with{Position=position});return new(id,Generation);
+  var id="entity://"+Guid.NewGuid();Add(new("spawn",id,template.Id,position,null));Spawned++;Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);return new(id,Generation);
  }
  internal static void Log(string message) {
   if(message.Length>2048||Logs>=Limits.Logs)throw new InvalidOperationException("AX_SCRIPT_0003: log limit exceeded");
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
-  Entities.Clear();Keys.Clear();Operations.Clear();Logs=0;
+  Entities.Clear();Bodies.Clear();Keys.Clear();Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {
    if(Entities.Count>=Limits.Entities)throw new ArgumentException("Entity limit exceeded");
+   if(e.TryGetProperty("rigidBody",out var body))Bodies.Add(e.GetProperty("id").GetString()!,RigidBody.Read(body));
    Entities.Add(e.GetProperty("id").GetString()!,Transform.Read(e.GetProperty("transform")));
   }
   foreach(var key in value.GetProperty("keys").EnumerateArray()) {if(Keys.Count>=64)throw new ArgumentException("Input limit exceeded");Keys.Add(key.GetString()!);}

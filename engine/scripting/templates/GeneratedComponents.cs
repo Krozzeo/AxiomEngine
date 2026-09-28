@@ -4,6 +4,9 @@ namespace Axiom.Gameplay;
 public readonly record struct Transform(Vec3 Position, Quat Rotation, Vec3 Scale) {
  internal static Transform Read(JsonElement value) => new(Vec3.Read(value.GetProperty("position")), Quat.Read(value.GetProperty("rotation")), Vec3.Read(value.GetProperty("scale")));
 }
+public readonly record struct RigidBody(Vec3 Velocity) {
+ internal static RigidBody Read(JsonElement value) => new(Vec3.Read(value.GetProperty("velocity")));
+}
 internal static class Limits {
  internal const int Entities = 1024;
  internal const int Attachments = 32;

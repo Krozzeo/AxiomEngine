@@ -761,7 +761,9 @@
           "component": {
             "type": "string",
             "enum": [
-              "Renderable"
+              "Renderable",
+              "Collider",
+              "RigidBody"
             ]
           },
           "workspaceId": {
@@ -1488,6 +1490,82 @@
           "workspaceId",
           "expectedWorkspaceRevision",
           "reviewHash"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.collider.set",
+      "description": "Set Collider authoring component; edits are revision checked and proposal scoped.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/collider"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.rigidBody.set",
+      "description": "Set RigidBody authoring component; edits are revision checked and proposal scoped.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/rigidBody"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
         ],
         "additionalProperties": false
       }

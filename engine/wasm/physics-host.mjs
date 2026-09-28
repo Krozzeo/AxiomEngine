@@ -1,0 +1,14 @@
+// Scalar bridge to the owned Rust solver. No JS collision or integration fallback.
+export function physicsHost(api, world) {
+ let ids=[],enabled=false;
+ const read=(index,field)=>api.axiom_physics_read(world,index,field);
+ function snapshot(){if(!enabled)return null;const count=api.axiom_physics_info(world,1);return {backend:'cpu-wasm',reason:'AX_PHYSICS_CPU_BASELINE',fixedDelta:1/60,steps:api.axiom_physics_info(world,3),candidates:api.axiom_physics_info(world,2),bodies:ids.map((id,index)=>({id,position:[0,1,2].map(f=>read(index,f)),velocity:[3,4,5].map(f=>read(index,f))})),contacts:Array.from({length:Math.min(count,128)},(_,i)=>{const get=f=>api.axiom_physics_contact(world,i,f);return{a:ids[get(0)],b:ids[get(1)],trigger:!!get(2),depth:get(3),normal:[4,5,6].map(get)};}),omittedContacts:Math.max(0,count-128)};}
+ return {
+  configure(scene,preserve=false){const old=new Map((preserve?snapshot()?.bodies??[]:[]).map(b=>[b.id,b]));enabled=true;ids=[];if(api.axiom_physics_clear(world)!==0)throw Error('AX_PHYSICS_0001: invalid world');for(const e of [...scene.entities].filter(e=>e.collider).sort((a,b)=>a.id.localeCompare(b.id))){const c=e.collider,b=e.rigidBody,velocity=old.get(e.id)?.velocity??b?.velocity??[0,0,0];const index=api.axiom_physics_add(world,c.dimension,c.shape==='sphere'?1:0,...e.transform.position,...velocity,...c.halfExtents,b?1/b.mass:0,b?.restitution??0,b?.friction??0.5,b?.gravityScale??0,c.trigger?1:0,c.layer,c.mask);if(index===0xffffffff)throw Error('AX_PHYSICS_0001: invalid body');ids.push(e.id);}},
+  positions(positions){if(!enabled)return;for(const [id,p]of positions){const index=ids.indexOf(id);if(index>=0)for(let a=0;a<3;a++)if(api.axiom_physics_write(world,index,a,p[a])!==0)throw Error('AX_PHYSICS_0001: invalid position');}},
+  velocities(values){if(!enabled)return;for(const [id,v]of values){const index=ids.indexOf(id);if(index<0)throw Error('AX_PHYSICS_0001: missing body');for(let a=0;a<3;a++)if(api.axiom_physics_write(world,index,a+3,v[a])!==0)throw Error('AX_PHYSICS_0001: invalid velocity');}},
+  step(count){if(!enabled)return null;if(!Number.isInteger(count)||count<0||count>8||api.axiom_physics_step(world,count)!==0)throw Error('AX_PHYSICS_0001: invalid fixed steps');return snapshot();},
+  snapshot,
+  raycast({origin,direction,maxDistance=1000,dimension=3,mask=0xffffffff}){if(!enabled)throw Error('AX_PHYSICS_0001: physics not configured');if(![origin,direction].every(v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite))||!Number.isFinite(maxDistance)||maxDistance<0||![2,3].includes(dimension)||!Number.isInteger(mask)||mask<0||mask>0xffffffff)throw Error('AX_PHYSICS_0001: invalid ray');const args=[world,...origin,...direction,maxDistance,dimension,mask],index=api.axiom_physics_ray(...args,0);return index<0?null:{entityId:ids[index],distance:api.axiom_physics_ray(...args,1)};}
+ };
+}

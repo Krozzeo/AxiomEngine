@@ -28,6 +28,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("scene-redo").disabled = !editing || !state.canRedo;
     $("scene-delete").disabled = !editing || !entity;
     $("entity-fields").disabled = !editing || !entity;
+    $("physics-fields").disabled = !editing || !entity;
     $("project-close").disabled=!editing||!project;
     const chosen=project?.scene.assets?.find(a=>a.id===$("asset-list").value);
     $("asset-replace").disabled=!editing||!pipelineEnabled||!chosen;
@@ -69,6 +70,14 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if(project?.scene.assets?.some(a=>a.id===textureSelection))$("asset-texture").value=textureSelection;
     $("camera-projection").value=project?.scene.camera?.projection??"perspective";
     $("entity-name").value = entity?.name ?? "";
+    $("physics-shape").value=entity?.collider?.shape??"none";
+    $("physics-dimension").value=String(entity?.collider?.dimension??2);
+    $("physics-motion").value=entity?.rigidBody?"dynamic":"static";
+    $("physics-trigger").checked=entity?.collider?.trigger??false;
+    for(let i=0;i<3;i++)$("physics-half-"+i).value=String(entity?.collider?.halfExtents[i]??0.5);
+    $("physics-mass").value=String(entity?.rigidBody?.mass??1);
+    $("physics-layer").value=String(entity?.collider?.layer??1);
+    $("physics-mask").value=String(entity?.collider?.mask??4294967295);
     for (const group of ["position", "scale"]) for (let i = 0; i < 3; i++) $(`${group}-${i}`).value = String(entity?.transform[group][i] ?? (group === "scale" ? 1 : 0));
     }
     if(state.workspaceId){for(const id of ["project-new","project-open","project-close","scene-save"])$(id).disabled=true;$("preview-note").textContent="Isolated AI proposal · "+(state.playing?"running":"editing");}
@@ -181,6 +190,13 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("scene-add").addEventListener("click", () => act(() => run("scene.entity.create", mutation({ name: "Entity" }))));
   $("scene-delete").addEventListener("click", () => act(() => run("scene.entity.delete", mutation({ entityId: selected }))));
   for (const action of ["save", "undo", "redo"]) $("scene-" + action).addEventListener("click", () => act(() => run("scene." + action, mutation())));
+  $("physics-form").addEventListener("submit",event=>{event.preventDefault();const shape=$("physics-shape").value;const collider={shape,dimension:Number($("physics-dimension").value),halfExtents:[0,1,2].map(i=>Number($("physics-half-"+i).value)),trigger:$("physics-trigger").checked,layer:Number($("physics-layer").value),mask:Number($("physics-mask").value)};const dynamic=$("physics-motion").value==="dynamic",mass=Number($("physics-mass").value);return act(async()=>{
+    const old=state.project.scene.entities.find(e=>e.id===selected)?.rigidBody;
+    if(shape==="none"){await run("scene.component.remove",mutation({entityId:selected,component:"Collider"}));return;}
+    await run("scene.collider.set",mutation({entityId:selected,value:collider}));
+    if(dynamic)await run("scene.rigidBody.set",mutation({entityId:selected,value:{velocity:[0,0,0],restitution:0,friction:0.5,gravityScale:1,...old,mass}}));
+    else if(old)await run("scene.component.remove",mutation({entityId:selected,component:"RigidBody"}));
+  });});
   $("entity-form").addEventListener("submit", event => {
     event.preventDefault();
     const transform = {};

@@ -29,7 +29,8 @@ function validate(value, rule, path) {
   }
   if (rule.type === "string" && (typeof value !== "string" || value.length < (rule.minLength ?? 0) || value.length > (rule.maxLength ?? Infinity) || (rule.pattern && !new RegExp(rule.pattern).test(value)))) fail();
   if (rule.type === "number" && (!Number.isFinite(value) || value < (rule.minimum ?? -Infinity) || value > (rule.maximum ?? Infinity))) fail();
-  if (rule.type === "integer" && (!Number.isSafeInteger(value) || value < (rule.minimum ?? -Infinity))) fail();
+  if (rule.type === "integer" && (!Number.isSafeInteger(value) || value < (rule.minimum ?? -Infinity) || value > (rule.maximum ?? Infinity))) fail();
+  if (rule.type === "boolean" && typeof value !== "boolean") fail();
 }
 
 export function validateProject(document) {
@@ -53,7 +54,9 @@ export function validateProject(document) {
   const assets=document.scene.assets??[];
   if(new Set(assets.map(asset=>asset.id)).size!==assets.length) throw projectError("AX_PROJECT_0002","Duplicate asset ID");
   for(const asset of assets) if(asset.textureId && (asset.kind!=="mesh"||!assets.some(a=>a.id===asset.textureId&&a.kind==="sprite"))) throw projectError("AX_PROJECT_0002","Invalid mesh texture dependency");
+  if(document.scene.entities.filter(e=>e.collider).length>256)throw projectError("AX_PROJECT_0002","Physics supports at most 256 colliders");
   for(const entity of document.scene.entities) {
+    if(entity.rigidBody&&!entity.collider)throw projectError("AX_PROJECT_0002","RigidBody requires Collider");
     if(Math.hypot(...entity.transform.rotation)<1e-8) throw projectError("AX_PROJECT_0002","Quaternion must not be zero");
     if(entity.renderable && !assets.some(asset=>asset.id===entity.renderable.assetId && asset.kind===entity.renderable.kind)) throw projectError("AX_PROJECT_0002","Renderable references a missing or incompatible asset");
   }

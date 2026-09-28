@@ -3,7 +3,8 @@
   "schemaVersion": 1,
   "namespace": "Axiom.Gameplay",
   "components": [
-    "transform.component.json"
+    "transform.component.json",
+    "rigid-body.component.json"
   ],
   "limits": {
     "entities": 1024,

@@ -1,0 +1,22 @@
+{
+  "$schema": "./component-definition.schema.json",
+  "schemaVersion": 1,
+  "name": "RigidBody",
+  "componentId": "component://axiom/rigid-body",
+  "unknownFieldPolicy": "preserve",
+  "properties": [
+    {
+      "name": "velocity",
+      "type": "vec3",
+      "unit": "meter-per-second",
+      "default": [
+        0,
+        0,
+        0
+      ],
+      "runtimeEditable": true,
+      "serializable": true,
+      "aiDescription": "Linear velocity; CPU/Wasm physics owns fixed-step integration."
+    }
+  ]
+}

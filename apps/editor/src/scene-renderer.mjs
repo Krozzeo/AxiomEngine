@@ -1,6 +1,6 @@
 import {ScriptRuntime} from "./script-runtime.js";
 import {applyScriptOperations} from "./script-operations.mjs";
-import { loadKernel } from "./kernel-host.js";
+import { loadKernel, scenePrimitives } from "./kernel-host.js";
 import { FrameProfiler } from "./frame-profiler.js";
 
 const shader = `
@@ -163,9 +163,13 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
           const result=applyScriptOperations(runtimeScene,packet,ticket,spawned);
           if(result.changedTopology) {
-            const candidate=await loadKernel(bytes);let next=[];
-            try {const draws=candidate.compileScene(result.scene,assets);next=await buildResources(draws,ticket);if(ticket!==generation||disposed)throw new Error("Runtime generation changed");kernel.dispose();kernel=candidate;destroyResources(resources);resources=next;}
-            catch(error){candidate.dispose();destroyResources(next);throw error;}
+            let next=[];
+            try {
+              const draws=scenePrimitives(result.scene,assets);next=await buildResources(draws,ticket);
+              if(ticket!==generation||disposed)throw new Error("Runtime generation changed");
+              try {kernel.compileScene(result.scene,assets);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
+              destroyResources(resources);resources=next;
+            }catch(error){destroyResources(next);throw error;}
           }else kernel.setPositions(result.positions);
           runtimeScene=result.scene;spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}

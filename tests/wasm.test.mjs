@@ -43,5 +43,9 @@ test('runtime position updates cross the Rust boundary without altering authorin
  assert.deepEqual([...moved.draws[0].model.slice(12,15)],[2,3,4]);assert.notDeepEqual(moved.draws[0].mvp,first.draws[0].mvp);
  assert.deepEqual(scene.entities[0].transform.position,[0,0,0]);
  assert.throws(()=>kernel.setPositions(new Map([[id,[NaN,0,0]]])),/invalid/);
+ const frame=moved.frame;
+ const spawned=structuredClone(scene);spawned.entities.push({...structuredClone(scene.entities[0]),id:'entity://22222222-2222-4222-8222-222222222222'});
+ kernel.compileScene(spawned,new Map([['image',{kind:'sprite',width:1,height:1,dataUrl:''}]]));
+ const expanded=kernel.stepScene(0,3n,1);assert.equal(expanded.frame,frame+1);assert.equal(expanded.nullProcessedMeshes,2);
  kernel.dispose();assert.throws(()=>kernel.setPositions(new Map()),/missing/);
 });

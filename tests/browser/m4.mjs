@@ -17,7 +17,7 @@ try {
  await page.waitForFunction(()=>document.querySelector('#asset-list').options.length===1);await page.locator('#asset-place').click();
  await page.waitForFunction(()=>document.querySelectorAll('#entities button').length===1);
  await page.waitForFunction(()=>document.querySelector('#script-source').value.includes('GameScript'));
- const source=await page.locator('#script-source').inputValue();
+ const source=(await page.locator('#script-source').inputValue()).replace('public sealed class GameScript : Script {','public sealed class GameScript : Script { private bool later;').replace('public override void OnUpdate(double deltaSeconds) {','public override void OnUpdate(double deltaSeconds) { if(Input.IsDown("Space") && !later) { later=true; Entity.Spawn(Entity.Transform.Position+new Vec3(-2,0,0)); }');
  let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
  async function compile(text,expected='completed') {
   await page.locator('#script-source').fill(text);await page.locator('#script-compile').click();
@@ -36,6 +36,9 @@ try {
  await page.locator('#viewport').click();await page.keyboard.down('ArrowRight');
  await page.waitForFunction(x=>JSON.parse(document.querySelector('#frame-trace').textContent).script.entities[0].position[0]>x+.2,x);await page.keyboard.up('ArrowRight');
  const after=await page.locator('#viewport').screenshot({path:join(evidence,'csharp-movement.png')});assert.notDeepEqual(before,after);assert.deepEqual((await state()).project.scene,authoring);
+ const frameBeforeSpawn=JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame;
+ await page.keyboard.down('Space');await page.waitForFunction(()=>JSON.parse(document.querySelector('#frame-trace').textContent).script.entities.length===3);await page.keyboard.up('Space');
+ assert.ok(JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame>frameBeforeSpawn,'Runtime spawn must preserve the Rust clock');
  report.criteria.push('Transform and Input move rendered Rust world','spawn runtime entity','authoring isolation');
  await compile('using Axiom.Gameplay; namespace Game; public sealed class GameScript : Script { syntax error }','failed');
  assert.match(await page.locator('#script-diagnostics').textContent(),/Game.cs:\d+:\d+ CS/);assert.deepEqual((await state()).project.scene,authoring);

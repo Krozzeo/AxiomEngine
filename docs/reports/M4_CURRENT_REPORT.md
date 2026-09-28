@@ -1,7 +1,7 @@
 # M4 — C# Gameplay Runtime
 
 Status: acceptance complete (8/8). M4: 100%; weighted whole project: 30%.
-Final release verification follows the documentation/version update.
+Release verification includes C# in Windows Chromium and runtime bundle authority checks.
 
 ## Acceptance matrix
 
@@ -30,12 +30,13 @@ not statistical benchmarks or physical-device performance guarantees.
 
 ## Automated editor evidence
 
-Implementation run 36354561101, commit 62a7c66ed9fba6008c3c16e52733e7bc80df6824:
+Release run 36375697380, commit 00ffa6f8aceff1d44095a753db24b2c69ec3fde7:
 53 Node tests; 25 Rust tests; Rust formatting and Clippy; 13 schema documents;
-three architecture rules; M0 protocol parity; all nine CI jobs passed.
+three architecture rules; M0 protocol parity; all ten CI jobs passed.
 Chromium used actual software WebGPU under Xvfb. M2 and M3 regressions passed.
 M4 proves visible movement from keyboard input through C# and Rust, runtime
-spawning, unchanged authoring, compiler source locations, last-good-runtime
+spawning during Start and Update with a preserved Rust clock, unchanged authoring,
+compiler source locations, last-good-runtime
 preservation, reload without navigation, persisted bundle reopening, lifecycle
 logs and a killed infinite loop with responsive editor. Actual screenshots were
 reviewed. Raw report: `m4-browser-evidence.json`.
@@ -43,7 +44,7 @@ reviewed. Raw report: `m4-browser-evidence.json`.
 ## Manual tests requested
 
 None. Equivalent behavior is covered by automated compiler, process/filesystem,
-Rust/Wasm and real-browser checks. Windows C# execution is also in final CI.
+Rust/Wasm and real-browser checks. Windows C# execution also passed in CI.
 
 ## Known boundaries
 

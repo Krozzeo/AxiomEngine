@@ -1,6 +1,7 @@
 {
   "criteria": [
     "compile generated SDK and attach C#",
+    "runtime bundle cookie, origin and build authority",
     "Transform and Input move rendered Rust world",
     "spawn runtime entity",
     "authoring isolation",
@@ -13,7 +14,7 @@
   "passed": true,
   "backend": "WebGPU \u00b7 project scene \u00b7 GPU timestamps",
   "errors": [],
-  "runId": 36354561101,
-  "commit": "62a7c66ed9fba6008c3c16e52733e7bc80df6824",
+  "runId": 36375697380,
+  "commit": "00ffa6f8aceff1d44095a753db24b2c69ec3fde7",
   "visualReview": "Actual CI editor and C# movement screenshots reviewed"
 }

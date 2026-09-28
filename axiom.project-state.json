@@ -1,7 +1,7 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-09-28",
   "engineVersion": "0.0.14",
   "activeMilestone": 4,
   "milestoneStatus": "complete",
@@ -170,20 +170,21 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "M4 implementation before release version bump",
-      "commit": "62a7c66ed9fba6008c3c16e52733e7bc80df6824",
-      "runId": 36354561101,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36354561101",
+      "version": "0.0.14",
+      "commit": "00ffa6f8aceff1d44095a753db24b2c69ec3fde7",
+      "runId": 36375697380,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36375697380",
       "jobs": [
         "bootstrap (ubuntu-latest)",
         "bootstrap (windows-latest)",
         "rust",
-        "csharp-wasm-spike (development)",
-        "csharp-wasm-spike (aot)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
         "browser-milestones",
         "script-boundaries (ubuntu-latest)",
         "script-boundaries (windows-latest)",
-        "script-boundaries (macos-latest)"
+        "script-boundaries (macos-latest)",
+        "csharp-wasm-spike (windows-latest, development)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -270,7 +271,7 @@
       "passed": true,
       "criteriaPassed": 8,
       "criteriaTotal": 8,
-      "runId": 36354561101,
+      "runId": 36375697380,
       "evidence": "docs/reports/m4-browser-evidence.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
@@ -309,5 +310,5 @@
     "docs/reports/M4_CURRENT_REPORT.md",
     "docs/architecture/M5_PLAN.md"
   ],
-  "nextTask": "Begin M5 AI Control Layer per docs/architecture/M5_PLAN.md after final M4 release verification. Generate discoverable schemas from actual semantic capabilities and automate the external-agent scene workflow. M4 is stacked on unmerged M3; do not merge main implicitly."
+  "nextTask": "Begin M5 AI Control Layer per docs/architecture/M5_PLAN.md. Generate discoverable schemas from actual semantic capabilities and automate the external-agent scene workflow. M4 is stacked on unmerged M3; do not merge main implicitly."
 }

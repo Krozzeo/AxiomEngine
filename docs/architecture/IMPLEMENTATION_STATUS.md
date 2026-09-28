@@ -1,6 +1,6 @@
 # Implementation status
 
-Last updated: 2026-09-27. Version 0.0.14.
+Last updated: 2026-09-28. Version 0.0.14.
 M0–M4 acceptance is complete. M4: 8/8 (100%).
 Weighted whole-project progress: 30%. M5 AI Control Layer is next.
 
@@ -31,9 +31,9 @@ Weighted whole-project progress: 30%. M5 AI Control Layer is next.
 M4 implementation passes 53 Node tests, 13 schema documents, generated-binding
 consistency, three architecture rules and M0 parity. Rust passes 25 tests,
 formatting, Clippy with warnings denied and core Wasm compilation.
-All nine jobs passed at commit 62a7c66ed9fba6008c3c16e52733e7bc80df6824:
-https://github.com/Krozzeo/AxiomEngine/actions/runs/36354561101
-Final release CI additionally executes C# development builds in Windows Chromium.
+All ten jobs passed at commit 00ffa6f8aceff1d44095a753db24b2c69ec3fde7:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/36375697380
+C# development builds and execution also pass in Windows Chromium.
 
 Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,
 visible imported assets, identical saved/reopened pixels after daemon restart,
@@ -65,7 +65,7 @@ initial MCP server, bounded queries/captures and structured agent workflows.
 - M4 acceptance: ../reports/M4_CURRENT_REPORT.md and M4_SCRIPT_RUNTIME.md.
 - Completion weights and delivery rules: MILESTONE_REPORTING.md.
 
-PR #3 is stacked on #2, itself on #1; all remain unmerged. CI success does not imply main was merged.
+PR #4 is stacked on #3, itself on #2, itself on #1; all remain unmerged. CI success does not imply main was merged.
 
 ## Roadmap release slices
 

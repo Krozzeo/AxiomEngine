@@ -1,6 +1,6 @@
 # M4 — C# Gameplay Runtime
 
-Status: acceptance passed; final release verification in progress. Source: master specification section 123.
+Status: complete; acceptance and release verification passed. Source: master specification section 123.
 Begin after M3 acceptance closes. The actual runtime and full editor acceptance are documented in M4_CURRENT_REPORT.md.
 
 ## Required outcome

@@ -30,7 +30,7 @@ Non-negotiable foundations:
 Version `0.0.14`: M0–M4 acceptance is complete. M4 passed 8/8 criteria;
 weighted whole-project completion is 30%. M5 AI Control Layer is next.
 Read `M4_SCRIPT_RUNTIME.md`, `M4_CURRENT_REPORT.md` and machine-readable state
-for contracts, evidence and limitations. Final release CI includes Windows C#.
+for contracts, evidence and limitations. Release CI includes Windows C#.
 
 Implemented: authenticated loopback daemon; schema-backed atomic project
 persistence; shared authoring workspace; bounded undo/redo; PNG and static GLB
@@ -40,7 +40,7 @@ simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
 53 Node tests, 25 Rust tests, 13 schema documents and three architecture rules
-pass. M4 implementation CI run 36354561101 passed all nine jobs, including the
+pass. M4 implementation CI run 36375697380 passed all ten jobs, including the
 complete M2/M3/M4 Chromium flow and development/AOT C# execution. Reports live
 under `docs/reports/m4-*`. This environment cannot launch the installed rustc
 or .NET, so clean builds are proven in CI; do not claim a local full build.
@@ -139,7 +139,7 @@ semantic capabilities and generate tool schemas before implementing the initial
 MCP adapter. Automate the external-agent scene workflow. Preserve revisions,
 authority boundaries, runtime isolation and bounded context. M5 weighs 6%.
 
-M4 branch `codex/m4-csharp-gameplay` is stacked on M3, not main.
+M4 PR #4 (`codex/m4-csharp-gameplay`) is stacked on M3, not main.
 PR #3 (M3) is stacked on PR #2 (M2), itself on PR #1 (M1). They remain unmerged;
 review/integrate in order. Branch CI success does not mean main was updated.
 

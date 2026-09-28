@@ -1,0 +1,84 @@
+{
+  "runId": 36285741144,
+  "job": 108526056994,
+  "spike": {
+    "passed": true,
+    "mode": "aot",
+    "publishMs": 107081.257421,
+    "rawBytes": 11478454,
+    "gzipBytes": 3871085,
+    "runs": [
+      {
+        "x": 1000.0000000001588,
+        "startupMs": 290.90499999999884,
+        "interopCalls": 10000,
+        "interopMs": 17.425000000017462
+      },
+      {
+        "x": 1000.0000000001588,
+        "startupMs": 193.25500000000466,
+        "interopCalls": 10000,
+        "interopMs": 18.699999999982538
+      }
+    ],
+    "reloadWithoutPageNavigation": true
+  },
+  "gameplay": {
+    "passed": true,
+    "mode": "aot",
+    "build": {
+      "id": "8fc32ac9-ce63-4b94-a9d5-5e6863aaef4a",
+      "mode": "aot",
+      "sourceHash": "b0dcd67da99cdd9a8c05703be89bcffc146790a7c4b537fa2ef42123d8d28558",
+      "durationMs": 114119.15090200001,
+      "bytes": 19293957,
+      "diagnostics": []
+    },
+    "results": {
+      "start": {
+        "generation": 1,
+        "operations": [
+          {
+            "kind": "log",
+            "id": "",
+            "message": "C# started: entity://11111111-1111-4111-8111-111111111111"
+          },
+          {
+            "kind": "spawn",
+            "id": "entity://ed6ed66f-3c02-41e1-be9b-b9fc6a373b49",
+            "template": "entity://11111111-1111-4111-8111-111111111111",
+            "position": [
+              2,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "step": {
+        "generation": 1,
+        "operations": [
+          {
+            "kind": "move",
+            "id": "entity://11111111-1111-4111-8111-111111111111",
+            "position": [
+              0.5,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "stop": {
+        "generation": 1,
+        "operations": [
+          {
+            "kind": "log",
+            "id": "",
+            "message": "C# stopped"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -48,6 +48,8 @@ export function validateProject(document) {
   validate(document, schema, "project");
   const ids = document.scene.entities.map(entity => entity.id);
   if (new Set(ids).size !== ids.length) throw projectError("AX_PROJECT_0002", "Duplicate entity ID");
+  const script=document.scene.script;
+  if(script && (new Set(script.attachments).size!==script.attachments.length || script.attachments.some(id=>!ids.includes(id))))throw projectError("AX_PROJECT_0002","Invalid script attachments");
   const assets=document.scene.assets??[];
   if(new Set(assets.map(asset=>asset.id)).size!==assets.length) throw projectError("AX_PROJECT_0002","Duplicate asset ID");
   for(const asset of assets) if(asset.textureId && (asset.kind!=="mesh"||!assets.some(a=>a.id===asset.textureId&&a.kind==="sprite"))) throw projectError("AX_PROJECT_0002","Invalid mesh texture dependency");

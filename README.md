@@ -7,7 +7,7 @@ daemon provides filesystem, build, asset and automation services.
 Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
 demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
 Axiom Beta Foundation, now has PNG/GLB import, project-scene rendering, editing,
-undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; weighted roadmap progress is approximately 24%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; weighted roadmap progress is approximately 30%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 
@@ -94,3 +94,16 @@ updated sources; Undo/Redo restores previous source revisions.
 See [M3_ASSET_PIPELINE.md](docs/architecture/M3_ASSET_PIPELINE.md) and
 [the M3 closure report](docs/reports/M3_CURRENT_REPORT.md). WAV import provides
 metadata, not audio playback. Keep the complete project asset folder on upgrades.
+
+## M4 C# gameplay (0.0.14)
+
+Install .NET 10 SDK and run `dotnet workload install wasm-tools`. In the editor,
+select an entity, edit Game.cs and choose **Compile & attach**, then Play. The
+included example spawns a copy, logs lifecycle events and moves with arrow keys.
+Recompile during Play to reload without restarting the editor. Failed compilation
+keeps the last good program; Stop discards runtime movement and spawned entities.
+Development is the default; Release AOT is an opt-in measured foundation.
+
+See [M4_SCRIPT_RUNTIME.md](docs/architecture/M4_SCRIPT_RUNTIME.md) for the SDK,
+limits and reset semantics, and [M4_CURRENT_REPORT.md](docs/reports/M4_CURRENT_REPORT.md)
+for automated evidence. M4: 100%; whole roadmap: approximately 30%.

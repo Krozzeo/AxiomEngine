@@ -1,5 +1,7 @@
 //! Native loopback HTTP adapter for the Axiom semantic protocol.
 
+pub mod compiler;
+
 use axum::{
     Json, Router,
     body::Bytes,

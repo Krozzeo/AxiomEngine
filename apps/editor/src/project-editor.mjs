@@ -1,7 +1,8 @@
-export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {} }) {
+export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, defaultScript = "" }) {
   const $ = id => document.querySelector(`#${id}`);
   const supported = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"];
   let enabled = false, pipelineEnabled=false, currentJob=null;
+  let scriptEnabled=false,currentScriptJob=null,scriptProject=null,scriptBuild=null;
   let busy = false;
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
   let selected = null;
@@ -9,6 +10,13 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     const project = state.project;
     const entity = project?.scene.entities.find(item => item.id === selected);
     const editing=enabled&&!busy&&!state.playing;
+    $("script-source").disabled=!scriptEnabled||!project||busy;
+    $("script-mode").disabled=!scriptEnabled||!project||busy;
+    $("script-compile").disabled=!scriptEnabled||!project||!entity||busy;
+    $("script-cancel").disabled=!currentScriptJob;
+    if(project?.id!==scriptProject||project?.scene.script?.build.id!==scriptBuild) {
+      $("script-source").value=project?.scene.script?.source??defaultScript;scriptProject=project?.id;scriptBuild=project?.scene.script?.build.id;
+    }
     $("project-status").textContent = project ? `${project.name} · ${state.dirty ? "Unsaved changes" : "Saved"} · revision ${project.revision}` : enabled ? "Create or open a project" : "Project editing is unavailable on this daemon";
     $("project-new").disabled = !editing;
     $("project-open").disabled = !editing || !$("project-list").value;
@@ -108,6 +116,25 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     await run(type, { ...data, discardChanges: state.dirty, expectedSceneRevision: state.sceneRevision });
     await list();
   }
+  $("script-compile").addEventListener("click",()=>act(async()=>{
+    const source=$("script-source").value,mode=$("script-mode").value;
+    $("script-diagnostics").textContent="";
+    currentScriptJob=(await run("script.compile",mutation({source,mode,attachments:[selected]}))).job;draw(false);
+    try {
+      while(["queued","running"].includes(currentScriptJob.status)) {
+        $("script-status").textContent=`Compilation ${currentScriptJob.status}…`;
+        await new Promise(resolve=>setTimeout(resolve,250));
+        currentScriptJob=(await run("script.job.get",{id:state.project.id,jobId:currentScriptJob.id})).job;
+      }
+      $("script-status").textContent=`Compilation ${currentScriptJob.status}`;
+      if(currentScriptJob.status!=="completed") {
+        $("script-diagnostics").textContent=(currentScriptJob.error?.diagnostics??[]).map(d=>`${d.file}:${d.line}:${d.column} ${d.code}: ${d.message}`).join("\n");
+        throw new Error(currentScriptJob.error?.message??"Compilation did not complete");
+      }
+      await run("scene.get");
+    }finally{currentScriptJob=null;}
+  }));
+  $("script-cancel").addEventListener("click",async()=>{try{if(currentScriptJob)await send("script.job.cancel",{id:state.project.id,jobId:currentScriptJob.id});}catch(error){reportError(error);}});
   $("project-new").addEventListener("click", () => {
     const name = $("project-name").value.trim();
     if (!name) { $("project-error").textContent = "Enter a project name."; return; }
@@ -166,8 +193,10 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   });
   draw();
   return {
+    setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
     async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},
     async connect(capabilities) {
+      scriptEnabled=["script.compile","script.job.get","script.job.cancel"].every(c=>capabilities.includes(`command.${c}`));
       pipelineEnabled=["asset.job.start","asset.job.get","asset.job.cancel","asset.explain"].every(c=>capabilities.includes(`command.${c}`));
       enabled = supported.every(command => capabilities.includes(`command.${command}`));
       draw();

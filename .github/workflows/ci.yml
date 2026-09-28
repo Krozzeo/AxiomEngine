@@ -8,6 +8,18 @@ permissions:
   contents: read
 
 jobs:
+  script-boundaries:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: node --test tests/script-compiler.test.mjs tests/script-files.test.mjs
+
   bootstrap:
     strategy:
       matrix:
@@ -36,14 +48,42 @@ jobs:
       - run: cargo +1.90.0 check --locked -p axiom-core --target wasm32-unknown-unknown
 
   csharp-wasm-spike:
-    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            mode: development
+          - os: ubuntu-latest
+            mode: aot
+          - os: windows-latest
+            mode: development
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
       - run: dotnet workload install wasm-tools
-      - run: dotnet publish spikes/csharp-wasm/Axiom.ScriptSpike.csproj -c Release
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/generate-script-bindings.mjs --check
+      - run: node tests/browser/csharp-spike.mjs
+        env:
+          AXIOM_CSHARP_MODE: ${{ matrix.mode }}
+      - run: node tests/browser/csharp-gameplay.mjs
+        env:
+          AXIOM_CSHARP_MODE: ${{ matrix.mode }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: csharp-runtime-spike-${{ matrix.os }}-${{ matrix.mode }}
+          path: .axiom/csharp-spike-evidence
 
   browser-milestones:
     runs-on: ubuntu-latest
@@ -58,10 +98,17 @@ jobs:
         run: rustup toolchain install 1.90.0 --profile minimal --target wasm32-unknown-unknown
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet workload install wasm-tools
       - run: npm run build
       - name: Install software Vulkan and virtual display
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
       - run: xvfb-run -a -s "-screen 0 1440x1000x24" npm run test:browser
+        env:
+          AXIOM_HEADLESS: "false"
+      - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m4.mjs
         env:
           AXIOM_HEADLESS: "false"
       - uses: actions/upload-artifact@v4
@@ -71,3 +118,4 @@ jobs:
           path: |
             .axiom/browser-evidence
             .axiom/browser-m3-evidence
+            .axiom/browser-m4-evidence

@@ -57,7 +57,7 @@ function command(type, data = {}) {
 }
 
 function reportError(error) {
-  log("error", error.data?.payload?.code ?? error.data?.code ?? "AX_EDITOR_0001", error.message);
+  log("error", error.data?.payload?.code ?? error.data?.code ?? error.code ?? error.message?.match(/^AX_[A-Z]+_\d{4}/)?.[0] ?? "AX_EDITOR_0001", error.message);
 }
 async function sendCommand(type, data = {}) {
   const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
@@ -74,8 +74,9 @@ async function execute(type, data = {}) {
 }
 let unsavedScene = false;
 const projectEditor = mountProjectEditor({ document, send: sendCommand, reportError, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
+  const changed=!pendingSnapshot||pendingSnapshot.sceneRevision!==snapshot.sceneRevision||pendingSnapshot.project?.id!==snapshot.project?.id;
   pendingSnapshot=snapshot;
-  if(renderer) await renderer.setSnapshot(snapshot);
+  if(renderer&&changed) await renderer.setSnapshot(snapshot);
 } });
 addEventListener("beforeunload", event => {
   if (unsavedScene) { event.preventDefault(); event.returnValue = ""; }
@@ -85,6 +86,7 @@ async function initializeWebGpu() {
   const response=await fetch("/axiom-kernel.wasm");
   if(!response.ok)throw new Error("AX_WASM_0001: failed to load kernel");
   renderer=await createSceneRenderer({canvas:document.querySelector("#viewport"),stateElement:document.querySelector("#gpu-state"),traceOutput:frameTraceOutput,bytes:await response.arrayBuffer(),reportError,
+    reportScriptLog:(message,context)=>log("info","AX_SCRIPT_0005",message,context),
     forceNull:new URLSearchParams(location.search).get("renderer")==="null",
     loadAsset:async(id,assetId)=>{const asset=(await sendCommand("asset.get",{id,assetId})).payload.data.asset;for(const warning of asset.warnings??[])log("warning","AX_ASSET_0002",warning);return asset;}});
   addEventListener("pagehide",()=>renderer.dispose(),{once:true});
@@ -94,6 +96,7 @@ async function initializeWebGpu() {
 async function boot() {
   try {
     const handshake = await api("/v1/handshake");
+    if(handshake.capabilities.includes("command.script.compile")){const sample=await fetch("/default-game.cs");if(sample.ok)projectEditor.setDefaultSource(await sample.text());}
     connection.textContent = `Connected · protocol v${handshake.protocol.selected}`;
     connection.className = "status ok";
     for (const [name, value] of Object.entries({ schema: handshake.schemaHash.slice(0, 20), capabilities: handshake.capabilities.length, eventBuffer: handshake.limits.retainedEvents })) {
@@ -111,7 +114,7 @@ async function boot() {
       const poll=async()=>{try{
         const {events}=await api(`/v1/events?since=${sequence}`);
         for(const event of events)sequence=Math.max(sequence,event.payload.sequence);
-        if(events.some(e=>e.payload.type==="asset.jobFinished"&&e.payload.data.status==="completed"))pendingRefresh=true;
+        if(events.some(e=>["asset.jobFinished","script.jobFinished"].includes(e.payload.type)&&e.payload.data.status==="completed"))pendingRefresh=true;
         if(pendingRefresh && await projectEditor.refreshAssets())pendingRefresh=false;
       }catch(error){if(!stopped)reportError(error);}finally{if(!stopped)setTimeout(poll,750);}};
       void poll();

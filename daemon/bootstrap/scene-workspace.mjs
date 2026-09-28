@@ -1,3 +1,4 @@
+import {ScriptCompiler} from './scripting/compiler.mjs';
 import { AssetPipeline, importInWorker } from "./asset-pipeline.mjs";
 import { AssetStore } from "./asset-store.mjs";
 import { randomUUID } from "node:crypto";
@@ -10,6 +11,9 @@ const fail = (code, message) => { throw projectError(code, message); };
 export class SceneWorkspace {
   constructor(store) {
     this.store = store;
+    this.compiler = new ScriptCompiler(store);
+    this.scriptJobs = new Map();
+    this.activeScriptJob = null;
     this.assets = new AssetStore(store);
     this.pipeline = new AssetPipeline(this.assets);
     this.jobs = new Map();
@@ -95,8 +99,38 @@ export class SceneWorkspace {
     });
     return {job:copy(job)};
   }
+  startScript(data,context) {
+    if(this.activeScriptJob)fail("AX_SCRIPT_0001","A script compilation is already running");
+    if(typeof data.source!=="string"||Buffer.byteLength(data.source)>65536)fail("AX_SCRIPT_0001","C# source exceeds 64 KiB");
+    if(!["development","aot"].includes(data.mode??"development"))fail("AX_SCRIPT_0001","Invalid compiler mode");
+    if(!Array.isArray(data.attachments)||data.attachments.length>32||new Set(data.attachments).size!==data.attachments.length||data.attachments.some(id=>!this.project.scene.entities.some(e=>e.id===id)))fail("AX_SCRIPT_0001","Select up to 32 existing entities");
+    const projectId=this.project.id,revision=this.revision,scene=copy(this.project.scene),controller=new AbortController();
+    const job={id:randomUUID(),projectId,status:"queued",capability:"script.compile.csharp",traceId:context?.traceId??null};
+    this.scriptJobs.set(job.id,job);if(this.scriptJobs.size>64)this.scriptJobs.delete(this.scriptJobs.keys().next().value);
+    this.activeScriptJob={id:job.id,controller};
+    setImmediate(async()=>{
+      try {
+        job.status="running";
+        const build=await this.compiler.build(projectId,data.source,data.mode??"development",controller.signal);
+        if(controller.signal.aborted)fail("AX_SCRIPT_0001","Compilation cancelled");
+        if(this.project?.id!==projectId||this.revision!==revision)fail("AX_SCENE_0002","Scene changed during compilation; retry");
+        scene.script={source:data.source,attachments:[...data.attachments],build};this.commitScene(scene);
+        job.status="completed";job.build=build;job.sceneRevision=this.revision;
+      }catch(error){job.status=controller.signal.aborted?"cancelled":"failed";job.error={code:error.code??"AX_SCRIPT_0001",message:error.message,diagnostics:error.diagnostics??[]};}
+      finally{this.activeScriptJob=null;this.onScriptEvent?.(copy(job),context);}
+    });
+    return {job:copy(job)};
+  }
   async run(type, data, context) {
     if (!data || typeof data !== "object" || Array.isArray(data)) fail("AX_PROJECT_0002", "Expected command data");
+    if(["script.job.get","script.job.cancel"].includes(type)) {
+      const job=this.scriptJobs.get(data.jobId);
+      if(!this.project||data.id!==this.project.id||!job||job.projectId!==data.id)fail("AX_SCRIPT_0001","Script job is unavailable");
+      if(type==="script.job.cancel"&&this.activeScriptJob?.id===job.id)this.activeScriptJob.controller.abort();
+      return {job:copy(job)};
+    }
+    if(type==="script.compile") {this.check(data);return this.startScript(data,context);}
+    if(this.activeScriptJob&&["project.create","project.open","project.close","project.save","scene.save"].includes(type))fail("AX_SCRIPT_0001","Wait for or cancel compilation first");
     if(["asset.job.get","asset.job.cancel","asset.explain"].includes(type)) {
       if(!this.project||data.id!==this.project.id)fail("AX_SCENE_0001","Open this project first");
       if(type==="asset.explain")return this.pipeline.explain(data.id,this.project.scene,data.assetId,[...this.jobs.values()].filter(j=>j.projectId===data.id));
@@ -175,7 +209,7 @@ export class SceneWorkspace {
       scene.entities.push({ id: `entity://${randomUUID()}`, name: data.name ?? "Entity", transform: { position: [0, 0, 0], rotation: [0, 0, 0, 1], scale: [1, 1, 1] } });
     } else if (["scene.entity.update", "scene.entity.delete"].includes(type)) {
       if (index < 0) fail("AX_SCENE_0001", "Entity no longer exists");
-      if (type === "scene.entity.delete") scene.entities.splice(index, 1);
+      if (type === "scene.entity.delete") {scene.entities.splice(index, 1);if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>id!==data.entityId);}
       else {
         if (data.name !== undefined) scene.entities[index].name = data.name;
         if (data.transform !== undefined) {

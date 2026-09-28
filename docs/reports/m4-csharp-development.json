@@ -1,0 +1,84 @@
+{
+  "runId": 36285741144,
+  "job": 108526057066,
+  "spike": {
+    "passed": true,
+    "mode": "development",
+    "publishMs": 23863.122442,
+    "rawBytes": 7300693,
+    "gzipBytes": 2709208,
+    "runs": [
+      {
+        "x": 1000.0000000001588,
+        "startupMs": 155.61000000000058,
+        "interopCalls": 10000,
+        "interopMs": 41.970000000001164
+      },
+      {
+        "x": 1000.0000000001588,
+        "startupMs": 165.51499999999942,
+        "interopCalls": 10000,
+        "interopMs": 67.93499999999767
+      }
+    ],
+    "reloadWithoutPageNavigation": true
+  },
+  "gameplay": {
+    "passed": true,
+    "mode": "development",
+    "build": {
+      "id": "66c0352f-1ab7-4b16-829c-478aa4569c13",
+      "mode": "development",
+      "sourceHash": "b0dcd67da99cdd9a8c05703be89bcffc146790a7c4b537fa2ef42123d8d28558",
+      "durationMs": 21590.255451999998,
+      "bytes": 12459111,
+      "diagnostics": []
+    },
+    "results": {
+      "start": {
+        "generation": 1,
+        "operations": [
+          {
+            "kind": "log",
+            "id": "",
+            "message": "C# started: entity://11111111-1111-4111-8111-111111111111"
+          },
+          {
+            "kind": "spawn",
+            "id": "entity://154ca3e3-a2c3-4e42-bae0-c767ce6645d5",
+            "template": "entity://11111111-1111-4111-8111-111111111111",
+            "position": [
+              2,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "step": {
+        "generation": 1,
+        "operations": [
+          {
+            "kind": "move",
+            "id": "entity://11111111-1111-4111-8111-111111111111",
+            "position": [
+              0.5,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "stop": {
+        "generation": 1,
+        "operations": [
+          {
+            "kind": "log",
+            "id": "",
+            "message": "C# stopped"
+          }
+        ]
+      }
+    }
+  }
+}

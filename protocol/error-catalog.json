@@ -189,6 +189,51 @@
         "draw count",
         "vertex count"
       ]
+    },
+    {
+      "code": "AX_SCRIPT_0001",
+      "meaning": "Compilation or published script artifact failed",
+      "inspect": [
+        "script.job.get",
+        "Frame diagnostics",
+        "Structured Console"
+      ]
+    },
+    {
+      "code": "AX_SCRIPT_0002",
+      "meaning": "Disposed runtime or stale entity generation",
+      "inspect": [
+        "script.job.get",
+        "Frame diagnostics",
+        "Structured Console"
+      ]
+    },
+    {
+      "code": "AX_SCRIPT_0003",
+      "meaning": "Script operation or resource limit rejected",
+      "inspect": [
+        "script.job.get",
+        "Frame diagnostics",
+        "Structured Console"
+      ]
+    },
+    {
+      "code": "AX_SCRIPT_0004",
+      "meaning": "Script exception or execution timeout",
+      "inspect": [
+        "script.job.get",
+        "Frame diagnostics",
+        "Structured Console"
+      ]
+    },
+    {
+      "code": "AX_SCRIPT_0005",
+      "meaning": "C# lifecycle or gameplay log",
+      "inspect": [
+        "script.job.get",
+        "Frame diagnostics",
+        "Structured Console"
+      ]
     }
   ]
 }

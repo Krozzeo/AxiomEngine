@@ -1,7 +1,7 @@
 # M4 — C# Gameplay Runtime
 
-Status: not started. Source: master specification section 123.
-Begin after M3 acceptance closes. The existing C# spike proves publish only.
+Status: complete; acceptance and release verification passed. Source: master specification section 123.
+Begin after M3 acceptance closes. The actual runtime and full editor acceptance are documented in M4_CURRENT_REPORT.md.
 
 ## Required outcome
 

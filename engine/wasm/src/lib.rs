@@ -187,6 +187,26 @@ mod exports {
         })
     }
     #[unsafe(no_mangle)]
+    pub extern "C" fn axiom_scene_position(id: u32, handle: u32, x: f32, y: f32, z: f32) -> u32 {
+        if ![x, y, z]
+            .iter()
+            .all(|v| v.is_finite() && v.abs() <= 1_000_000.0)
+        {
+            return 2;
+        }
+        REGISTRY.with_borrow_mut(|registry| {
+            let Some(mesh) = registry
+                .scenes
+                .get_mut(&id)
+                .and_then(|scene| scene.meshes.get_mut(handle as usize))
+            else {
+                return 1;
+            };
+            mesh.transform.position = Vec3 { x, y, z };
+            0
+        })
+    }
+    #[unsafe(no_mangle)]
     #[allow(clippy::too_many_arguments)]
     pub extern "C" fn axiom_scene_camera(
         id: u32,

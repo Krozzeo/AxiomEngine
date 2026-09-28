@@ -41,6 +41,16 @@ export async function loadKernel(bytes) {
       compiled={scene:structuredClone(scene),draws};
       return draws;
     },
+    setPositions(positions) {
+      if(disposed||!compiled)throw new Error("AX_WASM_0003: missing compiled scene");
+      for(const [entityId,position]of positions) {
+        if(!compiled.scene.entities.some(e=>e.id===entityId)||!Array.isArray(position)||position.length!==3||position.some(v=>!Number.isFinite(v)||Math.abs(v)>1000000))throw new Error("AX_WASM_0007: invalid runtime position");
+      }
+      for(const [entityId,position]of positions) {
+        for(const draw of compiled.draws.filter(d=>d.entityId===entityId))if(api.axiom_scene_position(id,draw.handle,...position)!==0)throw new Error("AX_WASM_0007: runtime position rejected");
+        compiled.scene.entities.find(e=>e.id===entityId).transform.position=[...position];
+      }
+    },
     stepScene(delta, trace, aspect) {
       if(disposed||!compiled) throw new Error("AX_WASM_0003: missing compiled scene");
       if(typeof trace!=="bigint"||trace<0n||trace>0xffffffffffffffffn) throw new Error("AX_WASM_0005: invalid trace");

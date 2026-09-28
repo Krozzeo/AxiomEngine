@@ -1021,7 +1021,9 @@
             "type": "string",
             "enum": [
               "Transform",
-              "Renderable"
+              "Renderable",
+              "Collider",
+              "RigidBody"
             ]
           },
           "workspaceId": {

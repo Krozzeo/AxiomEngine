@@ -210,7 +210,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"scene",sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
-      lastFrame={workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,renderer:device?'webgpu':'null',playing,generation,fault:scriptFault};
+      lastFrame={workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,renderer:device?'webgpu':'null',playing,generation,fault:scriptFault,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
       if(captureRequest){
         const request=captureRequest;captureRequest=null;
         try{

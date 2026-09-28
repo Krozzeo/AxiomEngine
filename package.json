@@ -26,7 +26,9 @@
     "check:tools": "node scripts/generate-tool-catalog.mjs --check",
     "mcp": "node daemon/mcp/stdio.mjs",
     "test:browser:m5": "node tests/browser/m5.mjs",
-    "test:browser:m6": "node tests/browser/m6.mjs"
+    "test:browser:m6": "node tests/browser/m6.mjs",
+    "demo": "node demos/create-projects.mjs",
+    "test:browser:m7": "node tests/browser/m7.mjs"
   },
   "dependencies": {
     "pngjs": "7.0.0"

@@ -1,3 +1,4 @@
+import {startAgentBridge} from "./agent-bridge.js";
 import { mountProjectEditor } from "./project-editor.js";
 import { createSceneRenderer } from "./scene-renderer.js";
 
@@ -11,6 +12,8 @@ const traceOutput = document.querySelector("#trace");
 const capabilities = document.querySelector("#capabilities");
 const frameTraceOutput = document.querySelector("#frame-trace");
 let renderer=null;
+let agentBridgeEnabled=false;
+const agentErrors=[];
 let pendingSnapshot=null;
 
 function log(level, code, message, data = null) {
@@ -57,6 +60,7 @@ function command(type, data = {}) {
 }
 
 function reportError(error) {
+  agentErrors.push({code:error.code??error.message?.match(/^AX_[A-Z]+_\d{4}/)?.[0]??"AX_EDITOR_0001",cause:error.message});if(agentErrors.length>16)agentErrors.shift();
   log("error", error.data?.payload?.code ?? error.data?.code ?? error.code ?? error.message?.match(/^AX_[A-Z]+_\d{4}/)?.[0] ?? "AX_EDITOR_0001", error.message);
 }
 async function sendCommand(type, data = {}) {
@@ -96,6 +100,7 @@ async function initializeWebGpu() {
 async function boot() {
   try {
     const handshake = await api("/v1/handshake");
+    agentBridgeEnabled=handshake.capabilities.includes("editor.bridge");
     if(handshake.capabilities.includes("command.script.compile")){const sample=await fetch("/default-game.cs");if(sample.ok)projectEditor.setDefaultSource(await sample.text());}
     connection.textContent = `Connected · protocol v${handshake.protocol.selected}`;
     connection.className = "status ok";
@@ -126,6 +131,7 @@ async function boot() {
   }
   try {
     await initializeWebGpu();
+    if(agentBridgeEnabled){const stop=startAgentBridge({api,projectEditor,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,takeErrors:()=>agentErrors.splice(0),reportError});addEventListener("pagehide",stop,{once:true});}
   } catch (error) {
     document.querySelector("#gpu-state").textContent = "Renderer initialization failed; preview disabled.";
     log("error", "AX_RENDERER_0005", error.message);

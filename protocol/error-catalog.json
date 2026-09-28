@@ -234,6 +234,45 @@
         "Frame diagnostics",
         "Structured Console"
       ]
+    },
+    {
+      "code": "AX_AGENT_0001",
+      "meaning": "Tool arguments or editor report violate the canonical contract",
+      "inspect": [
+        "api.describe",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_AGENT_0002",
+      "meaning": "Renderer or agent transport unavailable, busy or timed out",
+      "inspect": [
+        "api.describe",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_AGENT_0003",
+      "meaning": "Query exceeds the requested context budget",
+      "inspect": [
+        "api.describe",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_AGENT_0004",
+      "meaning": "Requested semantic API is unavailable",
+      "inspect": [
+        "api.describe",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_AGENT_0005",
+      "meaning": "Agent command observed by editor",
+      "inspect": [
+        "events.query"
+      ]
     }
   ]
 }

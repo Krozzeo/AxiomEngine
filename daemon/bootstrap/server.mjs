@@ -121,7 +121,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.14" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.15" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -131,7 +131,7 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.14" },
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.15" },
           capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
@@ -150,7 +150,7 @@ export async function startServer(options = {}) {
       if (request.method === "POST" && url.pathname === "/v1/commands") {
         const command = await readJson(request);
         const tool=toolMap.get(command?.payload?.type);
-        if(tool)validate(tool.inputSchema,command.payload.data??{});
+        if(tool?.mcp)validate(tool.inputSchema,command.payload.data??{});
         const result = await bus.dispatch(command);
         return json(response, result.kind === "error" ? 422 : 200, result);
       }

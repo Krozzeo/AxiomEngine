@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-09-28",
-  "engineVersion": "0.0.14",
-  "activeMilestone": 4,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.15",
+  "activeMilestone": 5,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 30,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -32,7 +32,7 @@
       "percent": 100
     },
     "5": {
-      "status": "not_started",
+      "status": "in_progress",
       "percent": 0
     }
   },
@@ -310,5 +310,5 @@
     "docs/reports/M4_CURRENT_REPORT.md",
     "docs/architecture/M5_PLAN.md"
   ],
-  "nextTask": "Begin M5 AI Control Layer per docs/architecture/M5_PLAN.md. Generate discoverable schemas from actual semantic capabilities and automate the external-agent scene workflow. M4 is stacked on unmerged M3; do not merge main implicitly."
+  "nextTask": "Complete M5 CI and browser acceptance, then update closure documentation. Do not merge main."
 }

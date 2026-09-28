@@ -1,6 +1,6 @@
 # M5 — AI Control Layer
 
-Status: implementation in progress; automated browser acceptance pending. Source: master specification section 124.
+Status: implementation complete; automated browser acceptance in progress. Source: master specification section 124.
 Start only after M4 acceptance closes.
 
 ## Required outcome

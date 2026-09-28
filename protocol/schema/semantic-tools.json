@@ -1015,10 +1015,6 @@
             "type": "integer",
             "minimum": 0
           },
-          "offset": {
-            "type": "integer",
-            "minimum": 0
-          },
           "limit": {
             "type": "integer",
             "minimum": 1,
@@ -1044,10 +1040,6 @@
         "type": "object",
         "properties": {
           "since": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "offset": {
             "type": "integer",
             "minimum": 0
           },

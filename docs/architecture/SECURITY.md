@@ -21,3 +21,9 @@ Before external compiler/importer execution is enabled, the native daemon must
 add named executable capabilities, argument templates, timeouts, output limits,
 working-directory constraints and an audit event. Symlink/reparse-point defense
 must be validated on Windows, Linux and macOS.
+
+M5 semantic tools use the existing bearer/Origin gate and public Command Bus.
+The stdio adapter accepts only a configured loopback daemon origin; it offers
+no raw path, arbitrary executable, arbitrary HTTP or git operation. Captures use
+a single expiring editor lease and validate request ID, project, scene revision,
+dimensions and PNG byte budget. See ADR-0018 and M5_AGENT_CONTROL.md.

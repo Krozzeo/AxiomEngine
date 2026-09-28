@@ -118,7 +118,7 @@ async function boot() {
       addEventListener("pagehide",()=>{stopped=true;},{once:true});
       const poll=async()=>{try{
         const {events}=await api(`/v1/events?since=${sequence}`);
-        for(const event of events)sequence=Math.max(sequence,event.payload.sequence);
+        for(const event of events){sequence=Math.max(sequence,event.payload.sequence);if(event.actor?.kind==="agent"&&!event.payload.type.endsWith(".result"))log("info","AX_AGENT_0005",event.payload.type,{traceId:event.traceId});}
         if(events.some(e=>["asset.jobFinished","script.jobFinished"].includes(e.payload.type)&&e.payload.data.status==="completed"))pendingRefresh=true;
         if(pendingRefresh && await projectEditor.refreshAssets())pendingRefresh=false;
       }catch(error){if(!stopped)reportError(error);}finally{if(!stopped)setTimeout(poll,750);}};

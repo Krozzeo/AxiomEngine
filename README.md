@@ -107,3 +107,12 @@ Development is the default; Release AOT is an opt-in measured foundation.
 See [M4_SCRIPT_RUNTIME.md](docs/architecture/M4_SCRIPT_RUNTIME.md) for the SDK,
 limits and reset semantics, and [M4_CURRENT_REPORT.md](docs/reports/M4_CURRENT_REPORT.md)
 for automated evidence. M4: 100%; whole roadmap: approximately 30%.
+
+## M5 AI control (0.0.15)
+
+The Node daemon offers generated semantic tools and a local MCP stdio adapter.
+Agents can query scenes, edit entities/components, import assets, control Play,
+inspect bounded error/event deltas and capture actual WebGPU frames.
+Keep the editor open for rendering and capture. Configuration, budgets and
+limits are in [M5_AGENT_CONTROL.md](docs/architecture/M5_AGENT_CONTROL.md).
+MCP uses the shared authoring draft; transactional isolation arrives in M6.

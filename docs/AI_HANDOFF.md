@@ -27,8 +27,8 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.14`: M0–M4 acceptance is complete. M4 passed 8/8 criteria;
-weighted whole-project completion is 30%. M5 AI Control Layer is next.
+Version `0.0.15` (M5 implementation under verification): M0–M4 acceptance is complete. M4 passed 8/8 criteria;
+weighted whole-project completion is 30%. M5 AI Control Layer is implemented and under CI verification. Read M5_AGENT_CONTROL.md and ADR-0018 before changing the semantic adapter.
 Read `M4_SCRIPT_RUNTIME.md`, `M4_CURRENT_REPORT.md` and machine-readable state
 for contracts, evidence and limitations. Release CI includes Windows C#.
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.15 — M5 AI Control Layer complete
+
+- Generated semantic tools and component schemas, introspection and MCP stdio.
+- Bounded project/scene/entity/asset queries, context budgets and event/error deltas.
+- Revision-safe component attachment and external-edit synchronization to the editor.
+- Real WebGPU PNG capture with bounded same-frame semantic context and lease checks.
+- Complete external MCP scene workflow without editor clicks; 60 Node/25 Rust tests.
+- M5: 100% (8/8); weighted whole-project completion: approximately 36%.
+
 ## 0.0.14 — M4 C# Gameplay Runtime
 
 - Generated C# Transform bindings, lifecycle, Input, movement, spawning and logs.

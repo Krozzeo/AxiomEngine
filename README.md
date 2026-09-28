@@ -7,7 +7,7 @@ daemon provides filesystem, build, asset and automation services.
 Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
 demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
 Axiom Beta Foundation, now has PNG/GLB import, project-scene rendering, editing,
-undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; weighted roadmap progress is approximately 30%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; M5 adds structured AI/MCP control and real captures; weighted roadmap progress is approximately 36%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 
@@ -106,7 +106,7 @@ Development is the default; Release AOT is an opt-in measured foundation.
 
 See [M4_SCRIPT_RUNTIME.md](docs/architecture/M4_SCRIPT_RUNTIME.md) for the SDK,
 limits and reset semantics, and [M4_CURRENT_REPORT.md](docs/reports/M4_CURRENT_REPORT.md)
-for automated evidence. M4: 100%; whole roadmap: approximately 30%.
+for automated M4 evidence (100% complete).
 
 ## M5 AI control (0.0.15)
 
@@ -116,3 +116,6 @@ inspect bounded error/event deltas and capture actual WebGPU frames.
 Keep the editor open for rendering and capture. Configuration, budgets and
 limits are in [M5_AGENT_CONTROL.md](docs/architecture/M5_AGENT_CONTROL.md).
 MCP uses the shared authoring draft; transactional isolation arrives in M6.
+
+M5: **100%**; weighted whole project: **approximately 36%**. See
+[M5_CURRENT_REPORT.md](docs/reports/M5_CURRENT_REPORT.md) for acceptance evidence.

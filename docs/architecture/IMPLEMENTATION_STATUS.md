@@ -1,8 +1,8 @@
 # Implementation status
 
-Last updated: 2026-09-28. Version 0.0.14.
-M0–M4 acceptance is complete. M4: 8/8 (100%).
-Weighted whole-project progress: 30%. M5 AI Control Layer is next.
+Last updated: 2026-09-28. Version 0.0.15.
+M0–M5 acceptance is complete. M5: 8/8 (100%).
+Weighted whole-project progress: 36%. M6 Transactional AI Workspaces is next.
 
 ## Implemented and verified
 
@@ -26,13 +26,18 @@ Weighted whole-project progress: 30%. M5 AI Control Layer is next.
 - Compile/reload during Play, saved bundles and timeout/failure isolation.
 - Measured development and release AOT runtime foundation.
 
+- Generated semantic tool schemas, introspection and MCP stdio adapter.
+- Bounded project/scene/entity/asset queries, event/error deltas and context budgets.
+- Revision-safe component tools and automatic external-edit editor synchronization.
+- Renderer-owned color screenshots paired with bounded same-frame semantic context.
+
 ## Current evidence
 
-M4 implementation passes 53 Node tests, 13 schema documents, generated-binding
+M5 implementation passes 60 Node tests, 14 schema documents, generated-binding
 consistency, three architecture rules and M0 parity. Rust passes 25 tests,
 formatting, Clippy with warnings denied and core Wasm compilation.
-All ten jobs passed at commit 00ffa6f8aceff1d44095a753db24b2c69ec3fde7:
-https://github.com/Krozzeo/AxiomEngine/actions/runs/36375697380
+All ten jobs passed at commit 324f0504a6f408d854d0c9a0cc13e948ddb454f4:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/36425589992
 C# development builds and execution also pass in Windows Chromium.
 
 Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,
@@ -44,10 +49,15 @@ M3 additionally verifies two dependent rebuilds, one unchanged asset, 43,553 blu
 pixels after an external source update, the same page identity, diagnostics and
 exact reopened pixels. No additional manual test is required for M3 closure.
 
+M5 additionally verifies the entire scene workflow through an external MCP child
+process without editing clicks, with real captured pixels, stale revision and
+budget rejection, unavailable tools/renderers, error queries and external edits
+refreshing the open editor. See M5_CURRENT_REPORT.md.
+
 ## Known boundaries
 
 Node is the verified M2 beta path. Native daemon project/asset authoring, general
-schema code generation beyond the M4 script contract,
+schema code generation beyond the script and semantic-tool contracts,
 physics, production rendering and later milestone systems are not implemented.
 Supported import formats and resource limits are in M2_BETA.md. A shared daemon
 workspace has memory-only unsaved drafts and 64 history entries; saves persist
@@ -55,17 +65,18 @@ explicitly. Preserve project JSON and its complete asset folder together.
 
 ## Next work and reports
 
-Follow M5_PLAN.md and master specification section 124: schema-driven tools,
-initial MCP server, bounded queries/captures and structured agent workflows.
+Follow M6_PLAN.md and master specification section 125: isolated proposal
+workspaces, COW overlays, reviewable change sets, preview, accept and reject.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.
 - M2 acceptance and limits: ../reports/M2_CURRENT_REPORT.md and M2_BETA.md.
 - M3 acceptance: ../reports/M3_CURRENT_REPORT.md and M3_ASSET_PIPELINE.md.
 - M4 acceptance: ../reports/M4_CURRENT_REPORT.md and M4_SCRIPT_RUNTIME.md.
+- M5 acceptance: ../reports/M5_CURRENT_REPORT.md and M5_AGENT_CONTROL.md.
 - Completion weights and delivery rules: MILESTONE_REPORTING.md.
 
-PR #4 is stacked on #3, itself on #2, itself on #1; all remain unmerged. CI success does not imply main was merged.
+PR #5 is stacked on #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
 
 ## Roadmap release slices
 

@@ -1,6 +1,6 @@
 # ADR-0018 — Initial MCP and renderer-owned capture
 
-Status: accepted for M5 implementation; browser acceptance pending.
+Status: accepted; M5 browser acceptance passed.
 
 MCP is a stdio adapter to the authenticated Node daemon, not a second scene
 implementation. It pins the 2025-11-25 MCP lifecycle and tool protocol. It offers

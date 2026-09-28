@@ -45,3 +45,12 @@ test('proposal rejects unsafe IDs, stale operations and linked overlay promotion
 test('failed publication rolls back promoted resources and leaves rejection available',async t=>{
  const {root,main,manager,begin}=await fixture(t),p=manager.get((await begin()).id);await manager.execute('asset.import',{...args(p),name:'new.png',base64:imageFixture().toString('base64')},agent);const commit=main.commitScene;main.commitScene=()=>{throw Error('Injected publication failure');};await assert.rejects(accept(manager,p),/publication failure/);main.commitScene=commit;assert.ok(!(await readdir(root)).some(n=>n.endsWith('.assets')));assert.equal(main.dirty,false);await manager.run('workspace.reject',{workspaceId:p.id,expectedWorkspaceRevision:p.child.revision},human);assert.deepEqual(await readdir(join(root,'.proposals')),[]);
 });
+test('source edits arriving during asynchronous acceptance validation are preserved',async t=>{
+ const {main,manager,begin}=await fixture(t),p=manager.get((await begin()).id);
+ await manager.execute('scene.entity.create',{...args(p),name:'AI'},agent);
+ const validate=p.child.validateResources.bind(p.child);
+ p.child.validateResources=async scene=>{await validate(scene);await main.run('scene.entity.create',{id:main.project.id,expectedSceneRevision:main.revision,name:'Concurrent human'});};
+ await assert.rejects(accept(manager,p),/changed during publication/);
+ assert.deepEqual(main.project.scene.entities.map(e=>e.name),['Concurrent human']);
+ assert.equal(manager.items.size,1);
+});

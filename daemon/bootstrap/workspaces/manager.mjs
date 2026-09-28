@@ -60,6 +60,7 @@ export class ProposalManager {
     const build=item.child.project.scene.script?.build;
     if(build&&build.id!==item.base.scene.script?.build.id){await destinationFolder(join(root,stem+'.scripts'),directories);await promote(join(item.root,stem+'.scripts',build.id),join(root,stem+'.scripts',build.id),created,undefined,['manifest.json','publish'],directories);}
 
+    if(this.items.get(item.id)!==item||item.child.revision!==data.expectedWorkspaceRevision||this.main.project?.id!==item.base.id||this.main.revision!==item.baseSceneRevision||this.main.playing||this.main.activeJob||this.main.activeScriptJob)throw fail('Source or proposal changed during publication');
     this.main.commitScene(structuredClone(item.child.project.scene));
    }catch(error){await Promise.all(created.map(p=>rm(p,{force:true})));for(const path of directories.reverse())await rmdir(path).catch(()=>{});throw error;}
    if(this.previewId===item.id)this.previewId=null;this.items.delete(item.id);await rm(item.root,{recursive:true,force:true});return {id:item.id,status:'accepted',sceneRevision:this.main.revision,dirty:this.main.dirty};

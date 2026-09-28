@@ -57,3 +57,10 @@ The stdio MCP adapter pins MCP 2025-11-25 independently of Axiom protocol v1.
 POST `/v1/editor/sync` is a browser renderer bridge, not an agent tool. It has the
 same session authority, a five-second single-tab lease and bounded capture
 reports. See M5_AGENT_CONTROL.md for query budgets, deltas and capture semantics.
+
+## M6 proposal boundary
+
+See M6_WORKSPACES.md and ADR-0019. Agent scene/resource mutations require an
+explicit workspaceId. workspace.accept and scene.save are not MCP tools. Human
+acceptance checks proposal revision, review hash and unchanged source revision;
+Save remains explicit. The trusted local token is not a hostile-process sandbox.

@@ -1,6 +1,6 @@
 # M6 — Transactional AI Workspaces
 
-Status: not started. Source: master specification section 125. Weight: 5%.
+Status: implemented; integrated CI verification in progress. Source: master specification section 125. Weight: 5%.
 
 Required outcome: an agent edits an isolated proposal while the authoritative
 project stays unchanged. A human can inspect the change set, run the proposal,

@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-09-28",
-  "engineVersion": "0.0.15",
-  "activeMilestone": 5,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.16",
+  "activeMilestone": 6,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 36,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -36,7 +36,7 @@
       "percent": 100
     },
     "6": {
-      "status": "not_started",
+      "status": "in_progress",
       "percent": 0
     }
   },
@@ -326,7 +326,11 @@
     "docs/architecture/M5_AGENT_CONTROL.md",
     "docs/reports/M5_CURRENT_REPORT.md",
     "docs/adr/0018-initial-mcp-and-renderer-capture.md",
-    "docs/architecture/M6_PLAN.md"
+    "docs/architecture/M6_PLAN.md",
+    "docs/architecture/M6_WORKSPACES.md",
+    "docs/reports/M6_CURRENT_REPORT.md",
+    "docs/adr/0019-reviewed-proposal-publication.md",
+    "docs/architecture/M7_PLAN.md"
   ],
-  "nextTask": "Begin M6 Transactional AI Workspaces per docs/architecture/M6_PLAN.md. Build isolated proposals with reviewable diffs, preview, accept/reject and conflict detection. M5 is stacked on unmerged M4; never implicitly merge MAIN."
+  "nextTask": "Complete M6 integrated CI/browser validation and documentation closure; PR #6 is stacked on #5, unmerged."
 }

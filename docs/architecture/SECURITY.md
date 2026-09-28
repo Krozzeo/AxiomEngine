@@ -27,3 +27,10 @@ The stdio adapter accepts only a configured loopback daemon origin; it offers
 no raw path, arbitrary executable, arbitrary HTTP or git operation. Captures use
 a single expiring editor lease and validate request ID, project, scene revision,
 dimensions and PNG byte budget. See ADR-0018 and M5_AGENT_CONTROL.md.
+
+## M6 proposal boundary
+
+See M6_WORKSPACES.md and ADR-0019. Agent scene/resource mutations require an
+explicit workspaceId. workspace.accept and scene.save are not MCP tools. Human
+acceptance checks proposal revision, review hash and unchanged source revision;
+Save remains explicit. The trusted local token is not a hostile-process sandbox.

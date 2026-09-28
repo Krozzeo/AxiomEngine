@@ -27,10 +27,11 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.15`: M0–M5 acceptance is complete. M5 passed 8/8 criteria;
-weighted whole-project completion is 36%. M6 Transactional AI Workspaces is next.
+Version `0.0.16`: M0–M5 acceptance is complete. Weighted whole-project
+completion remains 36% while M6 integrated verification is in progress.
 Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
-evidence and limitations. MCP uses the shared draft; M6 adds isolated proposals.
+evidence and limitations. M6 now scopes agent mutations to isolated proposals;
+read M6_WORKSPACES.md, M6_CURRENT_REPORT.md and ADR-0019.
 
 Implemented: authenticated loopback daemon; schema-backed atomic project
 persistence; shared authoring workspace; bounded undo/redo; PNG and static GLB
@@ -63,8 +64,8 @@ PNG/GLB/PCM WAV imports, hot reload and resource diagnostics are implemented.
 M5 generates semantic tools from canonical metadata and component schemas.
 The stdio MCP adapter uses authenticated loopback HTTP and the public Command Bus.
 Bounded queries, context budgets, deltas, error introspection and actual renderer
-capture are implemented. Broader schema generation, transactional COW workspaces and later engine
-systems remain future work.
+capture are implemented. Broader schema generation, later engine systems remain future work. M6 proposal code is implemented;
+its integrated browser gate remains pending.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
 unsaved edits/history are memory-only. Assets support PNG and a bounded static
@@ -142,10 +143,9 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M6 per M6_PLAN.md and master specification section 125. Define isolated
-proposal snapshots and COW overlays, bounded action logs/change sets, preview,
-continue, accept and reject. Preserve revision conflicts and all M5 tool/context
-contracts. Never silently mutate the authoritative project or MAIN. M6 weighs 5%.
+Finish M6 CI and browser validation, inspect screenshot evidence, then update
+its report/state and deliver the complete milestone. PR #6 is stacked on #5.
+M7_PLAN.md describes the next physics milestone; do not start it before M6 closes.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and
 M1 #1. All remain unmerged; review/integrate in order. CI success does not mean

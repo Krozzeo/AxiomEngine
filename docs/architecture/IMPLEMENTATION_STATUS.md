@@ -1,8 +1,8 @@
 # Implementation status
 
-Last updated: 2026-09-28. Version 0.0.15.
-M0–M5 acceptance is complete. M5: 8/8 (100%).
-Weighted whole-project progress: 36%. M6 Transactional AI Workspaces is next.
+Last updated: 2026-09-28. Version 0.0.16.
+M0–M6 acceptance is complete. M6: 8/8 (100%).
+Weighted whole-project progress: 41%. M7 Physics Foundation is next.
 
 ## Implemented and verified
 
@@ -33,11 +33,11 @@ Weighted whole-project progress: 36%. M6 Transactional AI Workspaces is next.
 
 ## Current evidence
 
-M5 implementation passes 60 Node tests, 14 schema documents, generated-binding
+M6 implementation passes 68 Node tests, 14 schema documents, generated-binding
 consistency, three architecture rules and M0 parity. Rust passes 25 tests,
 formatting, Clippy with warnings denied and core Wasm compilation.
-All ten jobs passed at commit 324f0504a6f408d854d0c9a0cc13e948ddb454f4:
-https://github.com/Krozzeo/AxiomEngine/actions/runs/36425589992
+All ten jobs passed at commit 960bc7b966ff84a24854b5c398d9bcbfb417a952:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/36475358942
 C# development builds and execution also pass in Windows Chromium.
 
 Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,
@@ -65,8 +65,9 @@ explicitly. Preserve project JSON and its complete asset folder together.
 
 ## Next work and reports
 
-Follow M6_PLAN.md and master specification section 125: isolated proposal
-workspaces, COW overlays, reviewable change sets, preview, accept and reject.
+M6 verifies COW proposals, human review/preview/accept/reject, private C# and
+asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
+Follow M7_PLAN.md and master specification section 126 for physics foundation.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.
@@ -76,7 +77,7 @@ workspaces, COW overlays, reviewable change sets, preview, accept and reject.
 - M5 acceptance: ../reports/M5_CURRENT_REPORT.md and M5_AGENT_CONTROL.md.
 - Completion weights and delivery rules: MILESTONE_REPORTING.md.
 
-PR #5 is stacked on #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
+PR #6 is stacked on #5, #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
 
 ## Roadmap release slices
 

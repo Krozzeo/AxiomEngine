@@ -27,8 +27,8 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.16`: M0–M5 acceptance is complete. Weighted whole-project
-completion remains 36% while M6 integrated verification is in progress.
+Version `0.0.16`: M0–M6 acceptance is complete. M6 passed 8/8 criteria;
+weighted whole-project completion is 41%. M7 Physics Foundation is next.
 Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
 evidence and limitations. M6 now scopes agent mutations to isolated proposals;
 read M6_WORKSPACES.md, M6_CURRENT_REPORT.md and ADR-0019.
@@ -40,9 +40,9 @@ editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
 simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-60 Node tests, 25 Rust tests, 14 schema documents, both generated catalogs and
-three architecture rules pass. M5 release CI run 36425589992 passed all ten
-jobs at code commit 324f0504a6f408d854d0c9a0cc13e948ddb454f4, including M2–M5
+68 Node tests, 25 Rust tests, 14 schema documents, both generated catalogs and
+three architecture rules pass. M6 release CI run 36475358942 passed all ten
+jobs at code commit 960bc7b966ff84a24854b5c398d9bcbfb417a952, including M2–M6
 Chromium workflows and development/AOT C# execution (Windows development included).
 The MCP acceptance launches a separate stdio client process, creates/edits a scene
 without editor clicks, synchronizes Play/Stop and obtains a real WebGPU PNG plus
@@ -64,8 +64,8 @@ PNG/GLB/PCM WAV imports, hot reload and resource diagnostics are implemented.
 M5 generates semantic tools from canonical metadata and component schemas.
 The stdio MCP adapter uses authenticated loopback HTTP and the public Command Bus.
 Bounded queries, context budgets, deltas, error introspection and actual renderer
-capture are implemented. Broader schema generation, later engine systems remain future work. M6 proposal code is implemented;
-its integrated browser gate remains pending.
+capture are implemented. Broader schema generation, later engine systems remain future work. M6 isolated proposals, human review/accept/reject, private resources, conflicts,
+rollback and idle restart recovery pass their integrated browser and unit gates.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
 unsaved edits/history are memory-only. Assets support PNG and a bounded static
@@ -143,9 +143,10 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Finish M6 CI and browser validation, inspect screenshot evidence, then update
-its report/state and deliver the complete milestone. PR #6 is stacked on #5.
-M7_PLAN.md describes the next physics milestone; do not start it before M6 closes.
+Begin M7 per M7_PLAN.md and master specification section 126. Define collider/
+rigid-body schemas and deterministic CPU/Wasm solver contracts before integration.
+Read ADR-0009, M6_WORKSPACES.md and the Wasm ABI. Preserve proposal isolation.
+M6 PR #6 is stacked on #5; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and
 M1 #1. All remain unmerged; review/integrate in order. CI success does not mean

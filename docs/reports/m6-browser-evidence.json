@@ -1,0 +1,13 @@
+{
+  "criteria": [
+    "MCP cannot edit source or accept its own proposal",
+    "copy-on-write resources leave source files unchanged",
+    "human diff review and real proposal preview",
+    "reject removes overlay and restores source view",
+    "human acceptance publishes one draft change set",
+    "proposal-only asset and C# bundle survive acceptance and explicit save",
+    "accepted project and compiled script reopen after daemon restart"
+  ],
+  "pageErrors": [],
+  "passed": true
+}

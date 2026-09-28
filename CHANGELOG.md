@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.16 — M6 Transactional AI Workspaces complete
+
+- Immutable snapshots, isolated COW proposals and bounded causal action logs.
+- Human diff review, preview, continue, acceptance and complete overlay rejection.
+- Proposal-scoped assets/scripts, revision conflicts and failed-publication rollback.
+- Idle proposal restart recovery; acceptance is one undoable draft, Save persists.
+- Eight new workspace tests; 68 Node/25 Rust tests and all ten CI jobs pass.
+- Actual Chromium/MCP/C# acceptance, rejection and saved restart verified.
+- M6: 100% (8/8); weighted whole-project completion: approximately 41%.
+
 ## 0.0.15 — M5 AI Control Layer complete
 
 - Generated semantic tools and component schemas, introspection and MCP stdio.

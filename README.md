@@ -7,7 +7,7 @@ daemon provides filesystem, build, asset and automation services.
 Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
 demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
 Axiom Beta Foundation, now has PNG/GLB import, project-scene rendering, editing,
-undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; M5 adds structured AI/MCP control and real captures; weighted roadmap progress is approximately 36%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; M5 adds structured AI/MCP control and real captures; M6 adds isolated AI proposals with human review and acceptance; weighted roadmap progress is approximately 41%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 
@@ -115,7 +115,14 @@ Agents can query scenes, edit entities/components, import assets, control Play,
 inspect bounded error/event deltas and capture actual WebGPU frames.
 Keep the editor open for rendering and capture. Configuration, budgets and
 limits are in [M5_AGENT_CONTROL.md](docs/architecture/M5_AGENT_CONTROL.md).
-MCP uses the shared authoring draft; transactional isolation arrives in M6.
+From M6 onward, MCP mutations require isolated proposal scope; see below.
 
 M5: **100%**; weighted whole project: **approximately 36%**. See
 [M5_CURRENT_REPORT.md](docs/reports/M5_CURRENT_REPORT.md) for acceptance evidence.
+
+## M6 isolated proposals
+
+Version 0.0.16 completes transactional AI proposals (M6: 100%; whole project: 41%). See [workspace contracts](docs/architecture/M6_WORKSPACES.md) and
+[current report](docs/reports/M6_CURRENT_REPORT.md). Agents begin a workspace
+and pass its ID to edits. Review and run it in the editor, then reject or accept
+the reviewed changes. Acceptance changes the draft; Save persists explicitly.

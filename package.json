@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",

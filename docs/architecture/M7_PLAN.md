@@ -1,6 +1,6 @@
 # M7 — Physics Foundation
 
-Status: not started. Master specification section 126. Weight: 7%.
+Status: implementation complete; integrated verification in progress. Master specification section 126. Weight: 7%.
 
 Implement owned 2D/3D physics, CPU/Wasm first, per ADR-0009. Read the master
 specification, schema contracts, Wasm ABI and M6_WORKSPACES.md before editing.

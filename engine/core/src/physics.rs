@@ -201,10 +201,10 @@ impl World {
             let tangent = std::array::from_fn(|i| relative[i] - speed * c.normal[i]);
             let length = dot(tangent, tangent).sqrt();
             let friction = (length / mass).min(impulse * (a.friction * b.friction).sqrt());
-            for axis in 0..a.dimension as usize {
+            for (axis, tangent_axis) in tangent.iter().enumerate().take(a.dimension as usize) {
                 let force = impulse * c.normal[axis]
                     - if length > 1e-12 {
-                        friction * tangent[axis] / length
+                        friction * tangent_axis / length
                     } else {
                         0.0
                     };
@@ -283,11 +283,12 @@ impl World {
                 }
                 if near <= far { Some(near) } else { None }
             };
-            if let Some(t) = distance {
-                if t <= best && (hit.is_none() || t < best) {
+            match distance {
+                Some(t) if t <= best && (hit.is_none() || t < best) => {
                     best = t;
                     hit = Some((index, t));
                 }
+                _ => {}
             }
         }
         hit

@@ -64,3 +64,11 @@ See M6_WORKSPACES.md and ADR-0019. Agent scene/resource mutations require an
 explicit workspaceId. workspace.accept and scene.save are not MCP tools. Human
 acceptance checks proposal revision, review hash and unchanged source revision;
 Save remains explicit. The trusted local token is not a hostile-process sandbox.
+
+## M7 physics authoring
+
+scene.collider.set and scene.rigidBody.set replace validated physics components
+at an expected scene revision. Agent edits require workspaceId. Component remove
+and introspection include Collider/RigidBody. C# velocity operations are validated
+against runtime entity/generation and never persist transient simulation state.
+See M7_PHYSICS.md.

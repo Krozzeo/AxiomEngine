@@ -7,7 +7,7 @@ daemon provides filesystem, build, asset and automation services.
 Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
 demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
 Axiom Beta Foundation, now has PNG/GLB import, project-scene rendering, editing,
-undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; M5 adds structured AI/MCP control and real captures; M6 adds isolated AI proposals with human review and acceptance; weighted roadmap progress is approximately 41%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; M5 adds structured AI/MCP control and real captures; M6 adds isolated AI proposals with human review and acceptance; M7 adds CPU/Wasm physics and editable demos; weighted roadmap progress is approximately 48%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
 
 ## Run the verified bootstrap
 
@@ -126,3 +126,24 @@ Version 0.0.16 completes transactional AI proposals (M6: 100%; whole project: 41
 [current report](docs/reports/M6_CURRENT_REPORT.md). Agents begin a workspace
 and pass its ID to edits. Review and run it in the editor, then reject or accept
 the reviewed changes. Acceptance changes the draft; Save persists explicitly.
+
+## M7 physics and demos
+
+Version 0.0.17 adds owned CPU/Wasm 2D/3D physics: colliders, rigid bodies,
+gravity, impulses/friction, triggers, collision layers, raycasts and fixed steps.
+The Physics Inspector and generated C# velocity bindings work in isolated Play.
+See [contracts and limits](docs/architecture/M7_PHYSICS.md).
+
+Create two editable demos (requires .NET 10 SDK with wasm-tools):
+
+```powershell
+npm.cmd ci
+npm.cmd run demo
+npm.cmd run dev
+```
+
+Select **Demo · 2D Physics Playground** or **Demo · 3D Falling Blocks** in Saved
+projects, then Open and Play. Click the viewport for keyboard input. The 2D
+player moves with arrows/A-D and jumps with Space. Stop restores authored state.
+Each demo command creates new project IDs and preserves existing projects.
+See [demo instructions](demos/README.md) for requirements and sample limitations.

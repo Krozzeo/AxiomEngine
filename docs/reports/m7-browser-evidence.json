@@ -1,0 +1,13 @@
+{
+  "criteria": [
+    "demo creation and actual C# compilation",
+    "physics Inspector reflects authored components",
+    "2D gravity and contacts in real Wasm/WebGPU",
+    "C# velocity controls and jump",
+    "Play/Stop preserves authoring and saved bytes",
+    "3D imported mesh bodies settle against static foundation",
+    "Null renderer runs the same physics"
+  ],
+  "pageErrors": [],
+  "passed": true
+}

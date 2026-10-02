@@ -66,14 +66,14 @@ export function validateProject(document) {
 }
 
 // An omitted extension field survives a known-field edit. Removed entities stay removed.
-export function preserveExtensions(previous, incoming) {
+export function preserveExtensions(previous, incoming, rule = schema.properties.scene) {
   if (Array.isArray(incoming)) {
     return incoming.map(value => value?.id && Array.isArray(previous)
-      ? preserveExtensions(previous.find(old => old?.id === value.id), value) : value);
+      ? preserveExtensions(previous.find(old => old?.id === value.id), value, rule.items ?? {}) : value);
   }
   if (incoming && typeof incoming === "object") {
-    const result = { ...(previous && typeof previous === "object" ? previous : {}) };
-    for (const [key, value] of Object.entries(incoming)) Object.defineProperty(result, key, { value: preserveExtensions(previous?.[key], value), enumerable: true, writable: true, configurable: true });
+    const result = Object.fromEntries(Object.entries(previous && typeof previous === "object" ? previous : {}).filter(([key]) => !Object.hasOwn(rule.properties ?? {}, key)));
+    for (const [key, value] of Object.entries(incoming)) Object.defineProperty(result, key, { value: preserveExtensions(previous?.[key], value, rule.properties?.[key] ?? {}), enumerable: true, writable: true, configurable: true });
     return result;
   }
   return incoming;

@@ -103,7 +103,7 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        milestone: [m2, m3, m4, m5, m6, m7, m8]
+        milestone: [m2, m3, m4, m5, m6, m7, m8, m9]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -125,6 +125,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
       - run: node scripts/benchmarks/causal-diagnostics.mjs
         if: matrix.milestone == 'm8'
+      - run: node scripts/benchmarks/renderer.mjs
+        if: matrix.milestone == 'm9'
       - run: node scripts/benchmarks/physics.mjs
         if: matrix.milestone == 'm7'
       - name: Run isolated browser acceptance
@@ -142,7 +144,9 @@ jobs:
             .axiom/browser-m5-evidence
             .axiom/browser-m6-evidence
             .axiom/browser-m7-evidence
+            .axiom/browser-m9-evidence
             .axiom/browser-m8-evidence
             dist/editor/axiom-kernel.wasm
             .axiom/physics-benchmark.json
             .axiom/causal-benchmark.json
+            .axiom/renderer-benchmark.json

@@ -112,7 +112,7 @@ export function parseGlb(bytes) {
           for(let j=0;j<3;j++) output.push(...tri[j],...normal.map(v=>v/length),...(uv?.[indices[i+j]]??[0,0]));
         }
         check(output.every(Number.isFinite),"Invalid transformed geometry");
-        primitives.push({ vertices: output, color, texture: tex?texture(tex.index):null, unlit: !!material.extensions?.KHR_materials_unlit });
+        primitives.push({ vertices: output, color, texture: tex?texture(tex.index):null, unlit: !!material.extensions?.KHR_materials_unlit, material: {metallic:pbr.metallicFactor??1,roughness:Math.max(.045,pbr.roughnessFactor??1),emissive:material.emissiveFactor??[0,0,0],alphaMode:(material.alphaMode??"OPAQUE").toLowerCase(),alphaCutoff:material.alphaCutoff??.5} });
       }
     }
     const next=new Set(ancestors);next.add(index);

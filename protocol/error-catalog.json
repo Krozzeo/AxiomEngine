@@ -530,6 +530,15 @@
         "diagnostics.explain",
         "runtime.status"
       ]
+    },
+    {
+      "code": "AX_CAUSAL_0140",
+      "meaning": "Geometry was submitted inside the camera frustum",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ],
+      "message": "Production renderer decision reference"
     }
   ]
 }

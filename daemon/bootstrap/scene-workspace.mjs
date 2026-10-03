@@ -32,6 +32,7 @@ export class SceneWorkspace {
       const id=entity.renderable.assetId;
       if(!resources.has(id))resources.set(id,await this.pipeline.resource(this.project.id,scene,id));
       const resource=resources.get(id);
+      for(const level of entity.lod?.levels??[]){if(!resources.has(level.assetId))resources.set(level.assetId,await this.pipeline.resource(this.project.id,scene,level.assetId));const alternate=resources.get(level.assetId);if(alternate.kind!=="mesh"||alternate.primitives.length!==resource.primitives.length)fail("AX_ASSET_0001","LOD meshes must share the base primitive count");if(alternate.vertexCount>300000)fail("AX_SCENE_0006","LOD vertex limit exceeded");}
       if(resource.kind!==entity.renderable.kind)fail("AX_ASSET_0001","Asset kind does not match the entity component");
       vertices+=resource.kind==="sprite"?6:resource.vertexCount;
       draws+=resource.kind==="sprite"?1:resource.primitives.length;
@@ -202,12 +203,12 @@ export class SceneWorkspace {
       const size=resource.bounds?Math.max(...resource.bounds.maximum.map((v,i)=>v-resource.bounds.minimum[i])):2*Math.max(1,resource.width/resource.height);
       const scale=size>1e-6?2/size:1;
       scene.entities.push({id:`entity://${randomUUID()}`,name:asset.name,transform:{position:[(asset.kind==="sprite"?-1.5:1.5)-center[0]*scale,-center[1]*scale,-center[2]*scale],rotation:[0,0,0,1],scale:[scale,scale,scale]},renderable:{kind:asset.kind,assetId:asset.id}});
-    } else if(type==="scene.collider.set" || type==="scene.rigidBody.set") {
+    } else if(["scene.collider.set","scene.rigidBody.set","scene.material.set","scene.light.set","scene.lod.set"].includes(type)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
-      scene.entities[index][type=== "scene.collider.set"?"collider":"rigidBody"]=copy(data.value);
-    } else if(type==="scene.component.remove" && ["Collider","RigidBody"].includes(data.component)) {
+      scene.entities[index][type.split(".")[1]]=copy(data.value);
+    } else if(type==="scene.component.remove" && ["Collider","RigidBody","Material","Light","LOD"].includes(data.component)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
-      delete scene.entities[index][data.component==="Collider"?"collider":"rigidBody"];
+      delete scene.entities[index][({Collider:"collider",RigidBody:"rigidBody",Material:"material",Light:"light",LOD:"lod"})[data.component]];
       if(data.component==="Collider")delete scene.entities[index].rigidBody;
     } else if(type==="scene.component.add" || type==="scene.component.remove") {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
@@ -219,6 +220,8 @@ export class SceneWorkspace {
         if(!asset||asset.kind!==data.value.kind||asset.kind==="audio")fail("AX_ASSET_0001","Component requires an imported sprite or mesh");
         scene.entities[index].renderable=copy(data.value);
       }
+    } else if(type==="scene.rendering.update") {
+      scene.rendering=copy(data.value);
     } else if(type==="scene.camera.update") {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
       scene.camera={projection:"perspective",position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
@@ -237,7 +240,7 @@ export class SceneWorkspace {
     } else fail("AX_COMMAND_0002", "Command type is not registered");
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     validateProject({ ...this.project, scene });
-    if(["scene.asset.place","scene.component.add"].includes(type))await this.validateResources(scene);
+    if(["scene.asset.place","scene.component.add","scene.lod.set"].includes(type))await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
     this.check(data);
     this.commitScene(scene);

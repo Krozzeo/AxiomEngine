@@ -35,10 +35,11 @@ export async function buildEditor() {
   await cp(resolve(root, "apps/editor/index.html"), resolve(destination, "index.html"));
   await cp(resolve(root, "apps/editor/styles.css"), resolve(destination, "styles.css"));
   await cp(resolve(root, "apps/editor/src/frame-profiler.mjs"), resolve(destination, "frame-profiler.js"));
-  await cp(resolve(root, "apps/editor/src/project-editor.mjs"), resolve(destination, "project-editor.js"));
+  await writeFile(resolve(destination,"project-editor.js"),(await readFile(resolve(root,"apps/editor/src/project-editor.mjs"),"utf8")).replaceAll("../../../engine/renderer/","./"));
   await cp(resolve(root, "apps/editor/src/proposal-editor.mjs"), resolve(destination, "proposal-editor.js"));
   await cp(resolve(root, "apps/editor/src/agent-bridge.mjs"), resolve(destination, "agent-bridge.js"));
-  await cp(resolve(root, "apps/editor/src/scene-renderer.mjs"), resolve(destination, "scene-renderer.js"));
+  await writeFile(resolve(destination,"scene-renderer.js"),(await readFile(resolve(root,"apps/editor/src/scene-renderer.mjs"),"utf8")).replaceAll("../../../engine/renderer/","./"));
+  for(const name of ['render-plan','render-math','production-gpu','production-shaders'])await cp(resolve(root,'engine/renderer',name+'.mjs'),resolve(destination,name+'.mjs'));
   for(const name of ['view-math','scene-tools','causal-diagnostics'])await cp(resolve(root,'apps/editor/src',name+'.mjs'),resolve(destination,name+'.mjs'));
   for(const [name,target]of [["runtime.mjs","script-runtime.js"],["worker.mjs","script-worker.js"],["operations.mjs","script-operations.mjs"],["contract.mjs","contract.mjs"]])await cp(resolve(root,"engine/scripting",name),resolve(destination,target));
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));

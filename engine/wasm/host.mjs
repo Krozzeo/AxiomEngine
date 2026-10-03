@@ -1,3 +1,5 @@
+const sharedVertices=new WeakMap();
+function verticesFor(primitive){let value=sharedVertices.get(primitive);if(!value){value=new Float32Array(primitive.vertices);sharedVertices.set(primitive,value);}return value;}
 import {physicsHost} from "./physics-host.mjs";
 export async function loadKernel(bytes) {
   const { instance } = await WebAssembly.instantiate(bytes, {});
@@ -89,7 +91,7 @@ export function scenePrimitives(scene, assets) {
       const w=asset.width/asset.height;
       primitives=[{vertices:[-w,-1,0,0,0,1,0,1, w,-1,0,0,0,1,1,1, w,1,0,0,0,1,1,0, -w,-1,0,0,0,1,0,1, w,1,0,0,0,1,1,0, -w,1,0,0,0,1,0,0],texture:asset.dataUrl,color:[1,1,1,1],unlit:true}];
     }
-    for(const primitive of primitives) draws.push({...primitive,entityId:entity.id,transform:entity.transform,vertices:new Float32Array(primitive.vertices)});
+    for(const [primitiveIndex,primitive] of primitives.entries()) draws.push({...primitive,primitiveIndex,assetId:entity.renderable.assetId,entityId:entity.id,transform:entity.transform,vertices:verticesFor(primitive)});
   }
   if(draws.length>1024||draws.reduce((sum,d)=>sum+d.vertices.length/8,0)>300000) throw new Error("AX_SCENE_0006: scene exceeds 1024 draw items or 300000 vertices");
   return draws;

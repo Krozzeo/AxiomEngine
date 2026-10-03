@@ -5,6 +5,7 @@ use std::collections::VecDeque;
 
 pub mod authoring;
 pub mod demo;
+pub mod physics;
 
 /// Stable, serialized identity. This is deliberately separate from a runtime handle.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.17 — M7 Physics Foundation
+
+- Owned Rust CPU/Wasm 2D/3D translational physics and deterministic fixed steps.
+- Broad/narrow phases, gravity, impulses, friction, triggers, layers and raycasts.
+- Physics Inspector, generated C# velocity bindings and isolated Play.
+- Editable 2D playground and 3D falling-block demos via npm run demo.
+- Component removals now persist while unknown extension fields are retained.
+- 71 Node tests, 30 Rust tests and M2–M7 browser acceptance.
+- M7: 100% (8/8); weighted whole-project completion: approximately 48%.
+
 ## 0.0.16 — M6 Transactional AI Workspaces complete
 
 - Immutable snapshots, isolated COW proposals and bounded causal action logs.

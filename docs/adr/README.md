@@ -6,3 +6,5 @@ Consequences and Status.
 
 
 - [ADR-0019: reviewed proposal publication](0019-reviewed-proposal-publication.md).
+
+- [ADR-0020: translational CPU/Wasm physics](0020-translation-physics-foundation.md).

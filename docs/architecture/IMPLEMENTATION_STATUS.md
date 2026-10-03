@@ -1,8 +1,8 @@
 # Implementation status
 
-Last updated: 2026-09-28. Version 0.0.16.
-M0–M6 acceptance is complete. M6: 8/8 (100%).
-Weighted whole-project progress: 41%. M7 Physics Foundation is next.
+Last updated: 2026-10-02. Version 0.0.17.
+M0–M7 acceptance is complete. M7: 8/8 (100%).
+Weighted whole-project progress: 48%. M8 Causal Diagnostics v1 is next.
 
 ## Implemented and verified
 
@@ -33,11 +33,11 @@ Weighted whole-project progress: 41%. M7 Physics Foundation is next.
 
 ## Current evidence
 
-M6 implementation passes 68 Node tests, 14 schema documents, generated-binding
-consistency, three architecture rules and M0 parity. Rust passes 25 tests,
+M7 implementation passes 71 Node tests, 15 schema documents, generated-binding
+consistency, three architecture rules and M0 parity. Rust passes 30 tests,
 formatting, Clippy with warnings denied and core Wasm compilation.
-All ten jobs passed at commit 960bc7b966ff84a24854b5c398d9bcbfb417a952:
-https://github.com/Krozzeo/AxiomEngine/actions/runs/36475358942
+All ten jobs passed at commit 8edd6aa849da7c557a98984637edc2bcb62c18d9:
+https://github.com/Krozzeo/AxiomEngine/actions/runs/37076201439
 C# development builds and execution also pass in Windows Chromium.
 
 Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,
@@ -58,7 +58,8 @@ refreshing the open editor. See M5_CURRENT_REPORT.md.
 
 Node is the verified M2 beta path. Native daemon project/asset authoring, general
 schema code generation beyond the script and semantic-tool contracts,
-physics, production rendering and later milestone systems are not implemented.
+angular/continuous physics, production rendering and later systems are not implemented.
+M7 provides translational AABB/sphere physics; see ADR-0020 for exact boundaries.
 Supported import formats and resource limits are in M2_BETA.md. A shared daemon
 workspace has memory-only unsaved drafts and 64 history entries; saves persist
 explicitly. Preserve project JSON and its complete asset folder together.
@@ -67,7 +68,8 @@ explicitly. Preserve project JSON and its complete asset folder together.
 
 M6 verifies COW proposals, human review/preview/accept/reject, private C# and
 asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
-Follow M7_PLAN.md and master specification section 126 for physics foundation.
+M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
+Follow M8_PLAN.md and master specification section 127 for causal diagnostics.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.
@@ -77,7 +79,7 @@ Follow M7_PLAN.md and master specification section 126 for physics foundation.
 - M5 acceptance: ../reports/M5_CURRENT_REPORT.md and M5_AGENT_CONTROL.md.
 - Completion weights and delivery rules: MILESTONE_REPORTING.md.
 
-PR #6 is stacked on #5, #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
+PR #7 is stacked on #6, #5, #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
 
 ## Roadmap release slices
 

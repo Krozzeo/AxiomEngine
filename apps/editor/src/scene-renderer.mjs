@@ -141,6 +141,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start",buildId:scene.script.build.id});
       }
       const draws=replacement.compileScene(scene,localAssets);
+      if(snapshot.playing)replacement.configurePhysics(scene);
       pending=await buildResources(draws,ticket);
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
       kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;
@@ -170,16 +171,18 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
             try {
               const draws=scenePrimitives(result.scene,assets);next=await buildResources(draws,ticket);
               if(ticket!==generation||disposed)throw new Error("Runtime generation changed");
-              try {kernel.compileScene(result.scene,assets);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
+              try {kernel.compileScene(result.scene,assets);kernel.configurePhysics(result.scene,true);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
               destroyResources(resources);resources=next;
             }catch(error){destroyResources(next);throw error;}
           }else kernel.setPositions(result.positions);
+          kernel.setVelocities(result.velocities);
           runtimeScene=result.scene;spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
         finally{scriptFlight=null;}
       }
       if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
       const packet=kernel.stepScene(delta,++trace,canvas.width/canvas.height);
+      if(packet.physics){for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);e.transform.position=b.position;if(e.rigidBody)e.rigidBody.velocity=b.velocity;}diagnostic.physics=packet.physics;}
       if(device) {
         const encoder=device.createCommandEncoder({label:"axiom-m2-scene"});
         const sample=querySet&&!sampleDone&&!readPending&&resources.length>0;
@@ -207,7 +210,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"scene",sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
-      lastFrame={workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,renderer:device?'webgpu':'null',playing,generation,fault:scriptFault};
+      lastFrame={workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,renderer:device?'webgpu':'null',playing,generation,fault:scriptFault,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
       if(captureRequest){
         const request=captureRequest;captureRequest=null;
         try{

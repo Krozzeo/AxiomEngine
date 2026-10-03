@@ -1,0 +1,28 @@
+{
+  "backend": "cpu-wasm",
+  "environment": "v24.19.0 linux x64",
+  "scope": "Separated bodies; includes scalar bridge and snapshot overhead. Not a GPU or worst-case benchmark.",
+  "results": [
+    {
+      "bodies": 16,
+      "steps": 1000,
+      "totalMs": 4.156694999999999,
+      "msPerStep": 0.004156694999999999,
+      "candidates": 0
+    },
+    {
+      "bodies": 64,
+      "steps": 1000,
+      "totalMs": 14.088274000000006,
+      "msPerStep": 0.014088274000000005,
+      "candidates": 0
+    },
+    {
+      "bodies": 256,
+      "steps": 1000,
+      "totalMs": 22.68525299999999,
+      "msPerStep": 0.02268525299999999,
+      "candidates": 0
+    }
+  ]
+}

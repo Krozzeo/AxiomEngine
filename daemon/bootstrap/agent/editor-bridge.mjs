@@ -9,7 +9,7 @@ export class EditorBridge {
   if(this.client&&this.client.id!==data.clientId&&Date.now()-this.client.at<this.leaseMs)throw agentError('AX_AGENT_0002','Another editor owns the renderer lease');
   const s=data.status??{};
   if(size(s)>65536)throw agentError('AX_AGENT_0001','Editor status exceeds limit');
-  this.client={id:data.clientId,at:Date.now(),status:{workspaceId:s.workspaceId??null,sceneRevision:s.sceneRevision??null,projectId:s.projectId??null,frame:s.frame??null,renderer:s.renderer??null,playing:!!s.playing,generation:s.generation??null,fault:typeof s.fault==='string'?s.fault.slice(0,2048):null}};
+  this.client={id:data.clientId,at:Date.now(),status:{workspaceId:s.workspaceId??null,sceneRevision:s.sceneRevision??null,projectId:s.projectId??null,frame:s.frame??null,renderer:s.renderer??null,playing:!!s.playing,physics:s.physics??null,generation:s.generation??null,fault:typeof s.fault==='string'?s.fault.slice(0,2048):null}};
   for(const error of (Array.isArray(data.errors)?data.errors:[]).slice(0,16))this.onError({code:typeof error.code==='string'?error.code.slice(0,64):'AX_EDITOR_0001',cause:String(error.cause??'Editor failure').slice(0,2048),subsystem:'editor',traceId:error.traceId??null});
   if(data.capture&&this.pending&&this.pending.clientId===data.clientId&&data.capture.requestId===this.pending.id){
    const p=this.pending,c=data.capture;clearTimeout(p.timer);this.pending=null;

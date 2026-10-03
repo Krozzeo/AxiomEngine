@@ -1,3 +1,4 @@
+import {physicsHost} from "./physics-host.mjs";
 export async function loadKernel(bytes) {
   const { instance } = await WebAssembly.instantiate(bytes, {});
   const api = instance.exports;
@@ -6,6 +7,7 @@ export async function loadKernel(bytes) {
   if (!id) throw new Error("AX_WASM_0002: world allocation failed");
   let disposed = false;
   let compiled = null;
+  const physics=physicsHost(api,id);
   return {
     step(delta, trace, aspect) {
       if (disposed) throw new Error("AX_WASM_0003: disposed world");
@@ -41,11 +43,17 @@ export async function loadKernel(bytes) {
       compiled={scene:structuredClone(scene),draws};
       return draws;
     },
+    configurePhysics(scene,preserve=false){physics.configure(scene,preserve);},
+    physicsSnapshot(){return physics.snapshot();},
+    stepPhysics(count){return physics.step(count);},
+    raycast(args){return physics.raycast(args);},
+    setVelocities(values){physics.velocities(values);},
     setPositions(positions) {
       if(disposed||!compiled)throw new Error("AX_WASM_0003: missing compiled scene");
       for(const [entityId,position]of positions) {
         if(!compiled.scene.entities.some(e=>e.id===entityId)||!Array.isArray(position)||position.length!==3||position.some(v=>!Number.isFinite(v)||Math.abs(v)>1000000))throw new Error("AX_WASM_0007: invalid runtime position");
       }
+      physics.positions(positions);
       for(const [entityId,position]of positions) {
         for(const draw of compiled.draws.filter(d=>d.entityId===entityId))if(api.axiom_scene_position(id,draw.handle,...position)!==0)throw new Error("AX_WASM_0007: runtime position rejected");
         compiled.scene.entities.find(e=>e.id===entityId).transform.position=[...position];
@@ -57,8 +65,10 @@ export async function loadKernel(bytes) {
       const c=compiled.scene.camera??{position:[0,0,6],target:[0,0,0],projection:"perspective",fov:60,orthoHeight:6};
       if(api.axiom_scene_camera(id,...c.position,...c.target,aspect,c.projection==="orthographic"?1:0,c.projection==="orthographic"?c.orthoHeight:c.fov)!==0) throw new Error("AX_WASM_0004: invalid camera");
       if(api.axiom_tick(id,delta,trace)!==0) throw new Error("AX_TIME_0001: invalid kernel tick");
+      const physical=physics.step(api.axiom_fixed_steps(id));
+      if(physical)for(const body of physical.bodies){for(const draw of compiled.draws.filter(d=>d.entityId===body.id))api.axiom_scene_position(id,draw.handle,...body.position);compiled.scene.entities.find(e=>e.id===body.id).transform.position=[...body.position];}
       const draws=compiled.draws.map(draw=>({handle:draw.handle,mvp:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,1)),model:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,0))}));
-      return {draws,frame:Number(api.axiom_frame(id)),trace:api.axiom_trace(id).toString(),fixedSteps:api.axiom_fixed_steps(id),nullProcessedMeshes:api.axiom_scene_null(id)};
+      return {physics:physical,draws,frame:Number(api.axiom_frame(id)),trace:api.axiom_trace(id).toString(),fixedSteps:api.axiom_fixed_steps(id),nullProcessedMeshes:api.axiom_scene_null(id)};
     },
     dispose() {
       if (!disposed) api.axiom_destroy(id);

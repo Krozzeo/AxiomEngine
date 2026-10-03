@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-09-28",
-  "engineVersion": "0.0.16",
-  "activeMilestone": 6,
+  "updatedAt": "2026-10-02",
+  "engineVersion": "0.0.17",
+  "activeMilestone": 7,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 41,
+    "wholeProjectPercent": 48,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -40,6 +40,10 @@
       "percent": 100
     },
     "7": {
+      "status": "complete",
+      "percent": 100
+    },
+    "8": {
       "status": "not_started",
       "percent": 0
     }
@@ -59,14 +63,16 @@
     "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload",
     "csharpGameplay": "verified_editor_compile_reload_isolated_runtime",
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
-    "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart"
+    "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
+    "physics": "verified_cpu_wasm_translation_2d_3d",
+    "editableDemos": "verified_2d_csharp_playground_and_3d_blocks"
   },
   "verified": {
     "nodeTests": {
-      "passed": 68,
+      "passed": 71,
       "failed": 0
     },
-    "schemaDocuments": 14,
+    "schemaDocuments": 15,
     "architectureRules": 3,
     "daemonStartup": true,
     "httpStaticDelivery": true,
@@ -91,10 +97,10 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 25,
+      "testsPassed": 30,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M4 implementation"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M7 implementation"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -180,10 +186,10 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.16",
-      "commit": "960bc7b966ff84a24854b5c398d9bcbfb417a952",
-      "runId": 36475358942,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/36475358942",
+      "version": "0.0.17",
+      "commit": "8edd6aa849da7c557a98984637edc2bcb62c18d9",
+      "runId": 37076201439,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37076201439",
       "jobs": [
         "bootstrap (ubuntu-latest)",
         "bootstrap (windows-latest)",
@@ -303,6 +309,16 @@
       "evidence": "docs/reports/m6-browser-evidence.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m7Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "runId": 37076201439,
+      "evidence": "docs/reports/m7-browser-evidence.json",
+      "benchmark": "docs/reports/m7-physics-benchmark.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -344,7 +360,12 @@
     "docs/architecture/M6_WORKSPACES.md",
     "docs/reports/M6_CURRENT_REPORT.md",
     "docs/adr/0019-reviewed-proposal-publication.md",
-    "docs/architecture/M7_PLAN.md"
+    "docs/architecture/M7_PLAN.md",
+    "docs/architecture/M7_PHYSICS.md",
+    "docs/adr/0020-translation-physics-foundation.md",
+    "docs/reports/M7_CURRENT_REPORT.md",
+    "docs/architecture/M8_PLAN.md",
+    "demos/README.md"
   ],
-  "nextTask": "Begin M7 Physics Foundation per docs/architecture/M7_PLAN.md and master specification section 126. Preserve M6 isolation and unmerged stacked PRs."
+  "nextTask": "Begin M8 Causal Diagnostics v1 per docs/architecture/M8_PLAN.md, proving ten injected causes. Maintain editable demos and stacked unmerged PRs."
 }

@@ -9,7 +9,7 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M6</span>
+      <span class="badge">M7</span>
       <span id="connection" class="status pending">Connecting…</span>
     </header>
     <main class="workspace">
@@ -75,6 +75,19 @@
             <button type="submit">Apply changes</button>
           </fieldset>
         </form>
+        <h2>Physics</h2>
+        <form id="physics-form"><fieldset id="physics-fields">
+          <label>Collider <select id="physics-shape"><option value="none">None</option><option value="box">Axis-aligned box</option><option value="sphere">Circle / sphere</option></select></label>
+          <label>Dimensions <select id="physics-dimension"><option value="2">2D</option><option value="3">3D</option></select></label>
+          <label>Motion <select id="physics-motion"><option value="static">Static</option><option value="dynamic">Dynamic</option></select></label>
+          <label><input id="physics-trigger" type="checkbox"> Trigger (no impulse)</label>
+          <label>Half extents in world units (sphere uses X)</label>
+          <div class="vector-fields"><input id="physics-half-0" type="number" min="0.001" max="10000" step="0.1" value="0.5"><input id="physics-half-1" type="number" min="0.001" max="10000" step="0.1" value="0.5"><input id="physics-half-2" type="number" min="0.001" max="10000" step="0.1" value="0.5"></div>
+          <label>Mass <input id="physics-mass" type="number" min="0.001" max="1000000" step="0.1" value="1"></label>
+          <label>Layer bits <input id="physics-layer" type="number" min="1" max="4294967295" value="1"></label>
+          <label>Collision mask <input id="physics-mask" type="number" min="0" max="4294967295" value="4294967295"></label>
+          <button type="submit">Apply physics</button>
+        </fieldset></form>
         <h2>C# gameplay</h2>
         <p>Compile GameScript and attach it to the selected entity. Recompiling during Play resets runtime state.</p>
         <label for="script-source">Game.cs</label><textarea id="script-source" rows="14" spellcheck="false" disabled></textarea>

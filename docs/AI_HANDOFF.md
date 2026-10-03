@@ -27,8 +27,9 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.16`: M0–M6 acceptance is complete. M6 passed 8/8 criteria;
-weighted whole-project completion is 41%. M7 Physics Foundation is next.
+Version `0.0.17`: M0–M7 acceptance is complete. M7 passed 8/8 criteria;
+weighted whole-project completion is 48%. M8 Causal Diagnostics v1 is next.
+Read M7_PHYSICS.md, M7_CURRENT_REPORT.md, ADR-0020 and demos/README.md.
 Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
 evidence and limitations. M6 now scopes agent mutations to isolated proposals;
 read M6_WORKSPACES.md, M6_CURRENT_REPORT.md and ADR-0019.
@@ -40,9 +41,9 @@ editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
 simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-68 Node tests, 25 Rust tests, 14 schema documents, both generated catalogs and
-three architecture rules pass. M6 release CI run 36475358942 passed all ten
-jobs at code commit 960bc7b966ff84a24854b5c398d9bcbfb417a952, including M2–M6
+71 Node tests, 30 Rust tests, 15 schema documents, both generated catalogs and
+three architecture rules pass. M7 release CI run 37076201439 passed all ten
+jobs at code commit 8edd6aa849da7c557a98984637edc2bcb62c18d9, including M2–M7
 Chromium workflows and development/AOT C# execution (Windows development included).
 The MCP acceptance launches a separate stdio client process, creates/edits a scene
 without editor clicks, synchronizes Play/Stop and obtains a real WebGPU PNG plus
@@ -66,6 +67,10 @@ The stdio MCP adapter uses authenticated loopback HTTP and the public Command Bu
 Bounded queries, context budgets, deltas, error introspection and actual renderer
 capture are implemented. Broader schema generation, later engine systems remain future work. M6 isolated proposals, human review/accept/reject, private resources, conflicts,
 rollback and idle restart recovery pass their integrated browser and unit gates.
+M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
+RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
+triggers, layer masks, raycasts and repeatable golden scenes. No angular dynamics,
+CCD or GPU physics is claimed; see ADR-0020. Run npm run demo to create samples.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
 unsaved edits/history are memory-only. Assets support PNG and a bounded static
@@ -143,10 +148,13 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M7 per M7_PLAN.md and master specification section 126. Define collider/
-rigid-body schemas and deterministic CPU/Wasm solver contracts before integration.
-Read ADR-0009, M6_WORKSPACES.md and the Wasm ABI. Preserve proposal isolation.
-M6 PR #6 is stacked on #5; all milestone PRs remain unmerged.
+Begin M8 per M8_PLAN.md and master specification section 127. Define evidence-
+backed whyNotRendered/whyNotColliding/whyAssetNotLoaded/whyScriptNotRunning
+queries, then Decision Graph and trace viewer. Prove ten injected causes through
+automated tests. Read M7_PHYSICS.md and preserve M6 proposal isolation.
+M7 PR #7 is stacked on #6; all milestone PRs remain unmerged.
+The user requested demos to see engine progress: keep them editable, runnable
+and covered by browser tests as new capabilities are added.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and
 M1 #1. All remain unmerged; review/integrate in order. CI success does not mean

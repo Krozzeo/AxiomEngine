@@ -1571,6 +1571,61 @@
         ],
         "additionalProperties": false
       }
+    },
+    {
+      "name": "diagnostics.explain",
+      "description": "Explain rendering, collider, resource or script decisions from live editor frame evidence. Returns bounded Decision Graph and unavailable/expired evidence explicitly; no inferred pixel visibility.",
+      "mutates": false,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "whyNotRendered",
+              "whyNotColliding",
+              "whyAssetNotLoaded",
+              "whyScriptNotRunning"
+            ]
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "otherId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "assetId": {
+            "type": "string",
+            "pattern": "^asset://[0-9a-f]{64}$"
+          },
+          "traceId": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "kind"
+        ],
+        "additionalProperties": false
+      }
     }
   ]
 }

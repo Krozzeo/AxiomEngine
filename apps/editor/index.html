@@ -9,7 +9,7 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M7</span>
+      <span class="badge">M8</span>
       <span id="connection" class="status pending">Connecting…</span>
     </header>
     <main class="workspace">
@@ -45,7 +45,7 @@
           <p id="asset-job-status" role="status"></p><button id="asset-cancel" disabled>Cancel import</button>
           <pre id="asset-explanation"></pre>
           <button id="asset-place" disabled>Place selected asset</button>
-          <label for="camera-projection">Camera</label>
+          <label for="camera-projection">Game camera projection</label>
           <select id="camera-projection" disabled><option value="perspective">Perspective · 3D</option><option value="orthographic">Orthographic · 2D</option></select>
         </div>
         <h2>Hierarchy</h2>
@@ -57,12 +57,20 @@
         <nav class="tabs"><button id="scene-tab" class="active">Scene</button><button id="game-tab" disabled>Game</button><span id="play-status">Scene · authoring</span><button id="play-start" disabled>▶ Play</button><button id="play-stop" disabled>■ Stop</button></nav>
         <div class="viewport">
           <div id="preview-note" class="preview-note">Create or open a project to begin</div>
-          <canvas id="viewport" width="960" height="540" aria-label="Axiom viewport"></canvas>
+          <canvas id="viewport" width="960" height="540" tabindex="0" aria-label="Axiom viewport"></canvas>
+          <svg id="scene-overlay" aria-label="Scene selection and transform gizmos"></svg>
+          <div id="scene-toolbar"><button id="tool-move" title="Move (W)">Move</button><button id="tool-rotate" title="Rotate (E)">Rotate</button><button id="tool-scale" title="Scale (R)">Scale</button><button id="tool-space">World</button><button id="tool-projection">Persp</button><span>F: frame · Alt + drag: orbit · right mouse + WASD/QE: fly</span></div>
+          <svg id="orientation-widget" viewBox="0 0 104 104" aria-label="World XYZ orientation"></svg>
           <div id="gpu-state" class="viewport-message">Detecting WebGPU…</div>
         </div>
         <section class="console panel">
-          <div class="panel-title"><h2>Structured Console</h2><button id="clear">Clear</button></div>
-          <ol id="logs"></ol>
+          <nav class="tabs"><button id="console-tab" class="active">Structured Console</button><button id="diagnostics-tab">Diagnostics</button><button id="clear">Clear console</button></nav>
+          <div id="console-content"><ol id="logs"></ol></div>
+          <div id="diagnostics-content" hidden>
+            <div class="diagnostic-controls"><select id="diagnostic-kind" aria-label="Diagnostic question"><option>whyNotRendered</option><option>whyNotColliding</option><option>whyAssetNotLoaded</option><option>whyScriptNotRunning</option></select><select id="diagnostic-other" aria-label="Other collision entity"></select><button id="diagnostic-explain">Explain selected</button><label><input id="deep-trace" type="checkbox">Deep trace</label><input id="diagnostic-trace" placeholder="Optional retained frame trace ID" aria-label="Retained frame trace ID"></div>
+            <p id="causal-summary">Select an entity and ask a question.</p><ol id="causal-path"></ol>
+            <div class="diagnostic-columns"><div><h2>Decision graph evidence</h2><pre id="decision-graph">Deep trace retains 32 sampled frames for 30 seconds.</pre></div><div><h2>Frame diagnostics · contacts / triggers</h2><pre id="frame-trace">Waiting for first frame.</pre></div><div><h2>Command trace</h2><pre id="trace">No trace yet.</pre></div></div>
+          </div>
         </section>
       </section>
       <aside class="panel inspector">
@@ -103,10 +111,6 @@
           <button id="increment">Increment</button>
           <button id="undo">Demo undo</button>
         </div>
-        <h2>Last trace</h2>
-        <pre id="trace">No trace yet.</pre>
-        <h2>Frame diagnostics</h2>
-        <pre id="frame-trace">Waiting for first frame.</pre>
       </aside>
     </main>
     <script type="module" src="/main.js"></script>

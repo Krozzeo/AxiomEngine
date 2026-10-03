@@ -8,8 +8,8 @@ export class AgentService {
   const tool=toolMap.get(type);validate(tool.inputSchema,data);
   if(type.startsWith('workspace.'))return this.proposals.run(type,data,context);
   const w=data.workspaceId?this.proposals.get(data.workspaceId).child:this.workspace,project=w.project,summary={project:project?{id:project.id,name:project.name,revision:project.revision}:null,sceneRevision:w.revision,dirty:w.dirty,playing:w.playing};
-  if(['scene.query','entity.query','asset.query','renderer.capture'].includes(type)&&(!project||data.id!==project.id))throw agentError('AX_SCENE_0001','Open this project first');
-  if(['entity.query','asset.query','renderer.capture'].includes(type))w.check(data);
+  if(['scene.query','entity.query','asset.query','renderer.capture','diagnostics.explain'].includes(type)&&(!project||data.id!==project.id))throw agentError('AX_SCENE_0001','Open this project first');
+  if(['entity.query','asset.query','renderer.capture','diagnostics.explain'].includes(type))w.check(data);
   switch(type){
    case 'project.query':return page((await w.store.run('project.list',{})).projects,data,{activeProjectId:project?.id??null});
    case 'scene.query':return bounded({...summary,sceneId:project.scene.id,entityCount:project.scene.entities.length,assetCount:project.scene.assets?.length??0,camera:project.scene.camera??null,script:project.scene.script?{attachments:project.scene.script.attachments.length,build:project.scene.script.build.id}:null},data.maxBytes);
@@ -19,6 +19,7 @@ export class AgentService {
    case 'renderer.capture':return this.bridge.capture(data);
    case 'events.query':return this.bus.eventPage(data);
    case 'diagnostics.query':return this.bus.errorPage(data);
+   case 'diagnostics.explain':return bounded(await this.bridge.explain(data),16384);
    case 'api.search':return page(tools.filter(t=>t.mcp&&(!data.query||(t.name+' '+t.description).toLowerCase().includes(data.query.toLowerCase()))).map(t=>({name:t.name,description:t.description,mutates:t.mutates})),data);
    case 'api.describe':{
     let value;

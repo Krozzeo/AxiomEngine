@@ -2,14 +2,20 @@ import {randomUUID} from 'node:crypto';
 import {agentError,size} from './contracts.mjs';
 // One short-lived editor lease. Capture requests are never satisfied by stale reports.
 export class EditorBridge {
- constructor(workspace,onError,{timeoutMs=5000,leaseMs=5000}={}){this.workspace=workspace;this.onError=onError;this.timeoutMs=timeoutMs;this.leaseMs=leaseMs;this.client=null;this.pending=null;}
+ constructor(workspace,onError,{timeoutMs=5000,leaseMs=5000}={}){this.workspace=workspace;this.onError=onError;this.timeoutMs=timeoutMs;this.leaseMs=leaseMs;this.client=null;this.pending=null;this.pendingDiagnostic=null;}
  status(){const live=this.client&&Date.now()-this.client.at<this.leaseMs;return {connected:!!live,...(live?{...this.client.status,clientId:this.client.id}:{})};}
  sync(data){
   if(!data||typeof data.clientId!=='string'||!/^[0-9a-f-]{36}$/.test(data.clientId)||size(data)>850000)throw agentError('AX_AGENT_0001','Invalid editor report');
   if(this.client&&this.client.id!==data.clientId&&Date.now()-this.client.at<this.leaseMs)throw agentError('AX_AGENT_0002','Another editor owns the renderer lease');
   const s=data.status??{};
   if(size(s)>65536)throw agentError('AX_AGENT_0001','Editor status exceeds limit');
-  this.client={id:data.clientId,at:Date.now(),status:{workspaceId:s.workspaceId??null,sceneRevision:s.sceneRevision??null,projectId:s.projectId??null,frame:s.frame??null,renderer:s.renderer??null,playing:!!s.playing,physics:s.physics??null,generation:s.generation??null,fault:typeof s.fault==='string'?s.fault.slice(0,2048):null}};
+  this.client={id:data.clientId,at:Date.now(),status:{workspaceId:s.workspaceId??null,sceneRevision:s.sceneRevision??null,projectId:s.projectId??null,frame:s.frame??null,traceId:s.traceId??null,view:s.view??null,renderer:s.renderer??null,playing:!!s.playing,physics:s.physics??null,generation:s.generation??null,fault:typeof s.fault==='string'?s.fault.slice(0,2048):null}};
+  if(data.diagnostic&&this.pendingDiagnostic&&this.pendingDiagnostic.clientId===data.clientId&&data.diagnostic.requestId===this.pendingDiagnostic.id){
+   const p=this.pendingDiagnostic,v=data.diagnostic.value;clearTimeout(p.timer);this.pendingDiagnostic=null;
+   if(s.projectId!==p.args.id||s.sceneRevision!==p.args.expectedSceneRevision||(s.workspaceId??null)!==(p.args.workspaceId??null))p.reject(agentError('AX_SCENE_0002','Diagnostic revision is stale'));
+   else if(!v||!['explained','inconclusive','unavailable'].includes(v.status)||!Array.isArray(v.nodes)||v.nodes.length>24||size(v)>16384||v.status!=='unavailable'&&(v.sceneRevision!==p.args.expectedSceneRevision||v.projectId!==p.args.id||(v.workspaceId??null)!==(p.args.workspaceId??null)))p.reject(agentError('AX_AGENT_0001','Invalid diagnostic evidence'));
+   else p.resolve(v);
+  }
   for(const error of (Array.isArray(data.errors)?data.errors:[]).slice(0,16))this.onError({code:typeof error.code==='string'?error.code.slice(0,64):'AX_EDITOR_0001',cause:String(error.cause??'Editor failure').slice(0,2048),subsystem:'editor',traceId:error.traceId??null});
   if(data.capture&&this.pending&&this.pending.clientId===data.clientId&&data.capture.requestId===this.pending.id){
    const p=this.pending,c=data.capture;clearTimeout(p.timer);this.pending=null;
@@ -23,7 +29,7 @@ export class EditorBridge {
    }catch(error){p.reject(error);}
   }
   const snapshot=(data.workspaceId??null)!==(this.workspace.workspaceId??null)||data.sceneRevision!==this.workspace.revision?this.workspace.snapshot():null;
-  return {snapshot,capture:this.pending?.clientId===data.clientId?{requestId:this.pending.id,...this.pending.args}:null};
+  return {snapshot,capture:this.pending?.clientId===data.clientId?{requestId:this.pending.id,...this.pending.args}:null,diagnostic:this.pendingDiagnostic?.clientId===data.clientId?{requestId:this.pendingDiagnostic.id,...this.pendingDiagnostic.args}:null};
  }
  capture(args){
   const status=this.status();
@@ -31,5 +37,6 @@ export class EditorBridge {
   if(this.pending)throw agentError('AX_AGENT_0002','Capture already in progress');
   return new Promise((resolve,reject)=>{const pending={id:randomUUID(),clientId:this.client.id,args:{width:640,height:360,maxEntities:16,...args},resolve,reject};pending.timer=setTimeout(()=>{if(this.pending===pending)this.pending=null;reject(agentError('AX_AGENT_0002','Editor capture timed out'));},this.timeoutMs);this.pending=pending;});
  }
- close(){if(this.pending){clearTimeout(this.pending.timer);this.pending.reject(agentError('AX_AGENT_0002','Editor bridge closed'));this.pending=null;}}
+ explain(args){const status=this.status();if(!status.connected||status.projectId!==args.id||status.sceneRevision!==args.expectedSceneRevision||(status.workspaceId??null)!==(args.workspaceId??null))return {status:'unavailable',code:'AX_CAUSAL_0001',message:'A live editor at this project/workspace revision is required',nodes:[],edges:[]};if(this.pendingDiagnostic)throw agentError('AX_AGENT_0002','Diagnostic request already in progress');return new Promise((resolve,reject)=>{const p={id:randomUUID(),clientId:this.client.id,args,resolve,reject};p.timer=setTimeout(()=>{if(this.pendingDiagnostic===p)this.pendingDiagnostic=null;resolve({status:'unavailable',code:'AX_CAUSAL_0001',message:'Editor diagnostic request timed out',nodes:[],edges:[]});},this.timeoutMs);this.pendingDiagnostic=p;});}
+ close(){if(this.pending){clearTimeout(this.pending.timer);this.pending.reject(agentError('AX_AGENT_0002','Editor bridge closed'));this.pending=null;}if(this.pendingDiagnostic){clearTimeout(this.pendingDiagnostic.timer);this.pendingDiagnostic.reject(agentError('AX_AGENT_0002','Editor bridge closed'));this.pendingDiagnostic=null;}}
 }

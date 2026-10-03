@@ -18,6 +18,16 @@ List every milestone criterion as Passed, Failed, Blocked or Deferred. A
 milestone is complete only when all required criteria are Passed; Deferred
 items require an explicit scope decision or ADR.
 
+## Demo requirement
+
+Each milestone includes editable demo projects when its implemented capabilities
+support a useful demonstration. Use normal project/import/component APIs; demos
+must not depend on a separate sample-only implementation. Document controls,
+expected behavior and the specific new functions being demonstrated. Preserve
+existing user projects. Cover demo generation and meaningful interactions through
+automated acceptance. If a milestone has no applicable demo, state why in its
+closure report. This is a persistent user requirement.
+
 ## 3. Automated evidence
 
 Report builds, tests, schema validation, architecture checks, benchmarks,

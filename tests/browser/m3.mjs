@@ -43,6 +43,9 @@ try {
   }
   report.criteria.push("import image and GLB","place sprite","place mesh");
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
+  // Compare persisted output through the authored Game camera, independent
+  // of transient Scene navigation and camera seeding.
+  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   const initial=await page.locator("#viewport").screenshot();assert.ok(colors(initial).red>100&&colors(initial).green>100,"Both imported assets must produce colored pixels");
   await page.locator("#entities button").filter({hasText:"checker.png"}).click();
   await page.locator("#position-0").fill("-1.8");await page.locator("#position-1").fill("0.4");await page.getByRole("button",{name:"Apply changes"}).click();
@@ -54,14 +57,15 @@ try {
   await page.locator("#scene-save").click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);
   const saved=(await state()).project;assert.equal(saved.scene.entities.length,2);report.criteria.push("save");
   const savedImage=await page.locator("#viewport").screenshot({path:join(evidence,"scene.png")});
-  assert.notDeepEqual(pixels(initial).data,pixels(savedImage).data,"Moving objects and changing projection must change rendered pixels");
+  assert.ok(!pixels(initial).data.equals(pixels(savedImage).data),"Moving objects and changing projection must change rendered pixels");
   await page.locator("#project-close").click();await page.waitForFunction(()=>document.querySelectorAll("#entities button").length===0);report.criteria.push("close");
   await daemon.close();daemon=await startServer({projectRoot:root});
   await page.goto(daemon.editorUrl);await page.locator("#project-list").selectOption(saved.id);await page.locator("#project-open").click();
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
   assert.deepEqual((await state()).project,saved);report.criteria.push("reopen");
+  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   const reopenedImage=await page.locator("#viewport").screenshot({path:join(evidence,"reopened.png")});
-  assert.deepEqual(pixels(reopenedImage).data,pixels(savedImage).data,"Saved and reopened scene pixels must match exactly");report.criteria.push("see same scene");
+  assert.ok(pixels(reopenedImage).data.equals(pixels(savedImage).data),"Saved and reopened scene pixels must match exactly");report.criteria.push("see same scene");
   await page.locator("#entities button").filter({hasText:"cube.glb"}).click();
   assert.equal(await page.locator("#position-0").isEnabled(),true);
   await page.locator("#play-start").click();await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.mode==="play"&&k.frame>=15&&k.meshes===2;}catch{return false;}});
@@ -107,7 +111,7 @@ try {
     if(bluePixels>40000)break;await new Promise(r=>setTimeout(r,100));
   }
   assert.ok(bluePixels>40000,`Expected sprite and dependent mesh to change: ${bluePixels} blue pixels`);
-  assert.notDeepEqual(pixels(updatedImage).data,pixels(beforeImage).data);await writeFile(join(evidence,"after-update.png"),updatedImage);
+  assert.ok(!pixels(updatedImage).data.equals(pixels(beforeImage).data),"Hot reload must change rendered pixels");await writeFile(join(evidence,"after-update.png"),updatedImage);
   assert.equal(await page.evaluate(()=>globalThis.m3PageIdentity),pageIdentity);
   current=await state();assert.deepEqual(current.project.scene.assets.map(a=>a.id),before.project.scene.assets.map(a=>a.id));assert.equal(current.project.scene.assets.find(a=>a.id===other.id).buildKey,other.buildKey);
   const why=await command("asset.explain",{id:saved.id,assetId:texture.id});assert.deepEqual(why.whatUses.assets,[mesh.id]);assert.equal(why.whatUses.entities.length,2);
@@ -116,7 +120,8 @@ try {
   await page.locator("#project-close").click();await page.waitForFunction(()=>document.querySelectorAll("#entities button").length===0);
   await daemon.close();daemon=await startServer({projectRoot:root});await page.goto(daemon.editorUrl);await page.locator("#project-list").selectOption(saved.id);await page.locator("#project-open").click();
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
-  assert.deepEqual((await state()).project,updated);assert.deepEqual(pixels(await page.locator("#viewport").screenshot()).data,pixels(updatedImage).data);
+  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
+  assert.deepEqual((await state()).project,updated);assert.ok(pixels(await page.locator("#viewport").screenshot()).data.equals(pixels(updatedImage).data),"Hot-reloaded saved Game pixels must survive restart");
   report.pipeline={hotReloadWithoutNavigation:true,bluePixels,rebuilt:job.build.rebuilt,unchanged:job.build.unchanged,stableIds:true,restartPreserved:true,diagnostics:true};
   await page.goto(daemon.origin+"/?renderer=null#token="+daemon.token);
   await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.renderer==="null"&&k.meshes===2&&k.frame>=15;}catch{return false;}});

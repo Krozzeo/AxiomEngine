@@ -2,6 +2,8 @@ import {ScriptRuntime} from "./script-runtime.js";
 import {applyScriptOperations} from "./script-operations.mjs";
 import { loadKernel, scenePrimitives } from "./kernel-host.js";
 import { FrameProfiler } from "./frame-profiler.js";
+import {cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry} from './view-math.mjs';
+import {DecisionEvidence} from './causal-diagnostics.mjs';
 
 const shader = `
 struct Uniforms { mvp: mat4x4f, model: mat4x4f, color: vec4f, flags: vec4f };
@@ -36,8 +38,10 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
   let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null;
+  let view='scene',editorCamera=null,transformPreview=null,geometry=[],lastPacket=null,lastTraceId=null,lineage=null;
+  const decisions=new DecisionEvidence(),assetFailures=new Map();
   const keys=new Set();
-  const keydown=event=>{if(!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
+  const keydown=event=>{if(playing&&view==='game'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
   const keyup=event=>keys.delete(event.code),blur=()=>keys.clear();
   globalThis.addEventListener?.("keydown",keydown);globalThis.addEventListener?.("keyup",keyup);globalThis.addEventListener?.("blur",blur);
   let textures=new Map(), assets=new Map(), assetKeys=new Map();
@@ -118,6 +122,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     }
     if(ticket!==generation||disposed)return;
     const project=snapshot.project;
+    lineage=snapshot.commandLineage??null;assetFailures.clear();
     let scene=structuredClone(project?.scene??{entities:[]});
     if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
@@ -125,27 +130,30 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     let totalVertices=0;
     for(const metadata of (scene.assets??[]).filter(asset=>referenced.has(asset.id))) {
       let asset=assetKeys.get(metadata.id)===(metadata.buildKey??metadata.id)?assets.get(metadata.id):null;
-      if(!asset) {asset=await loadAsset(project.id,metadata.id,snapshot.workspaceId);if(ticket!==generation||disposed)return;assets.set(metadata.id,asset);assetKeys.set(metadata.id,metadata.buildKey??metadata.id);}
+      if(!asset) {try{asset=await loadAsset(project.id,metadata.id,snapshot.workspaceId);}catch(error){assetFailures.set(metadata.id,error.message);reportError(error);continue;}if(ticket!==generation||disposed)return;assets.set(metadata.id,asset);assetKeys.set(metadata.id,metadata.buildKey??metadata.id);}
       totalVertices+=(asset.kind==="sprite"?6:asset.vertexCount)*scene.entities.filter(entity=>entity.renderable?.assetId===metadata.id).length;
       if(totalVertices>300000)throw new Error("AX_SCENE_0006: scene exceeds 300000 vertices");
       localAssets.set(metadata.id,asset);
     }
     const replacement=await loadKernel(bytes);let pending=[],nextRuntime=null;
-    let nextSpawned=0;
+    let nextSpawned=0,nextScriptFault=null;
     try {
       if(snapshot.playing&&scene.script?.attachments.length) {
+       try{
         nextRuntime=new ScriptRuntime();
         await nextRuntime.initialize(`/script-runtime/${project.id.slice(10)}/${scene.script.build.id}/dotnet.js`);
         const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:scene.entities,keys:[],attachments:scene.script.attachments});
         const result=applyScriptOperations(scene,packet,ticket);scene=result.scene;nextSpawned=result.spawned;
         for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start",buildId:scene.script.build.id});
+       }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
       }
-      const draws=replacement.compileScene(scene,localAssets);
+      const drawable={...scene,entities:scene.entities.map(e=>e.renderable&&(!localAssets.has(e.renderable.assetId)||localAssets.get(e.renderable.assetId).kind!==e.renderable.kind)?Object.fromEntries(Object.entries(e).filter(([k])=>k!=='renderable')):e)};
+      const draws=replacement.compileScene(drawable,localAssets);
       if(snapshot.playing)replacement.configurePhysics(scene);
       pending=await buildResources(draws,ticket);
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
-      kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;
-      workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=null;
+      kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
+      workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=nextScriptFault;
       assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set(draws.map(draw=>draw.texture??"white"));
@@ -167,12 +175,12 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
           const result=applyScriptOperations(runtimeScene,packet,ticket,spawned);
           if(result.changedTopology) {
-            let next=[];
+            let next=[],draws;
             try {
-              const draws=scenePrimitives(result.scene,assets);next=await buildResources(draws,ticket);
+              draws=scenePrimitives(result.scene,assets);next=await buildResources(draws,ticket);
               if(ticket!==generation||disposed)throw new Error("Runtime generation changed");
               try {kernel.compileScene(result.scene,assets);kernel.configurePhysics(result.scene,true);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
-              destroyResources(resources);resources=next;
+              destroyResources(resources);resources=next;geometry=draws;
             }catch(error){destroyResources(next);throw error;}
           }else kernel.setPositions(result.positions);
           kernel.setVelocities(result.velocities);
@@ -182,6 +190,10 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       }
       if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
       const packet=kernel.stepScene(delta,++trace,canvas.width/canvas.height);
+      lastPacket=packet;lastTraceId=diagnostic.traceId;
+      const camera=view==='scene'&&editorCamera?editorCamera:runtimeScene.camera??{position:[0,0,6],target:[0,0,0],projection:'perspective',fov:60,orthoHeight:6};
+      const vp=cameraMatrix(camera,canvas.width/canvas.height);
+      geometry=geometry.map((draw,i)=>{const model=transformPreview?.entityId===draw.entityId?modelMatrix(transformPreview.transform):packet.draws[i].model;return {...draw,model,mvp:view==='scene'||transformPreview?matrixMultiply(vp,model):packet.draws[i].mvp};});
       if(packet.physics){for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);e.transform.position=b.position;if(e.rigidBody)e.rigidBody.velocity=b.velocity;}diagnostic.physics=packet.physics;}
       if(device) {
         const encoder=device.createCommandEncoder({label:"axiom-m2-scene"});
@@ -189,7 +201,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         const pass=encoder.beginRenderPass({... (sample?{timestampWrites:{querySet,beginningOfPassWriteIndex:0,endOfPassWriteIndex:1}}:{}),colorAttachments:[{view:context.getCurrentTexture().createView(),clearValue:{r:0.025,g:0.035,b:0.055,a:1},loadOp:"clear",storeOp:"store"}],depthStencilAttachment:{view:depth.createView(),depthClearValue:1,depthLoadOp:"clear",depthStoreOp:"store"}});
         pass.setPipeline(pipeline);
         for(let i=0;i<resources.length;i++) {
-          const item=resources[i], matrix=packet.draws[i], uniforms=new Float32Array(40);
+          const item=resources[i], matrix=geometry[i], uniforms=new Float32Array(40);
           uniforms.set(matrix.mvp,0);uniforms.set(matrix.model,16);uniforms.set(item.color,32);uniforms[36]=item.unlit?1:0;
           device.queue.writeBuffer(item.uniform,0,uniforms);
           pass.setBindGroup(0,item.bind);pass.setVertexBuffer(0,item.vertex);pass.draw(item.count);
@@ -207,10 +219,11 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           }).catch(error=>{if(!disposed&&device)reportError(error);}).finally(()=>{readPending=false;});
         }
       }
-      diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"scene",sceneId};
+      diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"stopped",view,sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
-      lastFrame={workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,renderer:device?'webgpu':'null',playing,generation,fault:scriptFault,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
+      lastFrame={workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,traceId:diagnostic.traceId,view,renderer:device?'webgpu':'null',playing,generation,fault:scriptFault,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
+      if(decisions.deep&&packet.frame%15===0)decisions.record(evidence());
       if(captureRequest){
         const request=captureRequest;captureRequest=null;
         try{
@@ -231,5 +244,6 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     if(disposed||!device||captureRequest||!lastFrame) return Promise.reject(new Error('WebGPU capture unavailable'));
     return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{if(captureRequest?.args===args)captureRequest=null;reject(new Error('Capture timed out'));},4000);captureRequest={args,resolve:value=>{clearTimeout(timer);resolve(value);},reject:error=>{clearTimeout(timer);reject(error);}};});
   }
-  return {setSnapshot,capture,status:()=>lastFrame??{},dispose(){captureRequest?.reject(new Error('Renderer disposed'));captureRequest=null;disposed=true;generation++;scriptRuntime?.dispose();globalThis.removeEventListener?.("keydown",keydown);globalThis.removeEventListener?.("keyup",keyup);globalThis.removeEventListener?.("blur",blur);if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();destroyResources(resources);clearTextures();depth?.destroy();querySet?.destroy();queryResolve?.destroy();queryRead?.destroy();device?.destroy();}};
+  function evidence(){const camera=view==='scene'&&editorCamera?editorCamera:runtimeScene.camera??{position:[0,0,6],target:[0,0,0],projection:'perspective',fov:60,orthoHeight:6};return {traceId:lastTraceId,correlationId:lineage?.correlationId??null,causationId:lineage?.messageId??null,projectId:currentProject,workspaceId,sceneRevision,frame:lastPacket?.frame,view,playing,renderer:device?'webgpu':'null',camera,physics:lastPacket?.physics??null,script:{attached:!!runtimeScene.script,attachments:runtimeScene.script?.attachments??[],buildId:runtimeScene.script?.build.id??null,active:!!scriptRuntime,fault:scriptFault?.slice(0,2048)??null},assets:(runtimeScene.assets??[]).map(a=>({id:a.id,kind:assets.get(a.id)?.kind??a.kind,loaded:assets.has(a.id),error:assetFailures.get(a.id)?.slice(0,2048)??null})),entities:runtimeScene.entities.map(e=>{const draws=geometry.filter(d=>d.entityId===e.id);return {id:e.id,renderable:!!e.renderable,assetId:e.renderable?.assetId,kind:e.renderable?.kind,scale:e.transform.scale,collider:e.collider,degenerate:draws.length>0&&draws.every(collapsedGeometry),drawCount:draws.length,inFrustum:draws.some(d=>clipVisible(d,camera,canvas.width/canvas.height))};})};}
+  return {setSnapshot,capture,interaction:()=>({scene:runtimeScene,draws:geometry,view,playing,projectId:currentProject,sceneRevision}),setView(value){view=value;keys.clear();transformPreview=null;},setEditorCamera(value){editorCamera=structuredClone(value);},previewTransform(value){transformPreview=value;},setDeepTrace(value){decisions.setDeep(value);},explain(args){if(!lastFrame)return {status:'unavailable',code:'AX_CAUSAL_0001',message:'No frame evidence yet',nodes:[],edges:[]};if(!args.traceId)decisions.record(evidence());return decisions.query({...args,id:currentProject,workspaceId});},status:()=>lastFrame??{},dispose(){captureRequest?.reject(new Error('Renderer disposed'));captureRequest=null;disposed=true;generation++;scriptRuntime?.dispose();globalThis.removeEventListener?.("keydown",keydown);globalThis.removeEventListener?.("keyup",keyup);globalThis.removeEventListener?.("blur",blur);if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();destroyResources(resources);clearTextures();depth?.destroy();querySet?.destroy();queryResolve?.destroy();queryRead?.destroy();device?.destroy();}};
 }

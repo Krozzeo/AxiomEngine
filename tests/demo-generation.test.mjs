@@ -6,7 +6,13 @@ import {join} from 'node:path';
 import {createDemos} from '../demos/create-projects.mjs';
 import {ProjectStore} from '../daemon/bootstrap/project-store.mjs';
 import {ScriptCompiler} from '../daemon/bootstrap/scripting/compiler.mjs';
+import {createM8Demos} from '../demos/create-m8-projects.mjs';
 async function root(t){const path=await mkdtemp(join(tmpdir(),'axiom-demo-'));t.after(()=>rm(path,{recursive:true,force:true}));return path;}
+test('M8 creates two complete editable projects with intentional diagnostic cases',async t=>{
+ const path=await root(t),demos=await createM8Demos(path),store=new ProjectStore(path);assert.equal(demos.length,2);assert.equal((await store.run('project.list',{})).projects.length,2);
+ const workshop=(await store.run('project.open',{id:demos[0].id})).project.scene,lab=(await store.run('project.open',{id:demos[1].id})).project.scene;
+ assert.equal(workshop.entities.length,5);assert.equal(workshop.assets.length,4);assert.equal(lab.entities.length,6);assert.equal(lab.entities.find(e=>e.name.startsWith('Mask 0')).collider.mask,0);assert.ok(lab.entities.some(e=>e.transform.position[0]===1000));assert.ok(lab.assets.some(a=>a.name==='unused-asset.png'));
+});
 test('C# failure preserves two complete persisted demos and exposes its cause',async t=>{
  const path=await root(t);t.mock.method(ScriptCompiler.prototype,'build',async()=>{throw Error('Install .NET 10 SDK and wasm-tools');});
  const progress=[],demos=await createDemos(path,{onProgress:s=>progress.push(s)}),store=new ProjectStore(path);

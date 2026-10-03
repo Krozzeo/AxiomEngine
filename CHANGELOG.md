@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.0.18 — M8 Causal Diagnostics and Scene authoring
+
+- Game previews the saved camera independently of Play; Scene owns a transient camera.
+- Triangle picking, bidirectional selection, projected bounds and move/rotate/scale gizmos.
+- One-drag Undo, Escape cancellation, world/local axes and stable SVG pointer handling.
+- Orbit/pan/zoom/fly/framing, global XYZ alignment and editor projection controls.
+- Diagnostics tab, four causal queries, bounded Decision Graphs and opt-in deep traces.
+- Ten injected faults, explicit expired/stale/evicted evidence and actual loader/script errors.
+- Editable M8 Scene Workshop and Diagnostic Lab alongside the two physics samples.
+- Atomic GPU/kernel/draw replacement and isolated browser CI jobs.
+- 94 Node tests, 30 Rust tests, 16 schemas, 51 semantic tools and M2–M8 browser acceptance.
+- M8: 100% (8/8); weighted whole-project completion: approximately 54%.
+
 ## 0.0.17 — M7 Physics Foundation
 
 - Owned Rust CPU/Wasm 2D/3D translational physics and deterministic fixed steps.

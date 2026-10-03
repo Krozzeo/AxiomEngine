@@ -27,9 +27,10 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.17`: M0–M7 acceptance is complete. M7 passed 8/8 criteria;
-weighted whole-project completion is 48%. M8 Causal Diagnostics v1 is next.
-Read M7_PHYSICS.md, M7_CURRENT_REPORT.md, ADR-0020 and demos/README.md.
+Version `0.0.18`: M0–M8 acceptance is complete. M8 passes 8/8 criteria;
+weighted whole-project completion is 54%. M9 Renderer Production Foundation is next.
+Read M8_DIAGNOSTICS_AND_EDITOR.md, M8_CURRENT_REPORT.md, ADR-0021 and demos/README.md.
+Read M7_PHYSICS.md for the unchanged translational physics boundary.
 Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
 evidence and limitations. M6 now scopes agent mutations to isolated proposals;
 read M6_WORKSPACES.md, M6_CURRENT_REPORT.md and ADR-0019.
@@ -41,10 +42,9 @@ editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
 simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-71 Node tests, 30 Rust tests, 15 schema documents, both generated catalogs and
-three architecture rules pass. M7 release CI run 37076201439 passed all ten
-jobs at code commit 8edd6aa849da7c557a98984637edc2bcb62c18d9, including M2–M7
-Chromium workflows and development/AOT C# execution (Windows development included).
+94 Node tests, 30 Rust tests, 16 schema documents, both generated catalogs and
+three architecture rules pass. M8 release CI evidence is recorded in
+M8_CURRENT_REPORT.md, including M2–M8 Chromium workflows and development/AOT C#.
 The MCP acceptance launches a separate stdio client process, creates/edits a scene
 without editor clicks, synchronizes Play/Stop and obtains a real WebGPU PNG plus
 same-frame semantic context. Screenshot evidence was reviewed.
@@ -70,7 +70,16 @@ rollback and idle restart recovery pass their integrated browser and unit gates.
 M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
 RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
 triggers, layer masks, raycasts and repeatable golden scenes. No angular dynamics,
-CCD or GPU physics is claimed; see ADR-0020. Run npm run demo to create samples.
+CCD or GPU physics is claimed; see ADR-0020. Run npm run demo to create four samples.
+M8 adds independent stopped Game preview, an editor-only Scene camera, triangle
+picking, two-way selection, move/rotate/scale gizmos with one-command Undo and
+Escape cancellation, orbit/pan/zoom/fly/framing and an absolute XYZ widget.
+Diagnostics is a tab beside Structured Console. Four diagnostics.explain queries
+return bounded evidence graphs with frame/command lineage; unavailable or
+unproven causes remain explicit. Deep trace is opt-in, sampled every 15 frames,
+bounded to 32 frames and expires after 30 seconds. M8 Scene Workshop and
+Diagnostic Lab exercise these functions. No pixel-perfect outline, alpha picking,
+snapping or multi-selection is claimed.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
 unsaved edits/history are memory-only. Assets support PNG and a bounded static
@@ -148,13 +157,13 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M8 per M8_PLAN.md and master specification section 127. Define evidence-
-backed whyNotRendered/whyNotColliding/whyAssetNotLoaded/whyScriptNotRunning
-queries, then Decision Graph and trace viewer. Prove ten injected causes through
-automated tests. Read M7_PHYSICS.md and preserve M6 proposal isolation.
-M7 PR #7 is stacked on #6; all milestone PRs remain unmerged.
-The user requested demos to see engine progress: keep them editable, runnable
-and covered by browser tests as new capabilities are added.
+Begin M9 per M9_PLAN.md and master specification section 128. Read accepted renderer,
+resource and causal-evidence ADRs first. Establish PBR/HDR material/light contracts,
+then incremental real renderer passes, bounded resource lifecycle, frame evidence,
+golden scenes and benchmarks. Preserve M6 proposal isolation, M8 stopped preview
+and editor-only cameras. Create useful editable demos alongside every milestone
+when the new capabilities support them, with controls and expected results.
+M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and
 M1 #1. All remain unmerged; review/integrate in order. CI success does not mean

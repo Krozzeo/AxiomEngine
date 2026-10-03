@@ -2,6 +2,7 @@ import {mountProposalEditor} from "./proposal-editor.js";
 import {startAgentBridge} from "./agent-bridge.js";
 import { mountProjectEditor } from "./project-editor.js";
 import { createSceneRenderer } from "./scene-renderer.js";
+import {mountSceneTools} from './scene-tools.mjs';
 
 const token = new URLSearchParams(location.hash.slice(1)).get("token");
 history.replaceState(null, "", location.pathname + location.search);
@@ -13,6 +14,7 @@ const traceOutput = document.querySelector("#trace");
 const capabilities = document.querySelector("#capabilities");
 const frameTraceOutput = document.querySelector("#frame-trace");
 let renderer=null;
+let sceneTools=null,activeView='scene';
 let agentBridgeEnabled=false;
 const agentErrors=[];
 let pendingSnapshot=null;
@@ -80,7 +82,7 @@ async function execute(type, data = {}) {
 }
 const proposalEditor=mountProposalEditor({document,send:sendCommand,reportError});
 let unsavedScene = false;
-const projectEditor = mountProjectEditor({ document, send: sendCommand, reportError, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
+const projectEditor = mountProjectEditor({ document, send: sendCommand, reportError,onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
   const changed=!pendingSnapshot||(pendingSnapshot.workspaceId??null)!==(snapshot.workspaceId??null)||pendingSnapshot.sceneRevision!==snapshot.sceneRevision||pendingSnapshot.project?.id!==snapshot.project?.id;
   pendingSnapshot=snapshot;
   if(renderer&&changed) await renderer.setSnapshot(snapshot);
@@ -98,6 +100,9 @@ async function initializeWebGpu() {
     loadAsset:async(id,assetId,workspaceId)=>{const asset=(await sendCommand("asset.get",{id,assetId,...(workspaceId?{workspaceId}:{})})).payload.data.asset;for(const warning of asset.warnings??[])log("warning","AX_ASSET_0002",warning);return asset;}});
   addEventListener("pagehide",()=>renderer.dispose(),{once:true});
   if(pendingSnapshot)await renderer.setSnapshot(pendingSnapshot);
+  renderer.setView(activeView);
+  sceneTools=mountSceneTools({document,canvas:document.querySelector('#viewport'),getRenderer:()=>renderer,editor:projectEditor,reportError});sceneTools.select(projectEditor.selectedEntity());
+  addEventListener('pagehide',()=>sceneTools.dispose(),{once:true});
 }
 
 async function boot() {
@@ -145,4 +150,12 @@ document.querySelector("#ping").addEventListener("click", () => execute("system.
 document.querySelector("#increment").addEventListener("click", () => execute("demo.increment", { amount: 1 }));
 document.querySelector("#undo").addEventListener("click", () => execute("editor.undo"));
 document.querySelector("#clear").addEventListener("click", () => logs.replaceChildren());
+for(const name of ['console','diagnostics'])document.querySelector('#'+name+'-tab').addEventListener('click',()=>{for(const tab of ['console','diagnostics']){document.querySelector('#'+tab+'-tab').classList.toggle('active',tab===name);document.querySelector('#'+tab+'-content').hidden=tab!==name;}});
+document.querySelector('#deep-trace').addEventListener('change',event=>renderer?.setDeepTrace(event.target.checked));
+document.querySelector('#diagnostic-explain').addEventListener('click',()=>{
+ const kind=document.querySelector('#diagnostic-kind').value,entityId=projectEditor.selectedEntity(),otherId=document.querySelector('#diagnostic-other').value,assetId=document.querySelector('#asset-list').value,traceId=document.querySelector('#diagnostic-trace').value.trim();
+ const result=renderer?.explain({kind,entityId,otherId,assetId,expectedSceneRevision:pendingSnapshot?.sceneRevision,...(traceId?{traceId}:{})});document.querySelector('#decision-graph').textContent=JSON.stringify(result,null,2);
+ document.querySelector('#causal-summary').textContent=result?`${result.status}: ${result.message}`:'No renderer evidence available';const path=document.querySelector('#causal-path');path.replaceChildren();for(const node of result?.nodes??[]){const item=document.createElement('li');item.textContent=`${node.code} · ${node.message}`;path.append(item);}
+});
+document.querySelector('#diagnostic-kind').addEventListener('change',()=>{const options=document.querySelector('#diagnostic-other');options.replaceChildren();for(const e of pendingSnapshot?.project?.scene.entities??[]){const option=document.createElement('option');option.value=e.id;option.textContent=e.name;options.append(option);}});
 boot();

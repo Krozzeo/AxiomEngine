@@ -39,6 +39,7 @@ export async function buildEditor() {
   await cp(resolve(root, "apps/editor/src/proposal-editor.mjs"), resolve(destination, "proposal-editor.js"));
   await cp(resolve(root, "apps/editor/src/agent-bridge.mjs"), resolve(destination, "agent-bridge.js"));
   await cp(resolve(root, "apps/editor/src/scene-renderer.mjs"), resolve(destination, "scene-renderer.js"));
+  for(const name of ['view-math','scene-tools','causal-diagnostics'])await cp(resolve(root,'apps/editor/src',name+'.mjs'),resolve(destination,name+'.mjs'));
   for(const [name,target]of [["runtime.mjs","script-runtime.js"],["worker.mjs","script-worker.js"],["operations.mjs","script-operations.mjs"],["contract.mjs","contract.mjs"]])await cp(resolve(root,"engine/scripting",name),resolve(destination,target));
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));
   await cp(resolve(root,"engine/wasm/physics-host.mjs"),resolve(destination,"physics-host.mjs"));

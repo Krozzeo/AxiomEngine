@@ -99,6 +99,11 @@ jobs:
   browser-milestones:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        milestone: [m2, m3, m4, m5, m6, m7, m8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -110,26 +115,26 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - uses: actions/setup-dotnet@v4
+        if: contains(fromJSON('["m4","m6","m7"]'), matrix.milestone)
         with:
           global-json-file: global.json
       - run: dotnet workload install wasm-tools
+        if: contains(fromJSON('["m4","m6","m7"]'), matrix.milestone)
       - run: npm run build
       - name: Install software Vulkan and virtual display
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
-      - run: xvfb-run -a -s "-screen 0 1440x1000x24" npm run test:browser
-        env:
-          AXIOM_HEADLESS: "false"
-      - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m4.mjs
-        env:
-          AXIOM_HEADLESS: "false"
-      - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m5.mjs
-      - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m6.mjs
+      - run: node scripts/benchmarks/causal-diagnostics.mjs
+        if: matrix.milestone == 'm8'
       - run: node scripts/benchmarks/physics.mjs
-      - run: xvfb-run -a -s "-screen 0 1600x1000x24" node tests/browser/m7.mjs
+        if: matrix.milestone == 'm7'
+      - name: Run isolated browser acceptance
+        run: xvfb-run -a -s "-screen 0 1700x1100x24" node tests/browser/${{ matrix.milestone }}.mjs
+        env:
+          AXIOM_HEADLESS: "false"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: milestone-browser-evidence
+          name: milestone-browser-evidence-${{ matrix.milestone }}
           path: |
             .axiom/browser-evidence
             .axiom/browser-m3-evidence
@@ -137,4 +142,7 @@ jobs:
             .axiom/browser-m5-evidence
             .axiom/browser-m6-evidence
             .axiom/browser-m7-evidence
+            .axiom/browser-m8-evidence
+            dist/editor/axiom-kernel.wasm
             .axiom/physics-benchmark.json
+            .axiom/causal-benchmark.json

@@ -1,0 +1,70 @@
+# M9 — implementation checkpoint; acceptance blocked
+
+This is not a milestone release. M0–M8 remain complete. M9 implementation is
+saved on `codex/m9-renderer-production`, stacked PR #9, unmerged.
+
+Implemented but not GPU-verified: opt-in HDR PBR, directional/point/spot lighting,
+analytic environment, one directional/spot PCF shadow, Forward+ light tiles,
+instanced indirect draws, compute culling, imported mesh LOD, tone mapping, bloom,
+edge smoothing, bounded pipeline/resources and production causal references.
+Materials, lights, LOD and HDR settings have canonical schemas, revision/Undo
+commands, Inspector forms and proposal isolation. Two new editable demo projects
+are persisted alongside the four earlier demos. See demos/M9_GUIDE.md and ADR-0022.
+
+## Acceptance matrix
+
+| Required point | Status | Executable evidence |
+| --- | --- | --- |
+| Canonical components, validation, public commands, Undo/persistence and proposal isolation | Passed | Node command/workspace tests; 55 generated tools; schema/architecture checks |
+| CPU render planning: bounds, batching, LOD, tier decisions and bounded budgets | Passed | Eight renderer tests; three planner p95 budgets |
+| PBR/HDR, lights and environment produce correct pixels | Blocked | Browser test authored; CI never assigned a runner |
+| Real GPU Forward+, instancing, compute culling and CPU/GPU golden parity | Blocked | Compute/indirect implementation and acceptance test; not executed |
+| Shadows, postprocessing, pipeline cache and resource lifecycle | Blocked | GPU implementation and pixel-effect tests; not executed |
+| Human Inspector editing and real causal renderer evidence | Blocked | Forms/graph integration implemented; browser proof pending |
+| Editable demo interaction, constrained quality and Null browser acceptance | Blocked | Generation/save/reopen passes locally; interactive GPU proof pending |
+| Full clean cross-platform build, regression suite, image review and closure | Blocked | Existing checks plus M9 await functioning CI |
+
+M9: **2/8 = 25%** acceptance. Weighted project progress: **56%**, including two
+points of partial M9 credit; the completed-through-M8 baseline remains 54%.
+Implementation volume is not counted as verified completion.
+
+## Local evidence
+
+96 Node tests pass, zero failures, using the previously verified M8 Wasm binary.
+The six clean-build/HTTP startup tests require Cargo and remain unexecuted locally.
+This environment has no usable pinned Rust/.NET/Chromium toolchain; CI is required
+for their complete current-source proof. 16 schema documents, 55 semantic tools,
+three architecture rules, binding consistency and daemon parity pass.
+
+Planner benchmark (CPU plan only, not full-frame/GPU performance):
+
+| Tier | Instances | p95 ms | Budget ms | Opaque batches |
+| --- | ---: | ---: | ---: | ---: |
+| Low | 128 | 0.843 | 4 | 1 |
+| Medium | 512 | 2.361 | 12 | 1 |
+| High | 1024 | 4.254 | 24 | 1 |
+
+## Concrete CI blocker
+
+Run 37153467939 at initial implementation SHA
+65ce4fda49875733fce6bbb586c3325108ef723d failed before any job acquired a runner.
+The M9 job 111291919524 has no steps, an empty runner name and runner_id 0.
+One isolated re-run was requested; attempt 2, job 111292384937, again failed with
+no runner or steps. Job-log requests returned BlobNotFound; no build/shader
+failure log exists. The root cause has **not** been established. Do not infer an
+Actions billing/quota/permission issue as fact without the actual annotation.
+
+The GitHub connector can retrieve runs, jobs and check summaries but rejects the
+check-annotation endpoint. User-only gate: open
+https://github.com/Krozzeo/AxiomEngine/actions/runs/37153467939 and return the red
+Annotations/error message shown by GitHub. No engine manual test is requested yet.
+After the account/runner blocker is resolved, rerun CI for the latest branch,
+fix actual failures, review screenshots, update closure docs and release source.
+
+## Risks and remaining work
+
+WGSL compilation, GPU binding validation and visual output have not been executed.
+Do not present the demos or renderer as working GPU acceptance. Browser assertions
+may require correction against observed images. Foundation scope/limits are explicit
+in ADR-0022; no physical GPU frame-rate claim is made. Existing M2–M8 browser jobs
+and C# development/AOT jobs remain required. Do not merge any milestone PR.

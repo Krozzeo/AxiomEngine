@@ -1,6 +1,7 @@
 # M9 — Renderer Production Foundation
 
-Implementation and acceptance in progress. See ADR-0022 for the precise bounded
+Implementation saved; GPU acceptance blocked before CI runner allocation.
+Read docs/reports/M9_CURRENT_REPORT.md. This is not a verified milestone release. See ADR-0022 for the precise bounded
 rendering contract and explicit unsupported capabilities.
 
 `engine/renderer` owns renderer math, planning and native WGSL/WebGPU resources.

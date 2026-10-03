@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — M9 implementation; GPU acceptance blocked
+
+- Canonical PBR/light/LOD/HDR components, commands, Undo and Inspector forms.
+- HDR rendering, tile lighting, instancing, CPU/GPU culling and postprocessing implemented.
+- Editable PBR Gallery and Instancing/LOD Lab, with authored browser acceptance.
+- Smooth GLB normals and bounded PBR import parameters; isolated GPU readback epochs.
+- 96 local Node tests pass; CI failed before runner allocation on two attempts.
+- M9 remains 25% (2/8); approximate weighted progress 56%. Not a milestone release.
+
 ## 0.0.18 — M8 Causal Diagnostics and Scene authoring
 
 - Game previews the saved camera independently of Play; Scene owns a transient camera.

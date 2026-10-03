@@ -34,7 +34,7 @@ struct Out { @builtin(position) position: vec4f, @location(0) normal: vec3f, @lo
 
 export async function createSceneRenderer({ canvas, stateElement, traceOutput, bytes, loadAsset, reportError, reportScriptLog=()=>{}, forceNull=false, gpu=navigator.gpu }) {
   const profiler=new FrameProfiler(120);
-  let production=null,renderStats=null,lastRenderPlan=null;
+  let productionLoading=null,production=null,renderStats=null,lastRenderPlan=null;
   let device=null, context=null, pipeline=null, sampler=null, depth=null;
   let querySet=null,queryResolve=null,queryRead=null,sampleDone=false,readPending=false,gpuSample=null;
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
@@ -154,7 +154,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       const draws=replacement.compileScene(drawable,localAssets);
       if(snapshot.playing)replacement.configurePhysics(scene);
       if(scene.rendering&&device){
-        production??=await createProductionGPU({device,format:gpu.getPreferredCanvasFormat(),width:canvas.width,height:canvas.height,textureFor,getTexture:url=>textures.get(url??"white"),reportError});
+        production??=await (productionLoading??=createProductionGPU({device,format:gpu.getPreferredCanvasFormat(),width:canvas.width,height:canvas.height,textureFor,getTexture:url=>textures.get(url??"white"),reportError}));
+        if(ticket!==generation||disposed){replacement.dispose();nextRuntime?.dispose();return;}
         production.reset();await production.prepare([...draws,...[...localAssets.values()].flatMap(a=>a.primitives??[])]);
       }else pending=await buildResources(draws,ticket);
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}

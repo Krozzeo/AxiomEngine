@@ -3,11 +3,11 @@
   "stateVersion": 1,
   "updatedAt": "2026-10-03",
   "engineVersion": "0.0.18",
-  "activeMilestone": 8,
-  "milestoneStatus": "complete",
+  "activeMilestone": 9,
+  "milestoneStatus": "blocked",
   "completion": {
-    "activeMilestonePercent": 100,
-    "wholeProjectPercent": 54,
+    "activeMilestonePercent": 25,
+    "wholeProjectPercent": 56,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -48,8 +48,8 @@
       "percent": 100
     },
     "9": {
-      "status": "not_started",
-      "percent": 0
+      "status": "blocked",
+      "percent": 25
     }
   },
   "implementation": {
@@ -70,7 +70,8 @@
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_translation_2d_3d",
     "editableDemos": "verified_m7_physics_and_m8_workshop_diagnostic_lab",
-    "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace"
+    "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
+    "productionRenderer": "implemented_pending_real_gpu_acceptance"
   },
   "verified": {
     "nodeTests": {
@@ -341,9 +342,17 @@
       "benchmark": "docs/reports/m8-causal-benchmark.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m9LocalNodeTests": {
+      "passed": 96,
+      "failed": 0,
+      "scope": "excludes six Cargo clean-build server tests; uses verified M8 Wasm"
     }
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M9 current-source CI has no runner, steps or logs; two attempts failed before execution. Root cause unknown; GitHub Annotations needed.",
+    "M9 WGSL/WebGPU, golden pixels, full clean regressions and image review are unexecuted."
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -391,7 +400,10 @@
     "docs/reports/M8_CURRENT_REPORT.md",
     "docs/architecture/M8_DIAGNOSTICS_AND_EDITOR.md",
     "docs/adr/0021-editor-camera-and-causal-evidence.md",
-    "docs/architecture/M9_PLAN.md"
+    "docs/architecture/M9_PLAN.md",
+    "docs/reports/M9_CURRENT_REPORT.md",
+    "docs/architecture/M9_RENDERER.md",
+    "docs/adr/0022-bounded-hdr-forward-plus-renderer.md"
   ],
-  "nextTask": "Begin M9 Renderer Production Foundation per M9_PLAN.md. Preserve M8 camera/diagnostic contracts, M6 proposals and unmerged stacked PRs. Include meaningful editable demos and automated acceptance in each applicable milestone."
+  "nextTask": "Read M9_CURRENT_REPORT.md. Obtain the GitHub Actions annotation for run 37153467939; restore runner execution, validate latest M9 source in full CI, fix real failures, review images and complete M9 before release or M10."
 }

@@ -3,7 +3,7 @@ import {cullShader,tilesShader,surfaceShader,shadowShader,postShader} from './pr
 const vertexBuffers=[{arrayStride:32,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x2'}]}];
 // Owns bounded GPU resources only. Host supplies textures and the canvas target.
 export async function createProductionGPU({device,format,width,height,textureFor,getTexture,reportError}){
- const B=GPUBufferUsage,T=GPUTextureUsage,S=GPUShaderStage;let disposed=false,pending=false,sample=null,frameNumber=0;
+ const B=GPUBufferUsage,T=GPUTextureUsage,S=GPUShaderStage;let disposed=false,pending=false,sample=null,frameNumber=0,epoch=0;
  const owned=[],vertices=new Map(),bindings=new Map(),pipelineCache=new Map();
  const buffer=(size,usage)=>{const b=device.createBuffer({size,usage});owned.push(b);return b;};
  const texture=(w,h,fmt,usage)=>{const t=device.createTexture({size:[w,h],format:fmt,usage});owned.push(t);return t;};
@@ -65,10 +65,10 @@ export async function createProductionGPU({device,format,width,height,textureFor
   for(const [i,batch]of plan.batches.entries()){pass.setPipeline(pipelineCache.get(batch.alphaMode));pass.setBindGroup(1,bindings.get(batch.bindingKey).group);pass.setVertexBuffer(0,vertices.get(batch.key).vertex);pass.drawIndirect(indirect,i*16);}pass.end();
   const bright=encoder.beginRenderPass({colorAttachments:[{view:bloom.createView(),clearValue:{r:0,g:0,b:0,a:1},loadOp:'clear',storeOp:'store'}]});if(settings.bloom>0){bright.setPipeline(pipelineCache.get('bloom'));bright.setBindGroup(0,bloomBind);bright.draw(3);}bright.end();
   const postPass=encoder.beginRenderPass({colorAttachments:[{view:target,loadOp:'clear',storeOp:'store'}]});postPass.setPipeline(pipelineCache.get('post'));postPass.setBindGroup(0,postBind);postPass.draw(3);postPass.end();
-  const shouldRead=!pending&&plan.batches.length>0&&(frameNumber===1||frameNumber%60===0),batchCount=plan.batches.length,sourceFrame=frameNumber;
+  const shouldRead=!pending&&plan.batches.length>0&&(frameNumber===1||frameNumber%60===0),batchCount=plan.batches.length,sourceFrame=frameNumber,sourceEpoch=epoch;
   if(shouldRead)encoder.copyBufferToBuffer(indirect,0,readback,0,batchCount*16);device.queue.submit([encoder.finish()]);
-  if(shouldRead){pending=true;readback.mapAsync(GPUMapMode.READ).then(()=>{if(disposed)return;const value=new Uint32Array(readback.getMappedRange().slice(0,batchCount*16));readback.unmap();sample={frame:sourceFrame,traceId,instances:Array.from({length:batchCount},(_,i)=>value[i*4+1]).reduce((a,b)=>a+b,0),batches:batchCount,source:'GPU indirect buffer readback',pixels:'unproven'};}).catch(error=>{if(!disposed)reportError(error);}).finally(()=>{pending=false;});}
+  if(shouldRead){pending=true;readback.mapAsync(GPUMapMode.READ).then(()=>{if(disposed)return;const value=new Uint32Array(readback.getMappedRange().slice(0,batchCount*16));readback.unmap();if(sourceEpoch!==epoch)return;sample={frame:sourceFrame,traceId,instances:Array.from({length:batchCount},(_,i)=>value[i*4+1]).reduce((a,b)=>a+b,0),batches:batchCount,source:'GPU indirect buffer readback',pixels:'unproven'};}).catch(error=>{if(!disposed)reportError(error);}).finally(()=>{pending=false;});}
   return {...plan.stats,submittedReference:submitted,gpuSample:sample,shadowLight:light?.entityId??null,fallbacks:plan.fallbacks,pipelines:pipelineCache.size,vertexBytes:[...vertices.values()].reduce((n,v)=>n+v.bytes,0),resourceBatches:vertices.size,hdrFormat:'rgba16float'};
  }
- return {prepare,render,reset(){for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();vertices.clear();bindings.clear();sample=null;frameNumber=0;},dispose(){disposed=true;for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();for(const value of owned)value.destroy();shadow?.destroy();vertices.clear();bindings.clear();}};
+ return {prepare,render,reset(){epoch++;for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();vertices.clear();bindings.clear();sample=null;frameNumber=0;},dispose(){disposed=true;for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();for(const value of owned)value.destroy();shadow?.destroy();vertices.clear();bindings.clear();}};
 }

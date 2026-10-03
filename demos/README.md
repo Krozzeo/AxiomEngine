@@ -1,5 +1,9 @@
 # Demo projects
 
+M9 adds a PBR Gallery and Instancing/LOD Lab; see [M9 guide](M9_GUIDE.md).
+Their generation/persistence is verified locally; real GPU/interaction acceptance
+is pending CI runner recovery. They are development demos, not a verified release.
+
 These are editable projects using the normal importer, scene commands, compiler
 and persistence paths. No special demo-only rendering or physics is used.
 
@@ -13,7 +17,7 @@ npm.cmd run dev
 
 Requirements: the normal Node/Rust toolchain plus .NET 10 SDK and wasm-tools
 (`dotnet workload install wasm-tools`). Demo creation compiles the 2D C# controller.
-Each invocation now creates four new projects with fresh IDs, preserving existing
+Each invocation now creates six new projects with fresh IDs, preserving existing
 projects. Keep the entire `.axiom/projects` directory when moving projects.
 
 The M7.1 generator saves both complete scenes before compiling C#. If compilation

@@ -1,6 +1,7 @@
 # M9 — Renderer Production Foundation
 
-Status: not started. Master specification section 128. Roadmap weight: 8%.
+Status: implementation saved; acceptance blocked at 2/8 (25%). Read
+M9_CURRENT_REPORT.md in docs/reports for the concrete CI runner blocker. Master specification section 128. Roadmap weight: 8%.
 
 Read M8_DIAGNOSTICS_AND_EDITOR.md, ADR-0021, M7_PHYSICS.md, rendering/runtime
 contracts and current reports before implementing. Preserve editor/game camera

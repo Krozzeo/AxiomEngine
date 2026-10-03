@@ -28,7 +28,11 @@ Non-negotiable foundations:
 ## Current state
 
 Version `0.0.18`: M0–M8 acceptance is complete. M8 passes 8/8 criteria;
-weighted whole-project completion is 54%. M9 Renderer Production Foundation is next.
+M9 is blocked at 2/8 (25%); weighted completion is 56% with partial credit.
+Read M9_CURRENT_REPORT.md, M9_RENDERER.md and ADR-0022 first. Current M9 GPU
+code is implemented but unexecuted: CI has no assigned runner/steps/logs after
+two attempts. Obtain GitHub Annotations; do not infer a root cause.
+Do not release M9, mark it complete or start M10 before full acceptance.
 Read M8_DIAGNOSTICS_AND_EDITOR.md, M8_CURRENT_REPORT.md, ADR-0021 and demos/README.md.
 Read M7_PHYSICS.md for the unchanged translational physics boundary.
 Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
@@ -157,7 +161,10 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M9 per M9_PLAN.md and master specification section 128. Read accepted renderer,
+Resume M9 per M9_CURRENT_REPORT.md, M9_PLAN.md and master specification section 128.
+Restore CI execution, validate latest source, fix WGSL/binding/image failures and
+review screenshots. 96 local Node tests pass; six clean Cargo server tests and
+real Chromium WebGPU acceptance are blocked. PR #9 is stacked on unmerged #8. Read accepted renderer,
 resource and causal-evidence ADRs first. Establish PBR/HDR material/light contracts,
 then incremental real renderer passes, bounded resource lifecycle, frame evidence,
 golden scenes and benchmarks. Preserve M6 proposal isolation, M8 stopped preview

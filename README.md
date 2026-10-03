@@ -9,6 +9,10 @@ and persistence, asset hot reload, C# gameplay, MCP control, reviewed AI proposa
 and CPU/Wasm physics are implemented. M8 adds independent Scene/Game views,
 visual selection and transform tools, camera navigation and bounded causal
 diagnostics. Weighted roadmap progress is approximately 54%.
+M9 development is saved but blocked before CI runner allocation; its GPU code
+and images are not verified. Partial acceptance is 25%, giving 56% weighted
+progress. See [M9 checkpoint](docs/reports/M9_CURRENT_REPORT.md).
+
 See [M8 acceptance and limits](docs/reports/M8_CURRENT_REPORT.md).
 
 ## Run the verified bootstrap

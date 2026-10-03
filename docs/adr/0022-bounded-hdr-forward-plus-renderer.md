@@ -1,6 +1,6 @@
 # ADR-0022 — Bounded HDR Forward+ renderer
 
-Status: implemented; M9 acceptance pending.
+Status: implemented; M9 GPU acceptance blocked; see M9_CURRENT_REPORT.md.
 
 Scenes explicitly opt into production rendering by saving `scene.rendering`.
 Existing scenes retain their legacy pixel contract. WebGPU and Null share a

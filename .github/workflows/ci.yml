@@ -116,6 +116,7 @@ jobs:
       - run: npm run build
       - name: Install software Vulkan and virtual display
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
+      - run: node scripts/benchmarks/causal-diagnostics.mjs
       - run: xvfb-run -a -s "-screen 0 1700x1100x24" node tests/browser/m8.mjs
       - run: xvfb-run -a -s "-screen 0 1440x1000x24" npm run test:browser
         env:
@@ -127,7 +128,6 @@ jobs:
       - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m6.mjs
       - run: node scripts/benchmarks/physics.mjs
       - run: xvfb-run -a -s "-screen 0 1600x1000x24" node tests/browser/m7.mjs
-      - run: node scripts/benchmarks/causal-diagnostics.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

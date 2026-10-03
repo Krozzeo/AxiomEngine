@@ -17,11 +17,11 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  function render(now=0){
   if(disposed)return;
   const d=data();if(d.projectId!==projectId){projectId=d.projectId;camera=structuredClone(d.scene.camera??{position:[0,0,6],target:[0,0,0],projection:'perspective',fov:60,orthoHeight:6});preview=null;drag=null;setCamera(camera);}
-  if(!camera||!d.projectId){overlay.hidden=true;widget.hidden=true;$('scene-toolbar').hidden=true;return;}
+  if(!camera||!d.projectId){overlay.hidden=true;widget.hidden=true;overlay.style.display='none';widget.style.display='none';$('scene-toolbar').hidden=true;return;}
   if(navigation?.fly&&keys.size){const dt=Math.min((now-last)/1000,.05),b=basis(camera);let motion=[0,0,0];for(const [key,v]of [['KeyW',b.forward],['KeyS',mul(b.forward,-1)],['KeyD',b.right],['KeyA',mul(b.right,-1)],['KeyE',[0,1,0]],['KeyQ',[0,-1,0]]])if(keys.has(key))motion=add(motion,v);const shift=keys.has('ShiftLeft')?3:1,delta=mul(unit(motion),dt*navigation.speed*shift);setCamera({...camera,position:add(camera.position,delta),target:add(camera.target,delta)});}
   last=now;
   if(now-drawAt<33)return;drawAt=now;
-  const visible=d.view==='scene';overlay.hidden=!visible;widget.hidden=!visible;$('scene-toolbar').hidden=!visible;
+  const visible=d.view==='scene';overlay.hidden=!visible;widget.hidden=!visible;overlay.style.display=visible?'block':'none';widget.style.display=visible?'block':'none';$('scene-toolbar').hidden=!visible;
   $('tool-projection').textContent=camera.projection==='orthographic'?'Ortho':'Persp';
   overlay.replaceChildren();widget.replaceChildren();
   const rect=canvas.getBoundingClientRect(),parent=canvas.parentElement.getBoundingClientRect();Object.assign(overlay.style,{left:(rect.left-parent.left)+'px',top:(rect.top-parent.top)+'px',width:rect.width+'px',height:rect.height+'px'});overlay.setAttribute('viewBox',`0 0 ${canvas.width} ${canvas.height}`);
@@ -76,7 +76,8 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  $('tool-projection').addEventListener('click',()=>setCamera({...camera,projection:camera.projection==='orthographic'?'perspective':'orthographic'}));
  function align(event){const node=event.target.closest?.('[data-axis]');if(!node)return;const axis=axes[Number(node.getAttribute('data-axis'))],sign=Number(node.getAttribute('data-sign')),distance=Math.max(1,length(sub(camera.position,camera.target)));setCamera({...camera,position:add(camera.target,mul(axis,sign*distance)),up:axis[1]?[0,0,-sign]:[0,1,0]});}
  widget.addEventListener('click',align);widget.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();align(e);}});
- globalThis.addEventListener('keydown',keydown);globalThis.addEventListener('keyup',e=>keys.delete(e.code));globalThis.addEventListener('blur',()=>{keys.clear();navigation=null;cancel();});
+ const keyup=e=>keys.delete(e.code),blur=()=>{keys.clear();navigation=null;cancel();};
+ globalThis.addEventListener('keydown',keydown);globalThis.addEventListener('keyup',keyup);globalThis.addEventListener('blur',blur);
  setTool(tool);let animation;function tick(now){render(now);if(!disposed)animation=requestAnimationFrame(tick);}animation=requestAnimationFrame(tick);
- return {select(id){selected=id;cancel();},dispose(){disposed=true;cancelAnimationFrame(animation);globalThis.removeEventListener('keydown',keydown);},get camera(){return structuredClone(camera);}};
+ return {select(id){selected=id;cancel();},dispose(){disposed=true;cancelAnimationFrame(animation);globalThis.removeEventListener('keydown',keydown);globalThis.removeEventListener('keyup',keyup);globalThis.removeEventListener('blur',blur);},get camera(){return structuredClone(camera);}};
 }

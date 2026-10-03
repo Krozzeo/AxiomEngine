@@ -282,6 +282,46 @@
         "workspace.log",
         "workspace.list"
       ]
+    },
+    {
+      "code": "AX_CAUSAL_0000",
+      "meaning": "Evidence scope",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0001",
+      "meaning": "Evidence unavailable",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0002",
+      "meaning": "Evidence evicted or never retained",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0003",
+      "meaning": "Evidence expired",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0004",
+      "meaning": "Evidence project/workspace/revision mismatch",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
     }
   ]
 }

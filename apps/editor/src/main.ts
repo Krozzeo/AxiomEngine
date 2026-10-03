@@ -155,6 +155,7 @@ document.querySelector('#deep-trace').addEventListener('change',event=>renderer?
 document.querySelector('#diagnostic-explain').addEventListener('click',()=>{
  const kind=document.querySelector('#diagnostic-kind').value,entityId=projectEditor.selectedEntity(),otherId=document.querySelector('#diagnostic-other').value,assetId=document.querySelector('#asset-list').value,traceId=document.querySelector('#diagnostic-trace').value.trim();
  const result=renderer?.explain({kind,entityId,otherId,assetId,expectedSceneRevision:pendingSnapshot?.sceneRevision,...(traceId?{traceId}:{})});document.querySelector('#decision-graph').textContent=JSON.stringify(result,null,2);
+ document.querySelector('#causal-summary').textContent=result?`${result.status}: ${result.message}`:'No renderer evidence available';const path=document.querySelector('#causal-path');path.replaceChildren();for(const node of result?.nodes??[]){const item=document.createElement('li');item.textContent=`${node.code} · ${node.message}`;path.append(item);}
 });
 document.querySelector('#diagnostic-kind').addEventListener('change',()=>{const options=document.querySelector('#diagnostic-other');options.replaceChildren();for(const e of pendingSnapshot?.project?.scene.entities??[]){const option=document.createElement('option');option.value=e.id;option.textContent=e.name;options.append(option);}});
 boot();

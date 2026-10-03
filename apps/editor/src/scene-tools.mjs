@@ -3,7 +3,9 @@ const axes=[[1,0,0],[0,1,0],[0,0,1]],colors=['#ff7070','#75e894','#70acff'];
 const ns='http://www.w3.org/2000/svg';
 export function mountSceneTools({document,canvas,getRenderer,editor,reportError}){
  const $=id=>document.querySelector('#'+id),overlay=$('scene-overlay'),widget=$('orientation-widget');
- let selected=null,tool='move',local=false,camera=null,projectId=null,preview=null,drag=null,navigation=null,last=0,keys=new Set(),disposed=false;
+ let selected=null,tool='move',local=false,camera=null,projectId=null,preview=null,drag=null,navigation=null,last=0,drawAt=-Infinity,keys=new Set(),disposed=false;
+ const boundsCache=new WeakMap();
+ function corners(vertices){let bounds=boundsCache.get(vertices);if(!bounds){const lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(let i=0;i<vertices.length;i+=8)for(let j=0;j<3;j++){lo[j]=Math.min(lo[j],vertices[i+j]);hi[j]=Math.max(hi[j],vertices[i+j]);}bounds=[];for(let i=0;i<8;i++)bounds.push([0,1,2].map(j=>i&(1<<j)?hi[j]:lo[j]));boundsCache.set(vertices,bounds);}return bounds;}
  function data(){return getRenderer()?.interaction()??{scene:{entities:[]},draws:[],playing:false,view:'scene'};}
  function editable(){const d=data();return d.view==='scene'&&!d.playing&&!!d.projectId&&!editor.isBusy();}
  function entity(){return data().scene.entities.find(e=>e.id===selected);}
@@ -15,9 +17,10 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  function render(now=0){
   if(disposed)return;
   const d=data();if(d.projectId!==projectId){projectId=d.projectId;camera=structuredClone(d.scene.camera??{position:[0,0,6],target:[0,0,0],projection:'perspective',fov:60,orthoHeight:6});preview=null;drag=null;setCamera(camera);}
-  if(!camera)return;
+  if(!camera||!d.projectId){overlay.hidden=true;widget.hidden=true;$('scene-toolbar').hidden=true;return;}
   if(navigation?.fly&&keys.size){const dt=Math.min((now-last)/1000,.05),b=basis(camera);let motion=[0,0,0];for(const [key,v]of [['KeyW',b.forward],['KeyS',mul(b.forward,-1)],['KeyD',b.right],['KeyA',mul(b.right,-1)],['KeyE',[0,1,0]],['KeyQ',[0,-1,0]]])if(keys.has(key))motion=add(motion,v);const shift=keys.has('ShiftLeft')?3:1,delta=mul(unit(motion),dt*navigation.speed*shift);setCamera({...camera,position:add(camera.position,delta),target:add(camera.target,delta)});}
   last=now;
+  if(now-drawAt<33)return;drawAt=now;
   const visible=d.view==='scene';overlay.hidden=!visible;widget.hidden=!visible;$('scene-toolbar').hidden=!visible;
   $('tool-projection').textContent=camera.projection==='orthographic'?'Ortho':'Persp';
   overlay.replaceChildren();widget.replaceChildren();
@@ -28,7 +31,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
   const active=preview?{...e,transform:preview}:e,position=active.transform.position,center=projectPoint(position,camera,canvas.width,canvas.height);if(!center)return;
   // Projected bounds outline identifies the selected object without changing materials.
   const draws=d.draws.filter(draw=>draw.entityId===selected),points=[];
-  for(const draw of draws){const m=preview?modelMatrix(preview):draw.model;for(let j=0;j<draw.vertices.length;j+=8){const p=projectPoint(transform(m,draw.vertices.slice(j,j+3)).slice(0,3),camera,canvas.width,canvas.height);if(p&&p[2]>=0&&p[2]<=1)points.push(p);}}
+  for(const draw of draws){const m=preview?modelMatrix(preview):draw.model;for(const corner of corners(draw.vertices)){const p=projectPoint(transform(m,corner).slice(0,3),camera,canvas.width,canvas.height);if(p&&p[2]>=0&&p[2]<=1)points.push(p);}}
   if(points.length){const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);svg(overlay,'rect',{x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys),fill:'none',stroke:'#ffce62','stroke-width':2,'data-selection':selected,'pointer-events':'none'});}
   if(!editable())return;
   const distance=length(sub(camera.position,position)),extent=camera.projection==='orthographic'?camera.orthoHeight*.15:distance*.15;

@@ -45,3 +45,13 @@ test('renderer bridge denies absent, wrong lease, stale and timed-out captures',
  const pending=bridge.capture(args),request=bridge.sync(report).capture;workspace.revision++;
  bridge.sync({...report,capture:{requestId:request.requestId,value:{sceneRevision:args.expectedSceneRevision,projectId:args.id}}});await assert.rejects(pending,/stale/);
 });
+test('diagnostic bridge allows Null evidence, binds identities and rejects stale replies',async t=>{
+ const {bridge,workspace,call}=await fixture(t);await call('project.create',{name:'Diagnostics'});const args={id:workspace.project.id,expectedSceneRevision:workspace.revision,kind:'whyNotRendered'};
+ assert.equal(bridge.explain(args).status,'unavailable');
+ const report={clientId:'11111111-1111-4111-8111-111111111111',sceneRevision:workspace.revision,status:{projectId:args.id,sceneRevision:workspace.revision,renderer:'null',frame:1}};bridge.sync(report);
+ const pending=bridge.explain(args),request=bridge.sync(report).diagnostic;
+ const value={status:'explained',projectId:args.id,workspaceId:null,sceneRevision:args.expectedSceneRevision,nodes:[{code:'AX_CAUSAL_0108'}],edges:[]};
+ bridge.sync({...report,diagnostic:{requestId:request.requestId,value}});assert.deepEqual(await pending,value);
+ const stale=bridge.explain(args),old=bridge.sync(report).diagnostic;
+ bridge.sync({...report,status:{...report.status,sceneRevision:workspace.revision+1},diagnostic:{requestId:old.requestId,value}});await assert.rejects(stale,/stale/);
+});

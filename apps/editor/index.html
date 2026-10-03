@@ -68,7 +68,8 @@
           <div id="console-content"><ol id="logs"></ol></div>
           <div id="diagnostics-content" hidden>
             <div class="diagnostic-controls"><select id="diagnostic-kind" aria-label="Diagnostic question"><option>whyNotRendered</option><option>whyNotColliding</option><option>whyAssetNotLoaded</option><option>whyScriptNotRunning</option></select><select id="diagnostic-other" aria-label="Other collision entity"></select><button id="diagnostic-explain">Explain selected</button><label><input id="deep-trace" type="checkbox">Deep trace</label><input id="diagnostic-trace" placeholder="Optional retained frame trace ID" aria-label="Retained frame trace ID"></div>
-            <div class="diagnostic-columns"><div><h2>Decision graph</h2><pre id="decision-graph">Select an entity and ask a question. Deep trace retains 32 sampled frames for 30 seconds.</pre></div><div><h2>Frame diagnostics · contacts / triggers</h2><pre id="frame-trace">Waiting for first frame.</pre></div><div><h2>Command trace</h2><pre id="trace">No trace yet.</pre></div></div>
+            <p id="causal-summary">Select an entity and ask a question.</p><ol id="causal-path"></ol>
+            <div class="diagnostic-columns"><div><h2>Decision graph evidence</h2><pre id="decision-graph">Deep trace retains 32 sampled frames for 30 seconds.</pre></div><div><h2>Frame diagnostics · contacts / triggers</h2><pre id="frame-trace">Waiting for first frame.</pre></div><div><h2>Command trace</h2><pre id="trace">No trace yet.</pre></div></div>
           </div>
         </section>
       </section>

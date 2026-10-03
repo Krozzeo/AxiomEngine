@@ -72,6 +72,8 @@ fieldset p { margin: 0 !important; }
 .diagnostic-controls label {white-space:nowrap;font-size:11px;}
 .diagnostic-columns {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
 .diagnostic-columns pre {max-height:280px;}
+#causal-summary {margin:4px 10px;color:#f6c969;font-size:12px;}
+#causal-path {margin:4px 10px;padding-left:18px;font-size:11px;color:#9fb3ce;}
 [hidden] {display:none !important;}
 
 #play-status { margin-left: auto; color: #9fb3ce; font-size: 11px; align-self: center; }

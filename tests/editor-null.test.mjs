@@ -19,7 +19,7 @@ for (const mode of ["forced", "unavailable"]) {
   test(`editor runs real Wasm Null frames when GPU is ${mode}`, async () => {
     const elements = new Map();
     const callbacks = [];
-    let pagehide;
+    const pagehide=[];
     let replacedUrl;
     function element() {
       return { width: 960, height: 540, textContent: "", append() {}, prepend() {}, addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
@@ -33,7 +33,7 @@ for (const mode of ["forced", "unavailable"]) {
         if (!elements.has(selector)) elements.set(selector, element());
         return elements.get(selector);
       } },
-      addEventListener(name, fn) { if (name === "pagehide") pagehide = fn; },
+      addEventListener(name, fn) { if (name === "pagehide") pagehide.push(fn); },
       requestAnimationFrame(fn) { callbacks.push(fn); return callbacks.length; },
       cancelAnimationFrame() {},
       fetch: async (path) => ({ ok: true,
@@ -54,7 +54,7 @@ for (const mode of ["forced", "unavailable"]) {
     assert.ok(trace.stages.includes("render.null"));
     assert.equal(trace.gpuTimeMs, null);
     assert.ok(Number.isFinite(trace.cpuTimeMs));
-    pagehide();
+    for(const fn of pagehide)fn();
     const queued = callbacks.shift();
     queued(116);
     assert.equal(callbacks.length, 0);

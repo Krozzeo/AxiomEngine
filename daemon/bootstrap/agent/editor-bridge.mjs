@@ -13,7 +13,7 @@ export class EditorBridge {
   if(data.diagnostic&&this.pendingDiagnostic&&this.pendingDiagnostic.clientId===data.clientId&&data.diagnostic.requestId===this.pendingDiagnostic.id){
    const p=this.pendingDiagnostic,v=data.diagnostic.value;clearTimeout(p.timer);this.pendingDiagnostic=null;
    if(s.projectId!==p.args.id||s.sceneRevision!==p.args.expectedSceneRevision||(s.workspaceId??null)!==(p.args.workspaceId??null))p.reject(agentError('AX_SCENE_0002','Diagnostic revision is stale'));
-   else if(!v||!['explained','inconclusive','unavailable'].includes(v.status)||!Array.isArray(v.nodes)||v.nodes.length>24||size(v)>16384||v.status!=='unavailable'&&v.sceneRevision!==p.args.expectedSceneRevision)p.reject(agentError('AX_AGENT_0001','Invalid diagnostic evidence'));
+   else if(!v||!['explained','inconclusive','unavailable'].includes(v.status)||!Array.isArray(v.nodes)||v.nodes.length>24||size(v)>16384||v.status!=='unavailable'&&(v.sceneRevision!==p.args.expectedSceneRevision||v.projectId!==p.args.id||(v.workspaceId??null)!==(p.args.workspaceId??null)))p.reject(agentError('AX_AGENT_0001','Invalid diagnostic evidence'));
    else p.resolve(v);
   }
   for(const error of (Array.isArray(data.errors)?data.errors:[]).slice(0,16))this.onError({code:typeof error.code==='string'?error.code.slice(0,64):'AX_EDITOR_0001',cause:String(error.cause??'Editor failure').slice(0,2048),subsystem:'editor',traceId:error.traceId??null});

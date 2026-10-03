@@ -1,0 +1,17 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema",
+ "$id":"https://axiomengine.dev/schema/decision-graph-v1.json",
+ "title":"Bounded causal decision explanation v1",
+ "type":"object",
+ "required":["status","code","message","nodes","edges"],
+ "properties":{
+  "status":{"enum":["explained","inconclusive","unavailable"]},
+  "code":{"type":"string","pattern":"^AX_CAUSAL_[0-9]{4}$"},
+  "message":{"type":"string"},
+  "projectId":{"type":"string"},"workspaceId":{"type":["string","null"]},
+  "traceId":{"type":["string","null"]},"correlationId":{"type":["string","null"]},"causationId":{"type":["string","null"]},
+  "sceneRevision":{"type":"integer","minimum":0},
+  "nodes":{"type":"array","maxItems":24,"items":{"type":"object","required":["id","code","message","facts"],"properties":{"id":{"type":"string"},"code":{"type":"string"},"message":{"type":"string"},"facts":{"type":"object"}}}},
+  "edges":{"type":"array","maxItems":23,"items":{"type":"object","required":["from","to"],"properties":{"from":{"type":"string"},"to":{"type":"string"}}}}
+ }
+}

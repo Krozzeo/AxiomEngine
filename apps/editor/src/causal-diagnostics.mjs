@@ -6,6 +6,7 @@ export class DecisionEvidence {
  query(args){const evidence=args.traceId?this.frames.get(args.traceId):this.current;
   if(!evidence)return unavailable(args.traceId?'AX_CAUSAL_0002':'AX_CAUSAL_0001','Evidence unavailable or evicted; enable Deep trace before reproducing.');
   if(this.clock()-evidence.at>this.ttlMs)return unavailable('AX_CAUSAL_0003','Evidence expired; reproduce the frame.');
+  if(args.id&&evidence.projectId!==args.id||Object.hasOwn(args,'workspaceId')&&(evidence.workspaceId??null)!==(args.workspaceId??null))return unavailable('AX_CAUSAL_0004','Evidence belongs to another project or workspace.');
   if(args.expectedSceneRevision!==undefined&&evidence.sceneRevision!==args.expectedSceneRevision)return unavailable('AX_CAUSAL_0004','Evidence belongs to another scene revision.');
   return explainDecision(evidence,args);
  }
@@ -51,5 +52,5 @@ export function explainDecision(e,args){
    else{add('AX_CAUSAL_0125','No contact for this pair in the retained physics frame',{steps:e.physics?.steps??0,omittedContacts:e.physics?.omittedContacts??0});status='inconclusive';}
   }
  }
- return {status,code:nodes.at(-1).code,message:nodes.at(-1).message,traceId:e.traceId,correlationId:e.correlationId??null,causationId:e.causationId??null,sceneRevision:e.sceneRevision,nodes,edges:nodes.slice(1).map((n,i)=>({from:nodes[i].id,to:n.id}))};
+ return {status,code:nodes.at(-1).code,message:nodes.at(-1).message,projectId:e.projectId,workspaceId:e.workspaceId??null,traceId:e.traceId,correlationId:e.correlationId??null,causationId:e.causationId??null,sceneRevision:e.sceneRevision,nodes,edges:nodes.slice(1).map((n,i)=>({from:nodes[i].id,to:n.id}))};
 }

@@ -54,7 +54,11 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  function cancel(){drag=null;preview=null;getRenderer()?.previewTransform(null);}
  function down(event){if(data().view!=='scene')return;const p=point(event),e=entity();
   if(event.button===1||event.button===2||event.altKey){event.preventDefault();canvas.focus();navigation={x:event.clientX,y:event.clientY,button:event.button,orbit:event.altKey&&event.button===0&&camera.projection!=='orthographic',fly:event.button===2&&!event.altKey&&camera.projection!=='orthographic',zoom:event.altKey&&event.button===2,speed:Math.max(1,length(sub(camera.position,camera.target))*.5)};canvas.setPointerCapture(event.pointerId);return;}
-  if(event.button!==0)return;const handle=event.target.closest?.('[data-handle]')?.getAttribute('data-handle');
+  if(event.button!==0)return;
+  // SVG may retarget pointerdown to the root while animated geometry is updating.
+  // Resolve the actual painted handle at the same logical canvas coordinates.
+  let handle=event.target.closest?.('[data-handle]')?.getAttribute('data-handle');
+  if(handle===null||handle===undefined){const hitPoint=new DOMPoint(p[0],p[1]);for(const node of [...overlay.querySelectorAll('[data-handle]')].reverse()){if(node.isPointInFill?.(hitPoint)||node.isPointInStroke?.(hitPoint)){handle=node.getAttribute('data-handle');break;}}}
   if(handle!==null&&handle!==undefined&&e&&editable()){
    const origin=structuredClone(e.transform),center=projectPoint(origin.position,camera,canvas.width,canvas.height),axis=handle==='all'?null:axisDirection(e,Number(handle)),distance=length(sub(camera.position,origin.position)),worldPerPixel=camera.projection==='orthographic'?camera.orthoHeight/canvas.height:2*distance*Math.tan(camera.fov*Math.PI/360)/canvas.height;
    const end=axis?projectPoint(add(origin.position,axis),camera,canvas.width,canvas.height):null;

@@ -322,6 +322,214 @@
         "diagnostics.explain",
         "runtime.status"
       ]
+    },
+    {
+      "code": "AX_CAUSAL_0100",
+      "meaning": "Evidence scope",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0101",
+      "meaning": "Asset is not registered in this scene",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0102",
+      "meaning": "Asset loading failed",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0103",
+      "meaning": "Asset is not referenced by a drawable entity; no load was requested",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0104",
+      "meaning": "Asset is loaded",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0105",
+      "meaning": "Entity is absent from this frame",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0106",
+      "meaning": "Entity has no Renderable component",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0107",
+      "meaning": "Renderable kind does not match the loaded asset",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0108",
+      "meaning": "Null renderer submits no pixels",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0109",
+      "meaning": "Transform collapses drawable geometry",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0110",
+      "meaning": "Geometry is entirely outside a camera clip plane",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0111",
+      "meaning": "Geometry was submitted inside the camera frustum",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0112",
+      "meaning": "Pixel visibility is not proven: depth occlusion, partial clipping and texture alpha require pixel evidence",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0113",
+      "meaning": "No compiled script is attached to this scene",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0114",
+      "meaning": "Script is not attached to this entity",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0115",
+      "meaning": "Simulation is stopped; Game preview does not execute scripts",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0116",
+      "meaning": "Script runtime failed",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0117",
+      "meaning": "No active script runtime at this frame",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0118",
+      "meaning": "Script runtime is active",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0119",
+      "meaning": "One or both entities have no Collider",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0120",
+      "meaning": "Colliders belong to different physics dimensions",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0121",
+      "meaning": "Layer/mask filter rejects this pair",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0122",
+      "meaning": "Physics evidence unavailable at this frame",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0125",
+      "meaning": "No contact for this pair in the retained physics frame",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0123",
+      "meaning": "Trigger contact observed; no collision impulse is applied",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_CAUSAL_0124",
+      "meaning": "Collision contact observed",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
     }
   ]
 }

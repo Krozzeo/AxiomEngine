@@ -1,6 +1,6 @@
 # M8 — Causal Diagnostics v1
 
-Status: not started. Master specification section 127. Weight: 6%.
+Status: implementation complete; CI/browser acceptance in progress. Master specification section 127. Weight: 6%.
 
 Read existing causal protocol, M5/M6 agent contracts, M7_PHYSICS.md and resource/
 script runtime decisions before implementing new diagnostic surfaces.
@@ -33,11 +33,13 @@ implicitly start simulation.
   collisions between navigation shortcuts, transform tools and game input.
 - Show a clickable absolute XYZ orientation widget in the bottom-left corner.
   Axis clicks align the editor view; expose perspective/orthographic switching.
-- Make Frame diagnostics easy to locate through a dedicated Diagnostics surface
+- Make Frame diagnostics easy to locate through a Diagnostics tab beside Structured Console
   rather than requiring a long Inspector scroll. Include contact/trigger evidence
   and retain the planned causal explanations.
 
 Acceptance covers stopped Game preview, independent cameras, picking in 2D/3D,
 selection synchronization, gizmo undo/cancel, navigation and axis alignment.
-M7 user verification: 2D movement/jump and 2D/3D physics/colliders work; Frame
-diagnostics was not manually verified because its location was unclear.
+M7 user verification: 2D movement/jump, 2D/3D physics/colliders and the Frame
+diagnostics trigger were manually verified. Selection must work in both directions.
+Standing delivery requirement: include editable demos for new milestone capabilities
+whenever they can demonstrate useful functional behavior.

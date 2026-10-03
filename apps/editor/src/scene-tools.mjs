@@ -31,7 +31,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
   const active=preview?{...e,transform:preview}:e,position=active.transform.position,center=projectPoint(position,camera,canvas.width,canvas.height);if(!center)return;
   // Projected bounds outline identifies the selected object without changing materials.
   const draws=d.draws.filter(draw=>draw.entityId===selected),points=[];
-  for(const draw of draws){const m=preview?modelMatrix(preview):draw.model;for(const corner of corners(draw.vertices)){const p=projectPoint(transform(m,corner).slice(0,3),camera,canvas.width,canvas.height);if(p&&p[2]>=0&&p[2]<=1)points.push(p);}}
+  for(const draw of draws){const m=preview?modelMatrix(preview):(draw.model??modelMatrix(draw.transform));for(const corner of corners(draw.vertices)){const p=projectPoint(transform(m,corner).slice(0,3),camera,canvas.width,canvas.height);if(p&&p[2]>=0&&p[2]<=1)points.push(p);}}
   if(points.length){const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);svg(overlay,'rect',{x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys),fill:'none',stroke:'#ffce62','stroke-width':2,'data-selection':selected,'pointer-events':'none'});}
   if(!editable())return;
   const distance=length(sub(camera.position,position)),extent=camera.projection==='orthographic'?camera.orthoHeight*.15:distance*.15;

@@ -136,14 +136,16 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       localAssets.set(metadata.id,asset);
     }
     const replacement=await loadKernel(bytes);let pending=[],nextRuntime=null;
-    let nextSpawned=0;
+    let nextSpawned=0,nextScriptFault=null;
     try {
       if(snapshot.playing&&scene.script?.attachments.length) {
+       try{
         nextRuntime=new ScriptRuntime();
         await nextRuntime.initialize(`/script-runtime/${project.id.slice(10)}/${scene.script.build.id}/dotnet.js`);
         const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:scene.entities,keys:[],attachments:scene.script.attachments});
         const result=applyScriptOperations(scene,packet,ticket);scene=result.scene;nextSpawned=result.spawned;
         for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start",buildId:scene.script.build.id});
+       }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
       }
       const drawable={...scene,entities:scene.entities.map(e=>e.renderable&&(!localAssets.has(e.renderable.assetId)||localAssets.get(e.renderable.assetId).kind!==e.renderable.kind)?Object.fromEntries(Object.entries(e).filter(([k])=>k!=='renderable')):e)};
       const draws=replacement.compileScene(drawable,localAssets);
@@ -151,7 +153,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       pending=await buildResources(draws,ticket);
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
       kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
-      workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=null;
+      workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=nextScriptFault;
       assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set(draws.map(draw=>draw.texture??"white"));

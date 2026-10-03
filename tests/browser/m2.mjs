@@ -43,6 +43,9 @@ try {
   }
   report.criteria.push("import image and GLB","place sprite","place mesh");
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
+  // Persisted-render comparisons use the authored Game camera. Scene now has
+  // an independent transient editor camera, verified by the M8 acceptance.
+  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   const initial=await page.locator("#viewport").screenshot();assert.ok(colors(initial).red>100&&colors(initial).green>100,"Both imported assets must produce colored pixels");
   await page.locator("#entities button").filter({hasText:"checker.png"}).click();
   await page.locator("#position-0").fill("-1.8");await page.locator("#position-1").fill("0.4");await page.getByRole("button",{name:"Apply changes"}).click();
@@ -60,6 +63,7 @@ try {
   await page.goto(daemon.editorUrl);await page.locator("#project-list").selectOption(saved.id);await page.locator("#project-open").click();
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
   assert.deepEqual((await state()).project,saved);report.criteria.push("reopen");
+  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   const reopenedImage=await page.locator("#viewport").screenshot({path:join(evidence,"reopened.png")});
   assert.deepEqual(pixels(reopenedImage).data,pixels(savedImage).data,"Saved and reopened scene pixels must match exactly");report.criteria.push("see same scene");
   await page.locator("#entities button").filter({hasText:"cube.glb"}).click();

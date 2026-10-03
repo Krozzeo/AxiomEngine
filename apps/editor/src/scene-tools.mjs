@@ -12,7 +12,12 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  function setCamera(c){camera=c;getRenderer()?.setEditorCamera(c);}
  function setTool(value){tool=value;for(const name of ['move','rotate','scale'])$('tool-'+name).classList.toggle('active',name===tool);}
  function point(event){const rect=canvas.getBoundingClientRect();return [(event.clientX-rect.left)*canvas.width/rect.width,(event.clientY-rect.top)*canvas.height/rect.height];}
- function svg(parent,tag,attrs,text){const node=document.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));if(text)node.textContent=text;parent.append(node);return node;}
+ // Keep SVG hit targets stable across animation frames: replacing a hovered handle
+ // makes browsers retarget the next pointerdown to the SVG root.
+ const cursors=new Map();
+ function beginNodes(){cursors.set(overlay,0);cursors.set(widget,0);}
+ function finishNodes(){for(const [parent,count]of cursors)while(parent.children.length>count)parent.lastElementChild.remove();}
+ function svg(parent,tag,attrs,text){const index=cursors.get(parent)??0;cursors.set(parent,index+1);let node=parent.children[index];if(node?.localName!==tag){const replacement=document.createElementNS(ns,tag);if(node)node.replaceWith(replacement);else parent.append(replacement);node=replacement;}for(const attribute of [...node.attributes])if(!Object.hasOwn(attrs,attribute.name))node.removeAttribute(attribute.name);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));if(node.textContent!==(text??''))node.textContent=text??'';return node;}
  function axisDirection(e,i){return local?unit(transform(modelMatrix({...e.transform,scale:[1,1,1]}),axes[i],0).slice(0,3)):axes[i];}
  function render(now=0){
   if(disposed)return;
@@ -23,7 +28,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
   if(now-drawAt<33)return;drawAt=now;
   const visible=d.view==='scene';overlay.hidden=!visible;widget.hidden=!visible;overlay.style.display=visible?'block':'none';widget.style.display=visible?'block':'none';$('scene-toolbar').hidden=!visible;
   $('tool-projection').textContent=camera.projection==='orthographic'?'Ortho':'Persp';
-  overlay.replaceChildren();widget.replaceChildren();
+  beginNodes();try{
   const rect=canvas.getBoundingClientRect(),parent=canvas.parentElement.getBoundingClientRect();Object.assign(overlay.style,{left:(rect.left-parent.left)+'px',top:(rect.top-parent.top)+'px',width:rect.width+'px',height:rect.height+'px'});overlay.setAttribute('viewBox',`0 0 ${canvas.width} ${canvas.height}`);
   const b=basis(camera);for(let i=0;i<3;i++)for(const sign of [-1,1]){const direction=mul(axes[i],sign),x=52+dot(direction,b.right)*35,y=52-dot(direction,b.up)*35;svg(widget,'line',{x1:52,y1:52,x2:x,y2:y,stroke:colors[i],'stroke-width':sign===1?3:1});svg(widget,'circle',{cx:x,cy:y,r:9,fill:'#142131',stroke:colors[i],'data-axis':i,'data-sign':sign,role:'button','aria-label':`${sign>0?'+':'-'}${'XYZ'[i]} view`,tabindex:0});svg(widget,'text',{x,y:y+4,fill:colors[i],'text-anchor':'middle','pointer-events':'none'},(sign<0?'-':'')+'XYZ'[i]);}
   if(!visible||!selected)return;
@@ -43,6 +48,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
    }else{svg(overlay,'line',{x1:center[0],y1:center[1],x2:end[0],y2:end[1],stroke:colors[i],'stroke-width':5,'data-handle':i});svg(overlay,tool==='scale'?'rect':'circle',tool==='scale'?{x:end[0]-6,y:end[1]-6,width:12,height:12,fill:colors[i],'data-handle':i}:{cx:end[0],cy:end[1],r:7,fill:colors[i],'data-handle':i});}
   }
   if(tool==='scale')svg(overlay,'rect',{x:center[0]-6,y:center[1]-6,width:12,height:12,fill:'#ffce62','data-handle':'all'});
+ }finally{finishNodes();}
  }
  function crossForAxis(a,u){const v=u??(Math.abs(a[1])<.9?[0,1,0]:[1,0,0]);return [a[1]*v[2]-a[2]*v[1],a[2]*v[0]-a[0]*v[2],a[0]*v[1]-a[1]*v[0]];}
  function cancel(){drag=null;preview=null;getRenderer()?.previewTransform(null);}

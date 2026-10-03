@@ -533,12 +533,11 @@
     },
     {
       "code": "AX_CAUSAL_0140",
-      "meaning": "Geometry was submitted inside the camera frustum",
+      "meaning": "Production renderer decision reference; per-entity pixel visibility remains unproven",
       "inspect": [
         "diagnostics.explain",
         "runtime.status"
-      ],
-      "message": "Production renderer decision reference"
+      ]
     }
   ]
 }

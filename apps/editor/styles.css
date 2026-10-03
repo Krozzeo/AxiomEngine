@@ -58,6 +58,21 @@ fieldset p { margin: 0 !important; }
 .vector-inputs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .vector-inputs label { color: #9fb3ce; font-size: 11px; }
 .preview-note { position: absolute; top: 12px; left: 12px; right: 12px; color: #9fb3ce; font-size: 12px; }
+#scene-overlay {position:absolute;pointer-events:none;touch-action:none;}
+#scene-overlay [data-handle] {pointer-events:stroke;cursor:grab;}
+#scene-overlay circle, #scene-overlay rect[data-handle] {pointer-events:all;}
+#scene-toolbar {position:absolute;top:36px;left:12px;display:flex;gap:4px;align-items:center;}
+#scene-toolbar button {padding:4px 7px;font-size:11px;}
+#scene-toolbar span {font-size:10px;color:#9fb3ce;max-width:250px;}
+#scene-toolbar button.active {border-color:#5eb5f7;background:#224b70;}
+#orientation-widget {position:absolute;left:12px;bottom:38px;width:104px;height:104px;background:#09101a99;border-radius:8px;font-size:11px;}
+#orientation-widget [data-axis] {cursor:pointer;}
+.diagnostic-controls {display:flex;gap:6px;padding:6px;align-items:center;flex-wrap:wrap;}
+.diagnostic-controls select,.diagnostic-controls input {width:auto;max-width:220px;}
+.diagnostic-controls label {white-space:nowrap;font-size:11px;}
+.diagnostic-columns {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+.diagnostic-columns pre {max-height:280px;}
+[hidden] {display:none !important;}
 
 #play-status { margin-left: auto; color: #9fb3ce; font-size: 11px; align-self: center; }
 #play-start { color: #71d5a5; }

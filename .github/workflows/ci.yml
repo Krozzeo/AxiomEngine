@@ -126,6 +126,7 @@ jobs:
       - run: xvfb-run -a -s "-screen 0 1440x1000x24" node tests/browser/m6.mjs
       - run: node scripts/benchmarks/physics.mjs
       - run: xvfb-run -a -s "-screen 0 1600x1000x24" node tests/browser/m7.mjs
+      - run: xvfb-run -a -s "-screen 0 1700x1100x24" node tests/browser/m8.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -136,5 +137,7 @@ jobs:
             .axiom/browser-m4-evidence
             .axiom/browser-m5-evidence
             .axiom/browser-m6-evidence
+            .axiom/browser-m8-evidence
+            dist/editor/axiom-kernel.wasm
             .axiom/browser-m7-evidence
             .axiom/physics-benchmark.json

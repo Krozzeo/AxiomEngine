@@ -1,4 +1,4 @@
-export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, defaultScript = "" }) {
+export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, onSelection=()=>{},onView=()=>{}, defaultScript = "" }) {
   const $ = id => document.querySelector(`#${id}`);
   const supported = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"];
   let enabled = false, pipelineEnabled=false, currentJob=null;
@@ -6,6 +6,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let busy = false;
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
   let selected = null;
+  let view='scene';
   function draw(updateFields = true) {
     const project = state.project;
     const entity = project?.scene.entities.find(item => item.id === selected);
@@ -41,12 +42,12 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("camera-projection").disabled=!editing||!project;
     $("play-start").disabled=!editing||!project;
     $("play-stop").disabled=busy||!state.playing;
-    $("scene-tab").disabled=busy||!state.playing;
-    $("game-tab").disabled=!editing||!project;
-    $("scene-tab").className=state.playing?"":"active";
-    $("game-tab").className=state.playing?"active":"";
-    $("play-status").textContent=state.playing?"Play · runtime copy":"Scene · authoring";
-    $("preview-note").textContent=project ? `${project.name} · ${state.playing?"Game":"Scene"}` : "Create or open a project to begin";
+    $("scene-tab").disabled=busy||!project;
+    $("game-tab").disabled=busy||!project;
+    $("scene-tab").className=view==='scene'?"active":"";
+    $("game-tab").className=view==='game'?"active":"";
+    $("play-status").textContent=state.playing?"Play · runtime copy":"Stopped · authoring";
+    $("preview-note").textContent=project ? `${project.name} · ${view==='game'?'Game camera':'Scene camera'}` : "Create or open a project to begin";
     $("entities").replaceChildren();
     for (const item of project?.scene.entities ?? []) {
       const button = document.createElement("button");
@@ -82,6 +83,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     }
     if(state.workspaceId){for(const id of ["project-new","project-open","project-close","scene-save"])$(id).disabled=true;$("preview-note").textContent="Isolated AI proposal · "+(state.playing?"running":"editing");}
     onDirty(state.dirty&&!state.workspaceId);
+    onSelection(selected);onView(view);
   }
   function adopt(data) {
     if (!("project" in data)) return;
@@ -105,7 +107,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   async function run(type, data = {}) {
     const event = await send(type, data);
     adopt(event.payload.data);
-    if("project" in event.payload.data) await onState(event.payload.data);
+    if("project" in event.payload.data) await onState({...event.payload.data,commandLineage:{messageId:event.causationId,correlationId:event.correlationId,traceId:event.traceId}});
     return event.payload.data;
   }
   async function list() {
@@ -182,8 +184,9 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("asset-place").addEventListener("click",()=>act(()=>run("scene.asset.place",mutation({assetId:$("asset-list").value}))));
   $("camera-projection").addEventListener("change",()=>{const projection=$("camera-projection").value;return act(()=>run("scene.camera.update",mutation({camera:{projection}})));});
   $("project-close").addEventListener("click",()=>act(async()=>{if(state.dirty&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
-  for(const id of ["play-start","game-tab"])$(id).addEventListener("click",()=>act(()=>run("play.start",mutation())));
-  for(const id of ["play-stop","scene-tab"])$(id).addEventListener("click",()=>act(()=>run("play.stop",mutation())));
+  $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());view='game';}));
+  $("play-stop").addEventListener("click",()=>act(()=>run("play.stop",mutation())));
+  for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;draw(false);});
   $("project-list").addEventListener("change", draw);
   $("project-refresh").addEventListener("click", () => act(list));
   $("workspace-refresh").addEventListener("click", () => act(() => run("scene.get")));
@@ -210,6 +213,10 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   });
   draw();
   return {
+    isBusy:()=>busy,
+    selectedEntity:()=>selected,
+    selectEntity(id){if(busy)return;selected=state.project?.scene.entities.some(e=>e.id===id)?id:null;draw();},
+    transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform})));},
     async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
     async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},

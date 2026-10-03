@@ -58,7 +58,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
   // SVG may retarget pointerdown to the root while animated geometry is updating.
   // Resolve the actual painted handle at the same logical canvas coordinates.
   let handle=event.target.closest?.('[data-handle]')?.getAttribute('data-handle');
-  if(handle===null||handle===undefined){const hitPoint=new DOMPoint(p[0],p[1]);for(const node of [...overlay.querySelectorAll('[data-handle]')].reverse()){if(node.isPointInFill?.(hitPoint)||node.isPointInStroke?.(hitPoint)){handle=node.getAttribute('data-handle');break;}}}
+  if(handle===null||handle===undefined){const hitPoint=new DOMPoint(p[0],p[1]);for(const node of [...overlay.querySelectorAll('[data-handle]')].reverse()){if((node.getAttribute('fill')!=='none'&&node.isPointInFill?.(hitPoint))||node.isPointInStroke?.(hitPoint)){handle=node.getAttribute('data-handle');break;}}}
   if(handle!==null&&handle!==undefined&&e&&editable()){
    const origin=structuredClone(e.transform),center=projectPoint(origin.position,camera,canvas.width,canvas.height),axis=handle==='all'?null:axisDirection(e,Number(handle)),distance=length(sub(camera.position,origin.position)),worldPerPixel=camera.projection==='orthographic'?camera.orthoHeight/canvas.height:2*distance*Math.tan(camera.fov*Math.PI/360)/canvas.height;
    const end=axis?projectPoint(add(origin.position,axis),camera,canvas.width,canvas.height):null;

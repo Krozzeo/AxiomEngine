@@ -24,6 +24,12 @@ Select projects ending in `(M7.1)`; an empty project left by the older generator
 is preserved and does not become populated by Refresh List. Refresh only lists
 projects already saved on disk.
 
+On Windows the compiler resolves `dotnet.exe` from PATH, `DOTNET_ROOT`, or the
+standard Program Files/user installation directories. PATH keys with different
+casing are combined before spawning. If the process cannot start, its error now
+includes the executable and working directory; it does not imply that the SDK
+or wasm-tools workload is absent.
+
 In Saved projects select a demo and click Open, then Play. Click the viewport
 before using the keyboard. Stop restores the authored positions.
 

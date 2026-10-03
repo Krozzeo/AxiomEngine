@@ -1,6 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {runCompiler,compileDiagnostics} from '../daemon/bootstrap/scripting/process.mjs';
+import {runCompiler,compileDiagnostics,compilerEnvironment,resolveCompiler} from '../daemon/bootstrap/scripting/process.mjs';
+
+test('Windows compiler resolves dotnet.exe across PATH casing and standard installation roots',()=>{
+ const env={PATH:'C:\\node',Path:'C:\\SDK tools',ProgramFiles:'C:\\Program Files'};
+ const normalized=compilerEnvironment(env,'win32');assert.equal(normalized.PATH,undefined);assert.equal(normalized.Path,'C:\\node;C:\\SDK tools');
+ assert.equal(resolveCompiler('dotnet',normalized,'win32',p=>p==='C:\\SDK tools\\dotnet.exe'),'C:\\SDK tools\\dotnet.exe');
+ assert.equal(resolveCompiler('dotnet',normalized,'win32',p=>p==='C:\\Program Files\\dotnet\\dotnet.exe'),'C:\\Program Files\\dotnet\\dotnet.exe');
+ assert.equal(resolveCompiler('dotnet',{DOTNET_ROOT:'D:\\custom sdk'},'win32',p=>p==='D:\\custom sdk\\dotnet.exe'),'D:\\custom sdk\\dotnet.exe');
+ assert.equal(resolveCompiler('dotnet',{},'linux',()=>{throw Error('must not inspect Windows paths');}),'dotnet');
+});
+
+test('spawn failures expose the executable and working directory instead of claiming workloads are missing',async()=>{
+ await assert.rejects(runCompiler([],{executable:'axiom-missing-compiler-12345',cwd:process.cwd()}),e=>e.code==='AX_SCRIPT_0001'&&/ENOENT/.test(e.message)&&e.message.includes('axiom-missing-compiler-12345')&&e.message.includes(process.cwd())&&!e.message.includes('Install .NET'));
+ await assert.rejects(runCompiler([],{executable:process.execPath,cwd:'/axiom-missing-directory-12345'}),/working directory.*axiom-missing-directory/);
+});
 
 test('compiler process preserves argument boundaries without invoking a shell',async()=>{
  const literal='space ; & | $value';

@@ -4,10 +4,12 @@ Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.
 
-Milestones 0 and 1 are complete: the verified Rust/Wasm kernel drives a shared
-demo through WebGPU and Null rendering, with bounded frame diagnostics. M2,
-Axiom Beta Foundation, now has PNG/GLB import, project-scene rendering, editing,
-undo/redo, save/reopen and isolated Play. All eleven M2 acceptance criteria pass in Chromium CI. M3 also completes the incremental asset pipeline; M4 adds C# gameplay, compilation and reload; M5 adds structured AI/MCP control and real captures; M6 adds isolated AI proposals with human review and acceptance; M7 adds CPU/Wasm physics and editable demos; weighted roadmap progress is approximately 48%. See docs/architecture/M2_PLAN.md. This is still a technical preview.
+M0–M8 acceptance is complete. Rust/Wasm, WebGPU/Null rendering, project editing
+and persistence, asset hot reload, C# gameplay, MCP control, reviewed AI proposals
+and CPU/Wasm physics are implemented. M8 adds independent Scene/Game views,
+visual selection and transform tools, camera navigation and bounded causal
+diagnostics. Weighted roadmap progress is approximately 54%.
+See [M8 acceptance and limits](docs/reports/M8_CURRENT_REPORT.md).
 
 ## Run the verified bootstrap
 
@@ -134,7 +136,7 @@ gravity, impulses/friction, triggers, collision layers, raycasts and fixed steps
 The Physics Inspector and generated C# velocity bindings work in isolated Play.
 See [contracts and limits](docs/architecture/M7_PHYSICS.md).
 
-Create two editable demos (requires .NET 10 SDK with wasm-tools):
+Create four editable demos. .NET 10 SDK with wasm-tools is needed for the 2D C# keyboard controller:
 
 ```powershell
 npm.cmd ci
@@ -145,5 +147,23 @@ npm.cmd run dev
 Select **Demo · 2D Physics Playground** or **Demo · 3D Falling Blocks** in Saved
 projects, then Open and Play. Click the viewport for keyboard input. The 2D
 player moves with arrows/A-D and jumps with Space. Stop restores authored state.
-Each demo command creates new project IDs and preserves existing projects.
+The two physics demos run with Play. M8 Scene Workshop demonstrates selection,
+move/rotate/scale, Undo/cancel, Scene navigation and stopped Game preview. M8
+Diagnostic Lab supplies named cases for all four causal questions. Diagnostics
+is a tab beside Structured Console. Each invocation creates fresh project IDs and
+preserves existing projects; `npm.cmd run demo:m7` creates only the physics pair.
 See [demo instructions](demos/README.md) for requirements and sample limitations.
+
+## M8 Scene tools and Diagnostics
+
+Scene and Game are views independent of Play/Stop. In Scene, select geometry or a
+Hierarchy entity, then use W/E/R and the XYZ gizmos. One drag is one Undo action;
+Escape cancels. F frames selection; Alt + left drag orbits, middle drag pans,
+wheel zooms, and right mouse + WASD/QE flies in 3D. The bottom-left XYZ widget
+aligns the editor camera; Ortho/Persp changes its projection.
+
+Diagnostics exposes decision paths, graphs, frame contacts/triggers and command
+traces. The read-only `diagnostics.explain` API/MCP tool supports whyNotRendered,
+whyNotColliding, whyAssetNotLoaded and whyScriptNotRunning. Deep trace is opt-in,
+bounded to 32 sampled frames and 30 seconds. See
+[contracts and limitations](docs/architecture/M8_DIAGNOSTICS_AND_EDITOR.md).

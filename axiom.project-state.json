@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-02",
-  "engineVersion": "0.0.17",
-  "activeMilestone": 7,
+  "updatedAt": "2026-10-03",
+  "engineVersion": "0.0.18",
+  "activeMilestone": 8,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 48,
+    "wholeProjectPercent": 54,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -44,6 +44,10 @@
       "percent": 100
     },
     "8": {
+      "status": "complete",
+      "percent": 100
+    },
+    "9": {
       "status": "not_started",
       "percent": 0
     }
@@ -56,7 +60,7 @@
     "renderGraph": "verified_native",
     "frameProfiler": "verified_windows_webgpu_and_null",
     "projectPersistence": "verified_bootstrap_http_restart",
-    "sceneEditor": "verified_controller_and_http",
+    "sceneEditor": "verified_visual_selection_gizmos_independent_scene_camera_and_game_preview",
     "assetImport": "verified_png_static_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
@@ -65,14 +69,15 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_translation_2d_3d",
-    "editableDemos": "verified_2d_csharp_playground_and_3d_blocks"
+    "editableDemos": "verified_m7_physics_and_m8_workshop_diagnostic_lab",
+    "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace"
   },
   "verified": {
     "nodeTests": {
-      "passed": 71,
+      "passed": 94,
       "failed": 0
     },
-    "schemaDocuments": 15,
+    "schemaDocuments": 16,
     "architectureRules": 3,
     "daemonStartup": true,
     "httpStaticDelivery": true,
@@ -186,21 +191,27 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.17",
-      "commit": "8edd6aa849da7c557a98984637edc2bcb62c18d9",
-      "runId": 37076201439,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37076201439",
+      "version": "0.0.18",
+      "commit": "47a431d8e971fb9a18140749564e56ae9b4f9c4a",
+      "runId": 37133003810,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37133003810",
       "jobs": [
-        "bootstrap (ubuntu-latest)",
-        "bootstrap (windows-latest)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "csharp-wasm-spike (windows-latest, development)",
+        "browser-milestones (m6)",
+        "browser-milestones (m4)",
         "rust",
         "csharp-wasm-spike (ubuntu-latest, development)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
-        "browser-milestones",
-        "script-boundaries (ubuntu-latest)",
+        "browser-milestones (m5)",
         "script-boundaries (windows-latest)",
+        "bootstrap (ubuntu-latest)",
+        "script-boundaries (ubuntu-latest)",
+        "bootstrap (windows-latest)",
+        "browser-milestones (m2)",
         "script-boundaries (macos-latest)",
-        "csharp-wasm-spike (windows-latest, development)"
+        "browser-milestones (m8)",
+        "browser-milestones (m7)",
+        "browser-milestones (m3)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -319,6 +330,17 @@
       "benchmark": "docs/reports/m7-physics-benchmark.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m8Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "injectedFaults": 10,
+      "runId": 37133003810,
+      "evidence": "docs/reports/m8-browser-evidence.json",
+      "benchmark": "docs/reports/m8-causal-benchmark.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -365,7 +387,11 @@
     "docs/adr/0020-translation-physics-foundation.md",
     "docs/reports/M7_CURRENT_REPORT.md",
     "docs/architecture/M8_PLAN.md",
-    "demos/README.md"
+    "demos/README.md",
+    "docs/reports/M8_CURRENT_REPORT.md",
+    "docs/architecture/M8_DIAGNOSTICS_AND_EDITOR.md",
+    "docs/adr/0021-editor-camera-and-causal-evidence.md",
+    "docs/architecture/M9_PLAN.md"
   ],
-  "nextTask": "Begin M8 Causal Diagnostics v1 per docs/architecture/M8_PLAN.md, proving ten injected causes. Maintain editable demos and stacked unmerged PRs."
+  "nextTask": "Begin M9 Renderer Production Foundation per M9_PLAN.md. Preserve M8 camera/diagnostic contracts, M6 proposals and unmerged stacked PRs. Include meaningful editable demos and automated acceptance in each applicable milestone."
 }

@@ -1,0 +1,18 @@
+{
+  "criteria": [
+    "stopped Game preview and independent Scene navigation preserve game camera",
+    "bidirectional selection, triangle picking and one-drag Undo",
+    "rotation/scale gizmos and Escape discard transient preview",
+    "axis alignment and projection switch",
+    "orthographic 2D sprite picking and Hierarchy synchronization",
+    "visible Diagnostics tab with causal graph and real bridge/API evidence",
+    "all four causal questions exercised against real demo evidence",
+    "opt-in retained frame trace lookup"
+  ],
+  "pageErrors": [],
+  "passed": true,
+  "codeCommit": "47a431d8e971fb9a18140749564e56ae9b4f9c4a",
+  "runId": 37133003810,
+  "environment": "Chromium under Xvfb, Linux CI, software Vulkan/SwiftShader",
+  "visualReview": "Automated picking/pixel/state checks; screenshots retained as CI artifacts"
+}

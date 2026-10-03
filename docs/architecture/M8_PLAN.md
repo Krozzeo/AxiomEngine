@@ -1,6 +1,6 @@
 # M8 — Causal Diagnostics v1
 
-Status: implementation complete; CI/browser acceptance in progress. Master specification section 127. Weight: 6%.
+Status: complete, 8/8 acceptance points. See ../reports/M8_CURRENT_REPORT.md. Master specification section 127. Weight: 6%.
 
 Read existing causal protocol, M5/M6 agent contracts, M7_PHYSICS.md and resource/
 script runtime decisions before implementing new diagnostic surfaces.

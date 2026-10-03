@@ -18,7 +18,7 @@ public sealed class GameScript : Script {
   jumpHeld=jump;
  }
 }`;
-export async function createDemos(root,{compile=true}={}){
+export async function createDemos(root,{compile=true,requireScript=false,onProgress=()=>{}}={}){
  const w=new SceneWorkspace(new ProjectStore(root)),projects=[];
  const args=()=>({id:w.project.id,expectedSceneRevision:w.revision});
  async function asset(name,bytes){await w.run('asset.import',{...args(),name,base64:bytes.toString('base64')});return w.project.scene.assets.at(-1);}
@@ -30,19 +30,30 @@ export async function createDemos(root,{compile=true}={}){
   if(dynamic)await w.run('scene.rigidBody.set',{...args(),entityId:id,value:{mass:1,velocity:[0,0,0],restitution,friction:0.6,gravityScale:1}});
   return id;
  }
- await w.run('project.create',{name:'Demo · 2D Physics Playground'});
+ await w.run('project.create',{name:'Demo · 2D Physics Playground (M7.1)'});
  const floor=await asset('slate-platform.png',sprite([60,95,130])),player=await asset('mint-player.png',sprite([70,225,170])),crate=await asset('amber-crate.png',sprite([245,165,50])),sensor=await asset('violet-trigger.png',sprite([175,90,235],true));
  await body('Ground',floor,[0,-2,0],[7,.3,.5]);await body('Step 1',floor,[0,-1.05,0],[1,.3,.5]);await body('Step 2',floor,[3,0,0],[1,.3,.5]);await body('Trigger zone · inspect physics contacts',sensor,[5,-.5,-.05],[.6,1.2,.5],false,{trigger:true});
  const playerId=await body('Player · arrows / A-D / Space',player,[-4,-.8,0],[.4,.5,.5],true);
  await body('Crate A · push me',crate,[-1,1.2,0],[.4,.4,.5],true);await body('Crate B',crate,[2.8,2.5,0],[.4,.4,.5],true,{restitution:.15});
  await w.run('scene.camera.update',{...args(),camera:{projection:'orthographic',position:[0,1,12],target:[0,1,0],orthoHeight:8,fov:60}});
- if(compile){const result=await w.run('script.compile',{...args(),source:PLAYER_SOURCE,attachments:[playerId]});let job=result.job;const end=Date.now()+180000;while(['queued','running'].includes(job.status)&&Date.now()<end){await new Promise(r=>setTimeout(r,200));job=(await w.run('script.job.get',{id:w.project.id,jobId:job.id})).job;}if(job.status!=='completed')throw Error('Demo C# compilation failed: '+JSON.stringify(job));}
- await w.run('scene.save',args());projects.push({id:w.project.id,name:w.project.name,playerId});await w.run('project.close',args());
- await w.run('project.create',{name:'Demo · 3D Falling Blocks'});
+ await w.run('scene.save',args());projects.push({id:w.project.id,name:w.project.name,playerId,scriptStatus:compile?'pending':'skipped'});onProgress('Saved 2D demo: 7 entities.');await w.run('project.close',args());
+ await w.run('project.create',{name:'Demo · 3D Falling Blocks (M7.1)'});
  const stone=await asset('foundation.glb',cube([.15,.27,.4])),gold=await asset('gold-block.glb',cube([.95,.55,.12])),mint=await asset('mint-block.glb',cube([.15,.8,.6]));
  await body('Foundation',stone,[0,-1,0],[4,.3,3],false,{dimension:3});
  for(let i=0;i<6;i++)await body('Falling block '+(i+1),i%2?gold:mint,[(i%3-1)*1.5,1+Math.floor(i/3)*1.3,(i%2)*.35],[.45,.45,.45],true,{dimension:3,restitution:.1});
  await w.run('scene.camera.update',{...args(),camera:{projection:'perspective',position:[9,7,11],target:[0,1,0],orthoHeight:8,fov:50}});
- await w.run('scene.save',args());projects.push({id:w.project.id,name:w.project.name});return projects;
+ await w.run('scene.save',args());projects.push({id:w.project.id,name:w.project.name});onProgress('Saved 3D demo: 7 entities.');
+ await w.run('project.close',args());
+ if(compile){
+  const target=projects[0];await w.run('project.open',{id:target.id});onProgress('Compiling the 2D C# controller...');
+  try{
+   const result=await w.run('script.compile',{...args(),source:PLAYER_SOURCE,attachments:[playerId]});let job=result.job;const end=Date.now()+180000;
+   while(['queued','running'].includes(job.status)&&Date.now()<end){await new Promise(r=>setTimeout(r,200));job=(await w.run('script.job.get',{id:w.project.id,jobId:job.id})).job;}
+   if(['queued','running'].includes(job.status)){await w.run('script.job.cancel',{id:w.project.id,jobId:job.id});throw Error('Demo C# compilation timed out; both scenes are already saved.');}
+   if(job.status!=='completed')throw Error(job.error?.message??'Demo C# compilation failed');
+   await w.run('scene.save',args());target.scriptStatus='completed';onProgress('Saved 2D C# controller.');
+  }catch(error){target.scriptStatus='failed';target.scriptError=error.message;onProgress('C# unavailable: '+error.message+' Both scenes remain saved. The 2D controller is not attached.');if(requireScript)throw error;}
+ }
+ return projects;
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){const root=resolve('.axiom/projects');console.log('Creating two new demo projects; existing projects are preserved.');console.log(JSON.stringify(await createDemos(root),null,2));console.log('Run npm run dev, then select a demo in Saved projects and Open.');}
+if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){const root=resolve('.axiom/projects');console.log('Creating two new demo projects; existing projects are preserved.');console.log(JSON.stringify(await createDemos(root,{onProgress:message=>console.log(message)}),null,2));console.log('Run npm run dev, then select a demo in Saved projects and Open.');}

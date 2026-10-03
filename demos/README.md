@@ -16,6 +16,14 @@ Requirements: the normal Node/Rust toolchain plus .NET 10 SDK and wasm-tools
 Each invocation creates two new projects with fresh IDs, preserving existing
 projects. Keep the entire `.axiom/projects` directory when moving projects.
 
+The M7.1 generator saves both complete scenes before compiling C#. If compilation
+fails, it prints the cause and keeps both projects available: physics still runs,
+but the 2D keyboard controller is not attached. After resolving the reported
+compiler error, rerun `npm.cmd run demo` to create a fresh pair with the controller.
+Select projects ending in `(M7.1)`; an empty project left by the older generator
+is preserved and does not become populated by Refresh List. Refresh only lists
+projects already saved on disk.
+
 In Saved projects select a demo and click Open, then Play. Click the viewport
 before using the keyboard. Stop restores the authored positions.
 

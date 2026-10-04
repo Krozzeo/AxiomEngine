@@ -574,11 +574,12 @@ impl World {
                 }
                 if near <= far { Some(near) } else { None }
             };
-            if let Some(t) = distance {
-                if t <= best && (hit.is_none() || t < best) {
+            match distance {
+                Some(t) if t <= best && (hit.is_none() || t < best) => {
                     best = t;
                     hit = Some((index, t));
                 }
+                _ => {}
             }
         }
         hit

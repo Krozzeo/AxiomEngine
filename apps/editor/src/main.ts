@@ -159,5 +159,5 @@ document.querySelector('#diagnostic-explain').addEventListener('click',()=>{
 });
 document.querySelector('#diagnostic-kind').addEventListener('change',()=>{const options=document.querySelector('#diagnostic-other');options.replaceChildren();for(const e of pendingSnapshot?.project?.scene.entities??[]){const option=document.createElement('option');option.value=e.id;option.textContent=e.name;options.append(option);}});
 // Native details menus close when focus moves back into the workspace.
-document.addEventListener('pointerdown',event=>{if(event.target.closest?.('.menubar'))return;for(const menu of document.querySelectorAll('.menubar > details'))menu.open=false;});
+document.addEventListener('pointerdown',event=>{for(const menu of document.querySelectorAll('.menubar > details'))if(!menu.contains(event.target))menu.open=false;});
 boot();

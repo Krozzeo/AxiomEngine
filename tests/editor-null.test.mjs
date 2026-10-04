@@ -25,7 +25,7 @@ for (const mode of ["forced", "unavailable"]) {
     const pagehide=[];
     let replacedUrl;
     function element() {
-      return { width: 960, height: 540, textContent: "", append() {}, prepend() {}, addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
+      return { width: 960, height: 540, textContent: "", append() {}, prepend() {}, setAttribute() {},addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
     }
     const context = vm.createContext({
       worldScene,renderPlan,createProductionGPU,FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor,DecisionEvidence,cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry,mountSceneTools:()=>({select(){},dispose(){}}), URLSearchParams, crypto: webcrypto, performance, structuredClone,

@@ -767,7 +767,13 @@
               "Material",
               "Light",
               "LOD",
-              "Script"
+              "Script",
+              "Sprite2D",
+              "SpriteAnimation",
+              "Tilemap",
+              "Light2D",
+              "Particles2D",
+              "UI2D"
             ]
           },
           "workspaceId": {
@@ -1030,7 +1036,13 @@
               "RigidBody",
               "Material",
               "Light",
-              "LOD"
+              "LOD",
+              "Sprite2D",
+              "SpriteAnimation",
+              "Tilemap",
+              "Light2D",
+              "Particles2D",
+              "UI2D"
             ]
           },
           "workspaceId": {
@@ -2059,6 +2071,267 @@
                 "maximum": 650
               }
             }
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.sprite2D.set",
+      "description": "Set bounded sprite2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/sprite2D"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.spriteAnimation.set",
+      "description": "Set bounded spriteAnimation through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/spriteAnimation"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.tilemap.set",
+      "description": "Set bounded tilemap through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/tilemap"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.light2D.set",
+      "description": "Set bounded light2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/light2D"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.particles2D.set",
+      "description": "Set bounded particles2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/particles2D"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.ui2D.set",
+      "description": "Set bounded ui2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/ui2D"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.twoD.update",
+      "description": "Enable/update 2D scene settings and orthographic Game camera.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/twoD"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [

@@ -488,6 +488,323 @@
                     "parentId": {
                       "type": "string",
                       "pattern": "^entity://[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                    },
+                    "sprite2D": {
+                      "type": "object",
+                      "required": [
+                        "columns",
+                        "rows",
+                        "frame",
+                        "size",
+                        "tint",
+                        "order",
+                        "lit",
+                        "flipX",
+                        "flipY"
+                      ],
+                      "properties": {
+                        "columns": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 64
+                        },
+                        "rows": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 64
+                        },
+                        "frame": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4095
+                        },
+                        "size": {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0.001,
+                            "maximum": 10000
+                          }
+                        },
+                        "tint": {
+                          "type": "array",
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "order": {
+                          "type": "integer",
+                          "minimum": -32768,
+                          "maximum": 32767
+                        },
+                        "lit": {
+                          "type": "boolean"
+                        },
+                        "flipX": {
+                          "type": "boolean"
+                        },
+                        "flipY": {
+                          "type": "boolean"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "spriteAnimation": {
+                      "type": "object",
+                      "required": [
+                        "frames",
+                        "fps",
+                        "loop",
+                        "autoplay"
+                      ],
+                      "properties": {
+                        "frames": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 256,
+                          "items": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4095
+                          }
+                        },
+                        "fps": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 120
+                        },
+                        "loop": {
+                          "type": "boolean"
+                        },
+                        "autoplay": {
+                          "type": "boolean"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "tilemap": {
+                      "type": "object",
+                      "required": [
+                        "assetId",
+                        "columns",
+                        "rows",
+                        "width",
+                        "height",
+                        "tileSize",
+                        "cells",
+                        "order",
+                        "lit"
+                      ],
+                      "properties": {
+                        "assetId": {
+                          "type": "string",
+                          "pattern": "^asset://[0-9a-f]{64}$"
+                        },
+                        "columns": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 64
+                        },
+                        "rows": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 64
+                        },
+                        "width": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 64
+                        },
+                        "height": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 64
+                        },
+                        "tileSize": {
+                          "type": "number",
+                          "minimum": 0.001,
+                          "maximum": 1000
+                        },
+                        "cells": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 4096,
+                          "items": {
+                            "type": "integer",
+                            "minimum": -1,
+                            "maximum": 4095
+                          }
+                        },
+                        "order": {
+                          "type": "integer",
+                          "minimum": -32768,
+                          "maximum": 32767
+                        },
+                        "lit": {
+                          "type": "boolean"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "light2D": {
+                      "type": "object",
+                      "required": [
+                        "color",
+                        "intensity",
+                        "radius"
+                      ],
+                      "properties": {
+                        "color": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "intensity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0.001,
+                          "maximum": 10000
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "particles2D": {
+                      "type": "object",
+                      "required": [
+                        "capacity",
+                        "rate",
+                        "lifetime",
+                        "speed",
+                        "spread",
+                        "gravity",
+                        "size",
+                        "color",
+                        "seed",
+                        "order"
+                      ],
+                      "properties": {
+                        "capacity": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 512
+                        },
+                        "rate": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 256
+                        },
+                        "lifetime": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 30
+                        },
+                        "speed": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "spread": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 360
+                        },
+                        "gravity": {
+                          "type": "number",
+                          "minimum": -100,
+                          "maximum": 100
+                        },
+                        "size": {
+                          "type": "number",
+                          "minimum": 0.001,
+                          "maximum": 100
+                        },
+                        "color": {
+                          "type": "array",
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "seed": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4294967295
+                        },
+                        "order": {
+                          "type": "integer",
+                          "minimum": -32768,
+                          "maximum": 32767
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "ui2D": {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "rect",
+                        "color",
+                        "order",
+                        "action"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "enum": [
+                            "panel",
+                            "button"
+                          ]
+                        },
+                        "rect": {
+                          "type": "array",
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "color": {
+                          "type": "array",
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "order": {
+                          "type": "integer",
+                          "minimum": -32768,
+                          "maximum": 32767
+                        },
+                        "action": {
+                          "enum": [
+                            "none",
+                            "togglePause"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
                     }
                   },
                   "additionalProperties": false
@@ -707,6 +1024,52 @@
                   "bloom",
                   "fxaa"
                 ],
+                "additionalProperties": false
+              },
+              "twoD": {
+                "type": "object",
+                "required": [
+                  "ambient",
+                  "background",
+                  "pixelPerfect",
+                  "pixelsPerUnit",
+                  "referenceHeight"
+                ],
+                "properties": {
+                  "ambient": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "background": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "pixelPerfect": {
+                    "type": "boolean"
+                  },
+                  "pixelsPerUnit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 512
+                  },
+                  "referenceHeight": {
+                    "type": "integer",
+                    "minimum": 64,
+                    "maximum": 1080
+                  }
+                },
                 "additionalProperties": false
               }
             },
@@ -1446,7 +1809,13 @@
               "Material",
               "Light",
               "LOD",
-              "Script"
+              "Script",
+              "Sprite2D",
+              "SpriteAnimation",
+              "Tilemap",
+              "Light2D",
+              "Particles2D",
+              "UI2D"
             ]
           },
           "workspaceId": {
@@ -1709,7 +2078,13 @@
               "RigidBody",
               "Material",
               "Light",
-              "LOD"
+              "LOD",
+              "Sprite2D",
+              "SpriteAnimation",
+              "Tilemap",
+              "Light2D",
+              "Particles2D",
+              "UI2D"
             ]
           },
           "workspaceId": {
@@ -3066,6 +3441,609 @@
               }
             },
             "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.sprite2D.set",
+      "description": "Set bounded sprite2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "columns",
+              "rows",
+              "frame",
+              "size",
+              "tint",
+              "order",
+              "lit",
+              "flipX",
+              "flipY"
+            ],
+            "properties": {
+              "columns": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "rows": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "frame": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              },
+              "size": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "number",
+                  "minimum": 0.001,
+                  "maximum": 10000
+                }
+              },
+              "tint": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "order": {
+                "type": "integer",
+                "minimum": -32768,
+                "maximum": 32767
+              },
+              "lit": {
+                "type": "boolean"
+              },
+              "flipX": {
+                "type": "boolean"
+              },
+              "flipY": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.spriteAnimation.set",
+      "description": "Set bounded spriteAnimation through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "frames",
+              "fps",
+              "loop",
+              "autoplay"
+            ],
+            "properties": {
+              "frames": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 256,
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4095
+                }
+              },
+              "fps": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 120
+              },
+              "loop": {
+                "type": "boolean"
+              },
+              "autoplay": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.tilemap.set",
+      "description": "Set bounded tilemap through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "assetId",
+              "columns",
+              "rows",
+              "width",
+              "height",
+              "tileSize",
+              "cells",
+              "order",
+              "lit"
+            ],
+            "properties": {
+              "assetId": {
+                "type": "string",
+                "pattern": "^asset://[0-9a-f]{64}$"
+              },
+              "columns": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "rows": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "width": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "tileSize": {
+                "type": "number",
+                "minimum": 0.001,
+                "maximum": 1000
+              },
+              "cells": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 4096,
+                "items": {
+                  "type": "integer",
+                  "minimum": -1,
+                  "maximum": 4095
+                }
+              },
+              "order": {
+                "type": "integer",
+                "minimum": -32768,
+                "maximum": 32767
+              },
+              "lit": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.light2D.set",
+      "description": "Set bounded light2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "color",
+              "intensity",
+              "radius"
+            ],
+            "properties": {
+              "color": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "intensity": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 8
+              },
+              "radius": {
+                "type": "number",
+                "minimum": 0.001,
+                "maximum": 10000
+              }
+            },
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.particles2D.set",
+      "description": "Set bounded particles2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "capacity",
+              "rate",
+              "lifetime",
+              "speed",
+              "spread",
+              "gravity",
+              "size",
+              "color",
+              "seed",
+              "order"
+            ],
+            "properties": {
+              "capacity": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 512
+              },
+              "rate": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 256
+              },
+              "lifetime": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 30
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "spread": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 360
+              },
+              "gravity": {
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "size": {
+                "type": "number",
+                "minimum": 0.001,
+                "maximum": 100
+              },
+              "color": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "seed": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4294967295
+              },
+              "order": {
+                "type": "integer",
+                "minimum": -32768,
+                "maximum": 32767
+              }
+            },
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.ui2D.set",
+      "description": "Set bounded ui2D through revision-checked authoring, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "kind",
+              "rect",
+              "color",
+              "order",
+              "action"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "panel",
+                  "button"
+                ]
+              },
+              "rect": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "color": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "order": {
+                "type": "integer",
+                "minimum": -32768,
+                "maximum": 32767
+              },
+              "action": {
+                "enum": [
+                  "none",
+                  "togglePause"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.twoD.update",
+      "description": "Enable/update 2D scene settings and orthographic Game camera.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "ambient",
+              "background",
+              "pixelPerfect",
+              "pixelsPerUnit",
+              "referenceHeight"
+            ],
+            "properties": {
+              "ambient": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "background": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "pixelPerfect": {
+                "type": "boolean"
+              },
+              "pixelsPerUnit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 512
+              },
+              "referenceHeight": {
+                "type": "integer",
+                "minimum": 64,
+                "maximum": 1080
+              }
+            },
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
           }
         },
         "required": [

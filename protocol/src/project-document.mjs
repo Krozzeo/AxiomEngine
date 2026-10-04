@@ -67,6 +67,23 @@ export function validateProject(document) {
     if(entity.lod){if(entity.renderable?.kind!=="mesh")throw projectError("AX_PROJECT_0002","LOD requires a mesh Renderable");let distance=0;for(const level of entity.lod.levels){if(level.distance<=distance||!assets.some(a=>a.id===level.assetId&&a.kind==="mesh"))throw projectError("AX_PROJECT_0002","LOD levels need ascending distances and imported meshes");distance=level.distance;}}
   }
   if(document.scene.entities.filter(e=>e.light).length>64)throw projectError("AX_PROJECT_0002","Renderer supports at most 64 lights");
+  const components=['sprite2D','spriteAnimation','tilemap','light2D','particles2D','ui2D'];
+  const twoD=document.scene.twoD;
+  if(!twoD&&document.scene.entities.some(e=>components.some(k=>e[k])))throw projectError('AX_PROJECT_0002','2D components require 2D scene settings');
+  if(twoD){
+    if(document.scene.rendering||document.scene.entities.some(e=>e.renderable?.kind==='mesh'))throw projectError('AX_PROJECT_0002','2D mode does not mix mesh/HDR rendering');
+    if(document.scene.camera?.projection!=='orthographic')throw projectError('AX_PROJECT_0002','2D Game camera must be orthographic');
+    if(twoD.pixelPerfect){const c=document.scene.camera;if(c.position[0]!==c.target[0]||c.position[1]!==c.target[1]||c.position[2]<=c.target[2])throw projectError('AX_PROJECT_0002','Pixel-perfect Game camera must face the XY plane from positive Z');}
+    const entities=document.scene.entities;
+    if(entities.filter(e=>e.light2D).length>16||entities.filter(e=>e.particles2D).length>32||entities.filter(e=>e.ui2D).length>128||entities.reduce((n,e)=>n+(e.tilemap?.cells.length??0),0)>4096||entities.reduce((n,e)=>n+(e.particles2D?.capacity??0),0)>2048)throw projectError('AX_PROJECT_0002','2D component budget exceeded');
+    if(entities.reduce((n,e)=>n+Number(!!e.renderable)+Number(!!e.tilemap)+Number(!!e.particles2D)+Number(!!e.ui2D),0)>1024)throw projectError('AX_PROJECT_0002','2D batch admission budget exceeded');
+    for(const e of entities){
+      if(e.sprite2D&&(e.renderable?.kind!=='sprite'||e.sprite2D.frame>=e.sprite2D.columns*e.sprite2D.rows))throw projectError('AX_PROJECT_0002','Sprite2D requires sprite Renderable and valid atlas frame');
+      if(e.spriteAnimation&&(!e.sprite2D||e.spriteAnimation.frames.some(f=>f>=e.sprite2D.columns*e.sprite2D.rows)))throw projectError('AX_PROJECT_0002','SpriteAnimation requires Sprite2D and valid atlas frames');
+      if(e.tilemap&&(e.tilemap.cells.length!==e.tilemap.width*e.tilemap.height||e.tilemap.cells.some(f=>f>=e.tilemap.columns*e.tilemap.rows)||!assets.some(a=>a.id===e.tilemap.assetId&&a.kind==='sprite')))throw projectError('AX_PROJECT_0002','Invalid tilemap cells or PNG reference');
+      if(e.ui2D&&(e.ui2D.rect[2]<=0||e.ui2D.rect[3]<=0||e.ui2D.rect[0]+e.ui2D.rect[2]>1||e.ui2D.rect[1]+e.ui2D.rect[3]>1||e.ui2D.kind==='panel'&&e.ui2D.action!=='none'))throw projectError('AX_PROJECT_0002','UI rectangle/action is invalid');
+    }
+  }
   const camera=document.scene.camera;
   if(camera && Math.hypot(...camera.position.map((v,i)=>v-camera.target[i]))<1e-6) throw projectError("AX_PROJECT_0002","Camera position and target must differ");
   return document;

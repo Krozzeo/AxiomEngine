@@ -1,6 +1,6 @@
 # M10 — 2D Production Foundation
 
-Status: not started. Roadmap weight: 6%. Master specification section 129.
+Status: complete; all eight acceptance groups and full CI pass. Roadmap weight: 6%. Master specification section 129.
 Start only after M9 full CI and closure. Read M9_RENDERER.md, ADR-0022,
 M8_DIAGNOSTICS_AND_EDITOR.md, M7_PHYSICS.md, M6_WORKSPACES.md and the current
 reports before changing rendering, input, physics or proposal behavior.

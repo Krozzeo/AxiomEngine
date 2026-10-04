@@ -42,8 +42,9 @@ export async function buildEditor() {
   await cp(resolve(root,'engine/scene/hierarchy.mjs'),resolve(destination,'hierarchy.mjs'));
   await writeFile(resolve(destination,'hierarchy.mjs'),(await readFile(resolve(destination,'hierarchy.mjs'),'utf8')).replace('../renderer/','./'));
   await writeFile(resolve(destination,'editor-operations.mjs'),(await readFile(resolve(root,'engine/scene/editor-operations.mjs'),'utf8')).replaceAll('../renderer/','./'));
+  await writeFile(resolve(destination,'two-d-editor.mjs'),(await readFile(resolve(root,'apps/editor/src/two-d-editor.mjs'),'utf8')).replaceAll('../../../engine/renderer/','./'));
   await cp(resolve(root,'apps/editor/src/panel-layout.mjs'),resolve(destination,'panel-layout.mjs'));
-  for(const name of ['render-plan','render-math','production-gpu','production-shaders'])await cp(resolve(root,'engine/renderer',name+'.mjs'),resolve(destination,name+'.mjs'));
+  for(const name of ['render-plan','render-math','production-gpu','production-shaders','two-d-plan','two-d-gpu'])await cp(resolve(root,'engine/renderer',name+'.mjs'),resolve(destination,name+'.mjs'));
   for(const name of ['view-math','scene-tools','causal-diagnostics'])await cp(resolve(root,'apps/editor/src',name+'.mjs'),resolve(destination,name+'.mjs'));
   for(const [name,target]of [["runtime.mjs","script-runtime.js"],["worker.mjs","script-worker.js"],["operations.mjs","script-operations.mjs"],["contract.mjs","contract.mjs"]])await cp(resolve(root,"engine/scripting",name),resolve(destination,target));
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));

@@ -1,0 +1,61 @@
+{
+  "criteria": [
+    "Stopped Game preview renders atlas sprites, tilemap, 2D lighting and screen UI without advancing runtime",
+    "Human tile-cell painting changes real pixels and one canonical Undo restores the scene",
+    "2D radial lighting has measured visible pixel effect",
+    "Actual C# input moves the animated sprite through real Rust physics while particles emit",
+    "Game UI consumes clicks, pauses animation/particles/scripts/physics and resumes without authoring mutation",
+    "Scene routes no Game input; Stop resets deterministic animation/particles and authored physics positions",
+    "164 ordered atlas/UI quads submit in two actual batches; alpha order changes pixels and Undo restores the golden",
+    "Null shares bounded planning with zero GPU submissions and explicitly unavailable pixels"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "samples": [
+    {
+      "mode": "2d",
+      "quads": 164,
+      "visible": 164,
+      "culled": 0,
+      "batches": 2,
+      "tiles": 0,
+      "particles": 0,
+      "lights": 0,
+      "animations": [
+        {
+          "entityId": "entity://087a9ef8-8bad-4031-a43b-5afdde825650",
+          "frame": 4,
+          "playing": false,
+          "loop": true
+        }
+      ],
+      "omittedAnimations": 0,
+      "time": 0,
+      "paused": false,
+      "viewport": [
+        0,
+        0,
+        960,
+        540
+      ],
+      "pixelScale": 3,
+      "pixelPerfect": true,
+      "vertexBytes": 51168,
+      "vertexCapacityBytes": 2555904,
+      "pixels": "unproven",
+      "submitted": 2,
+      "textureBindings": 2,
+      "backend": "webgpu",
+      "displayFormat": "bgra8unorm-srgb"
+    }
+  ],
+  "passed": true,
+  "source": {
+    "runId": 37224306330,
+    "artifactId": 11311247318,
+    "executableCommit": "a332e8fcb1017d87fd82f3feafcb3fc1709ae831",
+    "executableTree": "a1d0c786e520e7f3d4955303844c76323a23c3f8",
+    "visualReview": "Final editor, Play, pause/reset, painted tiles, light-off, alpha order and Null screenshots reviewed"
+  }
+}

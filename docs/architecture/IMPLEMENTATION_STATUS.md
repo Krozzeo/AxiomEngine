@@ -1,10 +1,18 @@
 # Implementation status
 
-Last updated: 2026-10-04. Version 0.0.21.
-M0–M9 acceptance is complete. M9.2 refinement acceptance passes 12/12 (100%).
-Weighted whole-project progress is approximately 62%. All 18 CI jobs pass,
-including real GPU browser acceptance, image review and Windows C#.
-Read M9_2_CURRENT_REPORT.md.
+Last updated: 2026-10-04. Version 0.0.22.
+M10 (0.0.22) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 68%.
+Opt-in 2D includes atlas batching, editable tilemaps, Rust/Wasm sprite animation
+and seeded particles, pixel-perfect Game preview, radial lighting and screen UI
+pause/resume. Inspector and agent tools share revisions, Undo, Save and isolated
+proposals. Existing legacy/HDR rendering remains compatible.
+All 19 jobs in CI run 37224306330 pass at executable commit
+a332e8fcb1017d87fd82f3feafcb3fc1709ae831 (tree a1d0c786e520e7f3d4955303844c76323a23c3f8).
+127 Node and 36 Rust tests, eight new browser criteria and earlier regressions pass.
+Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
+Read docs/reports/M10_CURRENT_REPORT.md, docs/architecture/M10_2D.md and
+demos/M10_GUIDE.md. Next: M11 general animation, per M11_PLAN.md/master section 130.
+PR #12 is ready for review, stacked on unmerged #11; do not merge automatically.
 
 ## Implemented and verified
 
@@ -99,7 +107,7 @@ asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
 M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
 M8 verifies four causal queries, ten faults, bounded/expired/stale evidence,
 Scene/Game separation, two-way selection, transforms, navigation and editable demos.
-Follow M10_PLAN.md and master specification section 129 for the 2D foundation.
+Follow M11_PLAN.md and master specification section 130 for general animation.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.

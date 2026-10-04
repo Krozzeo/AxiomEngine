@@ -1,5 +1,8 @@
 # M9.1 correction demos
 
+[Guía de interacción en español](M9_1_GUIDE.md). All 18 CI jobs and the three
+correction demo browser interactions pass; no manual acceptance tests remain.
+
 `npm.cmd run demo` now creates nine projects, preserving existing projects.
 The new **M9.1 Editor Workshop** contains all nine primitives, a parent with two
 children, an empty entity for Add Component and point/directional lights. Use

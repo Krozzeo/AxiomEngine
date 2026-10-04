@@ -1,0 +1,18 @@
+{
+  "criteria": [
+    "empty Inspector, explicit component add/remove and Ctrl+Z through public commands",
+    "expand/collapse, Alt multi-selection, disabled multi-edit and atomic hierarchy Undo",
+    "multi-entity native drag/drop retains complete selection",
+    "File primitive menu, Project explorer first tab and separate Clear action",
+    "right drag orbits focus rather than spinning in place",
+    "real Rotate ring drag direction and single Undo",
+    "light illumination changes during uncommitted drag; Escape restores authored scene",
+    "2D off-center impact produces angular motion and Stop restores scene",
+    "3D off-center impact produces angular motion and Stop restores scene"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "liveLightChangedPixels": 80642,
+  "passed": true
+}

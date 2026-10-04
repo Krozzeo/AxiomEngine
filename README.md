@@ -11,6 +11,11 @@ visual selection, transform tools, camera navigation and bounded causal diagnost
 M9 adds verified opt-in PBR/HDR, lights/shadows, Forward+ instancing, CPU/GPU
 culling, imported mesh LOD and postprocessing. M9 passes 8/8 acceptance points;
 weighted whole-project progress is approximately 62%.
+M9.1 completes editor usability and angular 2D/3D physics corrections, with
+three new editable demos. All 18 CI jobs pass; no required manual checks remain.
+See [M9.1 report](docs/reports/M9_1_CURRENT_REPORT.md) and
+[demo controls](demos/M9_1_GUIDE.md).
+
 See [M9 acceptance](docs/reports/M9_CURRENT_REPORT.md) and [demo guide](demos/M9_GUIDE.md).
 
 See [M8 acceptance and limits](docs/reports/M8_CURRENT_REPORT.md).

@@ -27,19 +27,16 @@ Non-negotiable foundations:
 
 ## Current state
 
-M9.1 (0.0.20) requested corrections are in progress before M10. Read
-M9_1_CORRECTIONS.md and M9_1_CURRENT_REPORT.md first. Native/browser CI for the new
-angular solver is pending; older M9 evidence does not certify this revision.
-
-
-Version `0.0.19`: M0–M9 acceptance is complete. M9 passes 8/8 (100%);
-weighted whole-project progress is 62%. Real Chromium software WebGPU acceptance
-and image review verify PBR/HDR, Forward+ instancing, compute culling, authored
-LOD, shadows/postprocessing, Inspector Undo, causal renderer references, quality
-fallbacks and Null. Read M9_CURRENT_REPORT.md, M9_RENDERER.md and ADR-0022 first.
-All 17 jobs in CI run 37166766454 pass at exact executable code commit
-5f19c2c0a640164742dc338754d4abf27b537869, including Windows C# development.
-Closure documentation/evidence is a later commit; no runtime code changes.
+Version `0.0.20`: M0–M9 and M9.1 acceptance are complete. M9.1 passes
+12/12 correction groups (100%); weighted whole-project progress remains 62%.
+Read M9_1_CORRECTIONS.md, M9_1_CURRENT_REPORT.md and demos/M9_1_GUIDE.md first.
+The twelve corrections include focus orbit, Rotate direction, modular components,
+menus/tree/explorer, Alt multiselect, parenting, primitives and live/rotated lights.
+Rust/Wasm now provides oriented contacts, inertia and angular integration.
+All 18 jobs in CI run 37209258078 pass at executable code commit
+ba58fa326cbd481a144a3a075bd6d8ebd0f2df49; local tree matches the verified tree.
+Closure documentation/evidence is a later commit; no executable code changes.
+M9 production-renderer contracts remain in M9_RENDERER.md and ADR-0022.
 The repository is public with explicit owner authorization. The earlier private
 included Actions quota was exhausted; no spending/payment setting was changed.
 CI tests PRs once, main pushes and manual dispatch; browser runners are isolated.
@@ -58,7 +55,7 @@ legacy lighting/depth plus bounded opt-in PBR/HDR/Forward+; orthographic/perspec
 cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-102 Node tests, 30 Rust tests, 16 schema documents, 55 semantic tools, generated
+112 Node tests, 33 Rust tests, 16 schema documents, 57 semantic tools, generated
 bindings and three architecture rules pass. M2–M9 Chromium workflows, Linux
 development/AOT C# and Windows development pass. Read M9_CURRENT_REPORT.md.
 The MCP acceptance launches a separate stdio client process, creates/edits a scene
@@ -85,8 +82,9 @@ capture are implemented. Broader schema generation, later engine systems remain 
 rollback and idle restart recovery pass their integrated browser and unit gates.
 M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
 RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
-triggers, layer masks, raycasts and repeatable golden scenes. No angular dynamics,
-CCD or GPU physics is claimed; see ADR-0020. Run npm run demo to create four samples.
+triggers, layer masks, raycasts and repeatable golden scenes. M9.1 adds angular dynamics and rotated contacts; CCD and GPU physics remain
+outside scope. See ADR-0020 for historical M7 limits and M9_1_CORRECTIONS.md for
+the current contract. Run npm run demo to create nine samples.
 M8 adds independent stopped Game preview, an editor-only Scene camera, triangle
 picking, two-way selection, move/rotate/scale gizmos with one-command Undo and
 Escape cancellation, orbit/pan/zoom/fly/framing and an absolute XYZ widget.
@@ -95,7 +93,7 @@ return bounded evidence graphs with frame/command lineage; unavailable or
 unproven causes remain explicit. Deep trace is opt-in, sampled every 15 frames,
 bounded to 32 frames and expires after 30 seconds. M8 Scene Workshop and
 Diagnostic Lab exercise these functions. No pixel-perfect outline, alpha picking,
-snapping or multi-selection is claimed.
+snapping is claimed. M9.1 adds Alt multi-selection and hierarchical parenting.
 
 Limits and contracts are in M2_BETA.md. A daemon has one shared draft workspace;
 unsaved edits/history are memory-only. Assets support PNG and a bounded static
@@ -174,11 +172,11 @@ Version numbers indicate migration capability, not long-term API stability.
 ## Safe next task
 
 Implement M10 per M10_PLAN.md and master specification section 129. M9 is
-complete and PR #9 is ready for review, stacked on unmerged #8. Read M9/M8/M7/M6
+complete and M9.1 PR #10 is ready for review, stacked on unmerged #9. Read M9.1/M9/M8/M7/M6
 contracts before touching renderer, input, physics or proposal logic. Preserve M6
 proposal isolation, M8 stopped Game preview/editor-only camera and M9 legacy scene
 compatibility. Create editable demos with controls, expected results and meaningful
-browser acceptance alongside each milestone. No required user-only M9 test remains.
+browser acceptance alongside each milestone. No required user-only M9.1 test remains.
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and

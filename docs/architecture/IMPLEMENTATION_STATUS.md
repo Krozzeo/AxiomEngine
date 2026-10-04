@@ -1,10 +1,10 @@
 # Implementation status
 
-Last updated: 2026-10-04. Version 0.0.19.
-M0–M9 acceptance is complete. M9 passes 8/8 (100%).
-Weighted whole-project progress is approximately 62%. All 17 CI jobs pass,
+Last updated: 2026-10-04. Version 0.0.20.
+M0–M9 acceptance is complete. M9.1 correction acceptance passes 12/12 (100%).
+Weighted whole-project progress is approximately 62%. All 18 CI jobs pass,
 including real GPU browser acceptance, image review and Windows C#.
-Read M9_CURRENT_REPORT.md.
+Read M9_1_CURRENT_REPORT.md.
 
 ## Implemented and verified
 
@@ -46,12 +46,17 @@ Read M9_CURRENT_REPORT.md.
 - Canonical material/light/LOD/HDR Inspector and AI commands with Undo/proposal isolation.
 - Editable M9 Gallery and Instancing/LOD Lab, preserving the four earlier demos.
 
+- M9.1 focus orbit, corrected Rotate, optional components/scripts, menus/tree/explorer.
+- Alt multi-selection, native batch parenting, shortcuts and nine imported primitives.
+- Rust/Wasm oriented contacts/angular integration and live entity-rotated lights.
+- Three new correction demos, preserving the six earlier projects.
+
 ## Current evidence
 
-M9 implementation passes 102 Node tests, 16 schema documents, generated-binding
-consistency, 55 semantic tools, three architecture rules and M0 parity. Rust passes
-30 tests, formatting, Clippy with warnings denied and core Wasm compilation.
-Current CI and M2–M9 browser evidence is recorded in M9_CURRENT_REPORT.md.
+M9.1 implementation passes 112 Node tests, 16 schema documents, generated-binding
+consistency, 57 semantic tools, three architecture rules and M0 parity. Rust passes
+33 tests, formatting, Clippy with warnings denied and core Wasm compilation.
+Current CI and M2–M9 browser evidence is recorded in M9_1_CURRENT_REPORT.md.
 Linux C# development/AOT and Windows development pass.
 
 Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,
@@ -72,10 +77,11 @@ refreshing the open editor. See M5_CURRENT_REPORT.md.
 
 Node is the verified M2 beta path. Native daemon project/asset authoring, general
 schema code generation beyond the script and semantic-tool contracts,
-angular/continuous physics and later systems are not implemented.
+continuous collision detection, physics joints and later systems are not implemented.
 M9 implements the bounded production renderer in ADR-0022; broader rendering features
 such as imported HDR IBL and point/cascaded shadows remain outside its contract.
-M7 provides translational AABB/sphere physics; see ADR-0020 for exact boundaries.
+M9.1 extends M7 with OBB/circle/sphere angular response; see M9_1_CORRECTIONS.md
+for current limits and ADR-0020 for the historical foundation.
 Supported import formats and resource limits are in M2_BETA.md. A shared daemon
 workspace has memory-only unsaved drafts and 64 history entries; saves persist
 explicitly. Preserve project JSON and its complete asset folder together.

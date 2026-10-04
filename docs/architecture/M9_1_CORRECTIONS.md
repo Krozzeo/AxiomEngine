@@ -55,5 +55,5 @@ Contracts and current limits:
 - Direction is stored in local space (legacy identity-rotation lights are unchanged).
   New lights use local -Z. Rendering settings and the saved Game camera stay global.
 
-Verification status: in progress. Do not distribute as complete until full CI and
-visual review are recorded in M9_1_CURRENT_REPORT.md.
+Verification status: complete (12/12 groups). Full 18-job CI and visual review
+are recorded in M9_1_CURRENT_REPORT.md.

@@ -27,7 +27,7 @@ export const tilesShader=structs+`
  for(var i=0u;i<frame.counts.x;i++){let l=lights[i];var hit=true;
  if(l.options.x>0.5){var lo=vec2f(1e20);var hi=vec2f(-1e20);var crosses=false;
  for(var k=0u;k<8u;k++){let offset=vec3f(select(-l.position.w,l.position.w,(k&1u)!=0u),select(-l.position.w,l.position.w,(k&2u)!=0u),select(-l.position.w,l.position.w,(k&4u)!=0u));let c=frame.vp*vec4f(l.position.xyz+offset,1.0);if(c.w<=0.0){crosses=true;}else{let p=(vec2f(c.x/c.w,-c.y/c.w)*0.5+0.5)*vec2f(f32(frame.counts.z),f32(frame.counts.w))/16.0;lo=min(lo,p);hi=max(hi,p);}}
- hit=crosses||all(tile+vec2f(1.0)>=lo)&&all(tile<=hi);
+ hit=crosses||(all(tile+vec2f(1.0)>=lo)&&all(tile<=hi));
  }
  if(hit){tiles[id.x*65u+1u+count]=i;count++;}}
  tiles[id.x*65u]=count;

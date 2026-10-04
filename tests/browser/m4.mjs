@@ -59,6 +59,6 @@ try {
  await page.screenshot({path:join(evidence,'editor.png')});console.log('M4_BROWSER='+JSON.stringify(report));
 }catch(error){
  report.failure=error.message;
- if(page){console.error('M4_FAILURE_STATE='+await page.locator('body').innerText());await page.screenshot({path:join(evidence,'failure.png')}).catch(()=>{});}
+ if(page){report.frame=await page.locator('#frame-trace').textContent().catch(()=>null);console.error('M4_FAILURE_FRAME='+report.frame);console.error('M4_FAILURE_STATE='+await page.locator('body').innerText());await page.screenshot({path:join(evidence,'failure.png')}).catch(()=>{});}
  throw error;
 }finally{report.errors=errors;await writeFile(join(evidence,'report.json'),JSON.stringify(report,null,2));await browser?.close();await daemon.close();await rm(root,{recursive:true,force:true});}

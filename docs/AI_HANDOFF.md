@@ -27,6 +27,14 @@ Non-negotiable foundations:
 
 ## Current state
 
+M10 (0.0.22) is implemented but not closed. Read M10_PLAN.md, ADR-0023,
+M10_2D.md and M10_CURRENT_REPORT.md. Seven new canonical tools cover optional
+2D components and settings; stopped Game preview and proposal isolation remain.
+Pixel Adventure and Sprite Batching Lab are generated with npm run demo.
+Full CI/visual acceptance is in progress on PR #12, stacked on unmerged #11.
+Do not count unexecuted acceptance as passed; baseline weighted progress is 62%.
+
+
 M9.2 (0.0.21) editor refinements are complete (12/12, 100%). Read
 M9_2_REFINEMENTS.md, M9_2_CURRENT_REPORT.md and demos/M9_2_GUIDE.md first.
 All 18 jobs in CI run 37218376172 pass at executable commit

@@ -34,13 +34,12 @@ mod exports {
     #[unsafe(no_mangle)]
     pub extern "C" fn axiom_2d_tick(id: u32, delta: f64) -> f64 {
         REGISTRY.with_borrow_mut(|r| {
-            r.two_d.get_mut(&id).map_or(f64::NAN, |c| {
-                if c.tick(delta) {
-                    c.elapsed
-                } else {
-                    f64::NAN
-                }
-            })
+            r.two_d.get_mut(&id).map_or(
+                f64::NAN,
+                |c| {
+                    if c.tick(delta) { c.elapsed } else { f64::NAN }
+                },
+            )
         })
     }
     #[unsafe(no_mangle)]
@@ -61,9 +60,11 @@ mod exports {
         gravity: f64,
         axis: u32,
     ) -> f64 {
-        axiom_core::two_d::particle(time, slot, capacity, rate, life, seed, speed, spread, gravity)
-            .and_then(|v| v.get(axis as usize).copied())
-            .unwrap_or(f64::NAN)
+        axiom_core::two_d::particle(
+            time, slot, capacity, rate, life, seed, speed, spread, gravity,
+        )
+        .and_then(|v| v.get(axis as usize).copied())
+        .unwrap_or(f64::NAN)
     }
     #[unsafe(no_mangle)]
     pub extern "C" fn axiom_abi_version() -> u32 {
@@ -78,7 +79,9 @@ mod exports {
             };
             registry.next = id;
             registry.worlds.insert(id, DemoKernel::default());
-            registry.two_d.insert(id, axiom_core::two_d::Clock::default());
+            registry
+                .two_d
+                .insert(id, axiom_core::two_d::Clock::default());
             id
         })
     }

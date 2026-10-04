@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.21",
-  "activeMilestone": 9,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.22",
+  "activeMilestone": 10,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 62,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -50,6 +50,10 @@
     "9": {
       "status": "complete",
       "percent": 100
+    },
+    "10": {
+      "status": "in_progress",
+      "percent": 0
     }
   },
   "implementation": {
@@ -384,7 +388,9 @@
     },
     "semanticToolCount": 60
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M10 full cross-platform CI and visual acceptance are in progress"
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -449,5 +455,5 @@
     "docs/reports/m9.2-browser-evidence.json",
     "demos/M9_2_GUIDE.md"
   ],
-  "nextTask": "Implement M10 per M10_PLAN.md after completed M9.2. Keep milestone PRs unmerged; preserve proposal isolation and include editable demos and automated acceptance."
+  "nextTask": "Complete M10 CI, review screenshots, close all eight acceptance groups and deliver M10. Keep PR #12 and earlier milestone PRs unmerged."
 }

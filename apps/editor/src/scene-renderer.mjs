@@ -176,6 +176,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set([...(scene.twoD?[...localAssets.values()].filter(a=>a.kind==='sprite').map(a=>({texture:a.dataUrl})):[]),...draws,...[...localAssets.values()].flatMap(a=>a.primitives??[])].map(draw=>draw.texture??"white"));
+      if(scene.twoD)used.add("white");
       for(const [key,texture] of textures)if(!used.has(key)){texture.destroy();textures.delete(key);}
     } catch(error) {nextRuntime?.dispose();replacement.dispose();destroyResources(pending);throw error;}
   }

@@ -27,6 +27,21 @@ Non-negotiable foundations:
 
 ## Current state
 
+M9.2 (0.0.21) editor refinements are complete (12/12, 100%). Read
+M9_2_REFINEMENTS.md, M9_2_CURRENT_REPORT.md and demos/M9_2_GUIDE.md first.
+All 18 jobs in CI run 37218376172 pass at executable commit
+b2f71b8928395e7469726a257c5ad0caf1631545 (tree
+8f459c1e9745884c661c39acdba1720de5d29e2a); local code is identical.
+119 Node/33 Rust tests, 15 correction browser criteria, all M2–M9 regressions,
+Windows/Linux development C# and Linux AOT pass. Final screenshots reviewed.
+Closure commits only update documentation/evidence. Weighted progress remains 62%.
+Ctrl toggles selection; Hierarchy Shift selects visible ranges. Group transforms
+and hierarchy ordering are atomic/undoable. Inspector is modular with separate
+Collider/RigidBody, searchable Add Component last, and fundamental Transform first.
+Project tree/icons, lateral menus and resizable project-saved panels are implemented.
+Exact legacy M9.1 sphere/capsule sources are repaired only in derived import v3.
+No required user-only test remains. M9.2 PR #11 is stacked on unmerged #10.
+
 Version `0.0.20`: M0–M9 and M9.1 acceptance are complete. M9.1 passes
 12/12 correction groups (100%); weighted whole-project progress remains 62%.
 Read M9_1_CORRECTIONS.md, M9_1_CURRENT_REPORT.md and demos/M9_1_GUIDE.md first.
@@ -55,7 +70,7 @@ legacy lighting/depth plus bounded opt-in PBR/HDR/Forward+; orthographic/perspec
 cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-112 Node tests, 33 Rust tests, 16 schema documents, 57 semantic tools, generated
+119 Node tests, 33 Rust tests, 16 schema documents, 60 semantic tools, generated
 bindings and three architecture rules pass. M2–M9 Chromium workflows, Linux
 development/AOT C# and Windows development pass. Read M9_CURRENT_REPORT.md.
 The MCP acceptance launches a separate stdio client process, creates/edits a scene
@@ -172,11 +187,11 @@ Version numbers indicate migration capability, not long-term API stability.
 ## Safe next task
 
 Implement M10 per M10_PLAN.md and master specification section 129. M9 is
-complete and M9.1 PR #10 is ready for review, stacked on unmerged #9. Read M9.1/M9/M8/M7/M6
+complete and M9.2 PR #11 is ready for review, stacked on unmerged #10. Read M9.2/M9.1/M9/M8/M7/M6
 contracts before touching renderer, input, physics or proposal logic. Preserve M6
 proposal isolation, M8 stopped Game preview/editor-only camera and M9 legacy scene
 compatibility. Create editable demos with controls, expected results and meaningful
-browser acceptance alongside each milestone. No required user-only M9.1 test remains.
+browser acceptance alongside each milestone. No required user-only M9.2 test remains.
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and

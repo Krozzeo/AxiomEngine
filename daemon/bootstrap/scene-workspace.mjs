@@ -1,3 +1,4 @@
+import {orderEntities,updateTransforms,selectedRoots} from '../../engine/scene/editor-operations.mjs';
 import {reparent,worldTransforms} from '../../engine/scene/hierarchy.mjs';
 import {primitiveGlb} from '../../engine/scene/primitives.mjs';
 import {ScriptCompiler} from './scripting/compiler.mjs';
@@ -146,7 +147,7 @@ export class SceneWorkspace {
       return {assetId:data.assetId, asset:await this.pipeline.resource(data.id,this.project.scene,data.assetId)};
     }
     if(this.activeJob && ["project.create","project.open","project.close","project.save","scene.save"].includes(type))fail("AX_ASSET_0001","Wait for or cancel the active asset job first");
-    if (this.playing && !["scene.get", "play.stop", "project.list"].includes(type)) fail("AX_SCENE_0005", "Stop Play before editing or switching projects");
+    if (this.playing && !["scene.get", "play.stop", "project.list", "project.editor.update"].includes(type)) fail("AX_SCENE_0005", "Stop Play before editing or switching projects");
     if (type === "project.list") return this.store.run(type, data);
     if (["project.create", "project.open"].includes(type)) {
       if (this.dirty && (data.discardChanges !== true || data.expectedSceneRevision !== this.revision)) fail("AX_SCENE_0003", "Save or explicitly discard unsaved scene changes first");
@@ -160,6 +161,11 @@ export class SceneWorkspace {
       return this.project?.id === data.id ? this.activate(result.project) : result;
     }
     if (type === "scene.get") return this.snapshot();
+    if(type==='project.editor.update'){
+      this.check(data);if(data.workspaceId)fail('AX_WORKSPACE_0001','Editor layout belongs to the main project');
+      const result=await this.store.run('project.save',{id:this.project.id,expectedRevision:this.project.revision,scene:JSON.parse(this.savedScene),editor:data.value});
+      this.project.editor=result.project.editor;this.project.revision=result.project.revision;return this.snapshot();
+    }
     this.check(data);
     if(type==="asset.job.start")return this.startJob(data,context);
     if(type==="play.start" || type==="play.stop") {
@@ -210,7 +216,12 @@ export class SceneWorkspace {
       scene.entities[index][type.split(".")[1]]=copy(data.value);
     } else if(type==="scene.entity.reparent") {
       if(!Array.isArray(data.entityIds)||data.entityIds.length>1024||new Set(data.entityIds).size!==data.entityIds.length)fail("AX_SCENE_0001","Invalid hierarchy selection");
-      scene.entities=reparent(scene.entities,data.entityIds,data.parentId??null);
+      scene.entities=orderEntities(scene.entities,data.entityIds,data.parentId??null,data.beforeId);
+    } else if(type==='scene.entities.update') {
+      scene.entities=updateTransforms(scene.entities,data.updates,data.space??'local');
+    } else if(type==='scene.entities.delete') {
+      const removed=new Set(selectedRoots(scene.entities,data.entityIds));let changed=true;while(changed){changed=false;for(const e of scene.entities)if(removed.has(e.parentId)&&!removed.has(e.id)){removed.add(e.id);changed=true;}}
+      scene.entities=scene.entities.filter(e=>!removed.has(e.id));if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>!removed.has(id));
     } else if(type==="scene.primitive.create") {
       const bytes=primitiveGlb(data.dimension,data.shape),asset=await this.assets.put(this.project.id,`${data.dimension}D-${data.shape}.glb`,bytes.toString('base64'),importInWorker);
       scene.assets??=[];if(!scene.assets.some(a=>a.id===asset.id)){if(scene.assets.length>=128)fail("AX_ASSET_0001","Project asset limit is 128");scene.assets.push(asset);}

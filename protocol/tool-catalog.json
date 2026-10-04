@@ -2788,7 +2788,7 @@
     },
     {
       "name": "scene.entity.reparent",
-      "description": "Parent a selection atomically, retaining world TRS. Reject cycles and shear. Undo restores the complete hierarchy.",
+      "description": "Parent a selection atomically, retaining world TRS. Reject cycles and shear. Undo restores the complete hierarchy. Optional beforeId orders the selected roots among siblings.",
       "mutates": true,
       "route": "workspace",
       "mcp": true,
@@ -2817,6 +2817,10 @@
             }
           },
           "parentId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "beforeId": {
             "type": "string",
             "pattern": "^entity://[0-9a-f-]{36}$"
           }
@@ -2876,6 +2880,198 @@
           "expectedSceneRevision",
           "dimension",
           "shape"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.entities.update",
+      "description": "Atomic batch transforms in local or world space; one Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "updates": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "object",
+              "properties": {
+                "entityId": {
+                  "type": "string",
+                  "pattern": "^entity://[0-9a-f-]{36}$"
+                },
+                "transform": {
+                  "type": "object",
+                  "required": [
+                    "position",
+                    "rotation",
+                    "scale"
+                  ],
+                  "properties": {
+                    "position": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -1000000,
+                        "maximum": 1000000
+                      }
+                    },
+                    "rotation": {
+                      "type": "array",
+                      "minItems": 4,
+                      "maxItems": 4,
+                      "items": {
+                        "type": "number",
+                        "minimum": -1000000,
+                        "maximum": 1000000
+                      }
+                    },
+                    "scale": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -1000000,
+                        "maximum": 1000000
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "entityId",
+                "transform"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "space": {
+            "type": "string",
+            "enum": [
+              "local",
+              "world"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "updates"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.entities.delete",
+      "description": "Delete selected subtrees atomically; one Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "entityIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "string",
+              "pattern": "^entity://[0-9a-f-]{36}$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityIds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "project.editor.update",
+      "description": "Persist panel sizes without saving the scene draft.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "leftWidth",
+              "rightWidth",
+              "bottomHeight"
+            ],
+            "properties": {
+              "leftWidth": {
+                "type": "number",
+                "minimum": 150,
+                "maximum": 600
+              },
+              "rightWidth": {
+                "type": "number",
+                "minimum": 220,
+                "maximum": 700
+              },
+              "bottomHeight": {
+                "type": "number",
+                "minimum": 120,
+                "maximum": 650
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "value"
         ],
         "additionalProperties": false
       }

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.0.21 — M9.2 Editor Refinements
+
+- Outward sphere/capsule winding and derived repair of exact old M9.1 sources.
+- Ctrl+Y Redo, Delete selection, Move arrows and atomic group transforms.
+- Ctrl selection toggles and visible Shift ranges; root drop and sibling ordering.
+- Compact framed Hierarchy, searchable components last and Transform first.
+- Separate Collider/RigidBody forms and parameters.
+- Automatically saved resizable project panels without publishing dirty scenes.
+- Compact project folder tree/file icons, lateral menus and right-aligned Clear.
+- Refreshed M9.2 demos preserve old projects; Spanish controls guide included.
+- 119 Node/33 Rust tests, 15 correction browser criteria and all 18 CI jobs pass.
+- M9.2: 100% (12/12); approximate weighted project completion remains 62%.
+
 ## 0.0.20 — M9.1 Editor and Angular Physics Corrections
 
 - Focus-based camera orbit and corrected Rotate direction.

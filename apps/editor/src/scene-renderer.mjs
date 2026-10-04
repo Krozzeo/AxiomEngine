@@ -1,3 +1,4 @@
+import {updateTransforms} from '../../../engine/scene/editor-operations.mjs';
 import {worldScene,localTransform,reparent} from '../../../engine/scene/hierarchy.mjs';
 import {renderPlan} from '../../../engine/renderer/render-plan.mjs';
 import {createProductionGPU} from '../../../engine/renderer/production-gpu.mjs';
@@ -204,7 +205,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       const camera=view==='scene'&&editorCamera?editorCamera:runtimeScene.camera??{position:[0,0,6],target:[0,0,0],projection:'perspective',fov:60,orthoHeight:6};
       const vp=cameraMatrix(camera,canvas.width/canvas.height);
       let previewScene=null;
-      if(transformPreview){const draft=structuredClone(authoredHierarchy),e=draft.entities.find(e=>e.id===transformPreview.entityId);if(e){e.transform=localTransform(draft.entities,e.id,transformPreview.transform);previewScene=worldScene(draft);}}
+      if(transformPreview){const draft=structuredClone(authoredHierarchy);draft.entities=updateTransforms(draft.entities,transformPreview.updates??[{entityId:transformPreview.entityId,transform:transformPreview.transform}],'world');previewScene=worldScene(draft);}
       const previewModels=new Map(previewScene?.entities.map(e=>[e.id,modelMatrix(e.transform)])??[]);
       geometry=geometry.map((draw,i)=>{const model=previewModels.get(draw.entityId)??packet.draws[i].model;return {...draw,model,mvp:view==='scene'||transformPreview?matrixMultiply(vp,model):packet.draws[i].mvp};});
       if(packet.transforms)for(const item of packet.transforms){const e=runtimeScene.entities.find(e=>e.id===item.id);if(e)e.transform=item.transform;}

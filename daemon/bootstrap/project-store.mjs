@@ -67,8 +67,8 @@ export class ProjectStore {
         if (!Number.isSafeInteger(data.expectedRevision) || data.expectedRevision !== previous.revision) throw projectError("AX_PROJECT_0003", "Project revision conflict; reopen before saving");
         if (data.scene?.id !== previous.scene.id) throw projectError("AX_PROJECT_0002", "Scene identity cannot change during save");
         // Validate supplied known fields before preserving extensions.
-        validateProject({ ...previous, scene: data.scene });
-        document = { ...previous, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1 };
+        validateProject({ ...previous, scene: data.scene, ...(data.editor?{editor:data.editor}:{}) });
+        document = { ...previous, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
       }
       validateProject(document);
       const bytes = JSON.stringify(document, null, 2) + "\n";

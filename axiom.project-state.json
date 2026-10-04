@@ -2,7 +2,7 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.20",
+  "engineVersion": "0.0.21",
   "activeMilestone": 9,
   "milestoneStatus": "complete",
   "completion": {
@@ -60,7 +60,7 @@
     "renderGraph": "verified_native",
     "frameProfiler": "verified_windows_webgpu_and_null",
     "projectPersistence": "verified_bootstrap_http_restart",
-    "sceneEditor": "verified_modular_inspector_tree_multiselect_parenting_orbit_and_gizmos",
+    "sceneEditor": "verified_modular_inspector_tree_range_selection_atomic_group_transforms_ordering_project_explorer_and_saved_layout",
     "assetImport": "verified_png_static_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
@@ -69,13 +69,13 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_nine_m7_m8_m9_m9_1_projects",
+    "editableDemos": "verified_nine_projects_with_refreshed_m9_2_correction_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu"
   },
   "verified": {
     "nodeTests": {
-      "passed": 112,
+      "passed": 119,
       "failed": 0
     },
     "schemaDocuments": 16,
@@ -106,7 +106,7 @@
       "testsPassed": 33,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M9.1 0.0.20"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M9.2 0.0.21"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -192,10 +192,10 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.20",
-      "commit": "ba58fa326cbd481a144a3a075bd6d8ebd0f2df49",
-      "runId": 37209258078,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37209258078",
+      "version": "0.0.21",
+      "commit": "b2f71b8928395e7469726a257c5ad0caf1631545",
+      "runId": 37218376172,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37218376172",
       "jobCount": 18,
       "jobs": [
         "bootstrap (windows-latest)",
@@ -371,7 +371,18 @@
       "evidence": "docs/reports/m9.1-browser-evidence.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
-    }
+    },
+    "m92Acceptance": {
+      "passed": true,
+      "criteriaPassed": 12,
+      "criteriaTotal": 12,
+      "browserCriteriaPassed": 15,
+      "runId": 37218376172,
+      "evidence": "docs/reports/m9.2-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
+    },
+    "semanticToolCount": 60
   },
   "blockedChecks": [],
   "protocolVersions": {
@@ -432,7 +443,11 @@
     "docs/architecture/M9_1_CORRECTIONS.md",
     "docs/reports/M9_1_CURRENT_REPORT.md",
     "demos/M9_1_GUIDE.md",
-    "docs/reports/m9.1-browser-evidence.json"
+    "docs/reports/m9.1-browser-evidence.json",
+    "docs/architecture/M9_2_REFINEMENTS.md",
+    "docs/reports/M9_2_CURRENT_REPORT.md",
+    "docs/reports/m9.2-browser-evidence.json",
+    "demos/M9_2_GUIDE.md"
   ],
-  "nextTask": "Implement M10 per M10_PLAN.md after completed M9.1. Keep milestone PRs unmerged; preserve proposal isolation and include editable demos and automated acceptance."
+  "nextTask": "Implement M10 per M10_PLAN.md after completed M9.2. Keep milestone PRs unmerged; preserve proposal isolation and include editable demos and automated acceptance."
 }

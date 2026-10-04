@@ -1,0 +1,28 @@
+{
+  "scope": "CPU planner and actual Rust/Wasm particle boundary; excludes full-frame and physical GPU performance",
+  "reports": [
+    {
+      "count": 128,
+      "p95Ms": 3.747228,
+      "batches": 1,
+      "vertexBytes": 39936
+    },
+    {
+      "count": 512,
+      "p95Ms": 13.473110999999989,
+      "batches": 1,
+      "vertexBytes": 159744
+    },
+    {
+      "count": 4096,
+      "p95Ms": 62.992703000000006,
+      "batches": 1,
+      "vertexBytes": 1277952
+    }
+  ],
+  "particles": {
+    "count": 2048,
+    "p95Ms": 26.129793000000063,
+    "batches": 1
+  }
+}

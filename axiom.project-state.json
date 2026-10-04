@@ -4,10 +4,10 @@
   "updatedAt": "2026-10-04",
   "engineVersion": "0.0.22",
   "activeMilestone": 10,
-  "milestoneStatus": "in_progress",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 0,
-    "wholeProjectPercent": 62,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 68,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -52,8 +52,8 @@
       "percent": 100
     },
     "10": {
-      "status": "in_progress",
-      "percent": 0
+      "status": "complete",
+      "percent": 100
     }
   },
   "implementation": {
@@ -73,13 +73,14 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_nine_projects_with_refreshed_m9_2_correction_demos",
+    "editableDemos": "verified_m10_pair_and_earlier_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
-    "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu"
+    "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
+    "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui"
   },
   "verified": {
     "nodeTests": {
-      "passed": 119,
+      "passed": 127,
       "failed": 0
     },
     "schemaDocuments": 16,
@@ -107,10 +108,10 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 33,
+      "testsPassed": 36,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M9.2 0.0.21"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M10 0.0.22"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -196,11 +197,11 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.21",
-      "commit": "b2f71b8928395e7469726a257c5ad0caf1631545",
-      "runId": 37218376172,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37218376172",
-      "jobCount": 18,
+      "version": "0.0.22",
+      "commit": "a332e8fcb1017d87fd82f3feafcb3fc1709ae831",
+      "runId": 37224306330,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37224306330",
+      "jobCount": 19,
       "jobs": [
         "bootstrap (windows-latest)",
         "browser-milestones (m6)",
@@ -219,7 +220,8 @@
         "browser-milestones (m9)",
         "csharp-wasm-spike (ubuntu-latest, aot)",
         "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (corrections)"
+        "browser-milestones (corrections)",
+        "browser-milestones (m10)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -386,11 +388,21 @@
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
     },
-    "semanticToolCount": 60
+    "semanticToolCount": 67,
+    "m10Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "runId": 37224306330,
+      "executableCommit": "a332e8fcb1017d87fd82f3feafcb3fc1709ae831",
+      "executableTree": "a1d0c786e520e7f3d4955303844c76323a23c3f8",
+      "evidence": "docs/reports/m10-browser-evidence.json",
+      "benchmark": "docs/reports/m10-two-d-benchmark.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
+    }
   },
-  "blockedChecks": [
-    "M10 full cross-platform CI and visual acceptance are in progress"
-  ],
+  "blockedChecks": [],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -453,7 +465,14 @@
     "docs/architecture/M9_2_REFINEMENTS.md",
     "docs/reports/M9_2_CURRENT_REPORT.md",
     "docs/reports/m9.2-browser-evidence.json",
-    "demos/M9_2_GUIDE.md"
+    "demos/M9_2_GUIDE.md",
+    "docs/architecture/M10_2D.md",
+    "docs/architecture/M11_PLAN.md",
+    "docs/adr/0023-bounded-2d-production.md",
+    "docs/reports/M10_CURRENT_REPORT.md",
+    "docs/reports/m10-browser-evidence.json",
+    "docs/reports/m10-two-d-benchmark.json",
+    "demos/M10_GUIDE.md"
   ],
-  "nextTask": "Complete M10 CI, review screenshots, close all eight acceptance groups and deliver M10. Keep PR #12 and earlier milestone PRs unmerged."
+  "nextTask": "Implement M11 per M11_PLAN.md and master section 130; preserve M10 sprite animation and proposal isolation, include editable demos and complete automated closure. Keep milestone PRs unmerged."
 }

@@ -1,6 +1,6 @@
 # ADR-0023 — Bounded 2D production
 
-Status: implementation in progress; acceptance not yet established.
+Status: accepted; full CI and software WebGPU/Null evidence verified.
 
 M10 opts in through scene.twoD. It preserves legacy and HDR scenes unchanged.
 A 2D scene uses sprite Renderables, atlas Sprite2D, SpriteAnimation, Tilemap,

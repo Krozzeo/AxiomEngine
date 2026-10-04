@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.0.22 — M10 2D Production Foundation
+
+M10 (0.0.22) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 68%.
+Opt-in 2D includes atlas batching, editable tilemaps, Rust/Wasm sprite animation
+and seeded particles, pixel-perfect Game preview, radial lighting and screen UI
+pause/resume. Inspector and agent tools share revisions, Undo, Save and isolated
+proposals. Existing legacy/HDR rendering remains compatible.
+All 19 jobs in CI run 37224306330 pass at executable commit
+a332e8fcb1017d87fd82f3feafcb3fc1709ae831 (tree a1d0c786e520e7f3d4955303844c76323a23c3f8).
+127 Node and 36 Rust tests, eight new browser criteria and earlier regressions pass.
+Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
+Read docs/reports/M10_CURRENT_REPORT.md, docs/architecture/M10_2D.md and
+demos/M10_GUIDE.md. Next: M11 general animation, per M11_PLAN.md/master section 130.
+PR #12 is ready for review, stacked on unmerged #11; do not merge automatically.
+
+
 ## 0.0.21 — M9.2 Editor Refinements
 
 - Outward sphere/capsule winding and derived repair of exact old M9.1 sources.

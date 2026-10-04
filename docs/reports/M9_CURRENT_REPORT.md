@@ -51,13 +51,25 @@ Run 37153467939 at initial implementation SHA
 The M9 job 111291919524 has no steps, an empty runner name and runner_id 0.
 One isolated re-run was requested; attempt 2, job 111292384937, again failed with
 no runner or steps. Job-log requests returned BlobNotFound; no build/shader
-failure log exists. The root cause has **not** been established. Do not infer an
-Actions billing/quota/permission issue as fact without the actual annotation.
+failure log exists.
 
-The GitHub connector can retrieve runs, jobs and check summaries but rejects the
-check-annotation endpoint. User-only gate: open
-https://github.com/Krozzeo/AxiomEngine/actions/runs/37153467939 and return the red
-Annotations/error message shown by GitHub. No engine manual test is requested yet.
+User-provided GitHub Annotations capture confirms an account billing restriction:
+the job was not started because recent account payments failed or the spending
+limit needs to be increased. The annotation does not distinguish the two causes.
+The repository is private. Account owner must inspect Billing & plans, Actions
+usage/budgets and payment status; no payment or spending change is authorized.
+The Ubuntu 26 migration notice is informational and does not explain this failure.
+
+The GitHub connector cannot change account billing. User-only gate: inspect
+https://github.com/settings/billing and resolve the reported account restriction,
+or provide the Actions budget/payment status needed to choose a next step.
+Do not keep retrying jobs before that restriction changes. No engine manual test
+is requested yet.
+
+CI now triggers on PRs, main pushes and manual dispatch. It no longer duplicates
+every milestone update through both push and pull_request; concurrency cancels
+superseded revisions of the same PR. All test matrices remain intact. This config
+and billing checkpoint are committed with [skip ci] while the restriction persists.
 After the account/runner blocker is resolved, rerun CI for the latest branch,
 fix actual failures, review screenshots, update closure docs and release source.
 

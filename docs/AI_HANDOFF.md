@@ -31,7 +31,10 @@ Version `0.0.18`: M0–M8 acceptance is complete. M8 passes 8/8 criteria;
 M9 is blocked at 2/8 (25%); weighted completion is 56% with partial credit.
 Read M9_CURRENT_REPORT.md, M9_RENDERER.md and ADR-0022 first. Current M9 GPU
 code is implemented but unexecuted: CI has no assigned runner/steps/logs after
-two attempts. Obtain GitHub Annotations; do not infer a root cause.
+two attempts. The user-provided annotation confirms a billing restriction:
+failed payments or spending limit; the specific cause needs account-owner inspection.
+Do not retry CI until it changes. PR-only milestone CI avoids duplicate push runs;
+all tests remain required. Do not change account spending/payment settings.
 Do not release M9, mark it complete or start M10 before full acceptance.
 Read M8_DIAGNOSTICS_AND_EDITOR.md, M8_CURRENT_REPORT.md, ADR-0021 and demos/README.md.
 Read M7_PHYSICS.md for the unchanged translational physics boundary.

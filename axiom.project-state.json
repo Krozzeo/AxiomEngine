@@ -350,7 +350,7 @@
     }
   },
   "blockedChecks": [
-    "M9 current-source CI has no runner, steps or logs; two attempts failed before execution. Root cause unknown; GitHub Annotations needed.",
+    "M9 Actions blocked by account billing: user screenshot confirms failed payments or spending limit. Account owner must inspect billing; exact cause undetermined.",
     "M9 WGSL/WebGPU, golden pixels, full clean regressions and image review are unexecuted."
   ],
   "protocolVersions": {
@@ -405,5 +405,5 @@
     "docs/architecture/M9_RENDERER.md",
     "docs/adr/0022-bounded-hdr-forward-plus-renderer.md"
   ],
-  "nextTask": "Read M9_CURRENT_REPORT.md. Obtain the GitHub Actions annotation for run 37153467939; restore runner execution, validate latest M9 source in full CI, fix real failures, review images and complete M9 before release or M10."
+  "nextTask": "Read M9_CURRENT_REPORT.md. Wait for account-owner resolution of GitHub Actions billing restriction; then validate latest M9 code in full CI, fix failures, review images and complete M9. Avoid duplicate runs and do not alter account spending/payment settings."
 }

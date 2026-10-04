@@ -1,8 +1,16 @@
 name: CI
 
 on:
+  # Milestone branches are tested through their PR once, rather than again on push.
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
+
+# A newer revision supersedes an older run of the same PR/branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

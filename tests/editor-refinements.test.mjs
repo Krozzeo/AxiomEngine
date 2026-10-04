@@ -9,3 +9,6 @@ test('layout persists without publishing dirty scene; atomic batch changes undo/
 
 import {primitiveGlb as legacyGlb} from './fixtures/legacy-primitives.mjs';import {decodeAsset} from '../engine/assets/import.mjs';
 test('existing M9.1 sphere/capsule immutable sources are repaired during derived import',()=>{for(const shape of ['sphere','capsule']){const bytes=legacyGlb(3,shape),original=Buffer.from(bytes),resource=decodeAsset(bytes);assert.deepEqual(bytes,original);assert.match(resource.warnings.at(-1),/Corrected/);for(const p of resource.primitives)for(let i=0;i<p.vertices.length;i+=8)assert.ok(p.vertices.slice(i,i+3).reduce((sum,v,j)=>sum+v*p.vertices[i+3+j],0)>0);}});
+
+import {readFile} from 'node:fs/promises';
+test('editor IDs remain unique after moving Inspector components and menus',async()=>{const html=await readFile(new URL('../apps/editor/index.html',import.meta.url),'utf8'),ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);assert.ok(html.indexOf('id="entity-form"')<html.indexOf('id="add-component"'));});

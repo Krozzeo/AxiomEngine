@@ -69,7 +69,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       context=canvas.getContext("webgpu");
       if(!context) throw new Error("WebGPU canvas context is unavailable");
       const format=gpu.getPreferredCanvasFormat();
-      context.configure({device,format,alphaMode:"opaque"});
+      context.configure({device,format,viewFormats:[format+"-srgb"],alphaMode:"opaque"});
       const module=device.createShaderModule({code:shader});
       const errors=(await module.getCompilationInfo()).messages.filter(message=>message.type==="error");
       if(errors.length) throw new Error(errors.map(error=>error.message).join("; "));
@@ -163,7 +163,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       const draws=replacement.compileScene(kernelScene,localAssets);
       if(snapshot.playing)replacement.configurePhysics(kernelScene);
       if(scene.twoD&&device){
-        twoDGPU??=await createTwoDGPU({device,format:gpu.getPreferredCanvasFormat(),width:canvas.width,height:canvas.height,textureFor});
+        twoDGPU??=await createTwoDGPU({device,format:gpu.getPreferredCanvasFormat()+'-srgb',width:canvas.width,height:canvas.height,textureFor});
         await twoDGPU.prepare([...localAssets.values()].filter(a=>a.kind==='sprite').map(a=>a.dataUrl));
       }else if(scene.rendering&&device){
         production??=await (productionLoading??=createProductionGPU({device,format:gpu.getPreferredCanvasFormat(),width:canvas.width,height:canvas.height,textureFor,getTexture:url=>textures.get(url??"white"),reportError}));
@@ -222,7 +222,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(runtimeScene.twoD){
         twoDTime=kernel.twoD(playing&&!twoDPaused?delta:0);
         lastTwoDPlan=twoDPlan(previewScene??runtimeScene,assets,camera,canvas.width,canvas.height,{view,time:twoDTime,kernel,paused:twoDPaused});
-        renderStats=device?twoDGPU.render(lastTwoDPlan,context.getCurrentTexture().createView()):{...lastTwoDPlan.stats,submitted:0,backend:'null',pixels:'unavailable'};
+        renderStats=device?twoDGPU.render(lastTwoDPlan,context.getCurrentTexture().createView({format:gpu.getPreferredCanvasFormat()+'-srgb'})):{...lastTwoDPlan.stats,submitted:0,backend:'null',pixels:'unavailable'};
         diagnostic.rendering=renderStats;diagnostic.camera=lastTwoDPlan.pixel.camera;
       }else if(runtimeScene.rendering){
         

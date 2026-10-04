@@ -1,6 +1,16 @@
+# M10 2D demos
+
+`npm.cmd run demo` creates two new editable M10 projects and preserves all older
+projects. See [Spanish M10 controls guide](M10_GUIDE.md): Pixel Adventure combines
+sprites, tilemap, animation, lights, particles, physics and UI pause; Sprite Batching
+Lab shows 160 atlas sprites, alpha order and actual batch diagnostics.
+
+Earlier samples remain available through `demo:m7`, `demo:m8` and
+`demo:corrections`. Their guides below describe historical milestone behavior.
+
 # M9.2 editor refinement demos
 
-See [the Spanish interaction guide](M9_2_GUIDE.md). `npm.cmd run demo` creates
+See [the Spanish interaction guide](M9_2_GUIDE.md). `npm.cmd run demo:corrections` creates
 nine projects with fresh IDs, preserving existing projects. The refreshed three
 M9.2 scenes cover compact tree/icon browsing, Ctrl/Shift selection, group transforms,
 hierarchy ordering, component search and resizable saved project panels.
@@ -22,7 +32,7 @@ From the extracted milestone directory on Windows:
 
 ```powershell
 npm.cmd ci
-npm.cmd run demo
+npm.cmd run demo:corrections
 npm.cmd run dev
 ```
 
@@ -34,7 +44,7 @@ projects. Keep the entire `.axiom/projects` directory when moving projects.
 The M7.1 generator saves both complete scenes before compiling C#. If compilation
 fails, it prints the cause and keeps both projects available: physics still runs,
 but the 2D keyboard controller is not attached. After resolving the reported
-compiler error, rerun `npm.cmd run demo` to create a fresh pair with the controller.
+compiler error, rerun `npm.cmd run demo:m7` to create a fresh pair with the controller.
 Select projects ending in `(M7.1)`; an empty project left by the older generator
 is preserved and does not become populated by Refresh List. Refresh only lists
 projects already saved on disk.

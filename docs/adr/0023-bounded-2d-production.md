@@ -18,7 +18,8 @@ are visuals; collider entities are authored independently, never inferred silent
 
 The DOM-free 2D planner orders world quads by order/authored sequence, then UI.
 Only consecutive compatible texture batches merge, preserving alpha ordering.
-WebGPU uses premultiplied blending with depth writes disabled. Nearest sampling
+WebGPU uses premultiplied linear blending into an sRGB canvas view with depth
+writes disabled; display encoding preserves sampled unlit PNG colors. Nearest sampling
 and an integer-scaled, letterboxed reference canvas implement Game pixel-perfect
 projection; its camera translation snaps to pixel units. Scene does not snap.
 At most 8192 quads, 1024 batches, 4096 tile cells total, 2048 particle slots,

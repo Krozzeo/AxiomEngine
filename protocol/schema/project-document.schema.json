@@ -211,6 +211,167 @@
                     "maximum": 100
                   }
                 }
+              },
+              "material": {
+                "type": "object",
+                "properties": {
+                  "baseColor": {
+                    "type": "array",
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "metallic": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "roughness": {
+                    "type": "number",
+                    "minimum": 0.045,
+                    "maximum": 1
+                  },
+                  "emissive": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 10000
+                    }
+                  },
+                  "alphaMode": {
+                    "type": "string",
+                    "enum": [
+                      "opaque",
+                      "mask",
+                      "blend"
+                    ]
+                  },
+                  "alphaCutoff": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "unlit": {
+                    "type": "boolean"
+                  },
+                  "castShadow": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "baseColor",
+                  "metallic",
+                  "roughness",
+                  "emissive",
+                  "alphaMode",
+                  "alphaCutoff",
+                  "unlit",
+                  "castShadow"
+                ]
+              },
+              "light": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "directional",
+                      "point",
+                      "spot"
+                    ]
+                  },
+                  "color": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "intensity": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "range": {
+                    "type": "number",
+                    "minimum": 0.01,
+                    "maximum": 10000
+                  },
+                  "direction": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": -1,
+                      "maximum": 1
+                    }
+                  },
+                  "innerAngle": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 89
+                  },
+                  "outerAngle": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 89
+                  },
+                  "shadow": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "color",
+                  "intensity",
+                  "range",
+                  "direction",
+                  "innerAngle",
+                  "outerAngle",
+                  "shadow"
+                ]
+              },
+              "lod": {
+                "type": "object",
+                "properties": {
+                  "levels": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "assetId": {
+                          "type": "string",
+                          "pattern": "^asset://[0-9a-f]{64}$"
+                        },
+                        "distance": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 10000
+                        }
+                      },
+                      "required": [
+                        "assetId",
+                        "distance"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "levels"
+                ]
               }
             }
           }
@@ -354,6 +515,77 @@
               }
             }
           }
+        },
+        "rendering": {
+          "type": "object",
+          "properties": {
+            "tier": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "culling": {
+              "type": "string",
+              "enum": [
+                "cpu",
+                "gpu",
+                "none"
+              ]
+            },
+            "exposure": {
+              "type": "number",
+              "minimum": 0.01,
+              "maximum": 100
+            },
+            "toneMapping": {
+              "type": "string",
+              "enum": [
+                "aces",
+                "reinhard",
+                "none"
+              ]
+            },
+            "environment": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "shadows": {
+              "type": "boolean"
+            },
+            "shadowSize": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "bloom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "fxaa": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "tier",
+            "culling",
+            "exposure",
+            "toneMapping",
+            "environment",
+            "shadows",
+            "shadowSize",
+            "bloom",
+            "fxaa"
+          ]
         }
       }
     }

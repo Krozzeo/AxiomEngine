@@ -1,3 +1,4 @@
+import {materialDefaults,renderingDefaults} from '../../../engine/renderer/render-plan.mjs';
 export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, onSelection=()=>{},onView=()=>{}, defaultScript = "" }) {
   const $ = id => document.querySelector(`#${id}`);
   const supported = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"];
@@ -29,6 +30,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("scene-redo").disabled = !editing || !state.canRedo;
     $("scene-delete").disabled = !editing || !entity;
     $("entity-fields").disabled = !editing || !entity;
+    for(const key of ['material','light','lod','render'])$(key+'-fields').disabled=!editing||!(key==='render'?project:entity);
     $("physics-fields").disabled = !editing || !entity;
     $("project-close").disabled=!editing||!project;
     const chosen=project?.scene.assets?.find(a=>a.id===$("asset-list").value);
@@ -71,6 +73,14 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if(project?.scene.assets?.some(a=>a.id===textureSelection))$("asset-texture").value=textureSelection;
     $("camera-projection").value=project?.scene.camera?.projection??"perspective";
     $("entity-name").value = entity?.name ?? "";
+    const m={...materialDefaults,...entity?.material},l=entity?.light??{kind:'point',color:[1,1,1],intensity:20,range:10,direction:[0,-1,0],innerAngle:15,outerAngle:30,shadow:false},r={...renderingDefaults,...project?.scene.rendering};
+    const putVector=(id,value)=>value.forEach((v,i)=>{$(id+'-'+i).value=String(v);});
+    putVector('material-color',m.baseColor);putVector('material-emissive',m.emissive);for(const [id,value]of [['material-metallic',m.metallic],['material-roughness',m.roughness],['material-alpha',m.alphaMode],['material-cutoff',m.alphaCutoff],['light-kind',l.kind],['light-intensity',l.intensity],['light-range',l.range],['light-inner',l.innerAngle],['light-outer',l.outerAngle],['render-tier',r.tier],['render-culling',r.culling],['render-exposure',r.exposure],['render-tone',r.toneMapping],['render-shadow-size',r.shadowSize],['render-bloom',r.bloom]])$(id).value=String(value);
+    putVector('light-color',l.color);putVector('light-direction',l.direction);putVector('render-environment',r.environment);
+    for(const [id,value]of [['material-unlit',m.unlit],['material-shadow',m.castShadow],['light-shadow',l.shadow],['render-shadows',r.shadows],['render-fxaa',r.fxaa]])$(id).checked=value;
+    for(let i=0;i<3;i++){const select=$('lod-asset-'+i);select.replaceChildren();const none=document.createElement('option');none.value='';none.textContent='None';select.append(none);for(const a of project?.scene.assets??[])if(a.kind==='mesh'){const o=document.createElement('option');o.value=a.id;o.textContent=a.name;select.append(o);}select.value=entity?.lod?.levels[i]?.assetId??'';$('lod-distance-'+i).value=String(entity?.lod?.levels[i]?.distance??(i+1)*10);}
+    $('render-remove').disabled=true;
+
     $("physics-shape").value=entity?.collider?.shape??"none";
     $("physics-dimension").value=String(entity?.collider?.dimension??2);
     $("physics-motion").value=entity?.rigidBody?"dynamic":"static";
@@ -123,6 +133,18 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if (projects.some(project => project.id === previous)) $("project-list").value = previous;
   }
   const mutation = extra => ({ id: state.project?.id, expectedSceneRevision: state.sceneRevision, ...extra });
+  const number=id=>Number($(id).value),vector=(id,n)=>Array.from({length:n},(_,i)=>number(id+'-'+i));
+  for(const key of ['material','light','lod','render']){
+    $(key+'-form').addEventListener('submit',event=>{event.preventDefault();return act(async()=>{
+      let value;
+      if(key==='material')value={baseColor:vector('material-color',4),metallic:number('material-metallic'),roughness:number('material-roughness'),emissive:vector('material-emissive',3),alphaMode:$('material-alpha').value,alphaCutoff:number('material-cutoff'),unlit:$('material-unlit').checked,castShadow:$('material-shadow').checked};
+      if(key==='light')value={kind:$('light-kind').value,color:vector('light-color',3),intensity:number('light-intensity'),range:number('light-range'),direction:vector('light-direction',3),innerAngle:number('light-inner'),outerAngle:number('light-outer'),shadow:$('light-shadow').checked};
+      if(key==='lod')value={levels:Array.from({length:3},(_,i)=>({assetId:$('lod-asset-'+i).value,distance:number('lod-distance-'+i)})).filter(l=>l.assetId)};
+      if(key==='render')value={tier:$('render-tier').value,culling:$('render-culling').value,exposure:number('render-exposure'),toneMapping:$('render-tone').value,environment:vector('render-environment',3),shadows:$('render-shadows').checked,shadowSize:number('render-shadow-size'),bloom:number('render-bloom'),fxaa:$('render-fxaa').checked};
+      await run(key==='render'?'scene.rendering.update':'scene.'+key+'.set',mutation({...(key==='render'?{}:{entityId:selected}),value}));
+    });});
+    if(key!=='render')$(key+'-remove').addEventListener('click',()=>act(()=>run('scene.component.remove',mutation({entityId:selected,component:({material:'Material',light:'Light',lod:'LOD'})[key]}))));
+  }
   async function switchProject(type, data) {
     if (state.dirty && !confirmDiscard()) return;
     await run(type, { ...data, discardChanges: state.dirty, expectedSceneRevision: state.sceneRevision });

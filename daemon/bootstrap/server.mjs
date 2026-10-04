@@ -176,11 +176,22 @@ export async function startServer(options = {}) {
         });
       }
 
+      // Browsers request this optional resource automatically. No icon is shipped.
+      if (request.method === "GET" && url.pathname === "/favicon.ico") {
+        response.writeHead(204, SECURITY_HEADERS);
+        return response.end();
+      }
+
       if (request.method === "GET") {
         const relative = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
         if (relative.includes("..") || relative.includes("\\")) return json(response, 400, { code: "AX_HTTP_0001" });
         const path = join(DIST, relative);
-        const content = await readFile(path);
+        let content;
+        try { content = await readFile(path); }
+        catch (error) {
+          if (error.code === "ENOENT") return json(response, 404, { code: "AX_HTTP_0002", cause: "Asset not found" });
+          throw error;
+        }
         response.writeHead(200, { ...SECURITY_HEADERS, "Content-Type": mime(path), "Cache-Control": "no-store" });
         return response.end(content);
       }

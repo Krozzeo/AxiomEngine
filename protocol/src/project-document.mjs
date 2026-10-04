@@ -60,6 +60,11 @@ export function validateProject(document) {
     if(Math.hypot(...entity.transform.rotation)<1e-8) throw projectError("AX_PROJECT_0002","Quaternion must not be zero");
     if(entity.renderable && !assets.some(asset=>asset.id===entity.renderable.assetId && asset.kind===entity.renderable.kind)) throw projectError("AX_PROJECT_0002","Renderable references a missing or incompatible asset");
   }
+  for(const entity of document.scene.entities) {
+    if(entity.light&&(Math.hypot(...entity.light.direction)<1e-6||entity.light.innerAngle>=entity.light.outerAngle))throw projectError("AX_PROJECT_0002","Light requires a direction and innerAngle < outerAngle");
+    if(entity.lod){if(entity.renderable?.kind!=="mesh")throw projectError("AX_PROJECT_0002","LOD requires a mesh Renderable");let distance=0;for(const level of entity.lod.levels){if(level.distance<=distance||!assets.some(a=>a.id===level.assetId&&a.kind==="mesh"))throw projectError("AX_PROJECT_0002","LOD levels need ascending distances and imported meshes");distance=level.distance;}}
+  }
+  if(document.scene.entities.filter(e=>e.light).length>64)throw projectError("AX_PROJECT_0002","Renderer supports at most 64 lights");
   const camera=document.scene.camera;
   if(camera && Math.hypot(...camera.position.map((v,i)=>v-camera.target[i]))<1e-6) throw projectError("AX_PROJECT_0002","Camera position and target must differ");
   return document;

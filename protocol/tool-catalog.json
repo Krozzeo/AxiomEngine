@@ -306,6 +306,171 @@
                         }
                       },
                       "additionalProperties": false
+                    },
+                    "material": {
+                      "type": "object",
+                      "properties": {
+                        "baseColor": {
+                          "type": "array",
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "metallic": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "roughness": {
+                          "type": "number",
+                          "minimum": 0.045,
+                          "maximum": 1
+                        },
+                        "emissive": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 10000
+                          }
+                        },
+                        "alphaMode": {
+                          "type": "string",
+                          "enum": [
+                            "opaque",
+                            "mask",
+                            "blend"
+                          ]
+                        },
+                        "alphaCutoff": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "unlit": {
+                          "type": "boolean"
+                        },
+                        "castShadow": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "baseColor",
+                        "metallic",
+                        "roughness",
+                        "emissive",
+                        "alphaMode",
+                        "alphaCutoff",
+                        "unlit",
+                        "castShadow"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "light": {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "directional",
+                            "point",
+                            "spot"
+                          ]
+                        },
+                        "color": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "intensity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 10000
+                        },
+                        "range": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 10000
+                        },
+                        "direction": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": -1,
+                            "maximum": 1
+                          }
+                        },
+                        "innerAngle": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 89
+                        },
+                        "outerAngle": {
+                          "type": "number",
+                          "minimum": 0.1,
+                          "maximum": 89
+                        },
+                        "shadow": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "color",
+                        "intensity",
+                        "range",
+                        "direction",
+                        "innerAngle",
+                        "outerAngle",
+                        "shadow"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "lod": {
+                      "type": "object",
+                      "properties": {
+                        "levels": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "assetId": {
+                                "type": "string",
+                                "pattern": "^asset://[0-9a-f]{64}$"
+                              },
+                              "distance": {
+                                "type": "number",
+                                "minimum": 0.01,
+                                "maximum": 10000
+                              }
+                            },
+                            "required": [
+                              "assetId",
+                              "distance"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "levels"
+                      ],
+                      "additionalProperties": false
                     }
                   },
                   "additionalProperties": false
@@ -453,6 +618,78 @@
                     "additionalProperties": false
                   }
                 },
+                "additionalProperties": false
+              },
+              "rendering": {
+                "type": "object",
+                "properties": {
+                  "tier": {
+                    "type": "string",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "culling": {
+                    "type": "string",
+                    "enum": [
+                      "cpu",
+                      "gpu",
+                      "none"
+                    ]
+                  },
+                  "exposure": {
+                    "type": "number",
+                    "minimum": 0.01,
+                    "maximum": 100
+                  },
+                  "toneMapping": {
+                    "type": "string",
+                    "enum": [
+                      "aces",
+                      "reinhard",
+                      "none"
+                    ]
+                  },
+                  "environment": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    }
+                  },
+                  "shadows": {
+                    "type": "boolean"
+                  },
+                  "shadowSize": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 100
+                  },
+                  "bloom": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "fxaa": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "tier",
+                  "culling",
+                  "exposure",
+                  "toneMapping",
+                  "environment",
+                  "shadows",
+                  "shadowSize",
+                  "bloom",
+                  "fxaa"
+                ],
                 "additionalProperties": false
               }
             },
@@ -1188,7 +1425,10 @@
             "enum": [
               "Renderable",
               "Collider",
-              "RigidBody"
+              "RigidBody",
+              "Material",
+              "Light",
+              "LOD"
             ]
           },
           "workspaceId": {
@@ -1448,7 +1688,10 @@
               "Transform",
               "Renderable",
               "Collider",
-              "RigidBody"
+              "RigidBody",
+              "Material",
+              "Light",
+              "LOD"
             ]
           },
           "workspaceId": {
@@ -2136,6 +2379,378 @@
           "id",
           "expectedSceneRevision",
           "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.material.set",
+      "description": "Set the canonical material component with revision checks and Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "baseColor": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "metallic": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "roughness": {
+                "type": "number",
+                "minimum": 0.045,
+                "maximum": 1
+              },
+              "emissive": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 10000
+                }
+              },
+              "alphaMode": {
+                "type": "string",
+                "enum": [
+                  "opaque",
+                  "mask",
+                  "blend"
+                ]
+              },
+              "alphaCutoff": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "unlit": {
+                "type": "boolean"
+              },
+              "castShadow": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "baseColor",
+              "metallic",
+              "roughness",
+              "emissive",
+              "alphaMode",
+              "alphaCutoff",
+              "unlit",
+              "castShadow"
+            ],
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.light.set",
+      "description": "Set the canonical light component with revision checks and Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "directional",
+                  "point",
+                  "spot"
+                ]
+              },
+              "color": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "intensity": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10000
+              },
+              "range": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 10000
+              },
+              "direction": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": -1,
+                  "maximum": 1
+                }
+              },
+              "innerAngle": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 89
+              },
+              "outerAngle": {
+                "type": "number",
+                "minimum": 0.1,
+                "maximum": 89
+              },
+              "shadow": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "kind",
+              "color",
+              "intensity",
+              "range",
+              "direction",
+              "innerAngle",
+              "outerAngle",
+              "shadow"
+            ],
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.lod.set",
+      "description": "Set the canonical lod component with revision checks and Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "levels": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 3,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "assetId": {
+                      "type": "string",
+                      "pattern": "^asset://[0-9a-f]{64}$"
+                    },
+                    "distance": {
+                      "type": "number",
+                      "minimum": 0.01,
+                      "maximum": 10000
+                    }
+                  },
+                  "required": [
+                    "assetId",
+                    "distance"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "levels"
+            ],
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.rendering.update",
+      "description": "Set HDR rendering, lighting tier and postprocessing settings with Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "tier": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "culling": {
+                "type": "string",
+                "enum": [
+                  "cpu",
+                  "gpu",
+                  "none"
+                ]
+              },
+              "exposure": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 100
+              },
+              "toneMapping": {
+                "type": "string",
+                "enum": [
+                  "aces",
+                  "reinhard",
+                  "none"
+                ]
+              },
+              "environment": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "shadows": {
+                "type": "boolean"
+              },
+              "shadowSize": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "bloom": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2
+              },
+              "fxaa": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "tier",
+              "culling",
+              "exposure",
+              "toneMapping",
+              "environment",
+              "shadows",
+              "shadowSize",
+              "bloom",
+              "fxaa"
+            ],
+            "additionalProperties": false
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "value"
         ],
         "additionalProperties": false
       }

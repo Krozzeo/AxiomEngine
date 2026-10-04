@@ -27,8 +27,18 @@ Non-negotiable foundations:
 
 ## Current state
 
-Version `0.0.18`: M0–M8 acceptance is complete. M8 passes 8/8 criteria;
-weighted whole-project completion is 54%. M9 Renderer Production Foundation is next.
+Version `0.0.19`: M0–M9 acceptance is complete. M9 passes 8/8 (100%);
+weighted whole-project progress is 62%. Real Chromium software WebGPU acceptance
+and image review verify PBR/HDR, Forward+ instancing, compute culling, authored
+LOD, shadows/postprocessing, Inspector Undo, causal renderer references, quality
+fallbacks and Null. Read M9_CURRENT_REPORT.md, M9_RENDERER.md and ADR-0022 first.
+All 17 jobs in CI run 37166766454 pass at exact executable code commit
+5f19c2c0a640164742dc338754d4abf27b537869, including Windows C# development.
+Closure documentation/evidence is a later commit; no runtime code changes.
+The repository is public with explicit owner authorization. The earlier private
+included Actions quota was exhausted; no spending/payment setting was changed.
+CI tests PRs once, main pushes and manual dispatch; browser runners are isolated.
+
 Read M8_DIAGNOSTICS_AND_EDITOR.md, M8_CURRENT_REPORT.md, ADR-0021 and demos/README.md.
 Read M7_PHYSICS.md for the unchanged translational physics boundary.
 Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
@@ -39,12 +49,13 @@ Implemented: authenticated loopback daemon; schema-backed atomic project
 persistence; shared authoring workspace; bounded undo/redo; PNG and static GLB
 imports with content-hashed sources; sprite/mesh placement; position/scale/name
 editing; Rust/Wasm model and camera matrices; WebGPU textured rendering with
-simple lighting/depth; orthographic/perspective cameras; isolated Play/Stop;
+legacy lighting/depth plus bounded opt-in PBR/HDR/Forward+; orthographic/perspective
+cameras; isolated Play/Stop;
 matching real Rust Null processing; causal events and bounded diagnostics.
 
-94 Node tests, 30 Rust tests, 16 schema documents, both generated catalogs and
-three architecture rules pass. M8 release CI evidence is recorded in
-M8_CURRENT_REPORT.md, including M2–M8 Chromium workflows and development/AOT C#.
+102 Node tests, 30 Rust tests, 16 schema documents, 55 semantic tools, generated
+bindings and three architecture rules pass. M2–M9 Chromium workflows, Linux
+development/AOT C# and Windows development pass. Read M9_CURRENT_REPORT.md.
 The MCP acceptance launches a separate stdio client process, creates/edits a scene
 without editor clicks, synchronizes Play/Stop and obtains a real WebGPU PNG plus
 same-frame semantic context. Screenshot evidence was reviewed.
@@ -157,12 +168,12 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Begin M9 per M9_PLAN.md and master specification section 128. Read accepted renderer,
-resource and causal-evidence ADRs first. Establish PBR/HDR material/light contracts,
-then incremental real renderer passes, bounded resource lifecycle, frame evidence,
-golden scenes and benchmarks. Preserve M6 proposal isolation, M8 stopped preview
-and editor-only cameras. Create useful editable demos alongside every milestone
-when the new capabilities support them, with controls and expected results.
+Implement M10 per M10_PLAN.md and master specification section 129. M9 is
+complete and PR #9 is ready for review, stacked on unmerged #8. Read M9/M8/M7/M6
+contracts before touching renderer, input, physics or proposal logic. Preserve M6
+proposal isolation, M8 stopped Game preview/editor-only camera and M9 legacy scene
+compatibility. Create editable demos with controls, expected results and meaningful
+browser acceptance alongside each milestone. No required user-only M9 test remains.
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and

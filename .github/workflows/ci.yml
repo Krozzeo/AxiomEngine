@@ -1,8 +1,16 @@
 name: CI
 
 on:
+  # Milestone branches are tested through their PR once, rather than again on push.
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
+
+# A newer revision supersedes an older run of the same PR/branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -101,9 +109,10 @@ jobs:
     timeout-minutes: 15
     strategy:
       fail-fast: false
-      max-parallel: 3
+      # Isolated runners: parallel browser jobs do not share GPU or scene state.
+      max-parallel: 8
       matrix:
-        milestone: [m2, m3, m4, m5, m6, m7, m8]
+        milestone: [m9, m2, m3, m4, m5, m6, m7, m8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -125,6 +134,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
       - run: node scripts/benchmarks/causal-diagnostics.mjs
         if: matrix.milestone == 'm8'
+      - run: node scripts/benchmarks/renderer.mjs
+        if: matrix.milestone == 'm9'
       - run: node scripts/benchmarks/physics.mjs
         if: matrix.milestone == 'm7'
       - name: Run isolated browser acceptance
@@ -142,7 +153,9 @@ jobs:
             .axiom/browser-m5-evidence
             .axiom/browser-m6-evidence
             .axiom/browser-m7-evidence
+            .axiom/browser-m9-evidence
             .axiom/browser-m8-evidence
             dist/editor/axiom-kernel.wasm
             .axiom/physics-benchmark.json
             .axiom/causal-benchmark.json
+            .axiom/renderer-benchmark.json

@@ -530,6 +530,14 @@
         "diagnostics.explain",
         "runtime.status"
       ]
+    },
+    {
+      "code": "AX_CAUSAL_0140",
+      "meaning": "Production renderer decision reference; per-entity pixel visibility remains unproven",
+      "inspect": [
+        "diagnostics.explain",
+        "runtime.status"
+      ]
     }
   ]
 }

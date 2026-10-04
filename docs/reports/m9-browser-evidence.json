@@ -1,0 +1,48 @@
+{
+  "criteria": [
+    "PBR GGX, three light kinds, HDR and stopped Game preview draw real geometry",
+    "CPU and actual compute/indirect GPU culling produce identical golden pixels",
+    "bloom, tone mapping and directional PCF shadows have observed pixel effects",
+    "human material Inspector and Undo use canonical authoring commands",
+    "145 instances batch into at most three draws, actual GPU readback agrees, authored LOD and low-tier fallback operate",
+    "production culling reference appears in bounded causal graph",
+    "Null retains rendering decisions with zero submissions and no invented GPU/pixel evidence"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "samples": [
+    {
+      "instances": 145,
+      "cpuVisible": 121,
+      "culled": 24,
+      "batches": 2,
+      "vertices": 5616,
+      "lodInstances": 1,
+      "lights": 1,
+      "culling": "gpu",
+      "lighting": "forward+",
+      "pixels": "unproven",
+      "submittedReference": 121,
+      "gpuSample": {
+        "frame": 1,
+        "traceId": "fe117b80-aaa2-4efc-a6e4-f7fa647c8922",
+        "instances": 121,
+        "batches": 2,
+        "source": "GPU indirect buffer readback",
+        "pixels": "unproven"
+      },
+      "shadowLight": "entity://e48bef6e-ac6c-473f-a593-763817665b65",
+      "fallbacks": [],
+      "pipelines": 8,
+      "vertexBytes": 14976,
+      "resourceBatches": 2,
+      "hdrFormat": "rgba16float"
+    }
+  ],
+  "httpErrors": [],
+  "passed": true,
+  "codeCommit": "5f19c2c0a640164742dc338754d4abf27b537869",
+  "runId": 37166766454,
+  "environment": "Chromium under Xvfb, Linux CI, software Vulkan/SwiftShader",
+  "visualReview": "Gallery and instancing/LOD screenshots inspected; material highlights, floor shadows, colored lights and selected low LOD visible"
+}

@@ -14,7 +14,7 @@ export class AgentService {
    case 'project.query':return page((await w.store.run('project.list',{})).projects,data,{activeProjectId:project?.id??null});
    case 'scene.query':return bounded({...summary,sceneId:project.scene.id,entityCount:project.scene.entities.length,assetCount:project.scene.assets?.length??0,camera:project.scene.camera??null,script:project.scene.script?{attachments:project.scene.script.attachments.length,build:project.scene.script.build.id}:null},data.maxBytes);
    case 'asset.query':return page((project.scene.assets??[]).filter(a=>!data.name||a.name.toLowerCase().includes(data.name.toLowerCase())),data,{sceneRevision:w.revision});
-   case 'entity.query':return page(project.scene.entities.filter(e=>(!data.entityId||e.id===data.entityId)&&(!data.name||e.name.toLowerCase().includes(data.name.toLowerCase()))&&(!data.component||data.component==='Transform'||!!e[({Renderable:'renderable',Collider:'collider',RigidBody:'rigidBody'})[data.component]])),data,{sceneRevision:w.revision});
+   case 'entity.query':return page(project.scene.entities.filter(e=>(!data.entityId||e.id===data.entityId)&&(!data.name||e.name.toLowerCase().includes(data.name.toLowerCase()))&&(!data.component||data.component==='Transform'||!!e[({Renderable:'renderable',Collider:'collider',RigidBody:'rigidBody',Material:'material',Light:'light',LOD:'lod'})[data.component]])),data,{sceneRevision:w.revision});
    case 'runtime.status':return bounded({...summary,editor:this.bridge.status()},data.maxBytes);
    case 'renderer.capture':return this.bridge.capture(data);
    case 'events.query':return this.bus.eventPage(data);
@@ -25,7 +25,7 @@ export class AgentService {
     let value;
     if(data.kind==='tool'){value=toolMap.get(data.name);if(!value?.mcp)value=null;}
     else if(data.kind==='error')value=errors.errors.find(e=>e.code===data.name);
-    else {const key={Transform:'transform',Renderable:'renderable',Collider:'collider',RigidBody:'rigidBody'}[data.name];if(key)value={name:data.name,required:key==='transform',schema:projectSchema.properties.scene.properties.entities.items.properties[key]};}
+    else {const key={Transform:'transform',Renderable:'renderable',Collider:'collider',RigidBody:'rigidBody',Material:'material',Light:'light',LOD:'lod'}[data.name];if(key)value={name:data.name,required:key==='transform',schema:projectSchema.properties.scene.properties.entities.items.properties[key]};}
     if(!value)throw agentError('AX_AGENT_0004','Requested API is unavailable');return bounded(value,data.maxBytes);
    }
    default:throw agentError('AX_AGENT_0004','Tool unavailable');

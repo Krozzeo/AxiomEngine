@@ -1,0 +1,29 @@
+{
+  "scope": "CPU render-plan only; not GPU frame time or a physical hardware tier certification",
+  "samples": [
+    {
+      "tier": "low",
+      "instances": 128,
+      "p95Ms": 1.0750249999999966,
+      "budgetMs": 4,
+      "batches": 1
+    },
+    {
+      "tier": "medium",
+      "instances": 512,
+      "p95Ms": 3.1761450000000195,
+      "budgetMs": 12,
+      "batches": 1
+    },
+    {
+      "tier": "high",
+      "instances": 1024,
+      "p95Ms": 6.259045000000015,
+      "budgetMs": 24,
+      "batches": 1
+    }
+  ],
+  "passed": true,
+  "codeCommit": "5f19c2c0a640164742dc338754d4abf27b537869",
+  "runId": 37166766454
+}

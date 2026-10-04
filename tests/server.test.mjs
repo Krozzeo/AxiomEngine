@@ -42,6 +42,12 @@ test("daemon rebuilds and serves editor assets when dist is absent", async (cont
   const wasmResponse = await fetch(`${instance.origin}/axiom-kernel.wasm`);
   assert.equal(wasmResponse.status, 200);
   assert.equal(WebAssembly.validate(await wasmResponse.arrayBuffer()), true);
+  const favicon = await fetch(`${instance.origin}/favicon.ico`);
+  assert.equal(favicon.status, 204);
+  assert.equal(await favicon.text(), "");
+  const missing = await fetch(`${instance.origin}/missing-editor-asset.js`);
+  assert.equal(missing.status, 404);
+  assert.equal((await missing.json()).code, "AX_HTTP_0002");
 });
 
 test("browser-to-daemon walking skeleton negotiates, commands and traces", async (context) => {

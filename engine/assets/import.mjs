@@ -99,6 +99,10 @@ export function parseGlb(bytes) {
         const material=primitive.material===undefined?{}:json.materials?.[primitive.material]; check(material,"Missing material");
         const pbr=material.pbrMetallicRoughness??{}, color=pbr.baseColorFactor??[1,1,1,1];
         check(array(color,4)&&color.every(v=>v>=0&&v<=1),"Invalid base color");
+        const metallic=pbr.metallicFactor??1,roughness=pbr.roughnessFactor??1,emissive=material.emissiveFactor??[0,0,0],alphaMode=material.alphaMode??"OPAQUE",alphaCutoff=material.alphaCutoff??.5;
+        check([metallic,roughness,alphaCutoff].every(v=>Number.isFinite(v)&&v>=0&&v<=1)&&array(emissive,3)&&emissive.every(v=>v>=0&&v<=1)&&["OPAQUE","MASK","BLEND"].includes(alphaMode),"Invalid PBR material");
+        const normals=primitive.attributes?.NORMAL===undefined?null:accessor(primitive.attributes.NORMAL,"VEC3",true);
+        check(!normals||normals.length===positions.length&&normals.every(n=>Math.hypot(...n)>1e-8),"Invalid normal attributes");
         const tex=pbr.baseColorTexture;
         check(!tex || (tex.texCoord??0)===0,"Only TEXCOORD_0 is supported");
         const uv=tex?accessor(primitive.attributes?.TEXCOORD_0,"VEC2",true):null;
@@ -109,10 +113,14 @@ export function parseGlb(bytes) {
           for(const point of tri)for(let axis=0;axis<3;axis++){check(Math.abs(point[axis])<=1e6,"Mesh coordinates exceed supported range");minimum[axis]=Math.min(minimum[axis],point[axis]);maximum[axis]=Math.max(maximum[axis],point[axis]);}
           const a=tri[1].map((v,k)=>v-tri[0][k]), b=tri[2].map((v,k)=>v-tri[0][k]);
           const normal=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]], length=Math.hypot(...normal)||1;
-          for(let j=0;j<3;j++) output.push(...tri[j],...normal.map(v=>v/length),...(uv?.[indices[i+j]]??[0,0]));
+          for(let j=0;j<3;j++) {
+            let n=normal.map(v=>v/length);
+            if(normals){const source=normals[indices[i+j]],a=[matrix[0],matrix[1],matrix[2]],b=[matrix[4],matrix[5],matrix[6]],c=[matrix[8],matrix[9],matrix[10]],cross=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],A=cross(b,c),B=cross(c,a),C=cross(a,b),det=a.reduce((v,x,i)=>v+x*A[i],0),cofactor=A.map((v,i)=>v*source[0]+B[i]*source[1]+C[i]*source[2]),length=Math.hypot(...cofactor)||1;n=cofactor.map(v=>v/length*(det<0?-1:1));}
+            output.push(...tri[j],...n,...(uv?.[indices[i+j]]??[0,0]));
+          }
         }
         check(output.every(Number.isFinite),"Invalid transformed geometry");
-        primitives.push({ vertices: output, color, texture: tex?texture(tex.index):null, unlit: !!material.extensions?.KHR_materials_unlit });
+        primitives.push({ vertices: output, color, texture: tex?texture(tex.index):null, unlit: !!material.extensions?.KHR_materials_unlit, material: {metallic,roughness:Math.max(.045,roughness),emissive,alphaMode:alphaMode.toLowerCase(),alphaCutoff} });
       }
     }
     const next=new Set(ancestors);next.add(index);

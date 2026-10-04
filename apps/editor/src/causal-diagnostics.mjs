@@ -23,14 +23,15 @@ export function explainDecision(e,args){
   else if(!asset.loaded)add('AX_CAUSAL_0103','Asset is not referenced by a drawable entity; no load was requested',{assetId:asset.id});
   else add('AX_CAUSAL_0104','Asset is loaded',{assetId:asset.id,kind:asset.kind});
  }else if(args.kind==='whyNotRendered'){
+  if(entity?.renderDecision)add('AX_CAUSAL_0140','Production renderer decision reference; GPU aggregate samples do not prove per-entity pixels',entity.renderDecision);
   if(!entity)add('AX_CAUSAL_0105','Entity is absent from this frame',{entityId:args.entityId});
   else if(!entity.renderable)add('AX_CAUSAL_0106','Entity has no Renderable component',{entityId:entity.id});
   else if(!asset||asset.error||!asset.loaded)add('AX_CAUSAL_0102','Renderable resource is unavailable',{assetId:entity.assetId,error:asset?.error??'No loaded asset'});
   else if(entity.kind!==asset.kind)add('AX_CAUSAL_0107','Renderable kind does not match the loaded asset',{expected:entity.kind,actual:asset.kind});
   else if(e.renderer==='null')add('AX_CAUSAL_0108','Null renderer submits no pixels',{renderer:e.renderer});
   else if(entity.degenerate)add('AX_CAUSAL_0109','Transform collapses drawable geometry',{scale:entity.scale});
-  else if(!entity.inFrustum)add('AX_CAUSAL_0110','Geometry is entirely outside a camera clip plane',{camera:e.camera,view:e.view});
-  else{add('AX_CAUSAL_0111','Geometry was submitted inside the camera frustum',{entityId:entity.id,drawCount:entity.drawCount});add('AX_CAUSAL_0112','Pixel visibility is not proven: depth occlusion, partial clipping and texture alpha require pixel evidence');status='inconclusive';}
+  else if(!entity.inFrustum&&e.rendering?.culling!=='none')add('AX_CAUSAL_0110','Geometry is entirely outside a camera clip plane',{camera:e.camera,view:e.view});
+  else{add('AX_CAUSAL_0111','Renderer admitted geometry; submitted draws do not prove visible pixels',{entityId:entity.id,drawCount:entity.drawCount});add('AX_CAUSAL_0112','Pixel visibility is not proven: depth occlusion, partial clipping and texture alpha require pixel evidence');status='inconclusive';}
  }else if(args.kind==='whyScriptNotRunning'){
   if(!e.script?.attached)add('AX_CAUSAL_0113','No compiled script is attached to this scene');
   else if(args.entityId&&!e.script.attachments.includes(args.entityId))add('AX_CAUSAL_0114','Script is not attached to this entity',{attachments:e.script.attachments});

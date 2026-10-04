@@ -52,6 +52,15 @@ try {
  await (await control(page,'#project-close')).click();await (await control(page,'#project-open')).click();await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.active;}catch{return false;}});
  report.criteria.push('saved script bundle reopens');
  await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);
+ // Modular script removal preserves the compiled source/build and is undoable.
+ const attached=(await state()).project.scene.script.attachments;
+ await (await control(page,'#script-remove')).click();await page.waitForFunction(()=>document.querySelector('#script-component').hidden);
+ assert.equal((await state()).project.scene.script.attachments.length,0);
+ await (await control(page,'#component-choice')).selectOption('Script');await (await control(page,'#component-add')).click();
+ await page.waitForFunction(()=>!document.querySelector('#script-component').hidden);assert.deepEqual((await state()).project.scene.script.attachments,attached);
+ await (await control(page,'#scene-undo')).click();assert.equal((await state()).project.scene.script.attachments.length,0);
+ await (await control(page,'#scene-undo')).click();assert.deepEqual((await state()).project.scene.script.attachments,attached);
+ report.criteria.push('Inspector script detach/reattach preserves build and attachments through Undo');
  await compile('using Axiom.Gameplay; namespace Game; public sealed class GameScript : Script { public override void OnUpdate(double deltaSeconds) { while(true) {} } }');
  await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.fault?.includes('timed out');}catch{return false;}});
  await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);report.criteria.push('infinite script terminated and editor remains responsive');

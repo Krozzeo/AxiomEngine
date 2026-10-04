@@ -40,8 +40,8 @@ pub extern "C" fn axiom_physics_add(
                 w.add(Body {
                     position: [px, py, pz],
                     velocity: [vx, vy, vz],
-                    rotation: [0.0,0.0,0.0,1.0],
-                    angular_velocity: [0.0;3],
+                    rotation: [0.0, 0.0, 0.0, 1.0],
+                    angular_velocity: [0.0; 3],
                     freeze_rotation: false,
                     half: [hx, hy, hz],
                     inverse_mass,
@@ -106,7 +106,7 @@ pub extern "C" fn axiom_physics_write(id: u32, index: u32, field: u32, value: f6
             0..=2 => b.position[field as usize] = value,
             3..=5 => b.velocity[field as usize - 3] = value,
             10..=12 => b.angular_velocity[field as usize - 10] = value,
-            13 => b.freeze_rotation=value!=0.0,
+            13 => b.freeze_rotation = value != 0.0,
             _ => return 2,
         };
         0
@@ -170,7 +170,33 @@ pub extern "C" fn axiom_physics_ray(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn axiom_physics_rotation(id:u32,index:u32,x:f64,y:f64,z:f64,w:f64)->u32{
- let q=[x,y,z,w];let norm=q.iter().map(|v|v*v).sum::<f64>().sqrt();if !norm.is_finite()||norm<1e-8{return 2;}
- REGISTRY.with_borrow_mut(|r|{let Some(b)=r.physics.get_mut(&id).and_then(|w|w.bodies.get_mut(index as usize))else{return 1;};b.rotation=if b.dimension==2{let angle=2.0*z.atan2(w);[0.0,0.0,(angle*0.5).sin(),(angle*0.5).cos()]}else{q.map(|v|v/norm)};0})
+pub extern "C" fn axiom_physics_rotation(
+    id: u32,
+    index: u32,
+    x: f64,
+    y: f64,
+    z: f64,
+    w: f64,
+) -> u32 {
+    let q = [x, y, z, w];
+    let norm = q.iter().map(|v| v * v).sum::<f64>().sqrt();
+    if !norm.is_finite() || norm < 1e-8 {
+        return 2;
+    }
+    REGISTRY.with_borrow_mut(|r| {
+        let Some(b) = r
+            .physics
+            .get_mut(&id)
+            .and_then(|w| w.bodies.get_mut(index as usize))
+        else {
+            return 1;
+        };
+        b.rotation = if b.dimension == 2 {
+            let angle = 2.0 * z.atan2(w);
+            [0.0, 0.0, (angle * 0.5).sin(), (angle * 0.5).cos()]
+        } else {
+            q.map(|v| v / norm)
+        };
+        0
+    })
 }

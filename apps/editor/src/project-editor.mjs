@@ -138,6 +138,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   async function run(type, data = {}) {
     const event = await send(type, data);
     adopt(event.payload.data);
+    if(['project.create','project.open','project.close','scene.asset.place','scene.primitive.create'].includes(type)&&$('file-menu'))$('file-menu').open=false;
     if("project" in event.payload.data) await onState({...event.payload.data,commandLineage:{messageId:event.causationId,correlationId:event.correlationId,traceId:event.traceId}});
     return event.payload.data;
   }

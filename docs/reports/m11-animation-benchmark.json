@@ -1,0 +1,30 @@
+{
+  "scope": "Actual Rust/Wasm pose evaluation, scalar boundary and CPU reference geometry/bounds; excludes GPU skinning and full-frame/hardware FPS",
+  "admissionThresholdMs": 350,
+  "reports": [
+    {
+      "instances": 1,
+      "vertices": 4096,
+      "jointsPerInstance": 3,
+      "p95Ms": 13.256917999999999
+    },
+    {
+      "instances": 8,
+      "vertices": 32768,
+      "jointsPerInstance": 3,
+      "p95Ms": 43.50074600000002
+    },
+    {
+      "instances": 16,
+      "vertices": 65536,
+      "jointsPerInstance": 3,
+      "p95Ms": 54.02907099999999
+    }
+  ],
+  "source": {
+    "runId": 37239883665,
+    "artifactId": 11317535770,
+    "executableCommit": "cc4b072cef49ffe7b9e9d8b9aea4a095275f8172",
+    "executableTree": "c265d3894305fae4973816320eb08bee6d2d0f8f"
+  }
+}

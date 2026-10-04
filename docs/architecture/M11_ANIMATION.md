@@ -1,6 +1,6 @@
 # M11 — animation contracts
 
-Status: implementation in progress; no acceptance claimed. Version 0.0.23.
+Status: complete; full CI, software WebGPU and Null acceptance verified. Version 0.0.23.
 
 GLB import retains static compatibility. Animated resources admit 128 nodes,
 8 skins with 64 joints each, 16 uniquely named clips, 256 channels and 4096
@@ -39,3 +39,22 @@ The 2D correction selects nearest sampling in Scene whenever pixelPerfect is
 enabled; only Game snaps the camera/uses integer scaling. Scene remains free.
 
 Reference: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
+
+## Shared operations
+
+`scene.animator.set(id, expectedSceneRevision, entityId, value)` authors the full
+bounded component and participates in one atomic Undo. Human forms use it too;
+agent authoring requires an isolated proposal. `scene.component.remove` removes
+Animator, and removing Renderable also removes its dependent Animator.
+`animation.query` requires project/revision and optionally entityId. It returns
+observed items with frame, trace and generation, or unavailable with a reason.
+`animation.control` requires project/revision/entityId and action pause, resume,
+state or parameter; name/value/duration supply the bounded action arguments.
+Live controls do not author the scene and require an active matching Play lease.
+
+The fixed C# compilation entry point remains `namespace Game; public sealed class
+GameScript : Script`. The M11 demo uses this same host contract. The SDK animation
+methods emit validated transient intents, and CurrentAnimation/WhyAnimationNotPlaying
+read the last observed runtime state sent with the callback. OnStart actions are
+applied after runtime world compilation; spawned instances inherit the authored
+Animator while retaining independent time/pose state.

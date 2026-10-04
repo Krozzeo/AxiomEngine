@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.0.23 — M11 General Animation
+
+M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.
+General GLB animation includes skeletons/skins, rigid TRS clips, Rust playback,
+shortest-path rotation interpolation, crossfades and bounded state machines.
+Animator Inspector, C# and AI controls share observed runtime state; canonical
+editing retains revisions, Undo, Save and isolated proposals. WebGPU skinning
+works in legacy/HDR, and Null consumes the same Rust poses. Pixel-perfect Scene
+uses nearest texture filtering while preserving its free editor camera.
+All 20 jobs in CI run 37239883665 pass at executable commit
+cc4b072cef49ffe7b9e9d8b9aea4a095275f8172 (tree c265d3894305fae4973816320eb08bee6d2d0f8f).
+135 Node and 39 Rust tests, nine new browser criteria and earlier regressions pass.
+Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
+Read docs/reports/M11_CURRENT_REPORT.md, docs/architecture/M11_ANIMATION.md and
+demos/M11_GUIDE.md. Next: M12 audio, per M12_PLAN.md/master section 131.
+PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
+
+
 ## 0.0.22 — M10 2D Production Foundation
 
 M10 (0.0.22) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 68%.

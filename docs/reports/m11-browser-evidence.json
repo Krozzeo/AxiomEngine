@@ -1,0 +1,58 @@
+{
+  "criteria": [
+    "Imported skeleton bind pose renders in stopped Game without advancing time",
+    "Human Animator fields use canonical authoring and one Undo",
+    "Real Rust pose drives WebGPU skinning; independent autoplay-disabled instance remains paused",
+    "Human pause freezes actual skinned pixels and resume advances the same instance",
+    "C# keyboard API, AI runtime parameter, crossfade and completion transitions expose observed currentAnimation/transition/reason without authoring",
+    "Stop restores deterministic bind pixels and discards runtime parameters without dirtying authoring",
+    "HDR and legacy passes consume the same GPU-skinned pose with animated bounds",
+    "Rigid clips animate normally; pixelPerfect Scene preserves exact sprite colors while retaining free camera",
+    "Null consumes real Rust animation and observed diagnostics with no GPU requirement"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "samples": [
+    {
+      "status": "observed",
+      "frame": 187,
+      "traceId": "49414b2f-d754-4976-9eb7-e017492a6425",
+      "generation": 4,
+      "sceneRevision": 4,
+      "items": [
+        {
+          "entityId": "entity://11e2d27e-4539-4203-9bae-819635184216",
+          "state": "Wave",
+          "currentAnimation": "Wave",
+          "time": 0.43331999999999965,
+          "loop": true,
+          "speed": 1,
+          "paused": false,
+          "transition": {
+            "source": "Idle",
+            "target": "Wave",
+            "weight": 0.7221999999999994
+          },
+          "whyAnimationNotPlaying": null,
+          "parameters": [
+            {
+              "name": "energy",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "total": 1,
+      "nextOffset": null
+    }
+  ],
+  "passed": true,
+  "source": {
+    "runId": 37239883665,
+    "artifactId": 11317535770,
+    "executableCommit": "cc4b072cef49ffe7b9e9d8b9aea4a095275f8172",
+    "executableTree": "c265d3894305fae4973816320eb08bee6d2d0f8f",
+    "visualReview": "Final editor, bind/Play, pause/reset, crossfade, HDR, rigid clips, pixel Scene/Game and Null screenshots reviewed"
+  }
+}

@@ -17,6 +17,7 @@ struct Registry {
     worlds: BTreeMap<u32, DemoKernel>,
     scenes: BTreeMap<u32, RuntimeScene>,
     cameras: BTreeMap<u32, Matrix>,
+    two_d: BTreeMap<u32, axiom_core::two_d::Clock>,
     physics: BTreeMap<u32, axiom_core::physics::World>,
 }
 
@@ -31,6 +32,40 @@ mod exports {
     use super::*;
 
     #[unsafe(no_mangle)]
+    pub extern "C" fn axiom_2d_tick(id: u32, delta: f64) -> f64 {
+        REGISTRY.with_borrow_mut(|r| {
+            r.two_d.get_mut(&id).map_or(f64::NAN, |c| {
+                if c.tick(delta) {
+                    c.elapsed
+                } else {
+                    f64::NAN
+                }
+            })
+        })
+    }
+    #[unsafe(no_mangle)]
+    pub extern "C" fn axiom_2d_animation(time: f64, fps: f64, count: u32, looping: u32) -> u32 {
+        axiom_core::two_d::animation_frame(time, fps, count, looping != 0)
+    }
+    #[unsafe(no_mangle)]
+    #[allow(clippy::too_many_arguments)]
+    pub extern "C" fn axiom_2d_particle(
+        time: f64,
+        slot: u32,
+        capacity: u32,
+        rate: f64,
+        life: f64,
+        seed: u32,
+        speed: f64,
+        spread: f64,
+        gravity: f64,
+        axis: u32,
+    ) -> f64 {
+        axiom_core::two_d::particle(time, slot, capacity, rate, life, seed, speed, spread, gravity)
+            .and_then(|v| v.get(axis as usize).copied())
+            .unwrap_or(f64::NAN)
+    }
+    #[unsafe(no_mangle)]
     pub extern "C" fn axiom_abi_version() -> u32 {
         1
     }
@@ -43,6 +78,7 @@ mod exports {
             };
             registry.next = id;
             registry.worlds.insert(id, DemoKernel::default());
+            registry.two_d.insert(id, axiom_core::two_d::Clock::default());
             id
         })
     }
@@ -54,6 +90,7 @@ mod exports {
             registry.scenes.remove(&id);
             registry.cameras.remove(&id);
             registry.physics.remove(&id);
+            registry.two_d.remove(&id);
         });
     }
 

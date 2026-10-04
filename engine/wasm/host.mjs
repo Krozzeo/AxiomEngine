@@ -12,6 +12,9 @@ export async function loadKernel(bytes) {
   let compiled = null;
   const physics=physicsHost(api,id);
   return {
+    twoD(delta){const time=api.axiom_2d_tick(id,delta);if(!Number.isFinite(time))throw Error('AX_TIME_0001: invalid 2D tick');return time;},
+    animationFrame(time,animation){return api.axiom_2d_animation(time,animation.fps,animation.frames.length,animation.loop?1:0);},
+    particle(time,slot,p){return Array.from({length:3},(_,axis)=>api.axiom_2d_particle(time,slot,p.capacity,p.rate,p.lifetime,p.seed,p.speed,p.spread,p.gravity,axis));},
     step(delta, trace, aspect) {
       if (disposed) throw new Error("AX_WASM_0003: disposed world");
       if (!Number.isFinite(aspect) || aspect <= 0) throw new Error("AX_WASM_0004: invalid aspect");

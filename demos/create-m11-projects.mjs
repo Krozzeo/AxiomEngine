@@ -5,7 +5,8 @@ import {atlasPNG} from './create-m10-projects.mjs';
 import {twoDDefaults,component2DDefaults} from '../engine/renderer/two-d-plan.mjs';
 import {resolve} from 'node:path';import {pathToFileURL} from 'node:url';
 export const ANIMATION_CONTROLLER=`using Axiom.Gameplay;
-public sealed class AnimationController : Script {
+namespace Game;
+public sealed class GameScript : Script {
  private bool bounce;
  private string? previous;
  public override void OnUpdate(double deltaSeconds) {

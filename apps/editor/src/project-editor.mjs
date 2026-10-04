@@ -139,7 +139,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   async function run(type, data = {}) {
     const event = await send(type, data);
     adopt(event.payload.data);
-    if(['project.create','project.open','project.close','scene.asset.place','scene.primitive.create','scene.camera.update','scene.get','scene.save','scene.undo','scene.redo','scene.rendering.update','asset.import','asset.job.start'].includes(type)){if($('file-menu'))$('file-menu').open=false;if($('settings-menu'))$('settings-menu').open=false;}
+    if(['project.create','project.open','project.close','scene.asset.place','scene.primitive.create','scene.camera.update','scene.save','scene.undo','scene.redo','scene.rendering.update','asset.import','asset.job.start'].includes(type)){if($('file-menu'))$('file-menu').open=false;if($('settings-menu'))$('settings-menu').open=false;}
     if("project" in event.payload.data) await onState({...event.payload.data,commandLineage:{messageId:event.causationId,correlationId:event.correlationId,traceId:event.traceId}});
     return event.payload.data;
   }
@@ -234,7 +234,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;draw(false);});
   $("project-list").addEventListener("change", draw);
   $("project-refresh").addEventListener("click", () => act(list));
-  $("workspace-refresh").addEventListener("click", () => act(() => run("scene.get")));
+  $("workspace-refresh").addEventListener("click", () => act(async () => {await run("scene.get");if($("file-menu"))$("file-menu").open=false;if($("settings-menu"))$("settings-menu").open=false;}));
   $("scene-add").addEventListener("click", () => act(() => run("scene.entity.create", mutation({ name: "Entity" }))));
   $("scene-delete").addEventListener("click", () => act(() => run("scene.entity.delete", mutation({ entityId: selected }))));
   for (const action of ["save", "undo", "redo"]) $("scene-" + action).addEventListener("click", () => act(() => run("scene." + action, mutation())));

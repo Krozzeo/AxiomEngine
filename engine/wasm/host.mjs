@@ -1,4 +1,4 @@
-import {worldScene,localTransform,worldTransforms} from '../scene/hierarchy.mjs';
+import {worldScene,localTransform,worldTransforms,reparent} from '../scene/hierarchy.mjs';
 const sharedVertices=new WeakMap();
 function verticesFor(primitive){let value=sharedVertices.get(primitive);if(!value){value=new Float32Array(primitive.vertices);sharedVertices.set(primitive,value);}return value;}
 import {physicsHost} from "./physics-host.mjs";
@@ -33,9 +33,11 @@ export async function loadKernel(bytes) {
         nullProcessedMeshes: api.axiom_null_render(id, aspect)
       };
     },
-    compileScene(scene, assets) {
+    compileScene(scene, assets, preserveHierarchy=false) {
       if(disposed) throw new Error("AX_WASM_0003: disposed world");
-      const localScene=structuredClone(scene);scene=worldScene(scene);
+      const localScene=structuredClone(scene);
+      if(preserveHierarchy&&compiled){for(const e of compiled.localScene.entities)if(e.parentId&&localScene.entities.some(n=>n.id===e.id)&&localScene.entities.some(n=>n.id===e.parentId))localScene.entities=reparent(localScene.entities,[e.id],e.parentId);}
+      scene=worldScene(localScene);
       const draws=scenePrimitives(scene,assets);
       if(api.axiom_scene_clear(id)!==0) throw new Error("AX_WASM_0006: missing authoring ABI");
       for(const draw of draws) {

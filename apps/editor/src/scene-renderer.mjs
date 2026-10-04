@@ -1,4 +1,4 @@
-import {worldScene,localTransform} from '../../../engine/scene/hierarchy.mjs';
+import {worldScene,localTransform,reparent} from '../../../engine/scene/hierarchy.mjs';
 import {renderPlan} from '../../../engine/renderer/render-plan.mjs';
 import {createProductionGPU} from '../../../engine/renderer/production-gpu.mjs';
 import {ScriptRuntime} from "./script-runtime.js";
@@ -153,8 +153,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
        }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
       }
       const drawable={...scene,entities:scene.entities.map(e=>e.renderable&&(!localAssets.has(e.renderable.assetId)||localAssets.get(e.renderable.assetId).kind!==e.renderable.kind)?Object.fromEntries(Object.entries(e).filter(([k])=>k!=='renderable')):e)};
-      const authored=project?.scene??{entities:[]};const hierarchy=new Map(authored.entities.map(e=>[e.id,e]));
-      const kernelScene={...drawable,entities:drawable.entities.map(e=>{const original=hierarchy.get(e.id);return original?.parentId?{...e,parentId:original.parentId,transform:original.transform}:e;})};
+      const authored=project?.scene??{entities:[]};let kernelScene=structuredClone(drawable);for(const e of authored.entities)if(e.parentId&&kernelScene.entities.some(n=>n.id===e.id)&&kernelScene.entities.some(n=>n.id===e.parentId))kernelScene.entities=reparent(kernelScene.entities,[e.id],e.parentId);
       const draws=replacement.compileScene(kernelScene,localAssets);
       if(snapshot.playing)replacement.configurePhysics(kernelScene);
       if(scene.rendering&&device){
@@ -190,7 +189,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
             try {
               draws=scenePrimitives(result.scene,assets);if(result.scene.rendering&&device){production.reset();await production.prepare(draws);}else next=await buildResources(draws,ticket);
               if(ticket!==generation||disposed)throw new Error("Runtime generation changed");
-              try {kernel.compileScene(result.scene,assets);kernel.configurePhysics(result.scene,true);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
+              try {kernel.compileScene(result.scene,assets,true);kernel.configurePhysics(result.scene,true);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
               destroyResources(resources);resources=next;geometry=draws;
             }catch(error){destroyResources(next);throw error;}
           }else kernel.setPositions(result.positions);

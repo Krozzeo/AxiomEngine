@@ -28,13 +28,13 @@ Non-negotiable foundations:
 ## Current state
 
 Version `0.0.18`: M0–M8 acceptance is complete. M8 passes 8/8 criteria;
-M9 is blocked at 2/8 (25%); weighted completion is 56% with partial credit.
+M9 is in progress at 2/8 (25%); weighted completion is 56% with partial credit.
 Read M9_CURRENT_REPORT.md, M9_RENDERER.md and ADR-0022 first. Current M9 GPU
-code is implemented but unexecuted: CI has no assigned runner/steps/logs after
-two attempts. The user-provided annotation confirms a billing restriction:
-failed payments or spending limit; the specific cause needs account-owner inspection.
-Do not retry CI until it changes. PR-only milestone CI avoids duplicate push runs;
-all tests remain required. Do not change account spending/payment settings.
+code is implemented; first GPU acceptance is executing. The private Actions quota
+was exhausted. The owner authorized public visibility, now verified in GitHub
+settings. Isolated run 37154131553/job 111327955414 acquired a runner. Complete
+that GPU gate and then full latest-source CI. PR-only milestone CI avoids duplicate
+push runs; all tests remain required. No account spending/payment changes.
 Do not release M9, mark it complete or start M10 before full acceptance.
 Read M8_DIAGNOSTICS_AND_EDITOR.md, M8_CURRENT_REPORT.md, ADR-0021 and demos/README.md.
 Read M7_PHYSICS.md for the unchanged translational physics boundary.
@@ -165,9 +165,9 @@ Version numbers indicate migration capability, not long-term API stability.
 ## Safe next task
 
 Resume M9 per M9_CURRENT_REPORT.md, M9_PLAN.md and master specification section 128.
-Restore CI execution, validate latest source, fix WGSL/binding/image failures and
+CI execution is restored; validate latest source, fix WGSL/binding/image failures and
 review screenshots. 96 local Node tests pass; six clean Cargo server tests and
-real Chromium WebGPU acceptance are blocked. PR #9 is stacked on unmerged #8. Read accepted renderer,
+real Chromium WebGPU acceptance remain pending. PR #9 is stacked on unmerged #8. Read accepted renderer,
 resource and causal-evidence ADRs first. Establish PBR/HDR material/light contracts,
 then incremental real renderer passes, bounded resource lifecycle, frame evidence,
 golden scenes and benchmarks. Preserve M6 proposal isolation, M8 stopped preview

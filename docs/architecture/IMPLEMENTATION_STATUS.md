@@ -1,10 +1,10 @@
 # Implementation status
 
-Last updated: 2026-10-03. Version 0.0.18.
+Last updated: 2026-10-04. Version 0.0.18.
 M0–M8 acceptance is complete. M8: 8/8 (100%).
 Weighted whole-project progress: 56%, including M9 partial credit (2/8, 25%).
-M9 implementation is saved but GPU/full-CI acceptance is blocked: GitHub jobs
-failed before runner allocation, including one re-run. Read M9_CURRENT_REPORT.md.
+M9 implementation is saved and GPU/full-CI acceptance is in progress. The repository
+is public and the isolated GPU retry acquired a runner. Read M9_CURRENT_REPORT.md.
 Completed-through-M8 baseline remains 54%; no M9 release is approved.
 
 ## Implemented and verified

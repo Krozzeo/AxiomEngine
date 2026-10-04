@@ -179,12 +179,12 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
       skinGPU?.reset();kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
       workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=nextScriptFault;
-      assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;await audio.configure(scene,localAssets,{playing});if(playing)for(const op of startAudioControls)audio.control(op);if(ticket!==generation||disposed)return;previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
+      assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;await audio.configure(scene,localAssets,{playing});if(ticket!==generation||disposed)return;if(playing)for(const op of startAudioControls)audio.control(op);previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set([...(scene.twoD?[...localAssets.values()].filter(a=>a.kind==='sprite').map(a=>({texture:a.dataUrl})):[]),...draws,...[...localAssets.values()].flatMap(a=>a.primitives??[])].map(draw=>draw.texture??"white"));
       if(scene.twoD)used.add("white");
       for(const [key,texture] of textures)if(!used.has(key)){texture.destroy();textures.delete(key);}
-    } catch(error) {nextRuntime?.dispose();replacement.dispose();destroyResources(pending);throw error;}
+    } catch(error) {if(ticket===generation)audio.clear();nextRuntime?.dispose();replacement.dispose();destroyResources(pending);throw error;}
   }
   async function frame(now) {
     if(disposed)return;
@@ -284,7 +284,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }catch(error){request.reject(error);}
       }
       if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
-    } catch(error) {lastFrame={...lastFrame,audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";return;}
+    } catch(error) {audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";return;}
     animationId=requestAnimationFrame(frame);
   }
   animationId=requestAnimationFrame(frame);

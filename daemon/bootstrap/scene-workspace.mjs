@@ -1,3 +1,5 @@
+import {reparent,worldTransforms} from '../../engine/scene/hierarchy.mjs';
+import {primitiveGlb} from '../../engine/scene/primitives.mjs';
 import {ScriptCompiler} from './scripting/compiler.mjs';
 import { AssetPipeline, importInWorker } from "./asset-pipeline.mjs";
 import { AssetStore } from "./asset-store.mjs";
@@ -115,7 +117,7 @@ export class SceneWorkspace {
         const build=await this.compiler.build(projectId,data.source,data.mode??"development",controller.signal);
         if(controller.signal.aborted)fail("AX_SCRIPT_0001","Compilation cancelled");
         if(this.project?.id!==projectId||this.revision!==revision)fail("AX_SCENE_0002","Scene changed during compilation; retry");
-        scene.script={source:data.source,attachments:[...data.attachments],build};this.commitScene(scene);
+        scene.script={source:data.source,attachments:[...new Set([...(scene.script?.attachments??[]),...data.attachments])],build};this.commitScene(scene);
         job.status="completed";job.build=build;job.sceneRevision=this.revision;
       }catch(error){job.status=controller.signal.aborted?"cancelled":"failed";job.error={code:error.code??"AX_SCRIPT_0001",message:error.message,diagnostics:error.diagnostics??[]};}
       finally{this.activeScriptJob=null;this.onScriptEvent?.(copy(job),context);}
@@ -206,19 +208,32 @@ export class SceneWorkspace {
     } else if(["scene.collider.set","scene.rigidBody.set","scene.material.set","scene.light.set","scene.lod.set"].includes(type)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
       scene.entities[index][type.split(".")[1]]=copy(data.value);
+    } else if(type==="scene.entity.reparent") {
+      if(!Array.isArray(data.entityIds)||data.entityIds.length>1024||new Set(data.entityIds).size!==data.entityIds.length)fail("AX_SCENE_0001","Invalid hierarchy selection");
+      scene.entities=reparent(scene.entities,data.entityIds,data.parentId??null);
+    } else if(type==="scene.primitive.create") {
+      const bytes=primitiveGlb(data.dimension,data.shape),asset=await this.assets.put(this.project.id,`${data.dimension}D-${data.shape}.glb`,bytes.toString('base64'),importInWorker);
+      scene.assets??=[];if(!scene.assets.some(a=>a.id===asset.id)){if(scene.assets.length>=128)fail("AX_ASSET_0001","Project asset limit is 128");scene.assets.push(asset);}
+      scene.entities.push({id:`entity://${randomUUID()}`,name:`${data.dimension}D ${data.shape}`,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:'mesh',assetId:asset.id}});
+      await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     } else if(type==="scene.component.remove" && ["Collider","RigidBody","Material","Light","LOD"].includes(data.component)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
       delete scene.entities[index][({Collider:"collider",RigidBody:"rigidBody",Material:"material",Light:"light",LOD:"lod"})[data.component]];
       if(data.component==="Collider")delete scene.entities[index].rigidBody;
     } else if(type==="scene.component.add" || type==="scene.component.remove") {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
+      if(data.component==='Script'){
+        if(!scene.script)fail("AX_SCRIPT_0001","Compile a script first");
+        scene.script.attachments=type==='scene.component.remove'?scene.script.attachments.filter(id=>id!==data.entityId):[...new Set([...scene.script.attachments,data.entityId])];
+      } else {
       if(data.component!=="Renderable")fail("AX_PROJECT_0002","Only the optional Renderable component is supported");
-      if(type==="scene.component.remove")delete scene.entities[index].renderable;
+      if(type==="scene.component.remove"){delete scene.entities[index].renderable;delete scene.entities[index].lod;}
       else {
         if(scene.entities[index].renderable)fail("AX_PROJECT_0002","Renderable already exists");
         const asset=scene.assets?.find(a=>a.id===data.value?.assetId);
         if(!asset||asset.kind!==data.value.kind||asset.kind==="audio")fail("AX_ASSET_0001","Component requires an imported sprite or mesh");
         scene.entities[index].renderable=copy(data.value);
+      }
       }
     } else if(type==="scene.rendering.update") {
       scene.rendering=copy(data.value);
@@ -229,7 +244,7 @@ export class SceneWorkspace {
       scene.entities.push({ id: `entity://${randomUUID()}`, name: data.name ?? "Entity", transform: { position: [0, 0, 0], rotation: [0, 0, 0, 1], scale: [1, 1, 1] } });
     } else if (["scene.entity.update", "scene.entity.delete"].includes(type)) {
       if (index < 0) fail("AX_SCENE_0001", "Entity no longer exists");
-      if (type === "scene.entity.delete") {scene.entities.splice(index, 1);if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>id!==data.entityId);}
+      if (type === "scene.entity.delete") {const removed=new Set([data.entityId]);let changed=true;while(changed){changed=false;for(const e of scene.entities)if(removed.has(e.parentId)&&!removed.has(e.id)){removed.add(e.id);changed=true;}}scene.entities=scene.entities.filter(e=>!removed.has(e.id));if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>!removed.has(id));}
       else {
         if (data.name !== undefined) scene.entities[index].name = data.name;
         if (data.transform !== undefined) {
@@ -240,7 +255,7 @@ export class SceneWorkspace {
     } else fail("AX_COMMAND_0002", "Command type is not registered");
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     validateProject({ ...this.project, scene });
-    if(["scene.asset.place","scene.component.add","scene.lod.set"].includes(type))await this.validateResources(scene);
+    if(["scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
     this.check(data);
     this.commitScene(scene);

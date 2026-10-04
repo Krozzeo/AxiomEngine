@@ -27,6 +27,11 @@ Non-negotiable foundations:
 
 ## Current state
 
+M9.1 (0.0.20) requested corrections are in progress before M10. Read
+M9_1_CORRECTIONS.md and M9_1_CURRENT_REPORT.md first. Native/browser CI for the new
+angular solver is pending; older M9 evidence does not certify this revision.
+
+
 Version `0.0.19`: M0–M9 acceptance is complete. M9 passes 8/8 (100%);
 weighted whole-project progress is 62%. Real Chromium software WebGPU acceptance
 and image review verify PBR/HDR, Forward+ instancing, compute culling, authored
@@ -40,7 +45,7 @@ included Actions quota was exhausted; no spending/payment setting was changed.
 CI tests PRs once, main pushes and manual dispatch; browser runners are isolated.
 
 Read M8_DIAGNOSTICS_AND_EDITOR.md, M8_CURRENT_REPORT.md, ADR-0021 and demos/README.md.
-Read M7_PHYSICS.md for the unchanged translational physics boundary.
+Read M7_PHYSICS.md for the historical translational foundation; M9.1 adds angular response.
 Read M5_AGENT_CONTROL.md, M5_CURRENT_REPORT.md and ADR-0018 for contracts,
 evidence and limitations. M6 now scopes agent mutations to isolated proposals;
 read M6_WORKSPACES.md, M6_CURRENT_REPORT.md and ADR-0019.

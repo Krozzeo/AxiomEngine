@@ -1,3 +1,5 @@
+import {localTransform} from '../../../engine/scene/hierarchy.mjs';
+import {quaternionFromEuler,eulerFromQuaternion} from './view-math.mjs';
 import {materialDefaults,renderingDefaults} from '../../../engine/renderer/render-plan.mjs';
 export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, onSelection=()=>{},onView=()=>{}, defaultScript = "" }) {
   const $ = id => document.querySelector(`#${id}`);
@@ -6,14 +8,24 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let scriptEnabled=false,currentScriptJob=null,scriptProject=null,scriptBuild=null;
   let busy = false;
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
-  let selected = null;
+  let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
   let view='scene';
   function draw(updateFields = true) {
     const project = state.project;
-    const entity = project?.scene.entities.find(item => item.id === selected);
+    const entity = selection.size===1?project?.scene.entities.find(item => item.id === selected):null;
+    const attached=project?.scene.script?.attachments.includes(entity?.id);
+    if($('selection-status')){
+      $('selection-status').textContent=selection.size>1?`${selection.size} entities selected · property editing disabled`:entity?.name??'Select an entity';
+      for(const [id,visible]of [['material',!!entity?.material],['light',!!entity?.light],['lod',!!entity?.lod],['physics',!!entity?.collider],['renderable',!!entity?.renderable],['script',!!entity&&(attached||scriptDraft.has(entity.id))]])$(id+'-component').hidden=!visible;
+      $('component-add').disabled=!enabled||busy||state.playing||!entity;
+      $('renderable-status').textContent=entity?.renderable?`${entity.renderable.kind} · ${project.scene.assets?.find(a=>a.id===entity.renderable.assetId)?.name??''}`:'';
+      $('physics-freeze').checked=entity?.rigidBody?.freezeRotation??false;
+      for(const id of ['physics-motion','physics-mass','physics-freeze'])if($(id).closest)$(id).closest('label').hidden=!entity?.rigidBody;
+      $('rigidbody-remove').hidden=!entity?.rigidBody;
+    }
     const editing=enabled&&!busy&&!state.playing;
-    $("script-source").disabled=!scriptEnabled||!project||busy;
-    $("script-mode").disabled=!scriptEnabled||!project||busy;
+    $("script-source").disabled=!scriptEnabled||!project||!entity||busy;
+    $("script-mode").disabled=!scriptEnabled||!project||!entity||busy;
     $("script-compile").disabled=!scriptEnabled||!project||!entity||busy;
     $("script-cancel").disabled=!currentScriptJob;
     if(project?.id!==scriptProject||project?.scene.script?.build.id!==scriptBuild) {
@@ -51,14 +63,21 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("play-status").textContent=state.playing?"Play · runtime copy":"Stopped · authoring";
     $("preview-note").textContent=project ? `${project.name} · ${view==='game'?'Game camera':'Scene camera'}` : "Create or open a project to begin";
     $("entities").replaceChildren();
-    for (const item of project?.scene.entities ?? []) {
-      const button = document.createElement("button");
-      button.textContent = item.name;
-      button.className = item.id === selected ? "entity selected" : "entity";
-      button.setAttribute("aria-pressed", String(item.id === selected));
-      button.disabled = busy;
-      button.addEventListener("click", () => { selected = item.id; draw(); });
-      $("entities").append(button);
+    const entities=project?.scene.entities??[];
+    function branch(parentId=null,depth=0){for(const item of entities.filter(e=>(e.parentId??null)===parentId)){
+      const row=document.createElement('div');row.className='tree-row';row.style.paddingLeft=(depth*14)+'px';row.setAttribute('role','treeitem');row.setAttribute('aria-selected',String(selection.has(item.id)));row.dataset.entityId=item.id;
+      const children=entities.some(e=>e.parentId===item.id),toggle=document.createElement('button');toggle.className='tree-toggle';toggle.textContent=collapsed.has(item.id)?'▸':'▾';toggle.disabled=!children;toggle.setAttribute('aria-label','Expand or collapse '+item.name);if(children)row.setAttribute('aria-expanded',String(!collapsed.has(item.id)));toggle.addEventListener('click',()=>{if(collapsed.has(item.id))collapsed.delete(item.id);else collapsed.add(item.id);draw(false);});
+      const button=document.createElement('button');button.textContent=item.name;button.className=selection.has(item.id)?'entity selected':'entity';button.setAttribute('aria-pressed',String(selection.has(item.id)));button.disabled=busy;button.draggable=!busy&&!state.playing;button.addEventListener('click',event=>select(item.id,event.altKey||event.ctrlKey||event.metaKey));
+      button.addEventListener('dragstart',event=>{if(!selection.has(item.id))select(item.id);event.dataTransfer.setData('application/axiom-entities',JSON.stringify([...selection]));});row.addEventListener('dragover',event=>{event.preventDefault();row.classList.add('drag-target');});row.addEventListener('dragleave',()=>row.classList.remove('drag-target'));row.addEventListener('drop',event=>{event.preventDefault();row.classList.remove('drag-target');try{const ids=JSON.parse(event.dataTransfer.getData('application/axiom-entities'));void act(()=>run('scene.entity.reparent',mutation({entityIds:ids,parentId:item.id})));}catch(error){reportError(error);}});
+      row.append(toggle,button);$('entities').append(row);if(children&&!collapsed.has(item.id))branch(item.id,depth+1);
+    }}branch();
+    if($('entity-parent')){const previous=$('entity-parent').value;$('entity-parent').replaceChildren();for(const item of [{id:'',name:'Scene root'},...entities.filter(e=>!selection.has(e.id))]){const option=document.createElement('option');option.value=item.id;option.textContent=item.name;$('entity-parent').append(option);}$('entity-parent').value=previous;$('entity-reparent').disabled=$('entity-unparent').disabled=!editing||!selection.size;}
+    if($('project-files')){
+      $('project-files').replaceChildren();
+      const folder=(name)=>{const d=document.createElement('details');d.open=true;const label=document.createElement('summary');label.textContent=name;d.append(label);$('project-files').append(d);return d;};
+      const scenes=folder('Scenes'),assets=folder('Assets'),scripts=folder('Scripts');
+      const file=(parent,name,action)=>{const button=document.createElement('button');button.textContent=name;button.addEventListener('click',action);parent.append(button);};
+      if(project){file(scenes,project.name+' · '+project.id.slice(10)+'.json',()=>{$('project-file-preview').textContent=JSON.stringify(project.scene,null,2);});for(const asset of project.scene.assets??[])file(assets,asset.name,()=>{$('asset-list').value=asset.id;$('project-file-preview').textContent=JSON.stringify(asset,null,2);draw(false);});if(project.scene.script)file(scripts,'Game.cs',()=>{$('project-file-preview').textContent=project.scene.script.source;});}
     }
     $("entity-empty").hidden = !!project?.scene.entities.length;
     if (updateFields) {
@@ -73,6 +92,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if(project?.scene.assets?.some(a=>a.id===textureSelection))$("asset-texture").value=textureSelection;
     $("camera-projection").value=project?.scene.camera?.projection??"perspective";
     $("entity-name").value = entity?.name ?? "";
+    if($("rotation-0"))eulerFromQuaternion(entity?.transform.rotation??[0,0,0,1]).forEach((v,i)=>$("rotation-"+i).value=String(v));
     const m={...materialDefaults,...entity?.material},l=entity?.light??{kind:'point',color:[1,1,1],intensity:20,range:10,direction:[0,-1,0],innerAngle:15,outerAngle:30,shadow:false},r={...renderingDefaults,...project?.scene.rendering};
     const putVector=(id,value)=>value.forEach((v,i)=>{$(id+'-'+i).value=String(v);});
     putVector('material-color',m.baseColor);putVector('material-emissive',m.emissive);for(const [id,value]of [['material-metallic',m.metallic],['material-roughness',m.roughness],['material-alpha',m.alphaMode],['material-cutoff',m.alphaCutoff],['light-kind',l.kind],['light-intensity',l.intensity],['light-range',l.range],['light-inner',l.innerAngle],['light-outer',l.outerAngle],['render-tier',r.tier],['render-culling',r.culling],['render-exposure',r.exposure],['render-tone',r.toneMapping],['render-shadow-size',r.shadowSize],['render-bloom',r.bloom]])$(id).value=String(value);
@@ -93,7 +113,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     }
     if(state.workspaceId){for(const id of ["project-new","project-open","project-close","scene-save"])$(id).disabled=true;$("preview-note").textContent="Isolated AI proposal · "+(state.playing?"running":"editing");}
     onDirty(state.dirty&&!state.workspaceId);
-    onSelection(selected);onView(view);
+    onSelection([...selection]);onView(view);
   }
   function adopt(data) {
     if (!("project" in data)) return;
@@ -101,7 +121,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     state = data;
     if (!state.project?.scene.entities.some(entity => entity.id === selected)) selected = state.project?.scene.entities[0]?.id ?? null;
     const added = state.project?.scene.entities.find(entity => !oldIds.has(entity.id));
-    if (added) selected = added.id;
+    if (added) {selected = added.id;selection=new Set([selected]);}
+    else {selection=new Set([...selection].filter(id=>state.project?.scene.entities.some(e=>e.id===id)));if(!selection.size&&selected)selection.add(selected);selected=[...selection].at(-1)??null;}
   }
   async function act(operation) {
     if (!enabled || busy) return;
@@ -219,12 +240,13 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     const old=state.project.scene.entities.find(e=>e.id===selected)?.rigidBody;
     if(shape==="none"){await run("scene.component.remove",mutation({entityId:selected,component:"Collider"}));return;}
     await run("scene.collider.set",mutation({entityId:selected,value:collider}));
-    if(dynamic)await run("scene.rigidBody.set",mutation({entityId:selected,value:{velocity:[0,0,0],restitution:0,friction:0.5,gravityScale:1,...old,mass}}));
+    if(dynamic)await run("scene.rigidBody.set",mutation({entityId:selected,value:{velocity:[0,0,0],restitution:0,friction:0.5,gravityScale:1,...old,mass,freezeRotation:$("physics-freeze")?.checked??false}}));
     else if(old)await run("scene.component.remove",mutation({entityId:selected,component:"RigidBody"}));
   });});
   $("entity-form").addEventListener("submit", event => {
     event.preventDefault();
     const transform = {};
+    if($("rotation-0"))transform.rotation=quaternionFromEuler([0,1,2].map(i=>Number($("rotation-"+i).value)));
     for (const group of ["position", "scale"]) transform[group] = [0, 1, 2].map(i => {
       const value = $(`${group}-${i}`).value.trim();
       return value === "" ? NaN : Number(value);
@@ -233,12 +255,27 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     const data = mutation({ entityId: selected, name: $("entity-name").value, transform });
     return act(() => run("scene.entity.update", data));
   });
+  function select(id,toggle=false){if(busy)return;const valid=state.project?.scene.entities.some(e=>e.id===id);if(!toggle)selection.clear();if(valid){if(toggle&&selection.has(id))selection.delete(id);else selection.add(id);}selected=[...selection].at(-1)??null;draw();}
+  if($('component-add')){
+    $('component-add').addEventListener('click',()=>act(async()=>{const component=$('component-choice').value,entity=state.project.scene.entities.find(e=>e.id===selected);if(selection.size!==1)throw Error('Select one entity');
+      if(component==='Script'){if(state.project.scene.script)await run('scene.component.add',mutation({entityId:selected,component}));else scriptDraft.add(selected);$('script-component').open=true;return;}
+      const key={Material:'material',Light:'light',LOD:'lod',Collider:'collider',RigidBody:'rigidBody',Renderable:'renderable'}[component];if(entity[key])throw Error(component+' is already attached');
+      if(component==='Renderable'){const asset=state.project.scene.assets?.find(a=>a.id===$('asset-list').value&&a.kind!=='audio');if(!asset)throw Error('Select an imported drawable in Project first');await run('scene.component.add',mutation({entityId:selected,component,value:{assetId:asset.id,kind:asset.kind}}));return;}
+      const values={Material:{...materialDefaults},Light:{kind:'point',color:[1,1,1],intensity:20,range:10,direction:[0,0,-1],innerAngle:15,outerAngle:30,shadow:false},Collider:{dimension:3,shape:'box',halfExtents:[.5,.5,.5],trigger:false,layer:1,mask:4294967295},RigidBody:{mass:1,velocity:[0,0,0],angularVelocity:[0,0,0],freezeRotation:false,restitution:0,friction:.5,gravityScale:1},LOD:{levels:[{assetId:entity.renderable?.assetId,distance:10}]}};
+      if(component==='RigidBody'&&!entity.collider)throw Error('Add a Collider first');if(component==='LOD'&&entity.renderable?.kind!=='mesh')throw Error('LOD requires a mesh Renderable');await run('scene.'+key+'.set',mutation({entityId:selected,value:values[component]}));const detail=$((({Collider:'physics',RigidBody:'physics'})[component]??key)+'-component');if(detail)detail.open=true;
+    }));
+    for(const [id,component]of [['renderable','Renderable'],['collider','Collider'],['rigidbody','RigidBody'],['script','Script']])$(id+'-remove').addEventListener('click',()=>act(async()=>{if(component==='Script'&&!state.project.scene.script){scriptDraft.delete(selected);return;}await run('scene.component.remove',mutation({entityId:selected,component}));scriptDraft.delete(selected);}));
+    $('entity-reparent').addEventListener('click',()=>act(()=>run('scene.entity.reparent',mutation({entityIds:[...selection],parentId:$('entity-parent').value||null}))));$('entity-unparent').addEventListener('click',()=>act(()=>run('scene.entity.reparent',mutation({entityIds:[...selection],parentId:null}))));
+    for(const button of document.querySelectorAll?.('.create-primitive')??[])button.addEventListener('click',()=>act(()=>run('scene.primitive.create',mutation({dimension:Number(button.dataset.dimension),shape:button.dataset.shape}))));
+    globalThis.addEventListener?.('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.code==='KeyZ'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??'')){event.preventDefault();if(!state.playing&&!busy&&enabled){const redo=event.shiftKey;if(redo?state.canRedo:state.canUndo)void act(()=>run(redo?'scene.redo':'scene.undo',mutation()));}}});
+  }
   draw();
   return {
     isBusy:()=>busy,
     selectedEntity:()=>selected,
-    selectEntity(id){if(busy)return;selected=state.project?.scene.entities.some(e=>e.id===id)?id:null;draw();},
-    transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform})));},
+    selectedEntities:()=>[...selection],
+    selectEntity(id,toggle=false){select(id,toggle);},
+    transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform:localTransform(state.project.scene.entities,entityId,transform)})));},
     async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
     async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},

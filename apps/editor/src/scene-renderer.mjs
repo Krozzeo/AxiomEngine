@@ -1,3 +1,4 @@
+import {worldScene,localTransform} from '../../../engine/scene/hierarchy.mjs';
 import {renderPlan} from '../../../engine/renderer/render-plan.mjs';
 import {createProductionGPU} from '../../../engine/renderer/production-gpu.mjs';
 import {ScriptRuntime} from "./script-runtime.js";
@@ -41,6 +42,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
   let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null;
+  let authoredHierarchy={entities:[]};
   let view='scene',editorCamera=null,transformPreview=null,geometry=[],lastPacket=null,lastTraceId=null,lineage=null;
   const decisions=new DecisionEvidence(),assetFailures=new Map();
   const keys=new Set();
@@ -125,8 +127,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     }
     if(ticket!==generation||disposed)return;
     const project=snapshot.project;
-    lineage=snapshot.commandLineage??null;assetFailures.clear();
-    let scene=structuredClone(project?.scene??{entities:[]});
+    lineage=snapshot.commandLineage??null;assetFailures.clear();authoredHierarchy=structuredClone(project?.scene??{entities:[]});
+    let scene=worldScene(structuredClone(project?.scene??{entities:[]}));for(const e of scene.entities)delete e.parentId;
     if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
     const referenced=new Set(scene.entities.flatMap(entity=>[entity.renderable?.assetId,...(entity.lod?.levels??[]).map(l=>l.assetId)]));
@@ -151,8 +153,10 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
        }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
       }
       const drawable={...scene,entities:scene.entities.map(e=>e.renderable&&(!localAssets.has(e.renderable.assetId)||localAssets.get(e.renderable.assetId).kind!==e.renderable.kind)?Object.fromEntries(Object.entries(e).filter(([k])=>k!=='renderable')):e)};
-      const draws=replacement.compileScene(drawable,localAssets);
-      if(snapshot.playing)replacement.configurePhysics(scene);
+      const authored=project?.scene??{entities:[]};const hierarchy=new Map(authored.entities.map(e=>[e.id,e]));
+      const kernelScene={...drawable,entities:drawable.entities.map(e=>{const original=hierarchy.get(e.id);return original?.parentId?{...e,parentId:original.parentId,transform:original.transform}:e;})};
+      const draws=replacement.compileScene(kernelScene,localAssets);
+      if(snapshot.playing)replacement.configurePhysics(kernelScene);
       if(scene.rendering&&device){
         production??=await (productionLoading??=createProductionGPU({device,format:gpu.getPreferredCanvasFormat(),width:canvas.width,height:canvas.height,textureFor,getTexture:url=>textures.get(url??"white"),reportError}));
         if(ticket!==generation||disposed){replacement.dispose();nextRuntime?.dispose();return;}
@@ -200,10 +204,15 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       lastPacket=packet;lastTraceId=diagnostic.traceId;
       const camera=view==='scene'&&editorCamera?editorCamera:runtimeScene.camera??{position:[0,0,6],target:[0,0,0],projection:'perspective',fov:60,orthoHeight:6};
       const vp=cameraMatrix(camera,canvas.width/canvas.height);
-      geometry=geometry.map((draw,i)=>{const model=transformPreview?.entityId===draw.entityId?modelMatrix(transformPreview.transform):packet.draws[i].model;return {...draw,model,mvp:view==='scene'||transformPreview?matrixMultiply(vp,model):packet.draws[i].mvp};});
-      if(packet.physics){for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);e.transform.position=b.position;if(e.rigidBody)e.rigidBody.velocity=b.velocity;}diagnostic.physics=packet.physics;}
+      let previewScene=null;
+      if(transformPreview){const draft=structuredClone(authoredHierarchy),e=draft.entities.find(e=>e.id===transformPreview.entityId);if(e){e.transform=localTransform(draft.entities,e.id,transformPreview.transform);previewScene=worldScene(draft);}}
+      const previewModels=new Map(previewScene?.entities.map(e=>[e.id,modelMatrix(e.transform)])??[]);
+      geometry=geometry.map((draw,i)=>{const model=previewModels.get(draw.entityId)??packet.draws[i].model;return {...draw,model,mvp:view==='scene'||transformPreview?matrixMultiply(vp,model):packet.draws[i].mvp};});
+      if(packet.transforms)for(const item of packet.transforms){const e=runtimeScene.entities.find(e=>e.id===item.id);if(e)e.transform=item.transform;}
+      if(packet.physics){for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);e.transform.position=b.position;e.transform.rotation=b.rotation;if(e.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;}}diagnostic.physics=packet.physics;}
       if(runtimeScene.rendering){
-        const plan=renderPlan(runtimeScene,geometry,camera,canvas.width/canvas.height,assets,{gpuCulling:!!device&&device.limits.maxStorageBuffersPerShaderStage>=4});
+        
+        const plan=renderPlan(previewScene??runtimeScene,geometry,camera,canvas.width/canvas.height,assets,{gpuCulling:!!device&&device.limits.maxStorageBuffersPerShaderStage>=4});
         lastRenderPlan=plan;renderStats=device?production.render(plan,camera,context.getCurrentTexture().createView(),diagnostic.traceId):{...plan.stats,submittedReference:0,fallbacks:plan.fallbacks,gpuSample:null,pixels:'unavailable'};
         diagnostic.rendering=renderStats;
       }else if(device) {
@@ -230,6 +239,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           }).catch(error=>{if(!disposed&&device)reportError(error);}).finally(()=>{readPending=false;});
         }
       }
+      diagnostic.camera=structuredClone(camera);
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"stopped",view,sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");

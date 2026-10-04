@@ -90,15 +90,15 @@ test("history is bounded and a new edit invalidates redo", async t => {
 async function fakeDocument() {
   const html = await readFile(new URL("../apps/editor/index.html", import.meta.url), "utf8");
   class Element {
-    constructor(tag = "div") { this.tag = tag; this.children = []; this.value = ""; this.disabled = false; this.listeners = {}; }
+    constructor(tag = "div") { this.tag = tag; this.children = []; this.value = ""; this.disabled = false; this.listeners = {}; this.style={};this.dataset={}; }
     addEventListener(type, callback) { this.listeners[type] = callback; }
     setAttribute() {}
-    append(child) { this.children.push(child); if (this.tag === "select" && !this.value) this.value = child.value; }
+    append(...children) { this.children.push(...children);const child=children[0]; if (this.tag === "select" && !this.value) this.value = child.value; }
     replaceChildren() { this.children = []; if (this.tag === "select") this.value = ""; }
     async fire(type) { assert.equal(this.disabled, false, "UI action is disabled"); await this.listeners[type]({ preventDefault() {} }); }
   }
   const nodes = new Map([...html.matchAll(/<(\w+)[^>]*\bid="([^"]+)"/g)].map(match => [`#${match[2]}`, new Element(match[1])]));
-  return { querySelector: selector => { assert.ok(nodes.has(selector), `Missing HTML selector ${selector}`); return nodes.get(selector); }, createElement: tag => new Element(tag) };
+  return { querySelectorAll:()=>[],querySelector: selector => { assert.ok(nodes.has(selector), `Missing HTML selector ${selector}`); return nodes.get(selector); }, createElement: tag => new Element(tag) };
 }
 const caps = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"].map(name => "command." + name);
 
@@ -118,7 +118,7 @@ test("editor controls create, edit, undo, save and reopen the real command works
   $("entity-name").value = "Player";
   $("position-0").value = "5";
   await $("entity-form").fire("submit");
-  assert.equal($("entities").children[0].textContent, "Player");
+  assert.equal($("entities").children[0].children[1].textContent, "Player");
   await $("scene-undo").fire("click");
   assert.equal($("entity-name").value, "Entity");
   await $("scene-redo").fire("click");
@@ -142,8 +142,8 @@ test("editor controls create, edit, undo, save and reopen the real command works
 test('Scene/Game view switches never start or stop Play and selection works both ways',async t=>{
  const {send}=await fixture(t),document=await fakeDocument(),$=id=>document.querySelector('#'+id),views=[],selection=[];
  const editor=mountProjectEditor({document,send,reportError:error=>{throw error;},onView:value=>views.push(value),onSelection:value=>selection.push(value)});await editor.connect(caps);$('project-name').value='View separation';await $('project-new').fire('click');await $('scene-add').fire('click');await $('scene-add').fire('click');
- const initial=(await send('scene.get')).payload.data,first=initial.project.scene.entities[0];editor.selectEntity(first.id);assert.equal($('entity-name').value,first.name);assert.equal(selection.at(-1),first.id);
- await $('entities').children[1].fire('click');assert.equal(editor.selectedEntity(),initial.project.scene.entities[1].id);
+ const initial=(await send('scene.get')).payload.data,first=initial.project.scene.entities[0];editor.selectEntity(first.id);assert.equal($('entity-name').value,first.name);assert.deepEqual(selection.at(-1),[first.id]);
+ await $('entities').children[1].children[1].fire('click');assert.equal(editor.selectedEntity(),initial.project.scene.entities[1].id);
  await $('game-tab').fire('click');assert.equal((await send('scene.get')).payload.data.playing,false);assert.equal(views.at(-1),'game');await $('play-start').fire('click');assert.equal((await send('scene.get')).payload.data.playing,true);await $('scene-tab').fire('click');assert.equal((await send('scene.get')).payload.data.playing,true);assert.equal(views.at(-1),'scene');await $('play-stop').fire('click');assert.equal((await send('scene.get')).payload.data.playing,false);
 });
 

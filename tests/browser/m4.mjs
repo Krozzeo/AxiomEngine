@@ -1,3 +1,4 @@
+import {control} from './editor-controls.mjs';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {mkdtemp,mkdir,rm,writeFile} from 'node:fs/promises';
@@ -12,15 +13,15 @@ async function state(){const r=await fetch(daemon.origin+'/v1/commands',{method:
 try {
  browser=await chromium.launch({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
  page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(180000);
- await page.goto(daemon.editorUrl);await page.locator('#project-name').fill('M4 C# gameplay');await page.locator('#project-new').click();
- await page.locator('#asset-file').setInputFiles({name:'player.png',mimeType:'image/png',buffer:imageFixture()});await page.locator('#asset-import').click();
- await page.waitForFunction(()=>document.querySelector('#asset-list').options.length===1);await page.locator('#asset-place').click();
- await page.waitForFunction(()=>document.querySelectorAll('#entities button').length===1);
+ await page.goto(daemon.editorUrl);await (await control(page,'#project-name')).fill('M4 C# gameplay');await (await control(page,'#project-new')).click();
+ await (await control(page,'#asset-file')).setInputFiles({name:'player.png',mimeType:'image/png',buffer:imageFixture()});await (await control(page,'#asset-import')).click();
+ await page.waitForFunction(()=>document.querySelector('#asset-list').options.length===1);await (await control(page,'#asset-place')).click();
+ await page.waitForFunction(()=>document.querySelectorAll('#entities .entity').length===1);
  await page.waitForFunction(()=>document.querySelector('#script-source').value.includes('GameScript'));
  const source=(await page.locator('#script-source').inputValue()).replace('public sealed class GameScript : Script {','public sealed class GameScript : Script { private bool later;').replace('public override void OnUpdate(double deltaSeconds) {','public override void OnUpdate(double deltaSeconds) { if(Input.IsDown("Space") && !later) { later=true; Entity.Spawn(Entity.Transform.Position+new Vec3(-2,0,0)); }');
  let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
  async function compile(text,expected='completed') {
-  await page.locator('#script-source').fill(text);await page.locator('#script-compile').click();
+  await (await control(page,'#script-source')).fill(text);await (await control(page,'#script-compile')).click();
   await page.waitForFunction(expected=>document.querySelector('#script-status').textContent==='Compilation '+expected&&!document.querySelector('#script-compile').disabled,expected);
  }
  await compile(source);const authoring=(await state()).project.scene;assert.equal(authoring.entities.length,1);report.criteria.push('compile generated SDK and attach C#');
@@ -31,9 +32,9 @@ try {
  assert.equal((await fetch(scriptUrl+'Game.cs',{headers:{Origin:daemon.origin,Cookie:cookie.name+'='+cookie.value}})).status,404);
  assert.equal((await fetch(scriptUrl.replace(authoring.script.build.id,'00000000-0000-4000-8000-000000000000')+'dotnet.js',{headers:{Origin:daemon.origin,Cookie:cookie.name+'='+cookie.value}})).status,404);
  report.criteria.push('runtime bundle cookie, origin and build authority');
- await page.locator('#play-start').click();await page.waitForFunction(()=>{try{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.entities.length===2&&d.kernel.meshes===2;}catch{return false;}});
+ await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.entities.length===2&&d.kernel.meshes===2;}catch{return false;}});
  const before=await page.locator('#viewport').screenshot();let diagnostic=await page.locator('#frame-trace').textContent();const initial=JSON.parse(diagnostic);const x=initial.script.entities[0].position[0];
- await page.locator('#viewport').click();await page.keyboard.down('ArrowRight');
+ await (await control(page,'#viewport')).click();await page.keyboard.down('ArrowRight');
  await page.waitForFunction(x=>JSON.parse(document.querySelector('#frame-trace').textContent).script.entities[0].position[0]>x+.2,x);await page.keyboard.up('ArrowRight');
  const after=await page.locator('#viewport').screenshot({path:join(evidence,'csharp-movement.png')});assert.notDeepEqual(before,after);assert.deepEqual((await state()).project.scene,authoring);
  const frameBeforeSpawn=JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame;
@@ -46,14 +47,14 @@ try {
  await compile(source.replace('C# started:','C# reloaded:').replace('deltaSeconds*2','deltaSeconds*4'));
  await page.waitForFunction(g=>{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.generation>g&&d.script.entities.length===2;},initial.script.generation);
  assert.equal(navigations,0);await page.waitForFunction(()=>document.querySelector('#logs').textContent.includes('C# reloaded:'));report.criteria.push('edit compile reload without page navigation','causal lifecycle logs');
- await page.locator('#play-stop').click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);assert.equal((await state()).project.scene.entities.length,1);
- await page.locator('#scene-save').click();await page.waitForFunction(()=>document.querySelector('#project-status').textContent.includes('Saved'));
- await page.locator('#project-close').click();await page.locator('#project-open').click();await page.locator('#play-start').click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.active;}catch{return false;}});
+ await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);assert.equal((await state()).project.scene.entities.length,1);
+ await (await control(page,'#scene-save')).click();await page.waitForFunction(()=>document.querySelector('#project-status').textContent.includes('Saved'));
+ await (await control(page,'#project-close')).click();await (await control(page,'#project-open')).click();await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.active;}catch{return false;}});
  report.criteria.push('saved script bundle reopens');
- await page.locator('#play-stop').click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);
+ await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);
  await compile('using Axiom.Gameplay; namespace Game; public sealed class GameScript : Script { public override void OnUpdate(double deltaSeconds) { while(true) {} } }');
- await page.locator('#play-start').click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.fault?.includes('timed out');}catch{return false;}});
- await page.locator('#play-stop').click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);report.criteria.push('infinite script terminated and editor remains responsive');
+ await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.fault?.includes('timed out');}catch{return false;}});
+ await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);report.criteria.push('infinite script terminated and editor remains responsive');
  assert.equal((await state()).project.scene.entities.length,1);assert.deepEqual(errors,[]);
  report.passed=true;report.backend=await page.locator('#gpu-state').textContent();assert.match(report.backend,/WebGPU/);
  await page.screenshot({path:join(evidence,'editor.png')});console.log('M4_BROWSER='+JSON.stringify(report));

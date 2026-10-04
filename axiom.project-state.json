@@ -2,7 +2,7 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.19",
+  "engineVersion": "0.0.20",
   "activeMilestone": 9,
   "milestoneStatus": "complete",
   "completion": {
@@ -197,8 +197,7 @@
       "runId": 37166766454,
       "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37166766454",
       "jobCount": 17,
-      "jobs":
-      [
+      "jobs": [
         "bootstrap (windows-latest)",
         "browser-milestones (m6)",
         "browser-milestones (m2)",
@@ -363,7 +362,9 @@
       "physicalGpuBenchmark": false
     }
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M9.1 corrections: new Rust/Wasm solver and full browser/C# regression CI pending"
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -418,7 +419,9 @@
     "docs/architecture/M10_PLAN.md",
     "docs/reports/m9-browser-evidence.json",
     "docs/reports/m9-renderer-benchmark.json",
-    "docs/reports/m9-renderer-pixels.json"
+    "docs/reports/m9-renderer-pixels.json",
+    "docs/architecture/M9_1_CORRECTIONS.md",
+    "docs/reports/M9_1_CURRENT_REPORT.md"
   ],
-  "nextTask": "Implement M10 per M10_PLAN.md and master specification section 129. Read M9/M8/M7/M6 contracts first; preserve legacy scenes, Scene/Game separation, proposal isolation and earlier demos. Keep all milestone PRs unmerged. Deliver M10 only after full automated acceptance and documented limits."
+  "nextTask": "Finish M9.1 requested editor and angular-physics corrections per M9_1_CORRECTIONS.md before starting M10. Keep milestone PRs unmerged; deliver only after full CI and visual review."
 }

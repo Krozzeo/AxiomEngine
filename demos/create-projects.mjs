@@ -27,7 +27,7 @@ export async function createDemos(root,{compile=true,requireScript=false,onProgr
   await w.run('scene.entity.update',{...args(),entityId:id,transform:{position,scale:half.map(v=>v*(asset.kind==='mesh'?2:1))}});
   await w.run('scene.component.add',{...args(),entityId:id,component:'Renderable',value:{kind:asset.kind,assetId:asset.id}});
   await w.run('scene.collider.set',{...args(),entityId:id,value:{dimension,shape:'box',halfExtents:half,trigger,layer:1,mask:0xffffffff}});
-  if(dynamic)await w.run('scene.rigidBody.set',{...args(),entityId:id,value:{mass:1,velocity:[0,0,0],restitution,friction:0.6,gravityScale:1}});
+  if(dynamic)await w.run('scene.rigidBody.set',{...args(),entityId:id,value:{mass:1,velocity:[0,0,0],freezeRotation:name.startsWith('Player'),restitution,friction:0.6,gravityScale:1}});
   return id;
  }
  await w.run('project.create',{name:'Demo · 2D Physics Playground (M7.1)'});

@@ -4,14 +4,14 @@ Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.
 
-M0–M8 acceptance is complete. Rust/Wasm, WebGPU/Null rendering, project editing
+M0–M9 acceptance is complete. Rust/Wasm, WebGPU/Null rendering, project editing
 and persistence, asset hot reload, C# gameplay, MCP control, reviewed AI proposals
 and CPU/Wasm physics are implemented. M8 adds independent Scene/Game views,
-visual selection and transform tools, camera navigation and bounded causal
-diagnostics. Weighted roadmap progress is approximately 54%.
-M9 development is saved and GPU acceptance is running. The repository is now
-public and Actions acquired a runner; GPU code and images are not yet verified. Partial acceptance is 25%, giving 56% weighted
-progress. See [M9 checkpoint](docs/reports/M9_CURRENT_REPORT.md).
+visual selection, transform tools, camera navigation and bounded causal diagnostics.
+M9 adds verified opt-in PBR/HDR, lights/shadows, Forward+ instancing, CPU/GPU
+culling, imported mesh LOD and postprocessing. M9 passes 8/8 acceptance points;
+weighted whole-project progress is approximately 62%.
+See [M9 acceptance](docs/reports/M9_CURRENT_REPORT.md) and [demo guide](demos/M9_GUIDE.md).
 
 See [M8 acceptance and limits](docs/reports/M8_CURRENT_REPORT.md).
 

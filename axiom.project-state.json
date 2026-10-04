@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.18",
+  "engineVersion": "0.0.19",
   "activeMilestone": 9,
-  "milestoneStatus": "in_progress",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 25,
-    "wholeProjectPercent": 56,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 62,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -48,8 +48,8 @@
       "percent": 100
     },
     "9": {
-      "status": "in_progress",
-      "percent": 25
+      "status": "complete",
+      "percent": 100
     }
   },
   "implementation": {
@@ -69,13 +69,13 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_translation_2d_3d",
-    "editableDemos": "verified_m7_physics_and_m8_workshop_diagnostic_lab",
+    "editableDemos": "verified_six_m7_m8_m9_projects",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
-    "productionRenderer": "implemented_pending_real_gpu_acceptance"
+    "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu"
   },
   "verified": {
     "nodeTests": {
-      "passed": 94,
+      "passed": 102,
       "failed": 0
     },
     "schemaDocuments": 16,
@@ -106,7 +106,7 @@
       "testsPassed": 30,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M7 implementation"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M9 0.0.19"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -192,27 +192,30 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.18",
-      "commit": "47a431d8e971fb9a18140749564e56ae9b4f9c4a",
-      "runId": 37133003810,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37133003810",
-      "jobs": [
-        "csharp-wasm-spike (ubuntu-latest, aot)",
-        "csharp-wasm-spike (windows-latest, development)",
-        "browser-milestones (m6)",
-        "browser-milestones (m4)",
-        "rust",
-        "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (m5)",
-        "script-boundaries (windows-latest)",
-        "bootstrap (ubuntu-latest)",
-        "script-boundaries (ubuntu-latest)",
+      "version": "0.0.19",
+      "commit": "5f19c2c0a640164742dc338754d4abf27b537869",
+      "runId": 37166766454,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37166766454",
+      "jobCount": 17,
+      "jobs":
+      [
         "bootstrap (windows-latest)",
+        "browser-milestones (m6)",
         "browser-milestones (m2)",
+        "csharp-wasm-spike (windows-latest, development)",
+        "script-boundaries (ubuntu-latest)",
+        "bootstrap (ubuntu-latest)",
         "script-boundaries (macos-latest)",
+        "rust",
         "browser-milestones (m8)",
+        "script-boundaries (windows-latest)",
+        "browser-milestones (m3)",
         "browser-milestones (m7)",
-        "browser-milestones (m3)"
+        "browser-milestones (m4)",
+        "browser-milestones (m5)",
+        "browser-milestones (m9)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "csharp-wasm-spike (ubuntu-latest, development)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -347,11 +350,20 @@
       "passed": 96,
       "failed": 0,
       "scope": "excludes six Cargo clean-build server tests; uses verified M8 Wasm"
+    },
+    "m9Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "runId": 37166766454,
+      "evidence": "docs/reports/m9-browser-evidence.json",
+      "benchmark": "docs/reports/m9-renderer-benchmark.json",
+      "pixels": "docs/reports/m9-renderer-pixels.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
-  "blockedChecks": [
-    "M9 WGSL/WebGPU, golden pixels, full clean regressions and image review remain pending."
-  ],
+  "blockedChecks": [],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -402,7 +414,11 @@
     "docs/architecture/M9_PLAN.md",
     "docs/reports/M9_CURRENT_REPORT.md",
     "docs/architecture/M9_RENDERER.md",
-    "docs/adr/0022-bounded-hdr-forward-plus-renderer.md"
+    "docs/adr/0022-bounded-hdr-forward-plus-renderer.md",
+    "docs/architecture/M10_PLAN.md",
+    "docs/reports/m9-browser-evidence.json",
+    "docs/reports/m9-renderer-benchmark.json",
+    "docs/reports/m9-renderer-pixels.json"
   ],
-  "nextTask": "Complete isolated M9 GPU CI now that the repository is public and a runner is assigned; fix actual failures, run full latest-source CI, review images and close M9. Keep all milestone PRs unmerged."
+  "nextTask": "Implement M10 per M10_PLAN.md and master specification section 129. Read M9/M8/M7/M6 contracts first; preserve legacy scenes, Scene/Game separation, proposal isolation and earlier demos. Keep all milestone PRs unmerged. Deliver M10 only after full automated acceptance and documented limits."
 }

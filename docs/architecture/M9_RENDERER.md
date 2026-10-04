@@ -1,7 +1,8 @@
 # M9 — Renderer Production Foundation
 
-Implementation saved; GPU acceptance blocked before CI runner allocation.
-Read docs/reports/M9_CURRENT_REPORT.md. This is not a verified milestone release. See ADR-0022 for the precise bounded
+Version 0.0.19. GPU, Inspector, demo and Null acceptance pass in real Chromium
+software WebGPU. Full 17-job cross-platform CI passes; read M9_CURRENT_REPORT.md.
+See ADR-0022 for the precise bounded
 rendering contract and explicit unsupported capabilities.
 
 `engine/renderer` owns renderer math, planning and native WGSL/WebGPU resources.
@@ -28,3 +29,7 @@ browser jobs remain required. `scripts/benchmarks/renderer.mjs` enforces planner
 p95 budgets for 128/512/1024 instances and one shared opaque batch.
 
 No physical GPU benchmark is claimed from CI's software Vulkan adapter.
+
+Existing legacy projects enable this path by applying HDR Rendering in Inspector.
+The M9 demos already contain those settings. Base material and light edits alone
+do not switch a legacy scene to HDR, preserving its existing image contract.

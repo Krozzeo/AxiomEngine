@@ -1,11 +1,10 @@
 # Implementation status
 
-Last updated: 2026-10-04. Version 0.0.18.
-M0–M8 acceptance is complete. M8: 8/8 (100%).
-Weighted whole-project progress: 56%, including M9 partial credit (2/8, 25%).
-M9 implementation is saved and GPU/full-CI acceptance is in progress. The repository
-is public and the isolated GPU retry acquired a runner. Read M9_CURRENT_REPORT.md.
-Completed-through-M8 baseline remains 54%; no M9 release is approved.
+Last updated: 2026-10-04. Version 0.0.19.
+M0–M9 acceptance is complete. M9 passes 8/8 (100%).
+Weighted whole-project progress is approximately 62%. All 17 CI jobs pass,
+including real GPU browser acceptance, image review and Windows C#.
+Read M9_CURRENT_REPORT.md.
 
 ## Implemented and verified
 
@@ -41,14 +40,19 @@ Completed-through-M8 baseline remains 54%; no M9 release is approved.
 - Orbit/pan/zoom/fly/framing, global XYZ alignment and editor projection controls.
 - Visible Diagnostics, four evidence-backed questions, bounded graphs and opt-in retained traces.
 - M8 Scene Workshop and Diagnostic Lab, generated through normal project commands.
+- M9 PBR/HDR, three light kinds, primary PCF shadow, tone mapping and analytic environment.
+- Forward+ light tiles, shared geometry instancing, actual compute/indirect culling and mesh LOD.
+- Bounded pipeline/resource caches, bloom/edge smoothing, quality fallbacks and truthful Null evidence.
+- Canonical material/light/LOD/HDR Inspector and AI commands with Undo/proposal isolation.
+- Editable M9 Gallery and Instancing/LOD Lab, preserving the four earlier demos.
 
 ## Current evidence
 
-M8 implementation passes 94 Node tests, 16 schema documents, generated-binding
-consistency, 51 semantic tools, three architecture rules and M0 parity. Rust passes
+M9 implementation passes 102 Node tests, 16 schema documents, generated-binding
+consistency, 55 semantic tools, three architecture rules and M0 parity. Rust passes
 30 tests, formatting, Clippy with warnings denied and core Wasm compilation.
-Current full CI and browser evidence is recorded in M8_CURRENT_REPORT.md.
-C# development/AOT execution includes Windows development.
+Current CI and M2–M9 browser evidence is recorded in M9_CURRENT_REPORT.md.
+Linux C# development/AOT and Windows development pass.
 
 Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,
 visible imported assets, identical saved/reopened pixels after daemon restart,
@@ -68,7 +72,9 @@ refreshing the open editor. See M5_CURRENT_REPORT.md.
 
 Node is the verified M2 beta path. Native daemon project/asset authoring, general
 schema code generation beyond the script and semantic-tool contracts,
-angular/continuous physics, production rendering and later systems are not implemented.
+angular/continuous physics and later systems are not implemented.
+M9 implements the bounded production renderer in ADR-0022; broader rendering features
+such as imported HDR IBL and point/cascaded shadows remain outside its contract.
 M7 provides translational AABB/sphere physics; see ADR-0020 for exact boundaries.
 Supported import formats and resource limits are in M2_BETA.md. A shared daemon
 workspace has memory-only unsaved drafts and 64 history entries; saves persist
@@ -81,7 +87,7 @@ asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
 M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
 M8 verifies four causal queries, ten faults, bounded/expired/stale evidence,
 Scene/Game separation, two-way selection, transforms, navigation and editable demos.
-Follow M9_PLAN.md and master specification section 128 for renderer production.
+Follow M10_PLAN.md and master specification section 129 for the 2D foundation.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.
@@ -92,7 +98,7 @@ Follow M9_PLAN.md and master specification section 128 for renderer production.
 - M8 acceptance: ../reports/M8_CURRENT_REPORT.md and M8_DIAGNOSTICS_AND_EDITOR.md.
 - Completion weights and delivery rules: MILESTONE_REPORTING.md.
 
-PR #8 is stacked on #7, #6, #5, #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
+PR #9 is stacked on #8, #7, #6, #5, #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
 
 ## Roadmap release slices
 

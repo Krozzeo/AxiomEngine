@@ -1,8 +1,8 @@
 # Demo projects
 
 M9 adds a PBR Gallery and Instancing/LOD Lab; see [M9 guide](M9_GUIDE.md).
-Their generation/persistence is verified locally; real GPU/interaction acceptance
-is pending CI runner recovery. They are development demos, not a verified release.
+Their generation, persistence, GPU/Inspector interactions, quality fallback and
+Null behavior pass automated acceptance. M9 full cross-platform CI also passes.
 
 These are editable projects using the normal importer, scene commands, compiler
 and persistence paths. No special demo-only rendering or physics is used.

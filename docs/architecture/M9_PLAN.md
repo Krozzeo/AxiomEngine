@@ -1,7 +1,7 @@
 # M9 — Renderer Production Foundation
 
-Status: implementation saved; acceptance blocked at 2/8 (25%). Read
-M9_CURRENT_REPORT.md in docs/reports for the concrete CI runner blocker. Master specification section 128. Roadmap weight: 8%.
+Status: complete, 8/8 (100%). Read
+M9_CURRENT_REPORT.md in docs/reports for current evidence. Master specification section 128. Roadmap weight: 8%.
 
 Read M8_DIAGNOSTICS_AND_EDITOR.md, ADR-0021, M7_PHYSICS.md, rendering/runtime
 contracts and current reports before implementing. Preserve editor/game camera
@@ -19,5 +19,5 @@ separation, bounded causal evidence, proposal isolation and stacked unmerged PRs
    required checks, review screenshots and close the milestone with evidence,
    limitations, completion percentages and only truly manual gates.
 
-Start with schema/renderer contracts and an executable minimal PBR/HDR scene,
-then grow the required production foundation without partial user releases.
+The bounded foundation is accepted under ADR-0022. M10 follows M10_PLAN.md;
+preserve these contracts and every earlier regression gate.

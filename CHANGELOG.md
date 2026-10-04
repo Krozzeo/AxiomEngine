@@ -1,13 +1,16 @@
 # Changelog
 
-## Unreleased — M9 implementation; GPU acceptance blocked
+## 0.0.19 — M9 Renderer Production Foundation
 
 - Canonical PBR/light/LOD/HDR components, commands, Undo and Inspector forms.
 - HDR rendering, tile lighting, instancing, CPU/GPU culling and postprocessing implemented.
-- Editable PBR Gallery and Instancing/LOD Lab, with authored browser acceptance.
+- Editable PBR Gallery and Instancing/LOD Lab, with real browser/Inspector acceptance.
 - Smooth GLB normals and bounded PBR import parameters; isolated GPU readback epochs.
-- 96 local Node tests pass; CI failed before runner allocation on two attempts.
-- M9 remains 25% (2/8); approximate weighted progress 56%. Not a milestone release.
+- 102 Node tests and M2–M9 browser acceptance pass; all earlier regressions retained.
+- CPU/GPU golden parity, actual GPU readback and light/shadow/post pixel effects verified.
+- Optional favicon requests return 204; missing static resources correctly return 404.
+- Full 17-job CI, including Linux C# development/AOT and Windows development, passes.
+- M9: 100% (8/8); approximate weighted whole-project progress: 62%.
 
 ## 0.0.18 — M8 Causal Diagnostics and Scene authoring
 

@@ -2,7 +2,7 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.20",
+  "engineVersion": "0.0.21",
   "activeMilestone": 9,
   "milestoneStatus": "complete",
   "completion": {
@@ -373,7 +373,9 @@
       "physicalGpuBenchmark": false
     }
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M9.2 refinements await full CI and screenshot review"
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -434,5 +436,5 @@
     "demos/M9_1_GUIDE.md",
     "docs/reports/m9.1-browser-evidence.json"
   ],
-  "nextTask": "Implement M10 per M10_PLAN.md after completed M9.1. Keep milestone PRs unmerged; preserve proposal isolation and include editable demos and automated acceptance."
+  "nextTask": "Finish M9.2 requested editor refinements before M10. Keep milestone PRs unmerged."
 }

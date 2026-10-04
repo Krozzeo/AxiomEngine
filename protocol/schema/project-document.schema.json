@@ -605,6 +605,31 @@
           ]
         }
       }
+    },
+    "editor": {
+      "type": "object",
+      "required": [
+        "leftWidth",
+        "rightWidth",
+        "bottomHeight"
+      ],
+      "properties": {
+        "leftWidth": {
+          "type": "number",
+          "minimum": 150,
+          "maximum": 600
+        },
+        "rightWidth": {
+          "type": "number",
+          "minimum": 220,
+          "maximum": 700
+        },
+        "bottomHeight": {
+          "type": "number",
+          "minimum": 120,
+          "maximum": 650
+        }
+      }
     }
   }
 }

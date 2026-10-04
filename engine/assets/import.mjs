@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 // Static glTF 2.0/PNG import. No external resource fetches or executable content.
 import { parseWav } from "./audio.mjs";
 import { PNG } from "pngjs";
@@ -136,5 +137,8 @@ export function decodeAsset(bytes) {
   check(bytes.length>0&&bytes.length<=ASSET_BYTES,"Asset size must be between 1 byte and 8 MiB");
   if(bytes[0]===137) return {kind:"sprite",...pngInfo(bytes),dataUrl:`data:image/png;base64,${bytes.toString("base64")}`};
   if(bytes.toString("ascii",0,4)==="RIFF")return parseWav(bytes);
-  return parseGlb(bytes);
+  const asset=parseGlb(bytes);
+  // Exact known M9.1 generated sources only; preserve original bytes and asset IDs.
+  if(['3737d9b846cfee4de5b47effe20454e1199b2c0c83d1af600c41357cf220b329','1525148a969a88bdacb7b1f13ed667b9615385d3c6ee978823650a85a237c8ed'].includes(createHash('sha256').update(bytes).digest('hex'))){for(const p of asset.primitives)for(let i=0;i<p.vertices.length;i+=24){for(let j=0;j<8;j++)[p.vertices[i+8+j],p.vertices[i+16+j]]=[p.vertices[i+16+j],p.vertices[i+8+j]];for(let v=0;v<3;v++)for(let j=3;j<6;j++)p.vertices[i+v*8+j]*=-1;}asset.warnings.push('Corrected inward normals/winding of an M9.1 built-in primitive');}
+  return asset;
 }

@@ -27,6 +27,9 @@ Non-negotiable foundations:
 
 ## Current state
 
+M9.2 (0.0.21) editor refinements are in progress. Read M9_2_REFINEMENTS.md.
+New executable code requires its own CI and visual review before delivery.
+
 Version `0.0.20`: M0–M9 and M9.1 acceptance are complete. M9.1 passes
 12/12 correction groups (100%); weighted whole-project progress remains 62%.
 Read M9_1_CORRECTIONS.md, M9_1_CURRENT_REPORT.md and demos/M9_1_GUIDE.md first.

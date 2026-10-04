@@ -114,11 +114,11 @@ test("editor controls create, edit, undo, save and reopen the real command works
   await $("project-new").fire("click");
   assert.match($("project-status").textContent, /UI Project/);
   await $("scene-add").fire("click");
-  assert.equal($("entities").children.length, 1);
+  assert.equal($("entities").children.filter(n=>n.className==='tree-row').length, 1);
   $("entity-name").value = "Player";
   $("position-0").value = "5";
   await $("entity-form").fire("submit");
-  assert.equal($("entities").children[0].children[1].textContent, "Player");
+  assert.equal($("entities").children.find(n=>n.className==='tree-row').children[1].textContent, "Player");
   await $("scene-undo").fire("click");
   assert.equal($("entity-name").value, "Entity");
   await $("scene-redo").fire("click");
@@ -143,7 +143,7 @@ test('Scene/Game view switches never start or stop Play and selection works both
  const {send}=await fixture(t),document=await fakeDocument(),$=id=>document.querySelector('#'+id),views=[],selection=[];
  const editor=mountProjectEditor({document,send,reportError:error=>{throw error;},onView:value=>views.push(value),onSelection:value=>selection.push(value)});await editor.connect(caps);$('project-name').value='View separation';await $('project-new').fire('click');await $('scene-add').fire('click');await $('scene-add').fire('click');
  const initial=(await send('scene.get')).payload.data,first=initial.project.scene.entities[0];editor.selectEntity(first.id);assert.equal($('entity-name').value,first.name);assert.deepEqual(selection.at(-1),[first.id]);
- await $('entities').children[1].children[1].fire('click');assert.equal(editor.selectedEntity(),initial.project.scene.entities[1].id);
+ await $('entities').children.filter(n=>n.className==='tree-row')[1].children[1].fire('click');assert.equal(editor.selectedEntity(),initial.project.scene.entities[1].id);
  await $('game-tab').fire('click');assert.equal((await send('scene.get')).payload.data.playing,false);assert.equal(views.at(-1),'game');await $('play-start').fire('click');assert.equal((await send('scene.get')).payload.data.playing,true);await $('scene-tab').fire('click');assert.equal((await send('scene.get')).payload.data.playing,true);assert.equal(views.at(-1),'scene');await $('play-stop').fire('click');assert.equal((await send('scene.get')).payload.data.playing,false);
 });
 
@@ -164,5 +164,5 @@ test("editor respects unsupported daemon capabilities and reports stale-scene co
   assert.equal(errors[0].code, "AX_SCENE_0002");
   assert.match($("project-error").textContent, /refresh/);
   await $("workspace-refresh").fire("click");
-  assert.equal($("entities").children.length, 1);
+  assert.equal($("entities").children.filter(n=>n.className==='tree-row').length, 1);
 });

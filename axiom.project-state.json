@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.22",
-  "activeMilestone": 10,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.23",
+  "activeMilestone": 11,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 68,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -54,6 +54,10 @@
     "10": {
       "status": "complete",
       "percent": 100
+    },
+    "11": {
+      "status": "in_progress",
+      "percent": 0
     }
   },
   "implementation": {
@@ -402,7 +406,9 @@
       "physicalGpuBenchmark": false
     }
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M11 integrated browser/CI acceptance and documentation closure pending"
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -474,5 +480,5 @@
     "docs/reports/m10-two-d-benchmark.json",
     "demos/M10_GUIDE.md"
   ],
-  "nextTask": "Implement M11 per M11_PLAN.md and master section 130; preserve M10 sprite animation and proposal isolation, include editable demos and complete automated closure. Keep milestone PRs unmerged."
+  "nextTask": "Complete M11 animation acceptance, pixel-art Scene correction, demos, full CI and synchronized closure; keep PR #13 unmerged."
 }

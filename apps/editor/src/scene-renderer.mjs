@@ -213,7 +213,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       }
       if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
       const packet=kernel.stepScene(twoDPaused?0:delta,++trace,canvas.width/canvas.height);
-      const animations=kernel.animationStep(playing?delta:0,playing);diagnostic.animation=animations;
+      const animations=kernel.animationStep(playing?delta:0,playing);diagnostic.animation=animations;diagnostic.animationProvenance={sceneRevision,workspaceId,generation};
       const animatedDraws=kernel.animationDraws();
       geometry=geometry.map((d,i)=>({...d,...(animatedDraws[i]?.skinPalette?{vertices:animatedDraws[i].vertices,skinSource:animatedDraws[i].skinSource,skinInfluences:animatedDraws[i].skinInfluences,skinPalette:animatedDraws[i].skinPalette}:{} )}));
       lastPacket=packet;lastTraceId=diagnostic.traceId;

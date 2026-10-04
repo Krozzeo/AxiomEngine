@@ -27,6 +27,11 @@ Non-negotiable foundations:
 
 ## Current state
 
+M11 (0.0.23) is in progress on draft PR #13, stacked on M10 #12. Read
+M11_ANIMATION.md. Local animation contracts/runtime/proposals pass; browser
+acceptance, full CI and closure are pending. Baseline progress remains 68%.
+
+
 M10 (0.0.22) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 68%.
 Opt-in 2D includes atlas batching, editable tilemaps, Rust/Wasm sprite animation
 and seeded particles, pixel-perfect Game preview, radial lighting and screen UI

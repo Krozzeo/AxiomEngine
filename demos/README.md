@@ -1,3 +1,9 @@
+# M11 demos
+
+`npm run demo` creates Skinned Robot Studio, Clip and State Lab and Pixel Scene
+Clarity. See [Spanish guide](M11_GUIDE.md). Existing projects are preserved.
+M10 remains available with `npm run demo:m10`.
+
 # M10 2D demos
 
 `npm.cmd run demo` creates two new editable M10 projects and preserves all older

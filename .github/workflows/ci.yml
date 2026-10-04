@@ -112,7 +112,7 @@ jobs:
       # Isolated runners: parallel browser jobs do not share GPU or scene state.
       max-parallel: 8
       matrix:
-        milestone: [m10, corrections, m9, m2, m3, m4, m5, m6, m7, m8]
+        milestone: [m11, m10, corrections, m9, m2, m3, m4, m5, m6, m7, m8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -134,6 +134,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
       - run: node scripts/benchmarks/causal-diagnostics.mjs
         if: matrix.milestone == 'm8'
+      - run: node scripts/benchmarks/animation.mjs
+        if: matrix.milestone == 'm11'
       - run: node scripts/benchmarks/two-d.mjs
         if: matrix.milestone == 'm10'
       - run: node scripts/benchmarks/renderer.mjs
@@ -156,6 +158,8 @@ jobs:
             .axiom/browser-m6-evidence
             .axiom/browser-m7-evidence
             .axiom/browser-corrections-evidence
+            .axiom/browser-m11-evidence
+            .axiom/animation-benchmark.json
             .axiom/browser-m10-evidence
             .axiom/two-d-benchmark.json
             .axiom/browser-m9-evidence

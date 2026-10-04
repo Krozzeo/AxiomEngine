@@ -49,6 +49,7 @@ export async function buildEditor() {
   for(const name of ['view-math','scene-tools','causal-diagnostics'])await cp(resolve(root,'apps/editor/src',name+'.mjs'),resolve(destination,name+'.mjs'));
   for(const [name,target]of [["runtime.mjs","script-runtime.js"],["worker.mjs","script-worker.js"],["operations.mjs","script-operations.mjs"],["contract.mjs","contract.mjs"]])await cp(resolve(root,"engine/scripting",name),resolve(destination,target));
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));
+  await writeFile(resolve(destination,'animation-host.mjs'),(await readFile(resolve(root,'engine/wasm/animation-host.mjs'),'utf8')).replace('../renderer/','./'));
   await cp(resolve(root,"engine/wasm/physics-host.mjs"),resolve(destination,"physics-host.mjs"));
   const source = await readFile(resolve(root, "apps/editor/src/main.ts"), "utf8");
   if (/\binterface\s+|:\s*(string|number|boolean)\b/.test(source)) {

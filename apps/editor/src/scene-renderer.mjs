@@ -209,7 +209,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       const previewModels=new Map(previewScene?.entities.map(e=>[e.id,modelMatrix(e.transform)])??[]);
       geometry=geometry.map((draw,i)=>{const model=previewModels.get(draw.entityId)??packet.draws[i].model;return {...draw,model,mvp:view==='scene'||transformPreview?matrixMultiply(vp,model):packet.draws[i].mvp};});
       if(packet.transforms)for(const item of packet.transforms){const e=runtimeScene.entities.find(e=>e.id===item.id);if(e)e.transform=item.transform;}
-      if(packet.physics){for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);e.transform.position=b.position;e.transform.rotation=b.rotation;if(e.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;}}diagnostic.physics=packet.physics;}
+      if(packet.physics){for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);if(!packet.transforms){e.transform.position=b.position;e.transform.rotation=b.rotation;}if(e.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;}}diagnostic.physics=packet.physics;}
       if(runtimeScene.rendering){
         
         const plan=renderPlan(previewScene??runtimeScene,geometry,camera,canvas.width/canvas.height,assets,{gpuCulling:!!device&&device.limits.maxStorageBuffersPerShaderStage>=4});

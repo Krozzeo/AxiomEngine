@@ -67,6 +67,13 @@ export function validateProject(document) {
     if(entity.lod){if(entity.renderable?.kind!=="mesh")throw projectError("AX_PROJECT_0002","LOD requires a mesh Renderable");let distance=0;for(const level of entity.lod.levels){if(level.distance<=distance||!assets.some(a=>a.id===level.assetId&&a.kind==="mesh"))throw projectError("AX_PROJECT_0002","LOD levels need ascending distances and imported meshes");distance=level.distance;}}
   }
   if(document.scene.entities.filter(e=>e.light).length>64)throw projectError("AX_PROJECT_0002","Renderer supports at most 64 lights");
+  const animated=document.scene.entities.filter(e=>e.animator);
+  if(animated.length>16)throw projectError('AX_PROJECT_0002','At most 16 Animator entities');
+  for(const e of animated){
+    const a=e.animator,names=a.states.map(s=>s.name),params=a.parameters.map(p=>p.name);
+    if(e.renderable?.kind!=='mesh'||e.lod||new Set(names).size!==names.length||new Set(params).size!==params.length||!names.includes(a.initialState))throw projectError('AX_PROJECT_0002','Animator needs a mesh, unique states/parameters and initial state; excludes LOD');
+    for(const t of a.transitions)if(!names.includes(t.source)||!names.includes(t.target)||t.source===t.target||t.parameter&&!params.includes(t.parameter))throw projectError('AX_PROJECT_0002','Invalid animation transition');
+  }
   const components=['sprite2D','spriteAnimation','tilemap','light2D','particles2D','ui2D'];
   const twoD=document.scene.twoD;
   if(!twoD&&document.scene.entities.some(e=>components.some(k=>e[k])))throw projectError('AX_PROJECT_0002','2D components require 2D scene settings');

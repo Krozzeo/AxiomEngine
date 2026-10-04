@@ -700,6 +700,140 @@
                     ]
                   }
                 }
+              },
+              "animator": {
+                "type": "object",
+                "required": [
+                  "initialState",
+                  "speed",
+                  "autoplay",
+                  "states",
+                  "parameters",
+                  "transitions"
+                ],
+                "properties": {
+                  "initialState": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "speed": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 8
+                  },
+                  "autoplay": {
+                    "type": "boolean"
+                  },
+                  "states": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 8,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "clip",
+                        "loop",
+                        "speed"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "clip": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "loop": {
+                          "type": "boolean"
+                        },
+                        "speed": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 8
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 8,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "value"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "value": {
+                          "type": "number",
+                          "minimum": -1000000.0,
+                          "maximum": 1000000.0
+                        }
+                      }
+                    }
+                  },
+                  "transitions": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 16,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "source",
+                        "target",
+                        "parameter",
+                        "comparison",
+                        "threshold",
+                        "duration"
+                      ],
+                      "properties": {
+                        "source": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "target": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "parameter": {
+                          "type": "string",
+                          "maxLength": 64
+                        },
+                        "comparison": {
+                          "type": "string",
+                          "enum": [
+                            "gt",
+                            "lt",
+                            "eq"
+                          ]
+                        },
+                        "threshold": {
+                          "type": "number",
+                          "minimum": -1000000.0,
+                          "maximum": 1000000.0
+                        },
+                        "duration": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 5
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }

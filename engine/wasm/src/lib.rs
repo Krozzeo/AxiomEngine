@@ -10,9 +10,12 @@ use std::collections::BTreeMap;
 
 #[allow(unsafe_code)]
 mod physics_abi;
+#[allow(unsafe_code)]
+mod animation_abi;
 
 #[derive(Default)]
 struct Registry {
+    animations: BTreeMap<u32,BTreeMap<u32,axiom_core::animation::Animator>>,
     next: u32,
     worlds: BTreeMap<u32, DemoKernel>,
     scenes: BTreeMap<u32, RuntimeScene>,
@@ -94,6 +97,7 @@ mod exports {
             registry.cameras.remove(&id);
             registry.physics.remove(&id);
             registry.two_d.remove(&id);
+            registry.animations.remove(&id);
         });
     }
 

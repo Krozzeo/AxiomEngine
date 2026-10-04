@@ -1,3 +1,4 @@
+import {animationMetadata} from './animation-import.mjs';
 import {createHash} from 'node:crypto';
 // Static glTF 2.0/PNG import. No external resource fetches or executable content.
 import { parseWav } from "./audio.mjs";
@@ -44,7 +45,7 @@ export function parseGlb(bytes) {
   }
   check(json?.asset?.version==="2.0" && binary!==null,"GLB requires version 2.0 and an embedded binary buffer");
   check(!json.extensionsRequired?.some(name=>name!=="KHR_materials_unlit"),"Required GLB extension is unsupported (including Draco/meshopt compression)");
-  check(!json.skins?.length,"Skinned meshes are not supported in M2");
+
   check(json.buffers?.length===1 && !json.buffers[0].uri && integer(json.buffers[0].byteLength,binary.length),"Only one embedded GLB buffer is supported");
   const bufferLength=json.buffers[0].byteLength;
   check(binary.length-bufferLength<=3,"Invalid GLB buffer padding");
@@ -58,8 +59,8 @@ export function parseGlb(bytes) {
     check(integer(index),"Invalid accessor reference"); const a=json.accessors?.[index];
     check(a && a.type===expected && !a.sparse && integer(a.count,150000) && a.count>0,"Unsupported or invalid accessor (sparse accessors are not supported)");
     const v=view(a.bufferView), sizes={5121:1,5123:2,5125:4,5126:4}, size=sizes[a.componentType];
-    check(size && (attribute ? a.componentType===5126 || (expected==="VEC2"&&a.normalized&&[5121,5123].includes(a.componentType)) : [5121,5123,5125].includes(a.componentType)),"Unsupported accessor component type");
-    const components={SCALAR:1,VEC2:2,VEC3:3}[expected], packed=components*size, stride=v.byteStride??packed, start=(v.byteOffset??0)+(a.byteOffset??0);
+    check(size && (attribute==="animation" ? a.componentType===5126 : attribute==="joints" ? [5121,5123].includes(a.componentType)&&!a.normalized : attribute ? a.componentType===5126 || (["VEC2","VEC4"].includes(expected)&&a.normalized&&[5121,5123].includes(a.componentType)) : [5121,5123,5125].includes(a.componentType)),"Unsupported accessor component type");
+    const components={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16}[expected], packed=components*size, stride=v.byteStride??packed, start=(v.byteOffset??0)+(a.byteOffset??0);
     check(integer(a.byteOffset??0) && integer(stride,252) && stride>=packed && stride%size===0 && start%size===0 && (a.byteOffset??0)+(a.count-1)*stride+packed<=v.byteLength,"Accessor range or alignment is invalid");
     const result=[];
     for(let i=0;i<a.count;i++) {
@@ -74,6 +75,7 @@ export function parseGlb(bytes) {
     }
     return result;
   }
+  const animation=json.skins?.length||json.animations?.length?animationMetadata(json,accessor,nodeMatrix,check):null;
   const textures=new Map();
   function texture(index) {
     if(textures.has(index)) return textures.get(index);
@@ -92,7 +94,7 @@ export function parseGlb(bytes) {
     if(node.mesh!==undefined) {
       const mesh=json.meshes?.[node.mesh]; check(mesh&&Array.isArray(mesh.primitives),"Missing mesh");
       for(const primitive of mesh.primitives) {
-        check((primitive.mode??4)===4 && !primitive.targets?.length,"Only static triangle meshes are supported in M2");
+        check((primitive.mode??4)===4 && !primitive.targets?.length,"Only triangle meshes without morph targets are supported");
         const positions=accessor(primitive.attributes?.POSITION,"VEC3",true);
         const indices=primitive.indices===undefined?positions.map((_,i)=>i):accessor(primitive.indices,"SCALAR").map(v=>v[0]);
         check(indices.length%3===0&&indices.every(i=>integer(i,positions.length-1)),"Invalid triangle indices");
@@ -108,6 +110,16 @@ export function parseGlb(bytes) {
         check(!tex || (tex.texCoord??0)===0,"Only TEXCOORD_0 is supported");
         const uv=tex?accessor(primitive.attributes?.TEXCOORD_0,"VEC2",true):null;
         check(!uv||uv.length===positions.length,"UV count differs from position count");
+        let skinData=null;
+        if(animation){
+          const skin=node.skin===undefined?null:animation.skins[node.skin];check(node.skin===undefined||skin,'Invalid mesh skin');
+          const joints=skin?accessor(primitive.attributes?.JOINTS_0,'VEC4','joints'):positions.map(()=>[0,0,0,0]);
+          const weights=skin?accessor(primitive.attributes?.WEIGHTS_0,'VEC4',true):positions.map(()=>[1,0,0,0]);
+          check(joints.length===positions.length&&weights.length===positions.length,'Skin attribute count mismatch');
+          if(skin)check(joints.every(v=>v.every(j=>Number.isInteger(j)&&j>=0&&j<skin.joints.length))&&weights.every(v=>v.every(w=>w>=0)&&v.reduce((a,b)=>a+b,0)>1e-8),'Invalid skin indices/weights');
+          skinData={node:index,skin:node.skin??null,vertices:[],influences:[]};
+          for(const n of indices){skinData.vertices.push(...positions[n],...(normals?.[n]??[0,0,1]),...(uv?.[n]??[0,0]));const sum=weights[n].reduce((a,b)=>a+b,0);skinData.influences.push(...joints[n],...weights[n].map(w=>w/sum));}
+        }
         const output=[];
         for(let i=0;i<indices.length;i+=3) {
           const tri=indices.slice(i,i+3).map(n=>point(matrix,positions[n]));
@@ -121,7 +133,7 @@ export function parseGlb(bytes) {
           }
         }
         check(output.every(Number.isFinite),"Invalid transformed geometry");
-        primitives.push({ vertices: output, color, texture: tex?texture(tex.index):null, unlit: !!material.extensions?.KHR_materials_unlit, material: {metallic,roughness:Math.max(.045,roughness),emissive,alphaMode:alphaMode.toLowerCase(),alphaCutoff} });
+        primitives.push({ ...(skinData?{skinData}:{}), vertices: output, color, texture: tex?texture(tex.index):null, unlit: !!material.extensions?.KHR_materials_unlit, material: {metallic,roughness:Math.max(.045,roughness),emissive,alphaMode:alphaMode.toLowerCase(),alphaCutoff} });
       }
     }
     const next=new Set(ancestors);next.add(index);
@@ -131,7 +143,7 @@ export function parseGlb(bytes) {
   const scene=json.scenes?.[json.scene??0]; check(scene&&Array.isArray(scene.nodes),"GLB has no usable scene");
   for(const node of scene.nodes) visit(node,identity(),new Set());
   check(primitives.length>0,"GLB scene contains no triangle meshes");
-  return { kind:"mesh", primitives, vertexCount, bounds:{minimum,maximum}, warnings:json.animations?.length?["Animations are not imported; using the static node pose"]:[] };
+  return { kind:"mesh", primitives, vertexCount, bounds:{minimum,maximum}, warnings:[],...(animation?{animation}:{}) };
 }
 export function decodeAsset(bytes) {
   check(bytes.length>0&&bytes.length<=ASSET_BYTES,"Asset size must be between 1 byte and 8 MiB");

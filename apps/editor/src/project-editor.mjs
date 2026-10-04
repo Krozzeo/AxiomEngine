@@ -3,8 +3,9 @@ import {hierarchyRows,rangeSelection} from '../../../engine/scene/editor-operati
 import {mountPanelLayout} from './panel-layout.mjs';
 import {localTransform} from '../../../engine/scene/hierarchy.mjs';
 import {quaternionFromEuler,eulerFromQuaternion} from './view-math.mjs';
+import {mountAnimationEditor} from './animation-editor.mjs';
 import {materialDefaults,renderingDefaults} from '../../../engine/renderer/render-plan.mjs';
-export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, onSelection=()=>{},onView=()=>{}, defaultScript = "" }) {
+export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, onSelection=()=>{},onView=()=>{},getRenderer=()=>null, defaultScript = "" }) {
   const $ = id => document.querySelector(`#${id}`);
   const supported = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"];
   let enabled = false, pipelineEnabled=false, currentJob=null;
@@ -123,7 +124,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if(selection.size>1){const chosen=entities.filter(e=>selection.has(e.id));for(const group of ['position','rotation','scale'])for(let i=0;i<3;i++){const values=chosen.map(e=>group==='rotation'?eulerFromQuaternion(e.transform.rotation)[i]:e.transform[group][i]);const field=$(group+'-'+i);field.value=values.every(v=>Math.abs(v-values[0])<1e-8)?String(values[0]):'';field.placeholder='Mixed';field.required=false;}}else for(const group of ['position','rotation','scale'])for(let i=0;i<3;i++)$(group+'-'+i).required=true;
     }
     if(state.workspaceId){for(const id of ["project-new","project-open","project-close","scene-save"])$(id).disabled=true;$("preview-note").textContent="Isolated AI proposal · "+(state.playing?"running":"editing");}
-    twoDEditor.draw();
+    twoDEditor.draw();animationEditor.draw();
     onDirty(state.dirty&&!state.workspaceId);
     onSelection([...selection]);onView(view);
   }
@@ -167,6 +168,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if (projects.some(project => project.id === previous)) $("project-list").value = previous;
   }
   const mutation = extra => ({ id: state.project?.id, expectedSceneRevision: state.sceneRevision, ...extra });
+  const animationEditor=mountAnimationEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null,getRenderer});
   const twoDEditor=mountTwoDEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null});
   const number=id=>Number($(id).value),vector=(id,n)=>Array.from({length:n},(_,i)=>number(id+'-'+i));
   for(const key of ['material','light','lod','render']){
@@ -260,6 +262,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   function deleteSelected(){if(!selection.size||state.playing||busy)return;return act(()=>run('scene.entities.delete',mutation({entityIds:[...selection]})));}
   if($('component-add')){
     $('component-add').addEventListener('click',()=>act(async()=>{const component=$('component-choice').value,entity=state.project.scene.entities.find(e=>e.id===selected);if(selection.size!==1)throw Error('Select one entity');
+      if(await animationEditor.add(component,entity))return;
       if(await twoDEditor.add(component,entity))return;
       if(component==='Script'){if(state.project.scene.script)await run('scene.component.add',mutation({entityId:selected,component}));else scriptDraft.add(selected);$('script-component').open=true;return;}
       const key={Material:'material',Light:'light',LOD:'lod',Collider:'collider',RigidBody:'rigidBody',Renderable:'renderable'}[component];if(entity[key])throw Error(component+' is already attached');
@@ -269,7 +272,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     }));
     for(const [id,component]of [['renderable','Renderable'],['collider','Collider'],['rigidbody','RigidBody'],['script','Script']])$(id+'-remove').addEventListener('click',()=>act(async()=>{if(component==='Script'&&!state.project.scene.script){scriptDraft.delete(selected);return;}await run('scene.component.remove',mutation({entityId:selected,component}));scriptDraft.delete(selected);}));
     for(const button of document.querySelectorAll?.('.create-primitive')??[])button.addEventListener('click',()=>act(()=>run('scene.primitive.create',mutation({dimension:Number(button.dataset.dimension),shape:button.dataset.shape}))));
-    $('component-search')?.addEventListener('input',()=>{const query=$('component-search').value.trim().toLowerCase();const choice=$('component-choice'),names=['Renderable','Material','Light','LOD','Collider','RigidBody','Script',...twoDEditor.names].filter(name=>name.toLowerCase().startsWith(query));choice.replaceChildren();for(const name of names){const option=document.createElement('option');option.textContent=option.value=name;choice.append(option);}$('component-add').disabled=!names.length||selection.size!==1||busy||state.playing;});
+    $('component-search')?.addEventListener('input',()=>{const query=$('component-search').value.trim().toLowerCase();const choice=$('component-choice'),names=['Renderable','Material','Light','LOD','Collider','RigidBody','Script','Animator',...twoDEditor.names].filter(name=>name.toLowerCase().startsWith(query));choice.replaceChildren();for(const name of names){const option=document.createElement('option');option.textContent=option.value=name;choice.append(option);}$('component-add').disabled=!names.length||selection.size!==1||busy||state.playing;});
     for(const detail of document.querySelectorAll?.('.menubar details')??[]){detail.addEventListener('toggle',()=>{if(!detail.open)return;const popup=detail.querySelector(':scope > .submenu');if(!popup?.getBoundingClientRect)return;popup.style.left='100%';popup.style.right='auto';if(popup.getBoundingClientRect().right>globalThis.innerWidth){popup.style.left='auto';popup.style.right='100%';}});detail.querySelector('summary')?.addEventListener('click',()=>{for(const sibling of detail.parentElement.children)if(sibling!==detail&&sibling.tagName==='DETAILS')sibling.open=false;});}
     globalThis.addEventListener?.('keydown',event=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??'')||event.target?.isContentEditable)return;
       if(event.code==='Escape')for(const detail of document.querySelectorAll?.('.menubar details')??[])detail.open=false;

@@ -9,7 +9,7 @@ export function pixelCamera(camera,settings,width,height,view){
  const renderHeight=pixel?Math.min(height,settings.referenceHeight*scale):height;
  if(pixel)c.orthoHeight=renderHeight/(settings.pixelsPerUnit*scale);
  const renderWidth=pixel?Math.floor(width/scale)*scale:width;
- return {camera:c,viewport:[Math.floor((width-renderWidth)/2),Math.floor((height-renderHeight)/2),renderWidth,renderHeight],scale,pixel};
+ return {camera:c,viewport:[Math.floor((width-renderWidth)/2),Math.floor((height-renderHeight)/2),renderWidth,renderHeight],scale,pixel,nearest:!!settings.pixelPerfect};
 }
 export function uiHit(scene,x,y,viewport){const [left,top,w,h]=viewport;const u=(x-left)/w,v=(y-top)/h;if(u<0||v<0||u>1||v>1)return null;return scene.entities.filter(e=>e.ui2D?.kind==='button').map((e,i)=>({e,i})).sort((a,b)=>b.e.ui2D.order-a.e.ui2D.order||b.i-a.i).find(({e})=>{const r=e.ui2D.rect;return u>=r[0]&&v>=r[1]&&u<=r[0]+r[2]&&v<=r[1]+r[3];})?.e??null;}
 export function twoDPlan(scene,assets,camera,width,height,{view='game',time=0,kernel,paused=false}={}){

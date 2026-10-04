@@ -29,7 +29,7 @@ export class SceneWorkspace {
     this.future = [];
   }
   async validateResources(scene) {
-    const resources=new Map();let vertices=0,draws=0;
+    const resources=new Map();let vertices=0,draws=0,animatedVertices=0;
     for(const entity of scene.entities) {
       if(entity.tilemap){const a=await this.pipeline.resource(this.project.id,scene,entity.tilemap.assetId);if(a.kind!=='sprite'||a.width%entity.tilemap.columns||a.height%entity.tilemap.rows)fail('AX_ASSET_0001','Tile atlas dimensions must divide the PNG');}
       if(entity.sprite2D){const a=await this.pipeline.resource(this.project.id,scene,entity.renderable.assetId);if(a.width%entity.sprite2D.columns||a.height%entity.sprite2D.rows)fail('AX_ASSET_0001','Sprite atlas dimensions must divide the PNG');}
@@ -38,6 +38,7 @@ export class SceneWorkspace {
       const id=entity.renderable.assetId;
       if(!resources.has(id))resources.set(id,await this.pipeline.resource(this.project.id,scene,id));
       const resource=resources.get(id);
+      if(entity.animator){if(!resource.animation?.clips.length||entity.animator.states.some(s=>!resource.animation.clips.some(c=>c.name===s.clip)))fail('AX_ASSET_0001','Animator references missing animation clips');animatedVertices+=resource.vertexCount;if(animatedVertices>65536)fail('AX_SCENE_0006','Animated vertex budget exceeded');}
       for(const level of entity.lod?.levels??[]){if(!resources.has(level.assetId))resources.set(level.assetId,await this.pipeline.resource(this.project.id,scene,level.assetId));const alternate=resources.get(level.assetId);if(alternate.kind!=="mesh"||alternate.primitives.length!==resource.primitives.length)fail("AX_ASSET_0001","LOD meshes must share the base primitive count");if(alternate.vertexCount>300000)fail("AX_SCENE_0006","LOD vertex limit exceeded");}
       if(resource.kind!==entity.renderable.kind)fail("AX_ASSET_0001","Asset kind does not match the entity component");
       vertices+=resource.kind==="sprite"?6:resource.vertexCount;
@@ -214,7 +215,7 @@ export class SceneWorkspace {
       const size=resource.bounds?Math.max(...resource.bounds.maximum.map((v,i)=>v-resource.bounds.minimum[i])):2*Math.max(1,resource.width/resource.height);
       const scale=size>1e-6?2/size:1;
       scene.entities.push({id:`entity://${randomUUID()}`,name:asset.name,transform:{position:[(asset.kind==="sprite"?-1.5:1.5)-center[0]*scale,-center[1]*scale,-center[2]*scale],rotation:[0,0,0,1],scale:[scale,scale,scale]},renderable:{kind:asset.kind,assetId:asset.id}});
-    } else if(["scene.sprite2D.set","scene.spriteAnimation.set","scene.tilemap.set","scene.light2D.set","scene.particles2D.set","scene.ui2D.set","scene.collider.set","scene.rigidBody.set","scene.material.set","scene.light.set","scene.lod.set"].includes(type)) {
+    } else if(["scene.animator.set","scene.sprite2D.set","scene.spriteAnimation.set","scene.tilemap.set","scene.light2D.set","scene.particles2D.set","scene.ui2D.set","scene.collider.set","scene.rigidBody.set","scene.material.set","scene.light.set","scene.lod.set"].includes(type)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
       scene.entities[index][type.split(".")[1]]=copy(data.value);
     } else if(type==="scene.entity.reparent") {
@@ -230,9 +231,9 @@ export class SceneWorkspace {
       scene.assets??=[];if(!scene.assets.some(a=>a.id===asset.id)){if(scene.assets.length>=128)fail("AX_ASSET_0001","Project asset limit is 128");scene.assets.push(asset);}
       scene.entities.push({id:`entity://${randomUUID()}`,name:`${data.dimension}D ${data.shape}`,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:'mesh',assetId:asset.id}});
       await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
-    } else if(type==="scene.component.remove" && ["Sprite2D","SpriteAnimation","Tilemap","Light2D","Particles2D","UI2D","Collider","RigidBody","Material","Light","LOD"].includes(data.component)) {
+    } else if(type==="scene.component.remove" && ["Animator","Sprite2D","SpriteAnimation","Tilemap","Light2D","Particles2D","UI2D","Collider","RigidBody","Material","Light","LOD"].includes(data.component)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
-      delete scene.entities[index][({Sprite2D:"sprite2D",SpriteAnimation:"spriteAnimation",Tilemap:"tilemap",Light2D:"light2D",Particles2D:"particles2D",UI2D:"ui2D",Collider:"collider",RigidBody:"rigidBody",Material:"material",Light:"light",LOD:"lod"})[data.component]];
+      delete scene.entities[index][({Animator:"animator",Sprite2D:"sprite2D",SpriteAnimation:"spriteAnimation",Tilemap:"tilemap",Light2D:"light2D",Particles2D:"particles2D",UI2D:"ui2D",Collider:"collider",RigidBody:"rigidBody",Material:"material",Light:"light",LOD:"lod"})[data.component]];
       if(data.component==="Sprite2D")delete scene.entities[index].spriteAnimation;
       if(data.component==="Collider")delete scene.entities[index].rigidBody;
     } else if(type==="scene.component.add" || type==="scene.component.remove") {
@@ -242,7 +243,7 @@ export class SceneWorkspace {
         scene.script.attachments=type==='scene.component.remove'?scene.script.attachments.filter(id=>id!==data.entityId):[...new Set([...scene.script.attachments,data.entityId])];
       } else {
       if(data.component!=="Renderable")fail("AX_PROJECT_0002","Only the optional Renderable component is supported");
-      if(type==="scene.component.remove"){delete scene.entities[index].renderable;delete scene.entities[index].lod;delete scene.entities[index].sprite2D;delete scene.entities[index].spriteAnimation;}
+      if(type==="scene.component.remove"){delete scene.entities[index].animator;delete scene.entities[index].renderable;delete scene.entities[index].lod;delete scene.entities[index].sprite2D;delete scene.entities[index].spriteAnimation;}
       else {
         if(scene.entities[index].renderable)fail("AX_PROJECT_0002","Renderable already exists");
         const asset=scene.assets?.find(a=>a.id===data.value?.assetId);
@@ -272,7 +273,7 @@ export class SceneWorkspace {
     } else fail("AX_COMMAND_0002", "Command type is not registered");
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     validateProject({ ...this.project, scene });
-    if(["scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
+    if(["scene.animator.set","scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
     this.check(data);
     this.commitScene(scene);

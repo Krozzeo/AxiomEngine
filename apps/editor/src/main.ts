@@ -82,7 +82,7 @@ async function execute(type, data = {}) {
 }
 const proposalEditor=mountProposalEditor({document,send:sendCommand,reportError});
 let unsavedScene = false;
-const projectEditor = mountProjectEditor({ document, send: sendCommand, reportError,onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
+const projectEditor = mountProjectEditor({ getRenderer:()=>renderer,document, send: sendCommand, reportError,onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
   const changed=!pendingSnapshot||(pendingSnapshot.workspaceId??null)!==(snapshot.workspaceId??null)||pendingSnapshot.sceneRevision!==snapshot.sceneRevision||pendingSnapshot.project?.id!==snapshot.project?.id;
   pendingSnapshot=snapshot;
   if(renderer&&changed) await renderer.setSnapshot(snapshot);

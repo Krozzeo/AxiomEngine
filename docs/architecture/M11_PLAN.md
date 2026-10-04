@@ -1,6 +1,6 @@
 # M11 — General animation foundation
 
-Status: not started. Roadmap weight: 4%. Master specification section 130.
+Status: complete; 8/8 required acceptance groups passed. Roadmap weight: 4%. Master specification section 130.
 Begin only after M10 full CI and closure. Read the master specification,
 M10_2D.md / ADR-0023, M9_RENDERER.md / ADR-0022, asset import contracts,
 M6_WORKSPACES.md and current reports before implementation.

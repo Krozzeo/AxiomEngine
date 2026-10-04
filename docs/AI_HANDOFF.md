@@ -27,18 +27,20 @@ Non-negotiable foundations:
 
 ## Current state
 
-M10 (0.0.22) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 68%.
-Opt-in 2D includes atlas batching, editable tilemaps, Rust/Wasm sprite animation
-and seeded particles, pixel-perfect Game preview, radial lighting and screen UI
-pause/resume. Inspector and agent tools share revisions, Undo, Save and isolated
-proposals. Existing legacy/HDR rendering remains compatible.
-All 19 jobs in CI run 37224306330 pass at executable commit
-a332e8fcb1017d87fd82f3feafcb3fc1709ae831 (tree a1d0c786e520e7f3d4955303844c76323a23c3f8).
-127 Node and 36 Rust tests, eight new browser criteria and earlier regressions pass.
+M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.
+General GLB animation includes skeletons/skins, rigid TRS clips, Rust playback,
+shortest-path rotation interpolation, crossfades and bounded state machines.
+Animator Inspector, C# and AI controls share observed runtime state; canonical
+editing retains revisions, Undo, Save and isolated proposals. WebGPU skinning
+works in legacy/HDR, and Null consumes the same Rust poses. Pixel-perfect Scene
+uses nearest texture filtering while preserving its free editor camera.
+All 20 jobs in CI run 37239883665 pass at executable commit
+cc4b072cef49ffe7b9e9d8b9aea4a095275f8172 (tree c265d3894305fae4973816320eb08bee6d2d0f8f).
+135 Node and 39 Rust tests, nine new browser criteria and earlier regressions pass.
 Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
-Read docs/reports/M10_CURRENT_REPORT.md, docs/architecture/M10_2D.md and
-demos/M10_GUIDE.md. Next: M11 general animation, per M11_PLAN.md/master section 130.
-PR #12 is ready for review, stacked on unmerged #11; do not merge automatically.
+Read docs/reports/M11_CURRENT_REPORT.md, docs/architecture/M11_ANIMATION.md and
+demos/M11_GUIDE.md. Next: M12 audio, per M12_PLAN.md/master section 131.
+PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
 
 M9.2 (0.0.21) editor refinements are complete (12/12, 100%). Read
 M9_2_REFINEMENTS.md, M9_2_CURRENT_REPORT.md and demos/M9_2_GUIDE.md first.
@@ -199,12 +201,12 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Implement M11 per M11_PLAN.md and master specification section 130. M10 is
-complete; PR #12 is ready, stacked on unmerged #11. Preserve M10 sprite animation,
-M6 proposal isolation, independent stopped Game preview and legacy rendering.
-Read M10_2D.md, ADR-0023 and M10_CURRENT_REPORT.md before animation changes.
-Include editable demos, meaningful browser acceptance and complete milestone closure.
-No required user-only M10 test remains.
+Implement M12 per M12_PLAN.md and master specification sections 39/131. M11 is
+complete; PR #13 is ready, stacked on unmerged #12. Preserve existing animation,
+C# gameplay, M6 proposal isolation, stopped Game preview and 2D/legacy/HDR.
+Read M11_ANIMATION.md, ADR-0024 and M11_CURRENT_REPORT.md before audio changes.
+Include editable demos, real browser acceptance and complete milestone closure.
+No required user-only M11 test remains.
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and

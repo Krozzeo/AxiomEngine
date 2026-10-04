@@ -9,7 +9,7 @@ export function pixelCamera(camera,settings,width,height,view){
  const renderHeight=pixel?Math.min(height,settings.referenceHeight*scale):height;
  if(pixel)c.orthoHeight=renderHeight/(settings.pixelsPerUnit*scale);
  const renderWidth=pixel?Math.floor(width/scale)*scale:width;
- return {camera:c,viewport:[Math.floor((width-renderWidth)/2),Math.floor((height-renderHeight)/2),renderWidth,renderHeight],scale,pixel};
+ return {camera:c,viewport:[Math.floor((width-renderWidth)/2),Math.floor((height-renderHeight)/2),renderWidth,renderHeight],scale,pixel,nearest:!!settings.pixelPerfect};
 }
 export function uiHit(scene,x,y,viewport){const [left,top,w,h]=viewport;const u=(x-left)/w,v=(y-top)/h;if(u<0||v<0||u>1||v>1)return null;return scene.entities.filter(e=>e.ui2D?.kind==='button').map((e,i)=>({e,i})).sort((a,b)=>b.e.ui2D.order-a.e.ui2D.order||b.i-a.i).find(({e})=>{const r=e.ui2D.rect;return u>=r[0]&&v>=r[1]&&u<=r[0]+r[2]&&v<=r[1]+r[3];})?.e??null;}
 export function twoDPlan(scene,assets,camera,width,height,{view='game',time=0,kernel,paused=false}={}){
@@ -26,5 +26,5 @@ export function twoDPlan(scene,assets,camera,width,height,{view='game',time=0,ke
  quads.sort((a,b)=>Number(a.ui)-Number(b.ui)||a.order-b.order||a.sequence-b.sequence);
  const batches=[],vertices=[],items=[];
  for(const q of quads){if(!q.visible)continue;const key=q.texture??'white';let b=batches.at(-1);if(!b||b.key!==key){if(batches.length>=twoDLimits.batches)throw Error('AX_RENDERER_0005: 2D batch budget exceeded');b={key,texture:q.texture,first:vertices.length/13,count:0};batches.push(b);}const raw=[];for(const i of [0,1,2,0,2,3]){vertices.push(...q.clip[i],...q.uv[i],...q.color,...q.world[i].slice(0,2),q.lit?1:0);raw.push(...q.points[i],0,0,1,...q.uv[i]);b.count++;}if(!q.ui)items.push({entityId:q.entityId,model:q.model,mvp:q.mvp,vertices:new Float32Array(raw)});}
- return {settings,pixel,lights:lights.slice(0,16),batches,vertices:new Float32Array(vertices),items,stats:{mode:'2d',quads:quads.length,visible:quads.filter(q=>q.visible).length,culled:quads.filter(q=>!q.visible).length,batches:batches.length,tiles,particles,lights:lights.length,animations:animations.slice(0,32),omittedAnimations:Math.max(0,animations.length-32),time,paused,viewport:pixel.viewport,pixelScale:pixel.scale,pixelPerfect:pixel.pixel,vertexBytes:vertices.length*4,vertexCapacityBytes:twoDLimits.vertexBytes,pixels:'unproven'}};
+ return {settings,pixel,lights:lights.slice(0,16),batches,vertices:new Float32Array(vertices),items,stats:{mode:'2d',quads:quads.length,visible:quads.filter(q=>q.visible).length,culled:quads.filter(q=>!q.visible).length,batches:batches.length,tiles,particles,lights:lights.length,animations:animations.slice(0,32),omittedAnimations:Math.max(0,animations.length-32),time,paused,viewport:pixel.viewport,pixelScale:pixel.scale,pixelPerfect:pixel.pixel,textureFilter:pixel.nearest?'nearest':'linear',vertexBytes:vertices.length*4,vertexCapacityBytes:twoDLimits.vertexBytes,pixels:'unproven'}};
 }

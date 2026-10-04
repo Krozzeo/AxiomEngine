@@ -1,6 +1,7 @@
 import {worldScene,localTransform,worldTransforms,reparent} from '../scene/hierarchy.mjs';
 const sharedVertices=new WeakMap();
 function verticesFor(primitive){let value=sharedVertices.get(primitive);if(!value){value=new Float32Array(primitive.vertices);sharedVertices.set(primitive,value);}return value;}
+import {animationHost} from './animation-host.mjs';
 import {physicsHost} from "./physics-host.mjs";
 export async function loadKernel(bytes) {
   const { instance } = await WebAssembly.instantiate(bytes, {});
@@ -11,7 +12,12 @@ export async function loadKernel(bytes) {
   let disposed = false;
   let compiled = null;
   const physics=physicsHost(api,id);
+  const animation=animationHost(api,id);
   return {
+    animationStep(delta,playing){return animation.step(delta,playing,compiled?.draws??[]);},
+    animationDraws(){return compiled?.draws??[];},
+    animationControl(args){return animation.control(args);},
+    animationStatus(){return animation.status();},
     twoD(delta){const time=api.axiom_2d_tick(id,delta);if(!Number.isFinite(time))throw Error('AX_TIME_0001: invalid 2D tick');return time;},
     animationFrame(time,animation){return api.axiom_2d_animation(time,animation.fps,animation.frames.length,animation.loop?1:0);},
     particle(time,slot,p){return Array.from({length:3},(_,axis)=>api.axiom_2d_particle(time,slot,p.capacity,p.rate,p.lifetime,p.seed,p.speed,p.spread,p.gravity,axis));},
@@ -49,6 +55,7 @@ export async function loadKernel(bytes) {
         draw.handle=api.axiom_scene_add(id,uuid>>64n,uuid&0xffffffffffffffffn,draw.vertices.length/8,...t.position,...t.rotation,...t.scale);
         if(draw.handle===0xffffffff) throw new Error("AX_WASM_0007: invalid runtime instance");
       }
+      animation.configure(scene,assets,preserveHierarchy);
       compiled={scene:structuredClone(scene),localScene,draws};
       return draws;
     },

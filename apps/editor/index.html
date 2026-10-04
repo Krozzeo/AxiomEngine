@@ -9,7 +9,7 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M10</span><nav class="menubar" aria-label="Editor menus"><details id="file-menu"><summary>Archivo</summary><div class="menu-popup"><details id="project-menu"><summary>Proyectos · Create / Open</summary><div class="submenu">          <label for="project-name">New project name</label>
+      <span class="badge">M11</span><nav class="menubar" aria-label="Editor menus"><details id="file-menu"><summary>Archivo</summary><div class="menu-popup"><details id="project-menu"><summary>Proyectos · Create / Open</summary><div class="submenu">          <label for="project-name">New project name</label>
           <input id="project-name" maxlength="128" placeholder="My project">
           <button id="project-new" disabled>Create project</button>
           <label for="project-list">Saved projects</label>
@@ -97,7 +97,7 @@
         <label for="script-mode">Build mode</label><select id="script-mode" disabled><option value="development">Development</option><option value="aot">Release AOT</option></select>
         <div class="actions"><button id="script-compile" disabled>Compile &amp; attach</button><button id="script-cancel" disabled>Cancel compile</button></div>
         <p id="script-status" role="status"></p><pre id="script-diagnostics" role="alert"></pre>
-</details><div id="two-d-components"></div><section id="add-component"><h2>Add component</h2><label for="component-search">Search components</label><input id="component-search" type="search" placeholder="Type a component name…" autocomplete="off"><div class="actions"><select id="component-choice" aria-label="Component to add"><option>Renderable</option><option>Material</option><option>Light</option><option>LOD</option><option>Collider</option><option>RigidBody</option><option>Script</option><option>Sprite2D</option><option>SpriteAnimation</option><option>Tilemap</option><option>Light2D</option><option>Particles2D</option><option>UI2D</option></select><button id="component-add">Add component</button></div></section>      </aside>
+</details><div id="two-d-components"></div><section id="animation-component" hidden></section><section id="add-component"><h2>Add component</h2><label for="component-search">Search components</label><input id="component-search" type="search" placeholder="Type a component name…" autocomplete="off"><div class="actions"><select id="component-choice" aria-label="Component to add"><option>Renderable</option><option>Material</option><option>Light</option><option>LOD</option><option>Collider</option><option>RigidBody</option><option>Script</option><option>Sprite2D</option><option>SpriteAnimation</option><option>Tilemap</option><option>Light2D</option><option>Particles2D</option><option>UI2D</option><option>Animator</option></select><button id="component-add">Add component</button></div></section>      </aside>
     </main>
     <script type="module" src="/main.js"></script>
   </body>

@@ -3,6 +3,7 @@
 use core::fmt;
 use std::collections::VecDeque;
 
+pub mod animation;
 pub mod authoring;
 pub mod demo;
 pub mod physics;

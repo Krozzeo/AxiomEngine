@@ -16,7 +16,7 @@ export function renderPlan(scene,draws,camera,aspect,assets=new Map(),capabiliti
   for(const [i,level]of (entity.lod?.levels??[]).entries())if(distance>=level.distance){assetId=level.assetId;lod=i+1;}
   if(lod){const asset=assets.get(assetId),primitive=asset?.primitives?.[draw.primitiveIndex??0];if(primitive)source={...draw,...primitive,vertices:primitive.typedVertices??=new Float32Array(primitive.vertices)};else{assetId=entity.renderable.assetId;lod=0;fallbacks.push('Missing LOD asset: '+entity.id);}}
   const b=bounds(source.vertices),mvp=matrixMultiply(vp,model),material={...materialDefaults,...source.material,baseColor:source.color??materialDefaults.baseColor,unlit:!!source.unlit,...entity.material};
-  const visible=visibleBounds(b,mvp),key=assetId+':'+(draw.primitiveIndex??0)+':'+material.alphaMode;
+  const visible=visibleBounds(b,mvp),key=(draw.skinPalette?draw.entityId+':':'')+assetId+':'+(draw.primitiveIndex??0)+':'+material.alphaMode;
   items.push({...source,model,mvp,bounds:b,material,assetId,lod,distance,visible,key});
  }
  const opaque=items.filter(i=>i.material.alphaMode!=='blend').sort((a,b)=>a.key.localeCompare(b.key)),blend=items.filter(i=>i.material.alphaMode==='blend').sort((a,b)=>b.distance-a.distance),ordered=[...opaque,...blend],batches=[];

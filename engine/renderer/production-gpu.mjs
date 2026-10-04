@@ -1,9 +1,11 @@
+import {createSkinGPU} from './skin-gpu.mjs';
 import {cameraMatrix,add,mul,unit} from './render-math.mjs';
 import {cullShader,tilesShader,surfaceShader,shadowShader,postShader} from './production-shaders.mjs';
 const vertexBuffers=[{arrayStride:32,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x2'}]}];
 // Owns bounded GPU resources only. Host supplies textures and the canvas target.
 export async function createProductionGPU({device,format,width,height,textureFor,getTexture,reportError}){
  const B=GPUBufferUsage,T=GPUTextureUsage,S=GPUShaderStage;let disposed=false,pending=false,sample=null,frameNumber=0,epoch=0;
+ const skinGPU=await createSkinGPU(device);
  const owned=[],vertices=new Map(),bindings=new Map(),pipelineCache=new Map();
  const buffer=(size,usage)=>{const b=device.createBuffer({size,usage});owned.push(b);return b;};
  const texture=(w,h,fmt,usage)=>{const t=device.createTexture({size:[w,h],format:fmt,usage});owned.push(t);return t;};
@@ -49,7 +51,7 @@ export async function createProductionGPU({device,format,width,height,textureFor
   for(const [i,batch]of plan.batches.entries()){
    groupData.set([batch.first,batch.count,batch.vertices.length/8,0],i*4);let count=0;for(let j=0;j<batch.count;j++)if(settings.culling==='none'||plan.items[batch.first+j].visible)cpuVisible[batch.first+count++]=batch.first+j;
    args.set([batch.vertices.length/8,count,0,0],i*4);submitted+=count;activeVertices.add(batch.key);
-   if(!vertices.has(batch.key)){const vertex=device.createBuffer({size:batch.vertices.byteLength,usage:B.VERTEX|B.COPY_DST});device.queue.writeBuffer(vertex,0,batch.vertices);vertices.set(batch.key,{vertex,bytes:batch.vertices.byteLength});}
+   if(!vertices.has(batch.key)){const vertex=device.createBuffer({size:batch.vertices.byteLength,usage:B.VERTEX|B.COPY_DST|B.STORAGE});device.queue.writeBuffer(vertex,0,batch.vertices);vertices.set(batch.key,{vertex,bytes:batch.vertices.byteLength});}
    const bindingKey=batch.key+':'+batch.first;activeBindings.add(bindingKey);
    if(!bindings.has(bindingKey)){const uniform=device.createBuffer({size:16,usage:B.UNIFORM|B.COPY_DST});device.queue.writeBuffer(uniform,0,new Uint32Array([batch.first,0,0,0]));const texture=getTexture(batch.texture);if(texture instanceof Promise)throw Error('Texture preparation must complete before rendering');const group=device.createBindGroup({layout:materialLayout,entries:[{binding:0,resource:texture.createView()},{binding:1,resource:sampler},{binding:2,resource:{buffer:uniform}}]});bindings.set(bindingKey,{uniform,group});}
    batch.bindingKey=bindingKey;
@@ -57,6 +59,7 @@ export async function createProductionGPU({device,format,width,height,textureFor
   for(const [key,v]of vertices)if(!activeVertices.has(key)){v.vertex.destroy();vertices.delete(key);}for(const [key,v]of bindings)if(!activeBindings.has(key)){v.uniform.destroy();bindings.delete(key);}
   device.queue.writeBuffer(instances,0,instanceData);device.queue.writeBuffer(lights,0,lightData);device.queue.writeBuffer(groups,0,groupData);device.queue.writeBuffer(visible,0,cpuVisible);device.queue.writeBuffer(indirect,0,args);
   const encoder=device.createCommandEncoder({label:'M9 HDR production frame'});
+  for(const batch of plan.batches)skinGPU.skin(plan.items[batch.first],vertices.get(batch.key).vertex,encoder);
   if(settings.tier!=='low'){const pass=encoder.beginComputePass();pass.setPipeline(tilePipeline);pass.setBindGroup(0,tileBind);pass.dispatchWorkgroups(Math.ceil(nx*ny/64));pass.end();}
   if(settings.culling==='gpu'&&plan.batches.length){const pass=encoder.beginComputePass();pass.setPipeline(cull);pass.setBindGroup(0,cullBind);pass.dispatchWorkgroups(Math.ceil(plan.batches.length/64));pass.end();}
   const shadowPass=encoder.beginRenderPass({colorAttachments:[],depthStencilAttachment:{view:shadow.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
@@ -70,5 +73,5 @@ export async function createProductionGPU({device,format,width,height,textureFor
   if(shouldRead){pending=true;readback.mapAsync(GPUMapMode.READ).then(()=>{if(disposed)return;const value=new Uint32Array(readback.getMappedRange().slice(0,batchCount*16));readback.unmap();if(sourceEpoch!==epoch)return;sample={frame:sourceFrame,traceId,instances:Array.from({length:batchCount},(_,i)=>value[i*4+1]).reduce((a,b)=>a+b,0),batches:batchCount,source:'GPU indirect buffer readback',pixels:'unproven'};}).catch(error=>{if(!disposed)reportError(error);}).finally(()=>{pending=false;});}
   return {...plan.stats,submittedReference:submitted,gpuSample:sample,shadowLight:light?.entityId??null,fallbacks:plan.fallbacks,pipelines:pipelineCache.size,vertexBytes:[...vertices.values()].reduce((n,v)=>n+v.bytes,0),resourceBatches:vertices.size,hdrFormat:'rgba16float'};
  }
- return {prepare,render,reset(){epoch++;for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();vertices.clear();bindings.clear();sample=null;frameNumber=0;},dispose(){disposed=true;for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();for(const value of owned)value.destroy();shadow?.destroy();vertices.clear();bindings.clear();}};
+ return {prepare,render,reset(){skinGPU.reset();epoch++;for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();vertices.clear();bindings.clear();sample=null;frameNumber=0;},dispose(){skinGPU.dispose();disposed=true;for(const value of vertices.values())value.vertex.destroy();for(const value of bindings.values())value.uniform.destroy();for(const value of owned)value.destroy();shadow?.destroy();vertices.clear();bindings.clear();}};
 }

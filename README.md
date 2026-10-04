@@ -4,21 +4,23 @@ Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.
 
-M10 (0.0.22) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 68%.
-Opt-in 2D includes atlas batching, editable tilemaps, Rust/Wasm sprite animation
-and seeded particles, pixel-perfect Game preview, radial lighting and screen UI
-pause/resume. Inspector and agent tools share revisions, Undo, Save and isolated
-proposals. Existing legacy/HDR rendering remains compatible.
-All 19 jobs in CI run 37224306330 pass at executable commit
-a332e8fcb1017d87fd82f3feafcb3fc1709ae831 (tree a1d0c786e520e7f3d4955303844c76323a23c3f8).
-127 Node and 36 Rust tests, eight new browser criteria and earlier regressions pass.
+M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.
+General GLB animation includes skeletons/skins, rigid TRS clips, Rust playback,
+shortest-path rotation interpolation, crossfades and bounded state machines.
+Animator Inspector, C# and AI controls share observed runtime state; canonical
+editing retains revisions, Undo, Save and isolated proposals. WebGPU skinning
+works in legacy/HDR, and Null consumes the same Rust poses. Pixel-perfect Scene
+uses nearest texture filtering while preserving its free editor camera.
+All 20 jobs in CI run 37239883665 pass at executable commit
+cc4b072cef49ffe7b9e9d8b9aea4a095275f8172 (tree c265d3894305fae4973816320eb08bee6d2d0f8f).
+135 Node and 39 Rust tests, nine new browser criteria and earlier regressions pass.
 Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
-Read docs/reports/M10_CURRENT_REPORT.md, docs/architecture/M10_2D.md and
-demos/M10_GUIDE.md. Next: M11 general animation, per M11_PLAN.md/master section 130.
-PR #12 is ready for review, stacked on unmerged #11; do not merge automatically.
+Read docs/reports/M11_CURRENT_REPORT.md, docs/architecture/M11_ANIMATION.md and
+demos/M11_GUIDE.md. Next: M12 audio, per M12_PLAN.md/master section 131.
+PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
 
-`npm.cmd run demo` creates two editable M10 projects. Preserve the complete
-`.axiom/projects` folder when upgrading. See [demo guide](demos/M10_GUIDE.md).
+`npm.cmd run demo` creates three editable M11 projects. Preserve the complete
+`.axiom/projects` folder when upgrading. See [demo guide](demos/M11_GUIDE.md).
 
 ## Run the verified bootstrap
 

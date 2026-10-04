@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.22",
-  "activeMilestone": 10,
+  "engineVersion": "0.0.23",
+  "activeMilestone": 11,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 68,
+    "wholeProjectPercent": 72,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -54,6 +54,14 @@
     "10": {
       "status": "complete",
       "percent": 100
+    },
+    "11": {
+      "status": "complete",
+      "percent": 100
+    },
+    "12": {
+      "status": "not_started",
+      "percent": 0
     }
   },
   "implementation": {
@@ -65,7 +73,7 @@
     "frameProfiler": "verified_windows_webgpu_and_null",
     "projectPersistence": "verified_bootstrap_http_restart",
     "sceneEditor": "verified_modular_inspector_tree_range_selection_atomic_group_transforms_ordering_project_explorer_and_saved_layout",
-    "assetImport": "verified_png_static_glb",
+    "assetImport": "verified_png_static_and_animated_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
     "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload",
@@ -73,14 +81,16 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_m10_pair_and_earlier_demos",
+    "editableDemos": "verified_three_m11_and_earlier_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
-    "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui"
+    "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
+    "generalAnimation": "verified_rust_trs_skin_crossfade_state_machine_legacy_hdr_null",
+    "scenePixelFiltering": "verified_nearest_independent_of_game_camera_snapping"
   },
   "verified": {
     "nodeTests": {
-      "passed": 127,
+      "passed": 135,
       "failed": 0
     },
     "schemaDocuments": 16,
@@ -108,10 +118,10 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 36,
+      "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M10 0.0.22"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M11 0.0.23"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -197,31 +207,32 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.22",
-      "commit": "a332e8fcb1017d87fd82f3feafcb3fc1709ae831",
-      "runId": 37224306330,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37224306330",
-      "jobCount": 19,
+      "version": "0.0.23",
+      "commit": "cc4b072cef49ffe7b9e9d8b9aea4a095275f8172",
+      "runId": 37239883665,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37239883665",
+      "jobCount": 20,
       "jobs": [
-        "bootstrap (windows-latest)",
-        "browser-milestones (m6)",
-        "browser-milestones (m2)",
-        "csharp-wasm-spike (windows-latest, development)",
-        "script-boundaries (ubuntu-latest)",
-        "bootstrap (ubuntu-latest)",
-        "script-boundaries (macos-latest)",
         "rust",
-        "browser-milestones (m8)",
-        "script-boundaries (windows-latest)",
-        "browser-milestones (m3)",
-        "browser-milestones (m7)",
-        "browser-milestones (m4)",
         "browser-milestones (m5)",
-        "browser-milestones (m9)",
+        "script-boundaries (windows-latest)",
+        "bootstrap (windows-latest)",
+        "browser-milestones (m4)",
+        "script-boundaries (macos-latest)",
+        "browser-milestones (m11)",
         "csharp-wasm-spike (ubuntu-latest, aot)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (m3)",
         "browser-milestones (corrections)",
-        "browser-milestones (m10)"
+        "browser-milestones (m9)",
+        "browser-milestones (m6)",
+        "browser-milestones (m10)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (m2)",
+        "bootstrap (ubuntu-latest)",
+        "csharp-wasm-spike (windows-latest, development)",
+        "browser-milestones (m7)",
+        "browser-milestones (m8)",
+        "script-boundaries (ubuntu-latest)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -400,6 +411,19 @@
       "benchmark": "docs/reports/m10-two-d-benchmark.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m11Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "browserCriteriaPassed": 9,
+      "runId": 37239883665,
+      "executableCommit": "cc4b072cef49ffe7b9e9d8b9aea4a095275f8172",
+      "executableTree": "c265d3894305fae4973816320eb08bee6d2d0f8f",
+      "evidence": "docs/reports/m11-browser-evidence.json",
+      "benchmark": "docs/reports/m11-animation-benchmark.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -472,7 +496,14 @@
     "docs/reports/M10_CURRENT_REPORT.md",
     "docs/reports/m10-browser-evidence.json",
     "docs/reports/m10-two-d-benchmark.json",
-    "demos/M10_GUIDE.md"
+    "demos/M10_GUIDE.md",
+    "docs/architecture/M11_ANIMATION.md",
+    "docs/architecture/M12_PLAN.md",
+    "docs/adr/0024-bounded-general-animation.md",
+    "docs/reports/M11_CURRENT_REPORT.md",
+    "docs/reports/m11-browser-evidence.json",
+    "docs/reports/m11-animation-benchmark.json",
+    "demos/M11_GUIDE.md"
   ],
-  "nextTask": "Implement M11 per M11_PLAN.md and master section 130; preserve M10 sprite animation and proposal isolation, include editable demos and complete automated closure. Keep milestone PRs unmerged."
+  "nextTask": "Implement M12 audio per M12_PLAN.md and master sections 39/131; preserve all earlier behavior and proposal isolation; keep PR #13 unmerged."
 }

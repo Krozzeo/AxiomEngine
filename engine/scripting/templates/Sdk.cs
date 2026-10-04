@@ -16,6 +16,12 @@ public readonly record struct Entity(string Id, int Generation) {
  public void SetVelocity(Vec3 velocity) => Context.Velocity(this,velocity);
  public void Move(Vec3 delta) => SetPosition(Transform.Position+delta);
  public void SetPosition(Vec3 position) => Context.Move(this,position);
+ public string? CurrentAnimation => Context.AnimationState(this,"currentAnimation");
+ public string? WhyAnimationNotPlaying => Context.AnimationState(this,"whyAnimationNotPlaying");
+ public void SetAnimationParameter(string name,double value) => Context.Animate(this,"parameter",name,value,0);
+ public void PlayAnimation(string state,double crossfadeSeconds=0.3) => Context.Animate(this,"state",state,0,crossfadeSeconds);
+ public void PauseAnimation() => Context.Animate(this,"pause",null,0,0);
+ public void ResumeAnimation() => Context.Animate(this,"resume",null,0,0);
  public Entity Spawn(Vec3 position) => Context.Spawn(this,position);
 }
 public abstract class Script {
@@ -29,11 +35,13 @@ public static class Input {
  public static double Axis(string negative, string positive) => (IsDown(positive)?1:0)-(IsDown(negative)?1:0);
 }
 public static class Log {public static void Info(string message) => Context.Log(message);}
-internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message);
+internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0);
 internal static class Context {
  internal static int Generation;
  internal static readonly Dictionary<string,Transform> Entities = new();
  internal static readonly Dictionary<string,RigidBody> Bodies = new();
+ internal static readonly Dictionary<string,JsonElement> Animators = new();
+ internal static readonly Dictionary<string,JsonElement> AnimationStates = new();
  internal static readonly HashSet<string> Keys = new();
  internal static readonly List<Operation> Operations = new();
  internal static int Spawned,Logs;
@@ -43,6 +51,16 @@ internal static class Context {
  }
  internal static RigidBody ReadBody(Entity entity) {
   _=Read(entity);if(!Bodies.TryGetValue(entity.Id,out var body))throw new InvalidOperationException("AX_PHYSICS_0001: entity has no rigid body");return body;
+ }
+ internal static string? AnimationState(Entity entity,string field) {
+  _=Read(entity);if(!Animators.ContainsKey(entity.Id))throw new InvalidOperationException("AX_ANIMATION_0001: entity has no Animator");
+  return AnimationStates.TryGetValue(entity.Id,out var state)&&state.TryGetProperty(field,out var value)&&value.ValueKind==JsonValueKind.String?value.GetString():null;
+ }
+ internal static void Animate(Entity entity,string action,string? name,double value,double duration) {
+  _=Read(entity);if(!Animators.TryGetValue(entity.Id,out var a))throw new InvalidOperationException("AX_ANIMATION_0001: entity has no Animator");
+  if(!double.IsFinite(value)||Math.Abs(value)>1000000||!double.IsFinite(duration)||duration<0||duration>5)throw new ArgumentException("AX_ANIMATION_0001: invalid parameter/fade");
+  if(action=="state"&&!a.GetProperty("states").EnumerateArray().Any(s=>s.GetProperty("name").GetString()==name)||action=="parameter"&&!a.GetProperty("parameters").EnumerateArray().Any(p=>p.GetProperty("name").GetString()==name))throw new ArgumentException("AX_ANIMATION_0001: unknown state/parameter");
+  Add(new("animation",entity.Id,null,default,null,action,name,value,duration));
  }
  internal static void Velocity(Entity entity,Vec3 velocity) {
   _=ReadBody(entity);Position(velocity);if(Math.Max(Math.Abs(velocity.X),Math.Max(Math.Abs(velocity.Y),Math.Abs(velocity.Z)))>10000)throw new ArgumentException("AX_PHYSICS_0001: invalid velocity");
@@ -61,16 +79,18 @@ internal static class Context {
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
   if(Spawned>=Limits.Spawns||Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
-  var id="entity://"+Guid.NewGuid();Add(new("spawn",id,template.Id,position,null));Spawned++;Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);return new(id,Generation);
+  var id="entity://"+Guid.NewGuid();Add(new("spawn",id,template.Id,position,null));Spawned++;Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
  internal static void Log(string message) {
   if(message.Length>2048||Logs>=Limits.Logs)throw new InvalidOperationException("AX_SCRIPT_0003: log limit exceeded");
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
-  Entities.Clear();Bodies.Clear();Keys.Clear();Operations.Clear();Logs=0;
+  Entities.Clear();Bodies.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {
    if(Entities.Count>=Limits.Entities)throw new ArgumentException("Entity limit exceeded");
+   if(e.TryGetProperty("animator",out var animator))Animators.Add(e.GetProperty("id").GetString()!,animator.Clone());
+   if(e.TryGetProperty("animationState",out var animationState))AnimationStates.Add(e.GetProperty("id").GetString()!,animationState.Clone());
    if(e.TryGetProperty("rigidBody",out var body))Bodies.Add(e.GetProperty("id").GetString()!,RigidBody.Read(body));
    Entities.Add(e.GetProperty("id").GetString()!,Transform.Read(e.GetProperty("transform")));
   }
@@ -84,7 +104,8 @@ internal static class Context {
    if(error==null)foreach(var op in Operations) {
     writer.WriteStartObject();writer.WriteString("kind",op.Kind);writer.WriteString("id",op.Id);
     if(op.Template!=null)writer.WriteString("template",op.Template);
-    if(op.Kind!="log"){writer.WritePropertyName("position");op.Position.Write(writer);}
+    if(op.Kind=="animation"){writer.WriteString("action",op.Action);if(op.Name!=null)writer.WriteString("name",op.Name);writer.WriteNumber("value",op.Value);writer.WriteNumber("duration",op.Duration);}
+    if(op.Kind!="log"&&op.Kind!="animation"){writer.WritePropertyName("position");op.Position.Write(writer);}
     if(op.Message!=null)writer.WriteString("message",op.Message);
     writer.WriteEndObject();
    }

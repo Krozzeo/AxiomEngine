@@ -163,3 +163,5 @@ input[type="file"] { font-size: 11px; }
 .tile-grid button {padding:2px;font-size:10px;min-height:20px;}
 
 .animation-row{border:1px solid #29435e;margin:5px 0;padding:5px}#animation-component fieldset{margin:8px 0;padding:8px;border:1px solid #29435e}#animation-component pre{max-height:260px;overflow:auto;font-size:11px}
+
+#animation-component form>details{margin:6px 0;border:1px solid #29435e;padding:6px}#animation-component label{display:flex;flex-direction:column;gap:3px;margin:5px 0}

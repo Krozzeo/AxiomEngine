@@ -154,7 +154,7 @@ impl Animator {
         if !delta.is_finite() || !(0.0..=0.25).contains(&delta) || self.states.is_empty() {
             return false;
         }
-        if playing && !self.paused {
+        if playing && !self.paused && self.speed > 0.0 {
             self.time += delta * self.speed * self.states[self.current].speed;
             if let Some((state, time)) = self.previous.as_mut() {
                 *time += delta * self.speed * self.states[*state].speed;

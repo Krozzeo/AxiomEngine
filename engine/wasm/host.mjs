@@ -55,7 +55,7 @@ export async function loadKernel(bytes) {
         draw.handle=api.axiom_scene_add(id,uuid>>64n,uuid&0xffffffffffffffffn,draw.vertices.length/8,...t.position,...t.rotation,...t.scale);
         if(draw.handle===0xffffffff) throw new Error("AX_WASM_0007: invalid runtime instance");
       }
-      animation.configure(scene,assets);
+      animation.configure(scene,assets,preserveHierarchy);
       compiled={scene:structuredClone(scene),localScene,draws};
       return draws;
     },

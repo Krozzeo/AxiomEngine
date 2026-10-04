@@ -3,7 +3,8 @@
 Desde la carpeta extraída: `npm.cmd ci`, `npm.cmd run demo`, `npm.cmd run dev`.
 Archivo → Proyectos → abre las que comienzan con M11. El comando conserva todos
 los proyectos anteriores y crea tres nuevos; repetirlo crea copias. Preserva
-`.axiom/projects` completo al actualizar. Estas demos no requieren compilar C#.
+`.axiom/projects` completo al actualizar. El controlador opcional de teclado requiere .NET 10/wasm-tools; si no compila,
+las escenas y controles del Inspector siguen disponibles.
 
 ## Skinned Robot Studio
 
@@ -14,6 +15,8 @@ Runtime controls → Pause Animator / Resume Animator congela/reanuda solo ese m
 Set energy = 1 hace la transición suave de Idle a Wave; 0 regresa a Idle.
 Runtime state → Bounce, Crossfade seconds = 0.5, Transition now: mezcla hacia
 un salto, termina y vuelve a Idle (si energy es 1 luego vuelve a Wave).
+Con el controlador compilado: 1 activa Wave, 2 vuelve a Idle, 3 ejecuta Bounce;
+P pausa y R reanuda. El teclado solo controla la vista Game durante Play.
 Stop restaura la pose inicial y descarta estos controles transitorios.
 
 Sin Play puedes editar estados, clips Idle/Wave/Bounce, speed, loop, parámetros y

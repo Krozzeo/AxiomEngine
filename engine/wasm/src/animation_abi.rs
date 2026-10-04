@@ -38,8 +38,7 @@ pub extern "C" fn axiom_anim_node(
     if ![x, y, z, qx, qy, qz, qw, sx, sy, sz]
         .iter()
         .all(|v| v.is_finite())
-        || parent < -1
-        || parent >= 128
+        || !(-1..128).contains(&parent)
         || sx <= 0.0
         || sy <= 0.0
         || sz <= 0.0
@@ -198,8 +197,7 @@ pub extern "C" fn axiom_anim_transition(
         if a.transitions.len() >= 16
             || from as usize >= a.states.len()
             || to as usize >= a.states.len()
-            || param < -1
-            || param >= 8
+            || !(-1..8).contains(&param)
             || comparison > 2
             || !threshold.is_finite()
             || !duration.is_finite()

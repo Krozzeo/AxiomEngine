@@ -32,6 +32,9 @@ project. Canonical Animator authoring uses revisions, Undo/Save and proposals.
 Observed state exposes currentAnimation, transition and whyAnimationNotPlaying
 with frame/generation provenance; disconnected/stale editors yield unavailable,
 not inferred playback. Human controls and AI runtime actions use this same state.
+C# Entity provides SetAnimationParameter, PlayAnimation, PauseAnimation,
+ResumeAnimation, CurrentAnimation and WhyAnimationNotPlaying through bounded
+validated operations; transient state is never written to the project.
 The 2D correction selects nearest sampling in Scene whenever pixelPerfect is
 enabled; only Game snaps the camera/uses integer scaling. Scene remains free.
 

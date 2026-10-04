@@ -76,6 +76,9 @@ export function parseGlb(bytes) {
     return result;
   }
   const animation=json.skins?.length||json.animations?.length?animationMetadata(json,accessor,nodeMatrix,check):null;
+  const bindGlobals=animation?animation.nodes.map(()=>null):null;
+  function bindGlobal(n){if(bindGlobals[n])return bindGlobals[n];const node=animation.nodes[n];return bindGlobals[n]=node.parent<0?node.bindMatrix:multiply(bindGlobal(node.parent),node.bindMatrix);}
+  if(animation)for(let n=0;n<animation.nodes.length;n++)check(bindGlobal(n).every(v=>Number.isFinite(v)&&Math.abs(v)<=1e6),'Animated bind hierarchy exceeds coordinate range');
   const textures=new Map();
   function texture(index) {
     if(textures.has(index)) return textures.get(index);
@@ -118,17 +121,19 @@ export function parseGlb(bytes) {
           check(joints.length===positions.length&&weights.length===positions.length,'Skin attribute count mismatch');
           if(skin)check(joints.every(v=>v.every(j=>Number.isInteger(j)&&j>=0&&j<skin.joints.length))&&weights.every(v=>v.every(w=>w>=0)&&v.reduce((a,b)=>a+b,0)>1e-8),'Invalid skin indices/weights');
           skinData={node:index,skin:node.skin??null,vertices:[],influences:[]};
-          for(const n of indices){skinData.vertices.push(...positions[n],...(normals?.[n]??[0,0,1]),...(uv?.[n]??[0,0]));const sum=weights[n].reduce((a,b)=>a+b,0);skinData.influences.push(...joints[n],...weights[n].map(w=>w/sum));}
+          for(let v=0;v<indices.length;v++){const n=indices[v],tri=indices.slice(Math.floor(v/3)*3,Math.floor(v/3)*3+3).map(i=>positions[i]),a=tri[1].map((x,i)=>x-tri[0][i]),b=tri[2].map((x,i)=>x-tri[0][i]),face=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],len=Math.hypot(...face)||1;skinData.vertices.push(...positions[n],...(normals?.[n]??face.map(x=>x/len)),...(uv?.[n]??[0,0]));const sum=weights[n].reduce((a,b)=>a+b,0);skinData.influences.push(...joints[n],...weights[n].map(w=>w/sum));}
         }
+        const bindPalette=skinData?.skin!==null&&skinData?animation.skins[skinData.skin].joints.map((n,j)=>multiply(bindGlobal(n),animation.skins[skinData.skin].inverseBinds[j])):null;
+        function bindPoint(expanded,index){if(!bindPalette)return point(matrix,positions[index]);const out=[0,0,0];for(let j=0;j<4;j++){const weight=skinData.influences[expanded*8+4+j];if(weight){const p=point(bindPalette[skinData.influences[expanded*8+j]],positions[index]);for(let k=0;k<3;k++)out[k]+=p[k]*weight;}}return out;}
         const output=[];
         for(let i=0;i<indices.length;i+=3) {
-          const tri=indices.slice(i,i+3).map(n=>point(matrix,positions[n]));
+          const tri=indices.slice(i,i+3).map((n,j)=>bindPoint(i+j,n));
           for(const point of tri)for(let axis=0;axis<3;axis++){check(Math.abs(point[axis])<=1e6,"Mesh coordinates exceed supported range");minimum[axis]=Math.min(minimum[axis],point[axis]);maximum[axis]=Math.max(maximum[axis],point[axis]);}
           const a=tri[1].map((v,k)=>v-tri[0][k]), b=tri[2].map((v,k)=>v-tri[0][k]);
           const normal=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]], length=Math.hypot(...normal)||1;
           for(let j=0;j<3;j++) {
             let n=normal.map(v=>v/length);
-            if(normals){const source=normals[indices[i+j]],a=[matrix[0],matrix[1],matrix[2]],b=[matrix[4],matrix[5],matrix[6]],c=[matrix[8],matrix[9],matrix[10]],cross=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],A=cross(b,c),B=cross(c,a),C=cross(a,b),det=a.reduce((v,x,i)=>v+x*A[i],0),cofactor=A.map((v,i)=>v*source[0]+B[i]*source[1]+C[i]*source[2]),length=Math.hypot(...cofactor)||1;n=cofactor.map(v=>v/length*(det<0?-1:1));}
+            if(normals){const source=normals[indices[i+j]],normalFor=matrix=>{const a=[matrix[0],matrix[1],matrix[2]],b=[matrix[4],matrix[5],matrix[6]],c=[matrix[8],matrix[9],matrix[10]],cross=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],A=cross(b,c),B=cross(c,a),C=cross(a,b),det=a.reduce((v,x,i)=>v+x*A[i],0);return A.map((v,i)=>(v*source[0]+B[i]*source[1]+C[i]*source[2])/det);};let value=normalFor(matrix);if(bindPalette){value=[0,0,0];for(let k=0;k<4;k++){const weight=skinData.influences[(i+j)*8+4+k];if(weight){const v=normalFor(bindPalette[skinData.influences[(i+j)*8+k]]);for(let axis=0;axis<3;axis++)value[axis]+=v[axis]*weight;}}}const length=Math.hypot(...value)||1;n=value.map(v=>v/length);}
             output.push(...tri[j],...n,...(uv?.[indices[i+j]]??[0,0]));
           }
         }

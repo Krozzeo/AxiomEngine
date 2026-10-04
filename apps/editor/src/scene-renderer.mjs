@@ -150,21 +150,21 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       localAssets.set(metadata.id,asset);
     }
     const replacement=await loadKernel(bytes);let pending=[],nextRuntime=null;
-    let nextSpawned=0,nextScriptFault=null;
+    let nextSpawned=0,nextScriptFault=null,startAnimationControls=[];
     try {
       if(snapshot.playing&&scene.script?.attachments.length) {
        try{
         nextRuntime=new ScriptRuntime();
         await nextRuntime.initialize(`/script-runtime/${project.id.slice(10)}/${scene.script.build.id}/dotnet.js`);
         const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:scene.entities,keys:[],attachments:scene.script.attachments});
-        const result=applyScriptOperations(scene,packet,ticket);scene=result.scene;nextSpawned=result.spawned;
+        const result=applyScriptOperations(scene,packet,ticket);scene=result.scene;nextSpawned=result.spawned;startAnimationControls=result.animations;
         for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start",buildId:scene.script.build.id});
        }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
       }
       const drawable={...scene,entities:scene.entities.map(e=>e.renderable&&(!localAssets.has(e.renderable.assetId)||localAssets.get(e.renderable.assetId).kind!==e.renderable.kind)?Object.fromEntries(Object.entries(e).filter(([k])=>k!=='renderable')):e)};
       const authored=project?.scene??{entities:[]};let kernelScene=structuredClone(drawable);for(const e of authored.entities)if(e.parentId&&kernelScene.entities.some(n=>n.id===e.id)&&kernelScene.entities.some(n=>n.id===e.parentId))kernelScene.entities=reparent(kernelScene.entities,[e.id],e.parentId);
       const draws=replacement.compileScene(kernelScene,localAssets);
-      if(snapshot.playing)replacement.configurePhysics(kernelScene);
+      if(snapshot.playing){replacement.configurePhysics(kernelScene);replacement.animationStep(0,true);for(const op of startAnimationControls)replacement.animationControl(op);}
       if(scene.twoD&&device){
         twoDGPU??=await createTwoDGPU({device,format:gpu.getPreferredCanvasFormat()+'-srgb',width:canvas.width,height:canvas.height,textureFor});
         await twoDGPU.prepare([...localAssets.values()].filter(a=>a.kind==='sprite').map(a=>a.dataUrl));
@@ -174,7 +174,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         production.reset();await production.prepare([...draws,...[...localAssets.values()].flatMap(a=>a.primitives??[])]);
       }else pending=await buildResources(draws,ticket);
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
-      kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
+      skinGPU?.reset();kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
       workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=nextScriptFault;
       assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;previousTime=null;trace=0n;sampleDone=false;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
@@ -193,7 +193,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         const active=scriptRuntime;
         try {
           const scriptStart=performance.now();
-          scriptFlight=active.execute({action:"step",generation:ticket,entities:runtimeScene.entities,keys:[...keys],delta});
+          const animationStates=new Map(kernel.animationStatus().map(a=>[a.entityId,a]));
+          scriptFlight=active.execute({action:"step",generation:ticket,entities:runtimeScene.entities.map(e=>({...e,animationState:animationStates.get(e.id)})),keys:[...keys],delta});
           const packet=await scriptFlight;diagnostic.scriptRoundTripMs=performance.now()-scriptStart;
           if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
           const result=applyScriptOperations(runtimeScene,packet,ticket,spawned);
@@ -207,6 +208,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
             }catch(error){destroyResources(next);throw error;}
           }else kernel.setPositions(result.positions);
           kernel.setVelocities(result.velocities);
+          for(const op of result.animations)kernel.animationControl(op);
           runtimeScene=result.scene;spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
         finally{scriptFlight=null;}
@@ -278,7 +280,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }catch(error){request.reject(error);}
       }
       if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
-    } catch(error) {reportError(error);stateElement.textContent="Rendering stopped · inspect the console";return;}
+    } catch(error) {lastFrame={...lastFrame,animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";return;}
     animationId=requestAnimationFrame(frame);
   }
   animationId=requestAnimationFrame(frame);

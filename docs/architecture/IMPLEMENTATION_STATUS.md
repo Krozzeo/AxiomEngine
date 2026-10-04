@@ -1,10 +1,10 @@
 # Implementation status
 
-Last updated: 2026-10-04. Version 0.0.20.
-M0–M9 acceptance is complete. M9.1 correction acceptance passes 12/12 (100%).
+Last updated: 2026-10-04. Version 0.0.21.
+M0–M9 acceptance is complete. M9.2 refinement acceptance passes 12/12 (100%).
 Weighted whole-project progress is approximately 62%. All 18 CI jobs pass,
 including real GPU browser acceptance, image review and Windows C#.
-Read M9_1_CURRENT_REPORT.md.
+Read M9_2_CURRENT_REPORT.md.
 
 ## Implemented and verified
 
@@ -51,12 +51,18 @@ Read M9_1_CURRENT_REPORT.md.
 - Rust/Wasm oriented contacts/angular integration and live entity-rotated lights.
 - Three new correction demos, preserving the six earlier projects.
 
+- M9.2 outward primitive normals and exact legacy-source derived repair.
+- Ctrl/Shift selection, atomic group transforms, ordered root/tree drag/drop.
+- Inspector search/order, separate Collider/RigidBody, Move arrows and Ctrl+Y/Delete.
+- Project tree/icons, lateral menus, right Clear and automatically persisted panel sizes.
+- Resized canvas keeps its aspect ratio and correct hit coordinates.
+
 ## Current evidence
 
-M9.1 implementation passes 112 Node tests, 16 schema documents, generated-binding
-consistency, 57 semantic tools, three architecture rules and M0 parity. Rust passes
+M9.2 implementation passes 119 Node tests, 16 schema documents, generated-binding
+consistency, 60 semantic tools, three architecture rules and M0 parity. Rust passes
 33 tests, formatting, Clippy with warnings denied and core Wasm compilation.
-Current CI and M2–M9 browser evidence is recorded in M9_1_CURRENT_REPORT.md.
+Current CI and M2–M9 browser evidence is recorded in M9_2_CURRENT_REPORT.md.
 Linux C# development/AOT and Windows development pass.
 
 Chromium with software Vulkan under Xvfb proves all eleven M2 user actions,

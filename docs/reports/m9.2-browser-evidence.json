@@ -1,0 +1,24 @@
+{
+  "criteria": [
+    "empty Inspector, explicit component add/remove and Ctrl+Z through public commands",
+    "compact tree, Ctrl multi-selection, native group parenting/root drop, Ctrl+Z/Ctrl+Y",
+    "Shift range and atomic multi-entity position/rotation/scale edits",
+    "Move arrowhead drag translates both selected entities with one Undo",
+    "real Rotate and Scale gizmos change the group about a shared pivot with atomic Undo",
+    "drop between siblings reorders hierarchy; Delete removes selection and Undo restores it",
+    "fundamental Transform comes first; searchable Add Component is last",
+    "three panel resize handles persist project configuration independently of scene history",
+    "large bottom panel preserves canvas aspect ratio and pointer geometry",
+    "File primitive menu, Project explorer first tab and separate Clear action",
+    "right drag orbits focus rather than spinning in place",
+    "real Rotate ring drag direction and single Undo",
+    "light illumination changes during uncommitted drag; Escape restores authored scene",
+    "2D off-center impact produces angular motion and Stop restores scene",
+    "3D off-center impact produces angular motion and Stop restores scene"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "liveLightChangedPixels": 80642,
+  "passed": true
+}

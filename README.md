@@ -13,6 +13,11 @@ culling, imported mesh LOD and postprocessing. M9 passes 8/8 acceptance points;
 weighted whole-project progress is approximately 62%.
 M9.1 completes editor usability and angular 2D/3D physics corrections, with
 three new editable demos. All 18 CI jobs pass; no required manual checks remain.
+M9.2 refines the Inspector, hierarchy, group editing, menus/project explorer,
+saved panel layout and shortcuts, and corrects new/legacy primitive shading.
+See [M9.2 report](docs/reports/M9_2_CURRENT_REPORT.md) and
+[Spanish controls guide](demos/M9_2_GUIDE.md). Full 18-job CI passes.
+
 See [M9.1 report](docs/reports/M9_1_CURRENT_REPORT.md) and
 [demo controls](demos/M9_1_GUIDE.md).
 

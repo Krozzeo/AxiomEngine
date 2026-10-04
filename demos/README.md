@@ -1,19 +1,13 @@
-# M9.1 correction demos
+# M9.2 editor refinement demos
 
-[Guía de interacción en español](M9_1_GUIDE.md). All 18 CI jobs and the three
-correction demo browser interactions pass; no manual acceptance tests remain.
+See [the Spanish interaction guide](M9_2_GUIDE.md). `npm.cmd run demo` creates
+nine projects with fresh IDs, preserving existing projects. The refreshed three
+M9.2 scenes cover compact tree/icon browsing, Ctrl/Shift selection, group transforms,
+hierarchy ordering, component search and resizable saved project panels.
 
-`npm.cmd run demo` now creates nine projects, preserving existing projects.
-The new **M9.1 Editor Workshop** contains all nine primitives, a parent with two
-children, an empty entity for Add Component and point/directional lights. Use
-Alt + click for multi-selection; drag selected rows onto a parent or use Set Parent.
-Right drag or Alt + drag orbits; right + WASD/QE flies; F frames. Ctrl+Z undoes.
-File contains creation/import/camera controls; Settings contains HDR globals.
-
-**M9.1 Angular Contacts 2D / 3D** compare an offset falling box with a centered
-box. Press Play: the offset contact spins and tips, while the centered contact
-rests. Diagnostics contains point/normal/angularVelocity/rotation. Stop restores
-the scene. Freeze rotation is available after adding a RigidBody.
+Open M9.2 Editor Workshop while stopped; Angular Contacts 2D/3D use Play.
+Alt is reserved for navigation. Ctrl+Z undoes; Ctrl+Y redoes; Delete removes selected
+subtrees. Drop on Scene root to unparent or between rows to reorder siblings.
 
 # Demo projects
 

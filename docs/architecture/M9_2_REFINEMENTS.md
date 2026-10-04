@@ -1,6 +1,7 @@
 # M9.2 — editor refinements before M10
 
-All twelve requested groups are implemented, awaiting full CI and visual review.
+All twelve correction groups pass (100%). Full 18-job CI and final image review
+are recorded in M9_2_CURRENT_REPORT.md.
 Approximate weighted project progress remains 62%.
 
 1. Outward sphere/capsule winding; exact known legacy M9.1 primitive sources are

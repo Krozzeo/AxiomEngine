@@ -13,7 +13,7 @@ export const cullShader=structs+`
 fn admitted(item:Instance)->bool {
  var outside=vec3u(0u);var outside2=vec3u(0u);
  for(var k=0u;k<8u;k++){let p=vec3f(select(item.minimum.x,item.maximum.x,(k&1u)!=0u),select(item.minimum.y,item.maximum.y,(k&2u)!=0u),select(item.minimum.z,item.maximum.z,(k&4u)!=0u));let c=item.mvp*vec4f(p,1.0);
- outside+=vec3u(c.x < -c.w,c.y < -c.w,c.z < 0.0);outside2+=vec3u(c.x > c.w,c.y > c.w,c.z > c.w);}
+ outside+=select(vec3u(0u),vec3u(1u),vec3<bool>(c.x < -c.w,c.y < -c.w,c.z < 0.0));outside2+=select(vec3u(0u),vec3u(1u),vec3<bool>(c.x > c.w,c.y > c.w,c.z > c.w));}
  return !any(outside==vec3u(8u))&&!any(outside2==vec3u(8u));
 }
 @compute @workgroup_size(64) fn cs(@builtin(global_invocation_id) id:vec3u){if(id.x>=arrayLength(&groups)){return;}let g=groups[id.x];var n=0u;

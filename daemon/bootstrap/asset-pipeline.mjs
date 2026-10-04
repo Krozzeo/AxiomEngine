@@ -2,7 +2,7 @@ import { Worker } from 'node:worker_threads';
 import { createHash, randomUUID } from 'node:crypto';
 import { lstat, open, rename, rm } from 'node:fs/promises';
 import { projectError } from '../../protocol/src/project-document.mjs';
-export const IMPORTER_VERSION='axiom-png-glb-wav/4';
+export const IMPORTER_VERSION='axiom-png-glb-wav/5';
 const hash=data=>createHash('sha256').update(data).digest('hex');
 const fail=message=>projectError('AX_ASSET_0001',message);
 // Fixed internal worker module: clients cannot choose executables or modules.

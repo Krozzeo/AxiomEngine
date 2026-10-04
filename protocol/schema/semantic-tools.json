@@ -774,7 +774,9 @@
               "Light2D",
               "Particles2D",
               "UI2D",
-              "Animator"
+              "Animator",
+              "AudioSource",
+              "AudioListener"
             ]
           },
           "workspaceId": {
@@ -1044,7 +1046,9 @@
               "Light2D",
               "Particles2D",
               "UI2D",
-              "Animator"
+              "Animator",
+              "AudioSource",
+              "AudioListener"
             ]
           },
           "workspaceId": {
@@ -2486,6 +2490,263 @@
         ],
         "additionalProperties": false
       }
+    },
+    {
+      "name": "scene.audioSource.set",
+      "description": "Author bounded audioSource with shared revisions, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/audioSource"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.audioListener.set",
+      "description": "Author bounded audioListener with shared revisions, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/audioListener"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.audio.update",
+      "description": "Author bounded audio with shared revisions, Undo and isolated proposals.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/audio"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audio.query",
+      "description": "Observed source playhead, buses, listener and whyAudioNotPlaying, or unavailable.",
+      "mutates": false,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "maxBytes": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 65536
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "audio.control",
+      "description": "Transient live Play audio source/bus controls; never authors the project.",
+      "mutates": true,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "play",
+              "pause",
+              "resume",
+              "stop",
+              "volume",
+              "busVolume",
+              "busMute",
+              "masterVolume"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "value": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "asset.audio.read",
+      "description": "Read at most 4096 canonical PCM frames from an immutable project WAV.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "assetId": {
+            "type": "string",
+            "pattern": "^asset://[0-9a-f]{64}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "frames": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4096
+          }
+        },
+        "required": [
+          "id",
+          "assetId",
+          "expectedSceneRevision",
+          "offset",
+          "frames"
+        ],
+        "additionalProperties": false
+      },
+      "route": "workspace",
+      "mcp": false
     }
   ]
 }

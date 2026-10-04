@@ -27,6 +27,10 @@ Non-negotiable foundations:
 
 ## Current state
 
+M12 (0.0.24) is in progress on codex/m12-audio, stacked on M11 #13.
+Read M12_AUDIO.md. PCM transport/components/demos and local tests are implemented;
+real browser audio, full CI and closure remain pending. Baseline progress: 72%.
+
 M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.
 General GLB animation includes skeletons/skins, rigid TRS clips, Rust playback,
 shortest-path rotation interpolation, crossfades and bounded state machines.

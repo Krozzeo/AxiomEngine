@@ -92,6 +92,8 @@ async function fakeDocument() {
   class Element {
     constructor(tag = "div") { this.tag = tag; this.children = []; this.value = ""; this.disabled = false; this.listeners = {}; this.style={};this.dataset={}; }
     addEventListener(type, callback) { this.listeners[type] = callback; }
+    querySelectorAll(selector) { const tags=selector.split(','); return this.children.flatMap(child=>[...(tags.includes(child.tag)?[child]:[]),...(child.querySelectorAll?.(selector)??[])]); }
+    querySelector() { return null; }
     setAttribute() {}
     append(...children) { this.children.push(...children);const child=children[0]; if (this.tag === "select" && !this.value) this.value = child.value; }
     replaceChildren() { this.children = []; if (this.tag === "select") this.value = ""; }

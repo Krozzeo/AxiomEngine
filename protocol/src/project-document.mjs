@@ -1,3 +1,4 @@
+import {audioDefaults} from '../../engine/audio/plan.mjs';
 import {worldTransforms} from '../../engine/scene/hierarchy.mjs';
 import { readFileSync } from "node:fs";
 
@@ -67,6 +68,9 @@ export function validateProject(document) {
     if(entity.lod){if(entity.renderable?.kind!=="mesh")throw projectError("AX_PROJECT_0002","LOD requires a mesh Renderable");let distance=0;for(const level of entity.lod.levels){if(level.distance<=distance||!assets.some(a=>a.id===level.assetId&&a.kind==="mesh"))throw projectError("AX_PROJECT_0002","LOD levels need ascending distances and imported meshes");distance=level.distance;}}
   }
   if(document.scene.entities.filter(e=>e.light).length>64)throw projectError("AX_PROJECT_0002","Renderer supports at most 64 lights");
+  const audio=document.scene.audio??audioDefaults,sources=document.scene.entities.filter(e=>e.audioSource),listeners=document.scene.entities.filter(e=>e.audioListener?.enabled);
+  if(sources.length>32||listeners.length>1||new Set(audio.buses.map(b=>b.name)).size!==audio.buses.length)throw projectError('AX_PROJECT_0002','Audio source/listener/bus limits exceeded');
+  for(const e of sources){const a=e.audioSource;if(!assets.some(r=>r.id===a.assetId&&r.kind==='audio')||!audio.buses.some(b=>b.name===a.bus)||a.maxDistance<a.minDistance)throw projectError('AX_PROJECT_0002','Invalid audio asset, bus or distance range');}
   const animated=document.scene.entities.filter(e=>e.animator);
   if(animated.length>16)throw projectError('AX_PROJECT_0002','At most 16 Animator entities');
   for(const e of animated){

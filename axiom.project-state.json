@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.23",
-  "activeMilestone": 11,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.24",
+  "activeMilestone": 12,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 72,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -60,7 +60,7 @@
       "percent": 100
     },
     "12": {
-      "status": "not_started",
+      "status": "in_progress",
       "percent": 0
     }
   },
@@ -426,7 +426,9 @@
       "physicalGpuBenchmark": false
     }
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M12 browser/CI acceptance and documentation closure pending"
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -505,5 +507,5 @@
     "docs/reports/m11-animation-benchmark.json",
     "demos/M11_GUIDE.md"
   ],
-  "nextTask": "Implement M12 audio per M12_PLAN.md and master sections 39/131; preserve all earlier behavior and proposal isolation; keep PR #13 unmerged."
+  "nextTask": "Complete M12 real-audio browser and full CI acceptance, editable demos and synchronized closure; keep the milestone PR unmerged."
 }

@@ -97,6 +97,7 @@ async function initializeWebGpu() {
   renderer=await createSceneRenderer({canvas:document.querySelector("#viewport"),stateElement:document.querySelector("#gpu-state"),traceOutput:frameTraceOutput,bytes:await response.arrayBuffer(),reportError,
     reportScriptLog:(message,context)=>log("info","AX_SCRIPT_0005",message,context),
     forceNull:new URLSearchParams(location.search).get("renderer")==="null",
+    readAudio:async data=>(await sendCommand("asset.audio.read",data)).payload.data,
     loadAsset:async(id,assetId,workspaceId)=>{const asset=(await sendCommand("asset.get",{id,assetId,...(workspaceId?{workspaceId}:{})})).payload.data.asset;for(const warning of asset.warnings??[])log("warning","AX_ASSET_0002",warning);return asset;}});
   addEventListener("pagehide",()=>renderer.dispose(),{once:true});
   if(pendingSnapshot)await renderer.setSnapshot(pendingSnapshot);

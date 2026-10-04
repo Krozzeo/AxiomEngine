@@ -694,7 +694,7 @@
     },
     {
       "name": "scene.component.add",
-      "description": "Attach a Renderable component to an existing entity. Transform is mandatory on creation. Requires imported sprite or mesh; undoable.",
+      "description": "Attach a Renderable or the compiled C# script to an entity. Transform is mandatory; undoable.",
       "mutates": true,
       "route": "workspace",
       "mcp": true,
@@ -716,7 +716,8 @@
           "component": {
             "type": "string",
             "enum": [
-              "Renderable"
+              "Renderable",
+              "Script"
             ]
           },
           "value": {
@@ -731,15 +732,14 @@
           "id",
           "expectedSceneRevision",
           "entityId",
-          "component",
-          "value"
+          "component"
         ],
         "additionalProperties": false
       }
     },
     {
       "name": "scene.component.remove",
-      "description": "Remove an optional Renderable component; Transform is mandatory.",
+      "description": "Remove an optional component or detach the compiled C# script; Transform remains mandatory.",
       "mutates": true,
       "route": "workspace",
       "mcp": true,
@@ -766,7 +766,8 @@
               "RigidBody",
               "Material",
               "Light",
-              "LOD"
+              "LOD",
+              "Script"
             ]
           },
           "workspaceId": {
@@ -1776,6 +1777,100 @@
           "id",
           "expectedSceneRevision",
           "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.entity.reparent",
+      "description": "Parent a selection atomically, retaining world TRS. Reject cycles and shear. Undo restores the complete hierarchy.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "entityIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "string",
+              "pattern": "^entity://[0-9a-f-]{36}$"
+            }
+          },
+          "parentId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityIds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.primitive.create",
+      "description": "Create a built-in shape as an ordinary imported GLB and editable entity.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "dimension": {
+            "type": "integer",
+            "enum": [
+              2,
+              3
+            ]
+          },
+          "shape": {
+            "type": "string",
+            "enum": [
+              "cube",
+              "sphere",
+              "cylinder",
+              "capsule",
+              "pyramid",
+              "square",
+              "disc",
+              "triangle"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "dimension",
+          "shape"
         ],
         "additionalProperties": false
       }

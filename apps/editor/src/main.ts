@@ -101,7 +101,7 @@ async function initializeWebGpu() {
   addEventListener("pagehide",()=>renderer.dispose(),{once:true});
   if(pendingSnapshot)await renderer.setSnapshot(pendingSnapshot);
   renderer.setView(activeView);
-  sceneTools=mountSceneTools({document,canvas:document.querySelector('#viewport'),getRenderer:()=>renderer,editor:projectEditor,reportError});sceneTools.select(projectEditor.selectedEntity());
+  sceneTools=mountSceneTools({document,canvas:document.querySelector('#viewport'),getRenderer:()=>renderer,editor:projectEditor,reportError});sceneTools.select(projectEditor.selectedEntities());
   addEventListener('pagehide',()=>sceneTools.dispose(),{once:true});
 }
 
@@ -150,7 +150,7 @@ document.querySelector("#ping").addEventListener("click", () => execute("system.
 document.querySelector("#increment").addEventListener("click", () => execute("demo.increment", { amount: 1 }));
 document.querySelector("#undo").addEventListener("click", () => execute("editor.undo"));
 document.querySelector("#clear").addEventListener("click", () => logs.replaceChildren());
-for(const name of ['console','diagnostics'])document.querySelector('#'+name+'-tab').addEventListener('click',()=>{for(const tab of ['console','diagnostics']){document.querySelector('#'+tab+'-tab').classList.toggle('active',tab===name);document.querySelector('#'+tab+'-content').hidden=tab!==name;}});
+for(const name of ['project','console','diagnostics'])document.querySelector('#'+name+'-tab').addEventListener('click',()=>{for(const tab of ['project','console','diagnostics']){document.querySelector('#'+tab+'-tab').classList.toggle('active',tab===name);document.querySelector('#'+tab+'-content').hidden=tab!==name;}});
 document.querySelector('#deep-trace').addEventListener('change',event=>renderer?.setDeepTrace(event.target.checked));
 document.querySelector('#diagnostic-explain').addEventListener('click',()=>{
  const kind=document.querySelector('#diagnostic-kind').value,entityId=projectEditor.selectedEntity(),otherId=document.querySelector('#diagnostic-other').value,assetId=document.querySelector('#asset-list').value,traceId=document.querySelector('#diagnostic-trace').value.trim();
@@ -158,4 +158,6 @@ document.querySelector('#diagnostic-explain').addEventListener('click',()=>{
  document.querySelector('#causal-summary').textContent=result?`${result.status}: ${result.message}`:'No renderer evidence available';const path=document.querySelector('#causal-path');path.replaceChildren();for(const node of result?.nodes??[]){const item=document.createElement('li');item.textContent=`${node.code} · ${node.message}`;path.append(item);}
 });
 document.querySelector('#diagnostic-kind').addEventListener('change',()=>{const options=document.querySelector('#diagnostic-other');options.replaceChildren();for(const e of pendingSnapshot?.project?.scene.entities??[]){const option=document.createElement('option');option.value=e.id;option.textContent=e.name;options.append(option);}});
+// Native details menus close when focus moves back into the workspace.
+document.addEventListener('pointerdown',event=>{for(const menu of document.querySelectorAll('.menubar > details'))if(!menu.contains(event.target))menu.open=false;});
 boot();

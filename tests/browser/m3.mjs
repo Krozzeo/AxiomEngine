@@ -1,3 +1,4 @@
+import {control} from './editor-controls.mjs';
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
 import { PNG } from "pngjs";
@@ -32,43 +33,43 @@ try {
   await page.waitForFunction(()=>/^WebGPU/.test(document.querySelector("#gpu-state").textContent));
   report.backend=await page.locator("#gpu-state").textContent();
   assert.match(report.backend,/^WebGPU/);report.criteria.push("open Axiom");
-  await page.locator("#project-name").fill("M3 pipeline acceptance");await page.locator("#project-new").click();
+  await (await control(page,"#project-name")).fill("M3 pipeline acceptance");await (await control(page,"#project-new")).click();
   await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("M3 pipeline acceptance"));report.criteria.push("create project");
   for(const [name,mimeType,buffer] of [["checker.png","image/png",imageFixture()],["cube.glb","model/gltf-binary",glbFixture()]]) {
-    await page.locator("#asset-file").setInputFiles({name,mimeType,buffer});await page.locator("#asset-import").click();
+    await (await control(page,"#asset-file")).setInputFiles({name,mimeType,buffer});await (await control(page,"#asset-import")).click();
     await page.waitForFunction(name=>[...document.querySelector("#asset-list").options].some(option=>option.textContent.includes(name)),name);
-    await page.locator("#asset-list").selectOption({label:(name.endsWith("png")?"sprite":"mesh")+" · "+name});
-    await page.locator("#asset-place").click();
-    await page.waitForFunction(count=>document.querySelectorAll("#entities button").length===count,name.endsWith("png")?1:2);
+    await (await control(page,"#asset-list")).selectOption({label:(name.endsWith("png")?"sprite":"mesh")+" · "+name});
+    await (await control(page,"#asset-place")).click();
+    await page.waitForFunction(count=>document.querySelectorAll("#entities .entity").length===count,name.endsWith("png")?1:2);
   }
   report.criteria.push("import image and GLB","place sprite","place mesh");
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
   // Compare persisted output through the authored Game camera, independent
   // of transient Scene navigation and camera seeding.
-  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
+  await (await control(page,"#game-tab")).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   const initial=await page.locator("#viewport").screenshot();assert.ok(colors(initial).red>100&&colors(initial).green>100,"Both imported assets must produce colored pixels");
-  await page.locator("#entities button").filter({hasText:"checker.png"}).click();
-  await page.locator("#position-0").fill("-1.8");await page.locator("#position-1").fill("0.4");await page.getByRole("button",{name:"Apply changes"}).click();
-  await page.locator("#entities button").filter({hasText:"cube.glb"}).click();
-  await page.locator("#position-0").fill("1.7");await page.locator("#position-1").fill("-0.3");await page.getByRole("button",{name:"Apply changes"}).click();
-  await page.locator("#camera-projection").selectOption("orthographic");
+  await page.locator("#entities .entity").filter({hasText:"checker.png"}).click();
+  await (await control(page,"#position-0")).fill("-1.8");await (await control(page,"#position-1")).fill("0.4");await page.getByRole("button",{name:"Apply changes"}).click();
+  await page.locator("#entities .entity").filter({hasText:"cube.glb"}).click();
+  await (await control(page,"#position-0")).fill("1.7");await (await control(page,"#position-1")).fill("-0.3");await page.getByRole("button",{name:"Apply changes"}).click();
+  await (await control(page,"#camera-projection")).selectOption("orthographic");
   await page.waitForFunction(()=>!document.querySelector("#scene-save").disabled);
   report.criteria.push("move both objects");
-  await page.locator("#scene-save").click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);
+  await (await control(page,"#scene-save")).click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);
   const saved=(await state()).project;assert.equal(saved.scene.entities.length,2);report.criteria.push("save");
   const savedImage=await page.locator("#viewport").screenshot({path:join(evidence,"scene.png")});
   assert.ok(!pixels(initial).data.equals(pixels(savedImage).data),"Moving objects and changing projection must change rendered pixels");
-  await page.locator("#project-close").click();await page.waitForFunction(()=>document.querySelectorAll("#entities button").length===0);report.criteria.push("close");
+  await (await control(page,"#project-close")).click();await page.waitForFunction(()=>document.querySelectorAll("#entities .entity").length===0);report.criteria.push("close");
   await daemon.close();daemon=await startServer({projectRoot:root});
-  await page.goto(daemon.editorUrl);await page.locator("#project-list").selectOption(saved.id);await page.locator("#project-open").click();
+  await page.goto(daemon.editorUrl);await (await control(page,"#project-list")).selectOption(saved.id);await (await control(page,"#project-open")).click();
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
   assert.deepEqual((await state()).project,saved);report.criteria.push("reopen");
-  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
+  await (await control(page,"#game-tab")).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   const reopenedImage=await page.locator("#viewport").screenshot({path:join(evidence,"reopened.png")});
   assert.ok(pixels(reopenedImage).data.equals(pixels(savedImage).data),"Saved and reopened scene pixels must match exactly");report.criteria.push("see same scene");
-  await page.locator("#entities button").filter({hasText:"cube.glb"}).click();
+  await page.locator("#entities .entity").filter({hasText:"cube.glb"}).click();
   assert.equal(await page.locator("#position-0").isEnabled(),true);
-  await page.locator("#play-start").click();await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.mode==="play"&&k.frame>=15&&k.meshes===2;}catch{return false;}});
+  await (await control(page,"#play-start")).click();await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.mode==="play"&&k.frame>=15&&k.meshes===2;}catch{return false;}});
   for(const field of await page.locator("#entity-fields input, #entity-fields button").all()) assert.equal(await field.isDisabled(),true);
   assert.equal(await page.locator("#asset-import").isDisabled(),true);
   const editorImage=await page.screenshot({path:join(evidence,"play-editor.png")});
@@ -77,7 +78,7 @@ try {
     for(let y=0;y<500;y++)for(let x=0;x<720;x++)full.data.copy(preview.data,(y*720+x)*4,((y*2)*full.width+x*2)*4,((y*2)*full.width+x*2)*4+4);
     console.log("M3_PREVIEW_PNG="+PNG.sync.write(preview).toString("base64"));
   }
-  await page.locator("#play-stop").click();await page.waitForFunction(()=>document.querySelector("#play-stop").disabled);
+  await (await control(page,"#play-stop")).click();await page.waitForFunction(()=>document.querySelector("#play-stop").disabled);
   assert.deepEqual((await state()).project,saved);report.criteria.push("Play without changing authoring state");
   // M3: update a source image shared by a sprite and a mesh, leaving a third source unchanged.
   async function command(type,data={}) {
@@ -88,10 +89,10 @@ try {
   const texture=current.project.scene.assets.find(a=>a.kind==="sprite"),mesh=current.project.scene.assets.find(a=>a.kind==="mesh");
   const independent=glbFixture(d=>{d.materials[0].pbrMetallicRoughness.baseColorFactor=[.1,.8,.2,1];});
   await command("asset.import",{id:saved.id,expectedSceneRevision:current.sceneRevision,name:"independent.glb",base64:independent.toString("base64")});
-  await page.locator("#workspace-refresh").click();
+  await (await control(page,"#workspace-refresh")).click();
   await page.waitForFunction(()=>document.querySelector("#asset-list").options.length===3);
-  await page.locator("#asset-list").selectOption(mesh.id);await page.locator("#asset-texture").selectOption(texture.id);
-  await page.locator("#asset-bind").click();
+  await (await control(page,"#asset-list")).selectOption(mesh.id);await (await control(page,"#asset-texture")).selectOption(texture.id);
+  await (await control(page,"#asset-bind")).click();
   await page.waitForFunction(()=>document.querySelector("#asset-job-status").textContent==="Import completed"&&!document.querySelector("#asset-bind").disabled);
   const before=await state(),other=before.project.scene.assets.find(a=>a.name==="independent.glb");
   const beforeImage=await page.locator("#viewport").screenshot({path:join(evidence,"before-update.png")});
@@ -115,12 +116,12 @@ try {
   assert.equal(await page.evaluate(()=>globalThis.m3PageIdentity),pageIdentity);
   current=await state();assert.deepEqual(current.project.scene.assets.map(a=>a.id),before.project.scene.assets.map(a=>a.id));assert.equal(current.project.scene.assets.find(a=>a.id===other.id).buildKey,other.buildKey);
   const why=await command("asset.explain",{id:saved.id,assetId:texture.id});assert.deepEqual(why.whatUses.assets,[mesh.id]);assert.equal(why.whatUses.entities.length,2);
-  await page.locator("#scene-save").click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);
+  await (await control(page,"#scene-save")).click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);
   const updated=(await state()).project;
-  await page.locator("#project-close").click();await page.waitForFunction(()=>document.querySelectorAll("#entities button").length===0);
-  await daemon.close();daemon=await startServer({projectRoot:root});await page.goto(daemon.editorUrl);await page.locator("#project-list").selectOption(saved.id);await page.locator("#project-open").click();
+  await (await control(page,"#project-close")).click();await page.waitForFunction(()=>document.querySelectorAll("#entities .entity").length===0);
+  await daemon.close();daemon=await startServer({projectRoot:root});await page.goto(daemon.editorUrl);await (await control(page,"#project-list")).selectOption(saved.id);await (await control(page,"#project-open")).click();
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
-  await page.locator("#game-tab").click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
+  await (await control(page,"#game-tab")).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   assert.deepEqual((await state()).project,updated);assert.ok(pixels(await page.locator("#viewport").screenshot()).data.equals(pixels(updatedImage).data),"Hot-reloaded saved Game pixels must survive restart");
   report.pipeline={hotReloadWithoutNavigation:true,bluePixels,rebuilt:job.build.rebuilt,unchanged:job.build.unchanged,stableIds:true,restartPreserved:true,diagnostics:true};
   await page.goto(daemon.origin+"/?renderer=null#token="+daemon.token);

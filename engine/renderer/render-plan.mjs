@@ -22,7 +22,7 @@ export function renderPlan(scene,draws,camera,aspect,assets=new Map(),capabiliti
  const opaque=items.filter(i=>i.material.alphaMode!=='blend').sort((a,b)=>a.key.localeCompare(b.key)),blend=items.filter(i=>i.material.alphaMode==='blend').sort((a,b)=>b.distance-a.distance),ordered=[...opaque,...blend],batches=[];
  for(let i=0;i<ordered.length;i++){const item=ordered[i],last=batches.at(-1);if(last&&last.key===item.key&&item.material.alphaMode!=='blend')last.count++;else batches.push({key:item.key,first:i,count:1,vertices:item.vertices,texture:item.texture,alphaMode:item.material.alphaMode});}
  if(items.reduce((n,i)=>n+i.vertices.length/8,0)>300000)throw Error('AX_RENDERER_0005: selected LOD exceeds 300000 vertices');
- const allLights=scene.entities.filter(e=>e.light),lights=allLights.slice(0,budget.lights).map(e=>({...e.light,entityId:e.id,position:e.transform.position,direction:unit(e.light.direction)}));
+ const allLights=scene.entities.filter(e=>e.light),lights=allLights.slice(0,budget.lights).map(e=>({...e.light,entityId:e.id,position:e.transform.position,direction:unit(transform(modelMatrix({...e.transform,scale:[1,1,1]}),e.light.direction,0).slice(0,3))}));
  if(allLights.length>lights.length)fallbacks.push(`${allLights.length-lights.length} lights omitted by ${settings.tier} tier budget`);
  const shadowIndex=settings.shadows?lights.findIndex(l=>l.shadow&&l.kind!=='point'):-1;
  if(settings.shadows&&lights.some(l=>l.shadow&&l.kind==='point'))fallbacks.push('Point light shadows unavailable; direct light remains active');

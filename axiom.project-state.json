@@ -2,7 +2,7 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-04",
-  "engineVersion": "0.0.19",
+  "engineVersion": "0.0.20",
   "activeMilestone": 9,
   "milestoneStatus": "complete",
   "completion": {
@@ -60,7 +60,7 @@
     "renderGraph": "verified_native",
     "frameProfiler": "verified_windows_webgpu_and_null",
     "projectPersistence": "verified_bootstrap_http_restart",
-    "sceneEditor": "verified_visual_selection_gizmos_independent_scene_camera_and_game_preview",
+    "sceneEditor": "verified_modular_inspector_tree_multiselect_parenting_orbit_and_gizmos",
     "assetImport": "verified_png_static_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
@@ -68,14 +68,14 @@
     "csharpGameplay": "verified_editor_compile_reload_isolated_runtime",
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
-    "physics": "verified_cpu_wasm_translation_2d_3d",
-    "editableDemos": "verified_six_m7_m8_m9_projects",
+    "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
+    "editableDemos": "verified_nine_m7_m8_m9_m9_1_projects",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu"
   },
   "verified": {
     "nodeTests": {
-      "passed": 102,
+      "passed": 112,
       "failed": 0
     },
     "schemaDocuments": 16,
@@ -103,10 +103,10 @@
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 30,
+      "testsPassed": 33,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M9 0.0.19"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M9.1 0.0.20"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -192,13 +192,12 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.19",
-      "commit": "5f19c2c0a640164742dc338754d4abf27b537869",
-      "runId": 37166766454,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37166766454",
-      "jobCount": 17,
-      "jobs":
-      [
+      "version": "0.0.20",
+      "commit": "ba58fa326cbd481a144a3a075bd6d8ebd0f2df49",
+      "runId": 37209258078,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37209258078",
+      "jobCount": 18,
+      "jobs": [
         "bootstrap (windows-latest)",
         "browser-milestones (m6)",
         "browser-milestones (m2)",
@@ -215,7 +214,8 @@
         "browser-milestones (m5)",
         "browser-milestones (m9)",
         "csharp-wasm-spike (ubuntu-latest, aot)",
-        "csharp-wasm-spike (ubuntu-latest, development)"
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (corrections)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -361,6 +361,16 @@
       "pixels": "docs/reports/m9-renderer-pixels.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m91Acceptance": {
+      "passed": true,
+      "criteriaPassed": 12,
+      "criteriaTotal": 12,
+      "browserCriteriaPassed": 9,
+      "runId": 37209258078,
+      "evidence": "docs/reports/m9.1-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -418,7 +428,11 @@
     "docs/architecture/M10_PLAN.md",
     "docs/reports/m9-browser-evidence.json",
     "docs/reports/m9-renderer-benchmark.json",
-    "docs/reports/m9-renderer-pixels.json"
+    "docs/reports/m9-renderer-pixels.json",
+    "docs/architecture/M9_1_CORRECTIONS.md",
+    "docs/reports/M9_1_CURRENT_REPORT.md",
+    "demos/M9_1_GUIDE.md",
+    "docs/reports/m9.1-browser-evidence.json"
   ],
-  "nextTask": "Implement M10 per M10_PLAN.md and master specification section 129. Read M9/M8/M7/M6 contracts first; preserve legacy scenes, Scene/Game separation, proposal isolation and earlier demos. Keep all milestone PRs unmerged. Deliver M10 only after full automated acceptance and documented limits."
+  "nextTask": "Implement M10 per M10_PLAN.md after completed M9.1. Keep milestone PRs unmerged; preserve proposal isolation and include editable demos and automated acceptance."
 }

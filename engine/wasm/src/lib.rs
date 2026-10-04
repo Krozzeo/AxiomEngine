@@ -212,6 +212,37 @@ mod exports {
         })
     }
     #[unsafe(no_mangle)]
+    pub extern "C" fn axiom_scene_rotation(
+        id: u32,
+        handle: u32,
+        x: f32,
+        y: f32,
+        z: f32,
+        w: f32,
+    ) -> u32 {
+        let q = [x, y, z, w];
+        let norm = q.iter().map(|v| v * v).sum::<f32>().sqrt();
+        if !norm.is_finite() || norm < 1e-8 {
+            return 2;
+        }
+        REGISTRY.with_borrow_mut(|r| {
+            let Some(mesh) = r
+                .scenes
+                .get_mut(&id)
+                .and_then(|s| s.meshes.get_mut(handle as usize))
+            else {
+                return 1;
+            };
+            mesh.transform.rotation = Quat {
+                x: x / norm,
+                y: y / norm,
+                z: z / norm,
+                w: w / norm,
+            };
+            0
+        })
+    }
+    #[unsafe(no_mangle)]
     #[allow(clippy::too_many_arguments)]
     pub extern "C" fn axiom_scene_camera(
         id: u32,

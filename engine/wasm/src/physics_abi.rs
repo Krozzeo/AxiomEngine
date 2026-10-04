@@ -40,6 +40,9 @@ pub extern "C" fn axiom_physics_add(
                 w.add(Body {
                     position: [px, py, pz],
                     velocity: [vx, vy, vz],
+                    rotation: [0.0, 0.0, 0.0, 1.0],
+                    angular_velocity: [0.0; 3],
+                    freeze_rotation: false,
                     half: [hx, hy, hz],
                     inverse_mass,
                     restitution,
@@ -80,6 +83,8 @@ pub extern "C" fn axiom_physics_read(id: u32, index: u32, field: u32) -> f64 {
             .map_or(f64::NAN, |b| match field {
                 0..=2 => b.position[field as usize],
                 3..=5 => b.velocity[field as usize - 3],
+                6..=9 => b.rotation[field as usize - 6],
+                10..=12 => b.angular_velocity[field as usize - 10],
                 _ => f64::NAN,
             })
     })
@@ -100,6 +105,8 @@ pub extern "C" fn axiom_physics_write(id: u32, index: u32, field: u32, value: f6
         match field {
             0..=2 => b.position[field as usize] = value,
             3..=5 => b.velocity[field as usize - 3] = value,
+            10..=12 => b.angular_velocity[field as usize - 10] = value,
+            13 => b.freeze_rotation = value != 0.0,
             _ => return 2,
         };
         0
@@ -134,6 +141,7 @@ pub extern "C" fn axiom_physics_contact(id: u32, index: u32, field: u32) -> f64 
                 }
                 3 => c.depth,
                 4..=6 => c.normal[field as usize - 4],
+                7..=9 => c.point[field as usize - 7],
                 _ => f64::NAN,
             })
     })
@@ -158,5 +166,37 @@ pub extern "C" fn axiom_physics_ray(
             .get(&id)
             .and_then(|w| w.raycast([ox, oy, oz], [dx, dy, dz], max, dimension, mask))
             .map_or(-1.0, |(i, t)| if field == 0 { i as f64 } else { t })
+    })
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn axiom_physics_rotation(
+    id: u32,
+    index: u32,
+    x: f64,
+    y: f64,
+    z: f64,
+    w: f64,
+) -> u32 {
+    let q = [x, y, z, w];
+    let norm = q.iter().map(|v| v * v).sum::<f64>().sqrt();
+    if !norm.is_finite() || norm < 1e-8 {
+        return 2;
+    }
+    REGISTRY.with_borrow_mut(|r| {
+        let Some(b) = r
+            .physics
+            .get_mut(&id)
+            .and_then(|w| w.bodies.get_mut(index as usize))
+        else {
+            return 1;
+        };
+        b.rotation = if b.dimension == 2 {
+            let angle = 2.0 * z.atan2(w);
+            [0.0, 0.0, (angle * 0.5).sin(), (angle * 0.5).cos()]
+        } else {
+            q.map(|v| v / norm)
+        };
+        0
     })
 }

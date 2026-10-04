@@ -9,32 +9,15 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M9</span>
-      <span id="connection" class="status pending">Connecting…</span>
-    </header>
-    <main class="workspace">
-      <aside class="panel hierarchy">
-        <h2>Project</h2>
-        <div class="project-controls">
-          <label for="project-name">New project name</label>
+      <span class="badge">M9.1</span><nav class="menubar" aria-label="Editor menus"><details id="file-menu"><summary>Archivo</summary><div class="menu-popup"><details id="project-menu"><summary>Proyectos · Create / Open</summary>          <label for="project-name">New project name</label>
           <input id="project-name" maxlength="128" placeholder="My project">
           <button id="project-new" disabled>Create project</button>
           <label for="project-list">Saved projects</label>
           <select id="project-list" aria-label="Saved projects"></select>
           <div class="actions"><button id="project-open" disabled>Open</button><button id="project-refresh" disabled>Refresh list</button></div>
-          <p id="project-status" role="status"></p>
-          <p id="project-error" role="alert"></p>
-          <div class="actions"><button id="scene-save" disabled>Save</button><button id="scene-undo" disabled>Undo</button><button id="scene-redo" disabled>Redo</button></div>
           <button id="workspace-refresh" disabled>Refresh workspace</button>
           <button id="project-close" disabled>Close project</button>
-          <h2>AI proposals</h2>
-          <select id="proposal-list" aria-label="AI proposals"></select>
-          <button id="proposal-review" disabled>Review differences</button>
-          <div class="actions"><button id="proposal-preview" disabled>Run proposal</button><button id="proposal-continue" disabled>Return to source</button></div>
-          <div class="actions"><button id="proposal-accept" disabled>Accept reviewed changes</button><button id="proposal-reject" disabled>Reject proposal</button></div>
-          <p id="proposal-status" role="status"></p><pre id="proposal-diff"></pre>
-          <h2>Assets</h2>
-          <label for="asset-file">PNG, GLB or PCM WAV · up to 8 MiB</label>
+</details><details id="assets-menu"><summary>Assets · Import / Manage</summary>          <label for="asset-file">PNG, GLB or PCM WAV · up to 8 MiB</label>
           <input id="asset-file" type="file" accept=".png,.glb,.wav" disabled>
           <button id="asset-import" disabled>Import asset</button>
           <select id="asset-list" aria-label="Project assets"></select>
@@ -45,65 +28,9 @@
           <p id="asset-job-status" role="status"></p><button id="asset-cancel" disabled>Cancel import</button>
           <pre id="asset-explanation"></pre>
           <button id="asset-place" disabled>Place selected asset</button>
-          <label for="camera-projection">Game camera projection</label>
+</details><details id="camera-menu"><summary>Cámara del juego</summary>          <label for="camera-projection">Game camera projection</label>
           <select id="camera-projection" disabled><option value="perspective">Perspective · 3D</option><option value="orthographic">Orthographic · 2D</option></select>
-        </div>
-        <h2>Hierarchy</h2>
-        <div class="actions"><button id="scene-add" disabled>Add entity</button><button id="scene-delete" disabled>Delete</button></div>
-        <p id="entity-empty" class="empty">No entities in this project.</p>
-        <div id="entities" aria-label="Scene entities"></div>
-      </aside>
-      <section class="center">
-        <nav class="tabs"><button id="scene-tab" class="active">Scene</button><button id="game-tab" disabled>Game</button><span id="play-status">Scene · authoring</span><button id="play-start" disabled>▶ Play</button><button id="play-stop" disabled>■ Stop</button></nav>
-        <div class="viewport">
-          <div id="preview-note" class="preview-note">Create or open a project to begin</div>
-          <canvas id="viewport" width="960" height="540" tabindex="0" aria-label="Axiom viewport"></canvas>
-          <svg id="scene-overlay" aria-label="Scene selection and transform gizmos"></svg>
-          <div id="scene-toolbar"><button id="tool-move" title="Move (W)">Move</button><button id="tool-rotate" title="Rotate (E)">Rotate</button><button id="tool-scale" title="Scale (R)">Scale</button><button id="tool-space">World</button><button id="tool-projection">Persp</button><span>F: frame · Alt + drag: orbit · right mouse + WASD/QE: fly</span></div>
-          <svg id="orientation-widget" viewBox="0 0 104 104" aria-label="World XYZ orientation"></svg>
-          <div id="gpu-state" class="viewport-message">Detecting WebGPU…</div>
-        </div>
-        <section class="console panel">
-          <nav class="tabs"><button id="console-tab" class="active">Structured Console</button><button id="diagnostics-tab">Diagnostics</button><button id="clear">Clear console</button></nav>
-          <div id="console-content"><ol id="logs"></ol></div>
-          <div id="diagnostics-content" hidden>
-            <div class="diagnostic-controls"><select id="diagnostic-kind" aria-label="Diagnostic question"><option>whyNotRendered</option><option>whyNotColliding</option><option>whyAssetNotLoaded</option><option>whyScriptNotRunning</option></select><select id="diagnostic-other" aria-label="Other collision entity"></select><button id="diagnostic-explain">Explain selected</button><label><input id="deep-trace" type="checkbox">Deep trace</label><input id="diagnostic-trace" placeholder="Optional retained frame trace ID" aria-label="Retained frame trace ID"></div>
-            <p id="causal-summary">Select an entity and ask a question.</p><ol id="causal-path"></ol>
-            <div class="diagnostic-columns"><div><h2>Decision graph evidence</h2><pre id="decision-graph">Deep trace retains 32 sampled frames for 30 seconds.</pre></div><div><h2>Frame diagnostics · contacts / triggers</h2><pre id="frame-trace">Waiting for first frame.</pre></div><div><h2>Command trace</h2><pre id="trace">No trace yet.</pre></div></div>
-          </div>
-        </section>
-      </section>
-      <aside class="panel inspector">
-        <h2>Inspector</h2>
-        <form id="entity-form">
-          <fieldset id="entity-fields" disabled>
-            <label for="entity-name">Entity name</label><input id="entity-name" required maxlength="128">
-            <p>Position</p><div class="vector-inputs"><label>X<input id="position-0" type="number" step="any" required></label><label>Y<input id="position-1" type="number" step="any" required></label><label>Z<input id="position-2" type="number" step="any" required></label></div>
-            <p>Scale</p><div class="vector-inputs"><label>X<input id="scale-0" type="number" step="any" required></label><label>Y<input id="scale-1" type="number" step="any" required></label><label>Z<input id="scale-2" type="number" step="any" required></label></div>
-            <button type="submit">Apply changes</button>
-          </fieldset>
-        </form>
-        <details><summary>PBR Material</summary><form id="material-form"><fieldset id="material-fields"><p>Linear base color RGBA</p><div class="vector-inputs"><label>1<input id="material-color-0" type="number" step="any" required></label><label>2<input id="material-color-1" type="number" step="any" required></label><label>3<input id="material-color-2" type="number" step="any" required></label><label>4<input id="material-color-3" type="number" step="any" required></label></div><label>Metallic<input id="material-metallic" type="number" step="any" required></label><label>Roughness<input id="material-roughness" type="number" step="any" required></label><p>Emission RGB</p><div class="vector-inputs"><label>1<input id="material-emissive-0" type="number" step="any" required></label><label>2<input id="material-emissive-1" type="number" step="any" required></label><label>3<input id="material-emissive-2" type="number" step="any" required></label></div><label>Transparency<select id="material-alpha"><option value="opaque">Opaque</option><option value="mask">Mask</option><option value="blend">Blend</option></select></label><label>Alpha cutoff<input id="material-cutoff" type="number" step="any" required></label><label><input id="material-unlit" type="checkbox">Unlit</label><label><input id="material-shadow" type="checkbox">Cast shadow</label><button type="submit">Apply</button><button type="button" id="material-remove">Remove</button></fieldset></form></details><details><summary>Light</summary><form id="light-form"><fieldset id="light-fields"><label>Kind<select id="light-kind"><option value="directional">Directional</option><option value="point">Point</option><option value="spot">Spot</option></select></label><p>Light RGB</p><div class="vector-inputs"><label>1<input id="light-color-0" type="number" step="any" required></label><label>2<input id="light-color-1" type="number" step="any" required></label><label>3<input id="light-color-2" type="number" step="any" required></label></div><label>Intensity<input id="light-intensity" type="number" step="any" required></label><label>Range<input id="light-range" type="number" step="any" required></label><p>Direction XYZ (world)</p><div class="vector-inputs"><label>1<input id="light-direction-0" type="number" step="any" required></label><label>2<input id="light-direction-1" type="number" step="any" required></label><label>3<input id="light-direction-2" type="number" step="any" required></label></div><label>Inner cone °<input id="light-inner" type="number" step="any" required></label><label>Outer cone °<input id="light-outer" type="number" step="any" required></label><label><input id="light-shadow" type="checkbox">Request shadow</label><button type="submit">Apply</button><button type="button" id="light-remove">Remove</button></fieldset></form></details><details><summary>Level of detail</summary><form id="lod-form"><fieldset id="lod-fields"><label>Level 1 mesh<select id="lod-asset-0"></select></label><label>Switch distance<input id="lod-distance-0" type="number" step="any" required></label><label>Level 2 mesh<select id="lod-asset-1"></select></label><label>Switch distance<input id="lod-distance-1" type="number" step="any" required></label><label>Level 3 mesh<select id="lod-asset-2"></select></label><label>Switch distance<input id="lod-distance-2" type="number" step="any" required></label><button type="submit">Apply</button><button type="button" id="lod-remove">Remove</button></fieldset></form></details><details><summary>HDR Rendering</summary><form id="render-form"><fieldset id="render-fields"><label>Quality<select id="render-tier"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label><label>Culling<select id="render-culling"><option value="cpu">CPU</option><option value="gpu">GPU</option><option value="none">NONE</option></select></label><label>Exposure<input id="render-exposure" type="number" step="any" required></label><label>Tone mapping<select id="render-tone"><option value="aces">Aces</option><option value="reinhard">Reinhard</option><option value="none">None</option></select></label><p>Environment RGB</p><div class="vector-inputs"><label>1<input id="render-environment-0" type="number" step="any" required></label><label>2<input id="render-environment-1" type="number" step="any" required></label><label>3<input id="render-environment-2" type="number" step="any" required></label></div><label>Shadow coverage<input id="render-shadow-size" type="number" step="any" required></label><label>Bloom<input id="render-bloom" type="number" step="any" required></label><label><input id="render-shadows" type="checkbox">Shadows</label><label><input id="render-fxaa" type="checkbox">Edge smoothing</label><button type="submit">Apply</button><button type="button" id="render-remove">Remove</button></fieldset></form></details>
-        <h2>Physics</h2>
-        <form id="physics-form"><fieldset id="physics-fields">
-          <label>Collider <select id="physics-shape"><option value="none">None</option><option value="box">Axis-aligned box</option><option value="sphere">Circle / sphere</option></select></label>
-          <label>Dimensions <select id="physics-dimension"><option value="2">2D</option><option value="3">3D</option></select></label>
-          <label>Motion <select id="physics-motion"><option value="static">Static</option><option value="dynamic">Dynamic</option></select></label>
-          <label><input id="physics-trigger" type="checkbox"> Trigger (no impulse)</label>
-          <label>Half extents in world units (sphere uses X)</label>
-          <div class="vector-fields"><input id="physics-half-0" type="number" min="0.001" max="10000" step="0.1" value="0.5"><input id="physics-half-1" type="number" min="0.001" max="10000" step="0.1" value="0.5"><input id="physics-half-2" type="number" min="0.001" max="10000" step="0.1" value="0.5"></div>
-          <label>Mass <input id="physics-mass" type="number" min="0.001" max="1000000" step="0.1" value="1"></label>
-          <label>Layer bits <input id="physics-layer" type="number" min="1" max="4294967295" value="1"></label>
-          <label>Collision mask <input id="physics-mask" type="number" min="0" max="4294967295" value="4294967295"></label>
-          <button type="submit">Apply physics</button>
-        </fieldset></form>
-        <h2>C# gameplay</h2>
-        <p>Compile GameScript and attach it to the selected entity. Recompiling during Play resets runtime state.</p>
-        <label for="script-source">Game.cs</label><textarea id="script-source" rows="14" spellcheck="false" disabled></textarea>
-        <label for="script-mode">Build mode</label><select id="script-mode" disabled><option value="development">Development</option><option value="aot">Release AOT</option></select>
-        <div class="actions"><button id="script-compile" disabled>Compile &amp; attach</button><button id="script-cancel" disabled>Cancel compile</button></div>
-        <p id="script-status" role="status"></p><pre id="script-diagnostics" role="alert"></pre>
-        <h2>Connection</h2>
+</details><details id="create-3d-menu"><summary>Create 3D</summary><details id="menu-section-1"><summary>Primitives</summary><button class="create-primitive" data-dimension="3" data-shape="cube">Cube</button><button class="create-primitive" data-dimension="3" data-shape="sphere">Sphere</button><button class="create-primitive" data-dimension="3" data-shape="cylinder">Cylinder</button><button class="create-primitive" data-dimension="3" data-shape="capsule">Capsule</button><button class="create-primitive" data-dimension="3" data-shape="pyramid">Pyramid</button></details></details><details id="create-2d-menu"><summary>Create 2D</summary><details id="menu-section-2"><summary>Primitives</summary><button class="create-primitive" data-dimension="2" data-shape="square">Square</button><button class="create-primitive" data-dimension="2" data-shape="disc">Disc</button><button class="create-primitive" data-dimension="2" data-shape="capsule">Capsule</button><button class="create-primitive" data-dimension="2" data-shape="triangle">Triangle</button></details></details></div></details><div class="menu-actions"><div class="actions"><button id="scene-save" disabled>Save</button><button id="scene-undo" disabled>Undo</button><button id="scene-redo" disabled>Redo</button></div></div><details id="settings-menu"><summary>Ajustes</summary><div class="menu-popup"><details id="menu-section-3"><summary>HDR Rendering</summary><form id="render-form"><fieldset id="render-fields"><label>Quality<select id="render-tier"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label><label>Culling<select id="render-culling"><option value="cpu">CPU</option><option value="gpu">GPU</option><option value="none">NONE</option></select></label><label>Exposure<input id="render-exposure" type="number" step="any" required></label><label>Tone mapping<select id="render-tone"><option value="aces">Aces</option><option value="reinhard">Reinhard</option><option value="none">None</option></select></label><p>Environment RGB</p><div class="vector-inputs"><label>1<input id="render-environment-0" type="number" step="any" required></label><label>2<input id="render-environment-1" type="number" step="any" required></label><label>3<input id="render-environment-2" type="number" step="any" required></label></div><label>Shadow coverage<input id="render-shadow-size" type="number" step="any" required></label><label>Bloom<input id="render-bloom" type="number" step="any" required></label><label><input id="render-shadows" type="checkbox">Shadows</label><label><input id="render-fxaa" type="checkbox">Edge smoothing</label><button type="submit">Apply</button><button type="button" id="render-remove">Remove</button></fieldset></form></details>        <h2>Connection</h2>
         <dl id="capabilities"></dl>
         <h2>Walking skeleton</h2>
         <p>Demo counter: <output id="counter">0</output></p>
@@ -112,7 +39,73 @@
           <button id="increment">Increment</button>
           <button id="undo">Demo undo</button>
         </div>
-      </aside>
+</div></details></nav>
+      <span id="connection" class="status pending">Connecting…</span>
+    </header>
+    <main id="editor-workspace" class="workspace" aria-busy="false">
+      <aside class="panel hierarchy">
+<p id="project-status" role="status"></p><p id="project-error" role="alert"></p>        <h2>Hierarchy</h2>
+        <div class="actions"><button id="scene-add" disabled>Add entity</button><button id="scene-delete" disabled>Delete</button></div>
+        <p id="entity-empty" class="empty">No entities in this project.</p>
+        <div class="actions"><label>Parent<select id="entity-parent"></select></label><button id="entity-reparent">Set parent</button><button id="entity-unparent">Unparent</button></div><p class="hint">Alt + click: multi-select · drag onto an entity to parent</p><div id="entities" role="tree" aria-label="Scene entities"></div>
+<details class="proposals" id="menu-section-4"><summary>AI proposals</summary>          
+          <select id="proposal-list" aria-label="AI proposals"></select>
+          <button id="proposal-review" disabled>Review differences</button>
+          <div class="actions"><button id="proposal-preview" disabled>Run proposal</button><button id="proposal-continue" disabled>Return to source</button></div>
+          <div class="actions"><button id="proposal-accept" disabled>Accept reviewed changes</button><button id="proposal-reject" disabled>Reject proposal</button></div>
+          <p id="proposal-status" role="status"></p><pre id="proposal-diff"></pre>
+</details>      </aside>
+      <section class="center">
+        <nav class="tabs"><button id="scene-tab" class="active">Scene</button><button id="game-tab" disabled>Game</button><span id="play-status">Scene · authoring</span><button id="play-start" disabled>▶ Play</button><button id="play-stop" disabled>■ Stop</button></nav>
+        <div class="viewport">
+          <div id="preview-note" class="preview-note">Create or open a project to begin</div>
+          <canvas id="viewport" width="960" height="540" tabindex="0" aria-label="Axiom viewport"></canvas>
+          <svg id="scene-overlay" aria-label="Scene selection and transform gizmos"></svg>
+          <div id="scene-toolbar"><button id="tool-move" title="Move (W)">Move</button><button id="tool-rotate" title="Rotate (E)">Rotate</button><button id="tool-scale" title="Scale (R)">Scale</button><button id="tool-space">World</button><button id="tool-projection">Persp</button><span>F: frame · Alt + click: select · Alt + drag: orbit · right mouse + WASD/QE: fly</span></div>
+          <svg id="orientation-widget" viewBox="0 0 104 104" aria-label="World XYZ orientation"></svg>
+          <div id="gpu-state" class="viewport-message">Detecting WebGPU…</div>
+        </div>
+        <section class="console panel">
+          <nav class="tabs"><button id="project-tab" class="active">Project</button><button id="console-tab">Structured Console</button><button id="diagnostics-tab">Diagnostics</button></nav>
+          <div id="project-content"><div id="project-files" role="tree" aria-label="Project files"></div><pre id="project-file-preview"></pre></div><div id="console-content" hidden><div class="console-actions"><button id="clear">⌫ Clear console</button></div><ol id="logs"></ol></div>
+          <div id="diagnostics-content" hidden>
+            <div class="diagnostic-controls"><select id="diagnostic-kind" aria-label="Diagnostic question"><option>whyNotRendered</option><option>whyNotColliding</option><option>whyAssetNotLoaded</option><option>whyScriptNotRunning</option></select><select id="diagnostic-other" aria-label="Other collision entity"></select><button id="diagnostic-explain">Explain selected</button><label><input id="deep-trace" type="checkbox">Deep trace</label><input id="diagnostic-trace" placeholder="Optional retained frame trace ID" aria-label="Retained frame trace ID"></div>
+            <p id="causal-summary">Select an entity and ask a question.</p><ol id="causal-path"></ol>
+            <div class="diagnostic-columns"><div><h2>Decision graph evidence</h2><pre id="decision-graph">Deep trace retains 32 sampled frames for 30 seconds.</pre></div><div><h2>Frame diagnostics · contacts / triggers</h2><pre id="frame-trace">Waiting for first frame.</pre></div><div><h2>Command trace</h2><pre id="trace">No trace yet.</pre></div></div>
+          </div>
+        </section>
+      </section>
+      <aside class="panel inspector">
+        <h2>Inspector</h2><p id="selection-status"></p><div class="actions"><select id="component-choice" aria-label="Component to add"><option>Renderable</option><option>Material</option><option>Light</option><option>LOD</option><option>Collider</option><option>RigidBody</option><option>Script</option></select><button id="component-add">Add component</button></div><details id="renderable-component" hidden><summary>Renderable</summary><p id="renderable-status"></p><button id="renderable-remove">Remove</button></details>
+        <form id="entity-form">
+          <fieldset id="entity-fields" disabled>
+            <label for="entity-name">Entity name</label><input id="entity-name" required maxlength="128">
+            <p>Position</p><div class="vector-inputs"><label>X<input id="position-0" type="number" step="any" required></label><label>Y<input id="position-1" type="number" step="any" required></label><label>Z<input id="position-2" type="number" step="any" required></label></div>
+            <p>Rotation (degrees)</p><div class="vector-inputs"><label>X<input id="rotation-0" type="number" step="any" required></label><label>Y<input id="rotation-1" type="number" step="any" required></label><label>Z<input id="rotation-2" type="number" step="any" required></label></div><p>Scale</p><div class="vector-inputs"><label>X<input id="scale-0" type="number" step="any" required></label><label>Y<input id="scale-1" type="number" step="any" required></label><label>Z<input id="scale-2" type="number" step="any" required></label></div>
+            <button type="submit">Apply changes</button>
+          </fieldset>
+        </form>
+        <details id="material-component" hidden><summary>PBR Material</summary><form id="material-form"><fieldset id="material-fields"><p>Linear base color RGBA</p><div class="vector-inputs"><label>1<input id="material-color-0" type="number" step="any" required></label><label>2<input id="material-color-1" type="number" step="any" required></label><label>3<input id="material-color-2" type="number" step="any" required></label><label>4<input id="material-color-3" type="number" step="any" required></label></div><label>Metallic<input id="material-metallic" type="number" step="any" required></label><label>Roughness<input id="material-roughness" type="number" step="any" required></label><p>Emission RGB</p><div class="vector-inputs"><label>1<input id="material-emissive-0" type="number" step="any" required></label><label>2<input id="material-emissive-1" type="number" step="any" required></label><label>3<input id="material-emissive-2" type="number" step="any" required></label></div><label>Transparency<select id="material-alpha"><option value="opaque">Opaque</option><option value="mask">Mask</option><option value="blend">Blend</option></select></label><label>Alpha cutoff<input id="material-cutoff" type="number" step="any" required></label><label><input id="material-unlit" type="checkbox">Unlit</label><label><input id="material-shadow" type="checkbox">Cast shadow</label><button type="submit">Apply</button><button type="button" id="material-remove">Remove</button></fieldset></form></details><details id="light-component" hidden><summary>Light</summary><form id="light-form"><fieldset id="light-fields"><label>Kind<select id="light-kind"><option value="directional">Directional</option><option value="point">Point</option><option value="spot">Spot</option></select></label><p>Light RGB</p><div class="vector-inputs"><label>1<input id="light-color-0" type="number" step="any" required></label><label>2<input id="light-color-1" type="number" step="any" required></label><label>3<input id="light-color-2" type="number" step="any" required></label></div><label>Intensity<input id="light-intensity" type="number" step="any" required></label><label>Range<input id="light-range" type="number" step="any" required></label><p>Local light direction (rotated by entity)</p><div class="vector-inputs"><label>1<input id="light-direction-0" type="number" step="any" required></label><label>2<input id="light-direction-1" type="number" step="any" required></label><label>3<input id="light-direction-2" type="number" step="any" required></label></div><label>Inner cone °<input id="light-inner" type="number" step="any" required></label><label>Outer cone °<input id="light-outer" type="number" step="any" required></label><label><input id="light-shadow" type="checkbox">Request shadow</label><button type="submit">Apply</button><button type="button" id="light-remove">Remove</button></fieldset></form></details><details id="lod-component" hidden><summary>Level of detail</summary><form id="lod-form"><fieldset id="lod-fields"><label>Level 1 mesh<select id="lod-asset-0"></select></label><label>Switch distance<input id="lod-distance-0" type="number" step="any" required></label><label>Level 2 mesh<select id="lod-asset-1"></select></label><label>Switch distance<input id="lod-distance-1" type="number" step="any" required></label><label>Level 3 mesh<select id="lod-asset-2"></select></label><label>Switch distance<input id="lod-distance-2" type="number" step="any" required></label><button type="submit">Apply</button><button type="button" id="lod-remove">Remove</button></fieldset></form></details>
+        <details id="physics-component" hidden><summary>Collider / RigidBody</summary>
+        <form id="physics-form"><fieldset id="physics-fields">
+          <label>Collider <select id="physics-shape"><option value="none">None</option><option value="box">Oriented box</option><option value="sphere">Circle / sphere</option></select></label>
+          <label>Dimensions <select id="physics-dimension"><option value="2">2D</option><option value="3">3D</option></select></label>
+          <label>Motion <select id="physics-motion"><option value="static">Static</option><option value="dynamic">Dynamic</option></select></label>
+          <label><input id="physics-trigger" type="checkbox"> Trigger (no impulse)</label>
+          <label>Half extents in world units (sphere uses X)</label>
+          <div class="vector-fields"><input id="physics-half-0" type="number" min="0.001" max="10000" step="0.1" value="0.5"><input id="physics-half-1" type="number" min="0.001" max="10000" step="0.1" value="0.5"><input id="physics-half-2" type="number" min="0.001" max="10000" step="0.1" value="0.5"></div>
+          <label>Mass <input id="physics-mass" type="number" min="0.001" max="1000000" step="0.1" value="1"></label>
+          <label>Layer bits <input id="physics-layer" type="number" min="1" max="4294967295" value="1"></label>
+          <label>Collision mask <input id="physics-mask" type="number" min="0" max="4294967295" value="4294967295"></label>
+          <label><input id="physics-freeze" type="checkbox">Freeze rotation</label><button type="submit">Apply physics</button><button type="button" id="collider-remove">Remove Collider</button><button type="button" id="rigidbody-remove">Remove RigidBody</button>
+        </fieldset></form>
+        </details><details id="script-component" hidden><summary>C# Script</summary><button id="script-remove">Detach script</button>
+        <p>Compile GameScript and attach it to the selected entity. Recompiling during Play resets runtime state.</p>
+        <label for="script-source">Game.cs</label><textarea id="script-source" rows="14" spellcheck="false" disabled></textarea>
+        <label for="script-mode">Build mode</label><select id="script-mode" disabled><option value="development">Development</option><option value="aot">Release AOT</option></select>
+        <div class="actions"><button id="script-compile" disabled>Compile &amp; attach</button><button id="script-cancel" disabled>Cancel compile</button></div>
+        <p id="script-status" role="status"></p><pre id="script-diagnostics" role="alert"></pre>
+</details>      </aside>
     </main>
     <script type="module" src="/main.js"></script>
   </body>

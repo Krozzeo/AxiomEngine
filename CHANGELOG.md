@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.20 — M9.1 Editor and Angular Physics Corrections
+
+- Focus-based camera orbit and corrected Rotate direction.
+- Optional components/scripts, File/Settings menus and project-scoped explorer.
+- Expandable hierarchy, Alt multi-selection, world-preserving batch parenting and native drag/drop.
+- Separate Clear action, Ctrl+Z and nine imported 2D/3D primitives.
+- Live light previews and entity-rotated directional/spot lights.
+- Owned Rust/Wasm OBB contacts, inertia, angular impulses and quaternion integration.
+- Three editable demos; existing projects remain preserved.
+- 112 Node/33 Rust tests and all 18 CI jobs pass, including all browser/C# regressions.
+- M9.1: 100% (12/12); approximate weighted project progress remains 62%.
+
 ## 0.0.19 — M9 Renderer Production Foundation
 
 - Canonical PBR/light/LOD/HDR components, commands, Undo and Inspector forms.

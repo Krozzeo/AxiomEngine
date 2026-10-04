@@ -1,3 +1,4 @@
+import {worldScene,localTransform,worldTransforms,reparent} from '../scene/hierarchy.mjs';
 const sharedVertices=new WeakMap();
 function verticesFor(primitive){let value=sharedVertices.get(primitive);if(!value){value=new Float32Array(primitive.vertices);sharedVertices.set(primitive,value);}return value;}
 import {physicsHost} from "./physics-host.mjs";
@@ -32,8 +33,11 @@ export async function loadKernel(bytes) {
         nullProcessedMeshes: api.axiom_null_render(id, aspect)
       };
     },
-    compileScene(scene, assets) {
+    compileScene(scene, assets, preserveHierarchy=false) {
       if(disposed) throw new Error("AX_WASM_0003: disposed world");
+      const localScene=structuredClone(scene);
+      if(preserveHierarchy&&compiled){for(const e of compiled.localScene.entities)if(e.parentId&&localScene.entities.some(n=>n.id===e.id)&&localScene.entities.some(n=>n.id===e.parentId))localScene.entities=reparent(localScene.entities,[e.id],e.parentId);}
+      scene=worldScene(localScene);
       const draws=scenePrimitives(scene,assets);
       if(api.axiom_scene_clear(id)!==0) throw new Error("AX_WASM_0006: missing authoring ABI");
       for(const draw of draws) {
@@ -42,10 +46,10 @@ export async function loadKernel(bytes) {
         draw.handle=api.axiom_scene_add(id,uuid>>64n,uuid&0xffffffffffffffffn,draw.vertices.length/8,...t.position,...t.rotation,...t.scale);
         if(draw.handle===0xffffffff) throw new Error("AX_WASM_0007: invalid runtime instance");
       }
-      compiled={scene:structuredClone(scene),draws};
+      compiled={scene:structuredClone(scene),localScene,draws};
       return draws;
     },
-    configurePhysics(scene,preserve=false){physics.configure(scene,preserve);},
+    configurePhysics(scene,preserve=false){physics.configure(worldScene(scene),preserve);},
     physicsSnapshot(){return physics.snapshot();},
     stepPhysics(count){return physics.step(count);},
     raycast(args){return physics.raycast(args);},
@@ -58,7 +62,7 @@ export async function loadKernel(bytes) {
       physics.positions(positions);
       for(const [entityId,position]of positions) {
         for(const draw of compiled.draws.filter(d=>d.entityId===entityId))if(api.axiom_scene_position(id,draw.handle,...position)!==0)throw new Error("AX_WASM_0007: runtime position rejected");
-        compiled.scene.entities.find(e=>e.id===entityId).transform.position=[...position];
+        const local=compiled.localScene.entities.find(e=>e.id===entityId);local.transform=localTransform(compiled.localScene.entities,entityId,{...compiled.scene.entities.find(e=>e.id===entityId).transform,position:[...position]});compiled.scene.entities.find(e=>e.id===entityId).transform.position=[...position];
       }
     },
     stepScene(delta, trace, aspect) {
@@ -68,9 +72,18 @@ export async function loadKernel(bytes) {
       if(api.axiom_scene_camera(id,...c.position,...c.target,aspect,c.projection==="orthographic"?1:0,c.projection==="orthographic"?c.orthoHeight:c.fov)!==0) throw new Error("AX_WASM_0004: invalid camera");
       if(api.axiom_tick(id,delta,trace)!==0) throw new Error("AX_TIME_0001: invalid kernel tick");
       const physical=physics.step(api.axiom_fixed_steps(id));
-      if(physical)for(const body of physical.bodies){for(const draw of compiled.draws.filter(d=>d.entityId===body.id))api.axiom_scene_position(id,draw.handle,...body.position);compiled.scene.entities.find(e=>e.id===body.id).transform.position=[...body.position];}
+      if(physical){
+        const overrides=new Map(physical.bodies.filter(b=>compiled.localScene.entities.find(e=>e.id===b.id)?.rigidBody).map(b=>[b.id,b]));
+        const pending=new Set(compiled.localScene.entities.map(e=>e.id));
+        while(pending.size){let progress=false;for(const e of compiled.localScene.entities){if(!pending.has(e.id)||pending.has(e.parentId))continue;const b=overrides.get(e.id);if(b){e.transform=localTransform(compiled.localScene.entities,e.id,{...worldTransforms(compiled.localScene.entities).get(e.id),position:b.position,rotation:b.rotation});}pending.delete(e.id);progress=true;}if(!progress)throw Error('AX_SCENE_0001: Runtime hierarchy cycle');}
+        compiled.scene=worldScene(compiled.localScene);
+        const transforms=new Map(compiled.scene.entities.map(e=>[e.id,e.transform]));
+        for(const draw of compiled.draws){const t=transforms.get(draw.entityId);api.axiom_scene_position(id,draw.handle,...t.position);api.axiom_scene_rotation(id,draw.handle,...t.rotation);}
+        // Child static colliders follow their parent for the next fixed step.
+        physics.transforms(compiled.scene.entities.filter(e=>e.collider&&!e.rigidBody).map(e=>[e.id,e.transform]));
+      }
       const draws=compiled.draws.map(draw=>({handle:draw.handle,mvp:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,1)),model:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,0))}));
-      return {physics:physical,draws,frame:Number(api.axiom_frame(id)),trace:api.axiom_trace(id).toString(),fixedSteps:api.axiom_fixed_steps(id),nullProcessedMeshes:api.axiom_scene_null(id)};
+      return {transforms:compiled.scene.entities.map(e=>({id:e.id,transform:e.transform})),physics:physical,draws,frame:Number(api.axiom_frame(id)),trace:api.axiom_trace(id).toString(),fixedSteps:api.axiom_fixed_steps(id),nullProcessedMeshes:api.axiom_scene_null(id)};
     },
     dispose() {
       if (!disposed) api.axiom_destroy(id);
@@ -81,6 +94,7 @@ export async function loadKernel(bytes) {
 
 // Resource geometry comes from the importer; Rust owns runtime instances and matrices.
 export function scenePrimitives(scene, assets) {
+  scene=worldScene(scene);
   const draws=[];
   for(const entity of scene.entities) {
     if(!entity.renderable) continue;

@@ -1,3 +1,20 @@
+# M9.1 correction demos
+
+[Guía de interacción en español](M9_1_GUIDE.md). All 18 CI jobs and the three
+correction demo browser interactions pass; no manual acceptance tests remain.
+
+`npm.cmd run demo` now creates nine projects, preserving existing projects.
+The new **M9.1 Editor Workshop** contains all nine primitives, a parent with two
+children, an empty entity for Add Component and point/directional lights. Use
+Alt + click for multi-selection; drag selected rows onto a parent or use Set Parent.
+Right drag or Alt + drag orbits; right + WASD/QE flies; F frames. Ctrl+Z undoes.
+File contains creation/import/camera controls; Settings contains HDR globals.
+
+**M9.1 Angular Contacts 2D / 3D** compare an offset falling box with a centered
+box. Press Play: the offset contact spins and tips, while the centered contact
+rests. Diagnostics contains point/normal/angularVelocity/rotation. Stop restores
+the scene. Freeze rotation is available after adding a RigidBody.
+
 # Demo projects
 
 M9 adds a PBR Gallery and Instancing/LOD Lab; see [M9 guide](M9_GUIDE.md).
@@ -17,7 +34,7 @@ npm.cmd run dev
 
 Requirements: the normal Node/Rust toolchain plus .NET 10 SDK and wasm-tools
 (`dotnet workload install wasm-tools`). Demo creation compiles the 2D C# controller.
-Each invocation now creates six new projects with fresh IDs, preserving existing
+Each invocation now creates nine new projects with fresh IDs, preserving existing
 projects. Keep the entire `.axiom/projects` directory when moving projects.
 
 The M7.1 generator saves both complete scenes before compiling C#. If compilation

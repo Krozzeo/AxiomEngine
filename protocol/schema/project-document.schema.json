@@ -209,6 +209,19 @@
                     "type": "number",
                     "minimum": -100,
                     "maximum": 100
+                  },
+                  "angularVelocity": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": -10000,
+                      "maximum": 10000
+                    }
+                  },
+                  "freezeRotation": {
+                    "type": "boolean"
                   }
                 }
               },
@@ -372,6 +385,10 @@
                 "required": [
                   "levels"
                 ]
+              },
+              "parentId": {
+                "type": "string",
+                "pattern": "^entity://[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               }
             }
           }

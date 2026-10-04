@@ -1,3 +1,4 @@
+import {worldTransforms} from '../../engine/scene/hierarchy.mjs';
 import { readFileSync } from "node:fs";
 
 const schema = JSON.parse(readFileSync(new URL("../schema/project-document.schema.json", import.meta.url)));
@@ -49,6 +50,7 @@ export function validateProject(document) {
   validate(document, schema, "project");
   const ids = document.scene.entities.map(entity => entity.id);
   if (new Set(ids).size !== ids.length) throw projectError("AX_PROJECT_0002", "Duplicate entity ID");
+  try {worldTransforms(document.scene.entities);}catch(error){throw projectError("AX_PROJECT_0002",error.message);}
   const script=document.scene.script;
   if(script && (new Set(script.attachments).size!==script.attachments.length || script.attachments.some(id=>!ids.includes(id))))throw projectError("AX_PROJECT_0002","Invalid script attachments");
   const assets=document.scene.assets??[];

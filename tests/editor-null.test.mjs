@@ -10,6 +10,7 @@ import { loadKernel } from "../engine/wasm/host.mjs";
 import {DecisionEvidence} from '../apps/editor/src/causal-diagnostics.mjs';
 import {cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry} from '../apps/editor/src/view-math.mjs';
 
+import {worldScene} from '../engine/scene/hierarchy.mjs';
 import {renderPlan} from '../engine/renderer/render-plan.mjs';
 import {createProductionGPU} from '../engine/renderer/production-gpu.mjs';
 const bytes = await readFile(new URL("../target/wasm32-unknown-unknown/release/axiom_wasm.wasm", import.meta.url));
@@ -24,14 +25,14 @@ for (const mode of ["forced", "unavailable"]) {
     const pagehide=[];
     let replacedUrl;
     function element() {
-      return { width: 960, height: 540, textContent: "", append() {}, prepend() {}, addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
+      return { width: 960, height: 540, textContent: "", append() {}, prepend() {}, setAttribute() {},addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
     }
     const context = vm.createContext({
-      renderPlan,createProductionGPU,FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor,DecisionEvidence,cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry,mountSceneTools:()=>({select(){},dispose(){}}), URLSearchParams, crypto: webcrypto, performance, structuredClone,
+      worldScene,renderPlan,createProductionGPU,FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor,DecisionEvidence,cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry,mountSceneTools:()=>({select(){},dispose(){}}), URLSearchParams, crypto: webcrypto, performance, structuredClone,
       location: { hash: "#token=test", pathname: "/", search: mode === "forced" ? "?renderer=null" : "" },
       history: { replaceState(_state, _title, url) { replacedUrl = url; } },
       navigator: mode === "forced" ? { gpu: { requestAdapter() { throw new Error("forced Null must bypass GPU"); } } } : {},
-      document: { createElement: element, querySelector(selector) {
+      document: { addEventListener(){},querySelectorAll:()=>[],createElement: element, querySelector(selector) {
         if (!elements.has(selector)) elements.set(selector, element());
         return elements.get(selector);
       } },

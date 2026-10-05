@@ -13,7 +13,7 @@ async function state(){const r=await fetch(daemon.origin+'/v1/commands',{method:
 try {
  browser=await chromium.launch({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
  page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(180000);
- await page.goto(daemon.editorUrl);await (await control(page,'#project-name')).fill('M4 C# gameplay');await (await control(page,'#project-new')).click();
+ await page.goto(daemon.editorUrl);await (await control(page,'#project-name')).fill('M4 C# gameplay');await (await control(page,'#project-dimension')).selectOption('empty');await (await control(page,'#project-new')).click();
  await (await control(page,'#asset-file')).setInputFiles({name:'player.png',mimeType:'image/png',buffer:imageFixture()});await (await control(page,'#asset-import')).click();
  await page.waitForFunction(()=>document.querySelector('#asset-list').options.length===1);await (await control(page,'#asset-place')).click();
  await page.waitForFunction(()=>document.querySelectorAll('#entities .entity').length===1);

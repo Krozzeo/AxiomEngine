@@ -14,3 +14,8 @@ Local real-Wasm physics replay and M14/Null integration pass. Full new browser,
 C# compilation and 25-job CI acceptance are pending. Documentation/source ZIP/PR
 closure will follow those gates; no partial user release. Progress stays 80%
 (83/104), M15 not complete. M16 not started.
+
+Additional requested scope: entity Camera + Audio Listener, Inspector camera
+settings, removal of File Game Camera, direct Create Objects, explicit starter
+lights and removal of fixed legacy sunlight. ADR-0030 records compatibility.
+174 local tests now pass; real browser/GPU, complete CI and delivery remain pending.

@@ -1,3 +1,4 @@
+import {activeGameCamera} from '../../engine/scene/camera.mjs';
 import {audioDefaults} from '../../engine/audio/plan.mjs';
 import {worldTransforms} from '../../engine/scene/hierarchy.mjs';
 import { readFileSync } from "node:fs";
@@ -38,6 +39,8 @@ function validate(value, rule, path) {
 }
 
 export function validateProject(document) {
+  if((document.scene?.entities??[]).filter(e=>e.camera?.active).length>1)throw projectError('AX_PROJECT_0002','Only one Camera can be active');
+
   const inspect = (value, depth = 0) => {
     if (depth > 32) throw projectError("AX_PROJECT_0002", "Project nesting exceeds 32 levels");
     if (typeof value === "number" && !Number.isFinite(value)) throw projectError("AX_PROJECT_0002", "Non-finite JSON number");
@@ -85,8 +88,8 @@ export function validateProject(document) {
   if(!twoD&&document.scene.entities.some(e=>components.some(k=>e[k])))throw projectError('AX_PROJECT_0002','2D components require 2D scene settings');
   if(twoD){
     if(document.scene.rendering||document.scene.entities.some(e=>e.renderable?.kind==='mesh'))throw projectError('AX_PROJECT_0002','2D mode does not mix mesh/HDR rendering');
-    if(document.scene.camera?.projection!=='orthographic')throw projectError('AX_PROJECT_0002','2D Game camera must be orthographic');
-    if(twoD.pixelPerfect){const c=document.scene.camera;if(c.position[0]!==c.target[0]||c.position[1]!==c.target[1]||c.position[2]<=c.target[2])throw projectError('AX_PROJECT_0002','Pixel-perfect Game camera must face the XY plane from positive Z');}
+    const gameCamera=activeGameCamera(document.scene);if(gameCamera&&gameCamera.projection!=='orthographic')throw projectError('AX_PROJECT_0002','2D Game camera must be orthographic');
+    if(twoD.pixelPerfect&&gameCamera){const c=gameCamera;if(Math.abs(c.position[0]-c.target[0])>1e-6||Math.abs(c.position[1]-c.target[1])>1e-6||c.position[2]<=c.target[2])throw projectError('AX_PROJECT_0002','Pixel-perfect Game camera must face the XY plane from positive Z');}
     const entities=document.scene.entities;
     if(entities.filter(e=>e.light2D).length>16||entities.filter(e=>e.particles2D).length>32||entities.filter(e=>e.ui2D).length>128||entities.reduce((n,e)=>n+(e.tilemap?.cells.length??0),0)>4096||entities.reduce((n,e)=>n+(e.particles2D?.capacity??0),0)>2048)throw projectError('AX_PROJECT_0002','2D component budget exceeded');
     if(entities.reduce((n,e)=>n+Number(!!e.renderable)+Number(!!e.tilemap)+Number(!!e.particles2D)+Number(!!e.ui2D),0)>1024)throw projectError('AX_PROJECT_0002','2D batch admission budget exceeded');

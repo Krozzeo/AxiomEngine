@@ -64,6 +64,12 @@
           "expectedSceneRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "dimension": {
+            "enum": [
+              2,
+              3
+            ]
           }
         },
         "required": [
@@ -775,7 +781,8 @@
               "UI2D",
               "Animator",
               "AudioSource",
-              "AudioListener"
+              "AudioListener",
+              "Camera"
             ]
           },
           "workspaceId": {
@@ -1047,7 +1054,8 @@
               "UI2D",
               "Animator",
               "AudioSource",
-              "AudioListener"
+              "AudioListener",
+              "Camera"
             ]
           },
           "workspaceId": {
@@ -3410,7 +3418,8 @@
               "UI Panel",
               "UI Button",
               "2D Light",
-              "Particles 2D"
+              "Particles 2D",
+              "Camera"
             ]
           }
         },
@@ -3629,6 +3638,44 @@
             "maxLength": 240000
           }
         },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.camera.set",
+      "description": "Set the active entity Camera component with revision checks, hierarchy transforms and Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "$ref": "project-document.schema.json#/properties/scene/properties/entities/items/properties/camera"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
+        ],
         "additionalProperties": false
       }
     }

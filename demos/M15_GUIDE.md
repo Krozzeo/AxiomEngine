@@ -28,3 +28,17 @@ controls. Config → Project Master Document loads UTF-8 .md/.txt/.json up to 32
 Config AI assistant saves project instructions; assisted creation builds a local
 editable brief template. Talk options explain external chat and context export;
 they do not pretend the engine already has an integrated model chat.
+
+Each M15 demo now contains an editable Camera with Audio Listener and an explicit
+Directional Light. Select Camera in Hierarchy: Transform changes position/angle;
+Camera below Transform changes projection, FOV, orthographic height and active state.
+In Scene, its cyan marker is selectable and Move/Rotate gizmos work. Game shows
+that camera even while stopped; detach Game to view it beside Scene. Removing or
+deactivating the only active camera leaves Game empty; Undo restores it.
+
+File → Projects → Template creates 3D (Cube, Camera, Directional Light) or 2D
+(Square sprite, orthographic Camera, 2D Light). Both start saved. Try rotating the
+3D light to see its direction change. There is no fixed global sunlight. HDR
+Environment RGB remains an explicit Config setting; starters use zero illumination.
+2D pixel-perfect reference height controls effective zoom; disable pixel perfect
+in Config → 2D Scene before freely rotating a 2D camera.

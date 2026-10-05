@@ -909,6 +909,37 @@
                     "type": "boolean"
                   }
                 }
+              },
+              "camera": {
+                "type": "object",
+                "required": [
+                  "active",
+                  "projection",
+                  "fov",
+                  "orthoHeight"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "projection": {
+                    "enum": [
+                      "perspective",
+                      "orthographic"
+                    ]
+                  },
+                  "fov": {
+                    "type": "number",
+                    "minimum": 5,
+                    "maximum": 150
+                  },
+                  "orthoHeight": {
+                    "type": "number",
+                    "minimum": 0.05,
+                    "maximum": 10000
+                  }
+                }
               }
             }
           }
@@ -1216,6 +1247,11 @@
               }
             }
           }
+        },
+        "cameraMode": {
+          "enum": [
+            "entities"
+          ]
         }
       }
     },

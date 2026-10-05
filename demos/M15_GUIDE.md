@@ -15,7 +15,7 @@ must match. Authored scene edits invalidate the recording rather than replay sta
 state. Cancel releases runtime/input without publishing a partial new recording.
 
 Collision Diagnostic Replay records 120 real physics frames as a block falls onto
-a floor. Animator Checkpoints records 120 frames of the actual Idle animation.
+a floor. Animation Checkpoints records 120 frames of the actual Idle animation.
 Use ranges 60–120 to compare repeatability. The diagnostic question/entity selectors and public replay.control re-execute
 causal investigation. Choose whyNotColliding and the block/floor pair to see the
 contact explanation.

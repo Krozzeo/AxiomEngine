@@ -1,6 +1,6 @@
 # ADR-0030 — Entity cameras and explicit lighting
 
-Accepted contract, M15 (0.0.28); browser acceptance is tracked in the milestone report.
+Accepted contract, M15 (0.0.28); browser acceptance passed; see the milestone report.
 
 Camera is an optional entity component: active, projection, vertical FOV and
 orthographic height. Position and rotation come from the hierarchical Transform;

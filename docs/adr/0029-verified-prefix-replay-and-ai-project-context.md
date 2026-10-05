@@ -1,6 +1,6 @@
 # ADR-0029 — Verified prefix replay and AI project context
 
-Status: accepted implementation contract; execution acceptance pending M15 CI.
+Status: accepted; execution acceptance verified in M15_CURRENT_REPORT.md.
 
 M15 records bounded controlled input plans and seed against an exact authored
 project/workspace revision, asset build keys and C# bundle identity. Checkpoints

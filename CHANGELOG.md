@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.28 — M15 — verified replay and entity cameras
+
+- Bounded controlled input plans, ReplayRandom seeds, checkpoints and verified range replay.
+- Fresh diagnostic provenance, scoped recording import/export and three editable demos.
+- Six AI menu options, external MCP context, saved instructions and master-document loading.
+- Camera entities with Audio Listener, Inspector projection/pose and stopped/parallel Game.
+- Explicitly lit 2D/3D starter templates, direct Object menus and production 2D sprite primitives.
+- Removed fixed legacy sunlight; preserved explicit HDR environment configuration.
+
 ## 0.0.27 — M14 — automated game testing and editor workspace
 
 - Public isolated game-test controls, exact stepping/input and bounded assertions.

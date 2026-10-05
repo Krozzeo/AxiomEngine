@@ -59,10 +59,10 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let view='scene',editorCamera=null,transformPreview=null,geometry=[],lastPacket=null,lastTraceId=null,lineage=null;
   const decisions=new DecisionEvidence(),assetFailures=new Map();
   const keys=new Set();
-  const keydown=event=>{if(playing&&!twoDPaused&&(event.axiomView??event.target?.dataset?.parallelView??view)==='game'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
+  const keydown=event=>{if(!testing&&playing&&!twoDPaused&&(event.axiomView??event.target?.dataset?.parallelView??view)==='game'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
   const keyup=event=>keys.delete(event.code),blur=()=>keys.clear();
   globalThis.addEventListener?.("keydown",keydown);globalThis.addEventListener?.("keyup",keyup);globalThis.addEventListener?.("blur",blur);
-  const uiPointer=event=>{if(!playing||view!=='game'||!lastTwoDPlan)return;const rect=canvas.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-rect.left)*canvas.width/rect.width,(event.clientY-rect.top)*canvas.height/rect.height,lastTwoDPlan.pixel.viewport);if(!hit)return;event.preventDefault();event.stopImmediatePropagation();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;};
+  const uiPointer=event=>{if(testing||!playing||view!=='game'||!lastTwoDPlan)return;const rect=canvas.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-rect.left)*canvas.width/rect.width,(event.clientY-rect.top)*canvas.height/rect.height,lastTwoDPlan.pixel.viewport);if(!hit)return;event.preventDefault();event.stopImmediatePropagation();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;};
   canvas.addEventListener?.('pointerdown',uiPointer,{capture:true});
   let parallel=null;let textures=new Map(), assets=new Map(), assetKeys=new Map();
   kernel.compileScene({entities:[]},new Map());
@@ -97,7 +97,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   }
   if(!device) stateElement.textContent=`Null Renderer · ${forceNull?"selected explicitly":"WebGPU unavailable"}`;
   gpuProfiler=createGpuProfiler(device,(sequence,ms,scopes,ticket)=>{if(profiler.attachGpuTiming(sequence,ms,scopes,ticket))gpuSample={frameSequence:sequence,milliseconds:ms};},(sequence,reason,ticket)=>profiler.gpuUnavailable(sequence,reason,ticket));
-  parallel=parallelView({device,gpu,pipeline,textureFor,getTexture:url=>textures.get(url??'white'),reportError,onPointer:(event,target,plan)=>{if(!playing||target?.view!=='game'||!plan)return;const c=target.canvas,r=c.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-r.left)*c.width/r.width,(event.clientY-r.top)*c.height/r.height,plan.pixel.viewport);if(hit){event.preventDefault();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;}}});
+  parallel=parallelView({device,gpu,pipeline,textureFor,getTexture:url=>textures.get(url??'white'),reportError,onPointer:(event,target,plan)=>{if(testing||!playing||target?.view!=='game'||!plan)return;const c=target.canvas,r=c.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-r.left)*c.width/r.width,(event.clientY-r.top)*c.height/r.height,plan.pixel.viewport);if(hit){event.preventDefault();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;}}});
   async function textureFor(url) {
     const key=url??"white";
     if(textures.has(key))return textures.get(key);
@@ -184,7 +184,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
       skinGPU?.reset();kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
       workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=nextScriptFault;
-      assets=localAssets;await parallel.prepare(scene,assets,draws);playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;await audio.configure(scene,localAssets,{playing});if(ticket!==generation||disposed)return;if(playing)for(const op of startAudioControls)audio.control(op);previousTime=null;trace=0n;gpuSample=null;
+      assets=localAssets;await parallel.prepare(scene,assets,draws);playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;await audio.configure(scene,localAssets,{playing:playing&&!internalTest});if(ticket!==generation||disposed)return;if(playing&&!internalTest)for(const op of startAudioControls)audio.control(op);previousTime=null;trace=0n;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set([...(scene.twoD?[...localAssets.values()].filter(a=>a.kind==='sprite').map(a=>({texture:a.dataUrl})):[]),...draws,...[...localAssets.values()].flatMap(a=>a.primitives??[])].map(draw=>draw.texture??"white"));
       if(scene.twoD)used.add("white");
@@ -225,7 +225,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           }else kernel.setPositions(result.positions);
           kernel.setVelocities(result.velocities);
           for(const op of result.animations)kernel.animationControl(op);
-          runtimeScene=result.scene;audio.reconcile(runtimeScene);for(const op of result.audio)audio.control(op);spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
+          runtimeScene=result.scene;audio.reconcile(runtimeScene);if(!testing)for(const op of result.audio)audio.control(op);spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
           profiler.scope(diagnostic,'script.apply',applyStart,performance.now(),result.changedTopology?'wall':'main');
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
         finally{scriptFlight=null;}

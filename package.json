@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -42,6 +42,7 @@
     "demo:m12": "node demos/create-m12-projects.mjs",
     "test:browser:m12": "node tests/browser/m12.mjs",
     "demo:m13": "node demos/create-m13-projects.mjs",
+    "test:browser:m13-1": "node tests/browser/m13-1.mjs",
     "test:browser:m13": "node tests/browser/m13.mjs"
   },
   "dependencies": {

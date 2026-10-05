@@ -1,9 +1,18 @@
 const finite=v=>Number.isFinite(v)&&v>=0;
 const median=values=>{const s=[...values].sort((a,b)=>a-b),n=s.length;return n?n%2?s[n>>1]:(s[n/2-1]+s[n/2])/2:null;};
 export class FrameProfiler {
- #capacity;#frames=[];#records=[];#nextSequence=1;#dropped=0;#lease={};#paused=false;
+ #capacity;#frames=[];#records=[];#nextSequence=1;#dropped=0;#lease={};#paused=false;#captures=[];
  constructor(capacity=120){if(!Number.isInteger(capacity)||capacity<1||capacity>240)throw new RangeError('capacity must be between 1 and 240');this.#capacity=capacity;}
- reset(lease={}){this.#frames=[];this.#records=[];this.#dropped=0;this.#lease=structuredClone(lease);}
+ reset(lease={}){if(this.#records.length){this.#captures.push(this.capture());if(this.#captures.length>8)this.#captures.shift();}this.#frames=[];this.#records=[];this.#dropped=0;this.#lease=structuredClone(lease);}
+ capture(){return {format:'axiom-profiler-capture',version:1,id:crypto.randomUUID(),createdAt:new Date().toISOString(),lease:structuredClone(this.#lease),capacity:this.#capacity,dropped:this.#dropped,records:structuredClone(this.#records)};}
+ captures(){return structuredClone(this.#captures);}
+ static fromCapture(capture){
+  if(!capture||capture.format!=='axiom-profiler-capture'||capture.version!==1||typeof capture.id!=='string'||capture.id.length>128||!capture.lease||typeof capture.lease!=='object'||!Array.isArray(capture.records)||capture.records.length>240||JSON.stringify(capture).length>1000000)throw Error('Invalid profiler capture');
+  const result=new FrameProfiler(capture.capacity);result.#lease=structuredClone(capture.lease);result.#dropped=capture.dropped;result.#paused=true;
+  let previous=0;
+  for(const record of capture.records){if(!Number.isSafeInteger(record.frameSequence)||record.frameSequence<=previous||!finite(record.elapsedMs)||!finite(record.measuredMainMs)||record.gpuTimeMs!==null&&!finite(record.gpuTimeMs)||!Array.isArray(record.scopes)||record.scopes.length>24||!Array.isArray(record.gpuScopes)||record.gpuScopes.length>16||[...record.scopes,...record.gpuScopes].some(s=>typeof s.name!=='string'||!finite(s.milliseconds))||['projectId','workspaceId','sceneRevision','generation'].some(k=>(record[k]??null)!==(capture.lease[k]??null)))throw Error('Invalid profiler capture records');previous=record.frameSequence;}
+  result.#records=structuredClone(capture.records);return result;
+ }
  pause(value){this.#paused=!!value;}
  begin(cpuStartMs,traceId=crypto.randomUUID(),context={}){if(!finite(cpuStartMs))throw RangeError('Invalid frame start');return {frameSequence:this.#nextSequence++,traceId,cpuStartMs,cpuTimeMs:null,gpuTimeMs:null,stages:['frame.begin'],scopes:[],profileContext:{...this.#lease,...context}};}
  scope(frame,name,start,end,kind='main'){if(!/^[a-z][a-z0-9.-]{0,63}$/.test(name)||!finite(start)||!finite(end)||end<start||!['main','worker','wall'].includes(kind)||frame.scopes.length>=24)throw RangeError('Invalid profiler scope');frame.scopes.push({name,kind,milliseconds:end-start});}

@@ -41,8 +41,8 @@
       "mutates": true,
       "inputSchema": {
         "type": "object",
-        "additionalProperties": false,
-        "properties": {}
+        "properties": {},
+        "additionalProperties": false
       },
       "route": "workspace",
       "mcp": false
@@ -3709,6 +3709,74 @@
                 "type": "number",
                 "minimum": 120,
                 "maximum": 650
+              },
+              "docks": {
+                "type": "object",
+                "required": [
+                  "hierarchy",
+                  "inspector",
+                  "project",
+                  "console",
+                  "diagnostics",
+                  "profiler"
+                ],
+                "properties": {
+                  "hierarchy": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom"
+                    ]
+                  },
+                  "inspector": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom"
+                    ]
+                  },
+                  "project": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom"
+                    ]
+                  },
+                  "console": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom"
+                    ]
+                  },
+                  "diagnostics": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom"
+                    ]
+                  },
+                  "profiler": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom"
+                    ]
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "additionalProperties": false

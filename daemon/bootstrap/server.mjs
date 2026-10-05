@@ -1,3 +1,4 @@
+import {openEditor} from './open-editor.mjs';
 import {ProposalManager} from './workspaces/manager.mjs';
 import {tools,toolMap,validate,bounded} from './agent/contracts.mjs';
 import {AgentService,compactResult} from './agent/service.mjs';
@@ -225,4 +226,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const instance = await startServer({ port });
   console.log(`Axiom daemon bootstrap listening at ${instance.origin}`);
   console.log(`Open editor: ${instance.editorUrl}`);
+  if(process.env.AXIOM_OPEN_BROWSER!=='0'&&!process.env.CI&&!process.argv.includes('--no-open')) {
+    void openEditor(instance.editorUrl).then(opened=>{if(!opened)console.log('Automatic browser opening unavailable; use the editor URL above.');});
+  }
 }

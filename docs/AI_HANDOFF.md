@@ -1,15 +1,17 @@
 # Axiom Engine — context-free AI handoff
 
-M14 (0.0.27) is complete, 100%. Project progress is approximately 80% (83/104 roadmap weight points).
-Isolated game tests support controlled input, exact fixed frames, runtime/collision/
-animation/pixel assertions, saved human suites and bounded public agent controls.
-Scene and Game can render simultaneously in separate windows through one runtime.
-Dock tabs persist order and closure; menus, quick examples and confirmed Save/Ctrl+S
-are complete. Three editable demos include passing, deliberately failing and visual suites.
-169 Node tests, 39 Rust tests, 13 new browser criteria and all 24 CI jobs pass.
-See docs/reports/M14_CURRENT_REPORT.md, M14_GAME_TESTING.md and ADR-0028.
-PR #17 is ready for review, stacked on unmerged #16; do not merge automatically.
-Next: M15 replay and diagnostic replay, planned but not implemented.
+M15 (0.0.28) is complete, 100%. Project progress is approximately 84% (87/104 roadmap weight points).
+Controlled input-plan recording, seeded C#, verified checkpoints/ranges and fresh
+causal diagnostic replay share one isolated runtime. Three editable replay demos
+include Camera entities with Audio Listeners and explicit lights. Camera projection
+and pose live in Inspector/Transform, with stopped and parallel Game views.
+New 2D/3D templates contain camera, light and object; fixed legacy sunlight is gone.
+The six AI menu options and Config Project Master Document support external MCP
+setup, project context and proposal review; integrated provider chat remains future work.
+183 Node tests, 39 Rust tests, 14 new browser criteria and all 25 CI jobs pass.
+See docs/reports/M15_CURRENT_REPORT.md, M15_REPLAY.md and ADR-0029/0030.
+PR #18 is ready/open, stacked on unmerged #17; keep milestone PRs unmerged.
+Next: M16 Performance & Low-End Pass, planned and not started.
 
 Historical completed baseline:
 
@@ -233,15 +235,15 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Implement M15 per M15_PLAN.md and master section 134. M14 is complete; PR #17
-is ready, stacked on unmerged #16. Read M14_GAME_TESTING.md, ADR-0028,
-M14_CURRENT_REPORT.md, M13_PROFILER.md and M7/M11/M12 contracts first.
-Inventory checkpoint serializability, random sources, worker/runtime ownership and
-input recording before adding replay. Preserve bounded public tools, cancellation,
-authored MAIN isolation, simultaneous cameras, retained profiler captures and
-2D/legacy/HDR/Null. Do not claim GPU/audio/wall-clock determinism.
-Include editable demos, complete browser/CI regressions and synchronized closure.
-No user-only M14 test remains. All stacked milestone PRs remain unmerged.
+Implement M16 per M16_PLAN.md and master section 135. M15 is complete; PR #18
+is ready/open, stacked on unmerged #17. Read M15_REPLAY.md, M15_CURRENT_REPORT.md,
+ADR-0029/0030 and the retained M14/profiler/rendering/physics/animation/audio contracts.
+Measure memory, render scaling, loading/shader/compiler costs and editor UI before
+optimizing Tier 0. Preserve Tier 2/3, public bounded controls, replay determinism,
+authored MAIN isolation, simultaneous cameras and explicit lighting. Do not claim
+physical-GPU or audible performance from software-GPU CI.
+
+Historical PR stack:
 
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 

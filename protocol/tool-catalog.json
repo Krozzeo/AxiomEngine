@@ -65,6 +65,12 @@
           "expectedSceneRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "dimension": {
+            "enum": [
+              2,
+              3
+            ]
           }
         },
         "required": [
@@ -1020,6 +1026,37 @@
                         }
                       },
                       "additionalProperties": false
+                    },
+                    "camera": {
+                      "type": "object",
+                      "required": [
+                        "active",
+                        "projection",
+                        "fov",
+                        "orthoHeight"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "projection": {
+                          "enum": [
+                            "perspective",
+                            "orthographic"
+                          ]
+                        },
+                        "fov": {
+                          "type": "number",
+                          "minimum": 5,
+                          "maximum": 150
+                        },
+                        "orthoHeight": {
+                          "type": "number",
+                          "minimum": 0.05,
+                          "maximum": 10000
+                        }
+                      }
                     }
                   },
                   "additionalProperties": false
@@ -1336,6 +1373,11 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "cameraMode": {
+                "enum": [
+                  "entities"
+                ]
               }
             },
             "additionalProperties": false
@@ -2083,7 +2125,8 @@
               "UI2D",
               "Animator",
               "AudioSource",
-              "AudioListener"
+              "AudioListener",
+              "Camera"
             ]
           },
           "workspaceId": {
@@ -2355,7 +2398,8 @@
               "UI2D",
               "Animator",
               "AudioSource",
-              "AudioListener"
+              "AudioListener",
+              "Camera"
             ]
           },
           "workspaceId": {
@@ -3964,6 +4008,29 @@
                     }
                   }
                 }
+              },
+              "masterDocument": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "text"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "text": {
+                    "type": "string",
+                    "maxLength": 32768
+                  }
+                }
+              },
+              "assistantInstructions": {
+                "type": "string",
+                "maxLength": 4000
               }
             },
             "additionalProperties": false
@@ -5619,7 +5686,8 @@
               "UI Panel",
               "UI Button",
               "2D Light",
-              "Particles 2D"
+              "Particles 2D",
+              "Camera"
             ]
           }
         },
@@ -5627,6 +5695,282 @@
           "id",
           "expectedSceneRevision",
           "example"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "replay.control",
+      "description": "Record bounded fixed-frame inputs and verified checkpoints, replay a range with diagnostics, query, export or cancel without authored MAIN mutation.",
+      "mutates": false,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "action": {
+            "enum": [
+              "record",
+              "replay",
+              "query",
+              "cancel",
+              "clear",
+              "export",
+              "import"
+            ]
+          },
+          "suite": {
+            "type": "object",
+            "required": [
+              "name",
+              "steps"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "steps": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "frames"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "frames": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 120
+                    },
+                    "keys": {
+                      "type": "array",
+                      "maxItems": 16,
+                      "items": {
+                        "type": "string",
+                        "pattern": "^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$"
+                      }
+                    },
+                    "assertions": {
+                      "type": "array",
+                      "maxItems": 16,
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "kind"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "entityCount",
+                              "position",
+                              "rotation",
+                              "collision",
+                              "pixel",
+                              "animation"
+                            ]
+                          },
+                          "entityId": {
+                            "type": "string",
+                            "pattern": "^entity://[0-9a-f-]{36}$"
+                          },
+                          "otherId": {
+                            "type": "string",
+                            "pattern": "^entity://[0-9a-f-]{36}$"
+                          },
+                          "count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1024
+                          },
+                          "value": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 4,
+                            "items": {
+                              "type": "number",
+                              "minimum": -1000000,
+                              "maximum": 1000000
+                            }
+                          },
+                          "tolerance": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 255
+                          },
+                          "expected": {
+                            "type": "boolean"
+                          },
+                          "trigger": {
+                            "type": "boolean"
+                          },
+                          "x": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 959
+                          },
+                          "y": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 539
+                          },
+                          "rgba": {
+                            "type": "array",
+                            "minItems": 4,
+                            "maxItems": 4,
+                            "items": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 255
+                            }
+                          },
+                          "state": {
+                            "type": "string",
+                            "maxLength": 128
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          "from": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 600
+          },
+          "to": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 600
+          },
+          "diagnostic": {
+            "type": "object",
+            "required": [
+              "kind",
+              "entityId"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "whyNotRendered",
+                  "whyNotColliding",
+                  "whyAssetNotLoaded",
+                  "whyScriptNotRunning"
+                ]
+              },
+              "entityId": {
+                "type": "string",
+                "pattern": "^entity://[0-9a-f-]{36}$"
+              },
+              "otherId": {
+                "type": "string",
+                "pattern": "^entity://[0-9a-f-]{36}$"
+              }
+            }
+          },
+          "recordingJson": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240000
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.camera.set",
+      "description": "Set the active entity Camera component with revision checks, hierarchy transforms and Undo.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "active",
+              "projection",
+              "fov",
+              "orthoHeight"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "active": {
+                "type": "boolean"
+              },
+              "projection": {
+                "enum": [
+                  "perspective",
+                  "orthographic"
+                ]
+              },
+              "fov": {
+                "type": "number",
+                "minimum": 5,
+                "maximum": 150
+              },
+              "orthoHeight": {
+                "type": "number",
+                "minimum": 0.05,
+                "maximum": 10000
+              }
+            }
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "value"
         ],
         "additionalProperties": false
       }

@@ -1,0 +1,834 @@
+{
+  "criteria": [
+    "AI menu contains the six requested options in order with truthful MCP/chat status",
+    "Config master document upload persists through project settings and reload",
+    "Actual C# ReplayRandom seed and 240 controlled inputs produce bounded state checkpoints",
+    "C# private lifecycle state reconstructs and verifies range checkpoints; diagnostics retain source recording identity; authored scene unchanged",
+    "Export/import roundtrip reproduces a second range through public tools",
+    "Human record/range controls display actual checkpoint and diagnostic results",
+    "Cancellation releases C# runtime and input without publishing partial recording",
+    "Real Wasm collision replay re-executes causal contact diagnostics",
+    "Real animator state/time checkpoints reproduce across range replay",
+    "Starter Cube is lit by its authored directional entity; turning it off removes bright geometry",
+    "Camera has a selectable Scene marker and physical Move gizmo edits its Transform",
+    "Human 3D starter, Camera Inspector projection and Transform, stopped Game, parallel Game and missing-camera Undo",
+    "Human 2D starter contains Camera + listener, Square sprite and explicit 2D light",
+    "Null renderer repeats CPU/Wasm replay without invented pixels"
+  ],
+  "samples": [
+    {
+      "id": "b5072143-0736-4238-af9a-e031aaf943fb",
+      "kind": "replay",
+      "status": "completed",
+      "frames": 240,
+      "verifiedCheckpoints": 5,
+      "diagnostics": [
+        {
+          "frame": 120,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "46c1a5f6-e298-43c1-8237-3741e3cdbe39",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "46c1a5f6-e298-43c1-8237-3741e3cdbe39",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "46c1a5f6-e298-43c1-8237-3741e3cdbe39",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 120,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 135,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "c35f18bc-7983-4c1d-81f8-f3a84b6145a8",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "c35f18bc-7983-4c1d-81f8-f3a84b6145a8",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "c35f18bc-7983-4c1d-81f8-f3a84b6145a8",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 135,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 150,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "76ef40d6-db5f-4946-bcc6-60a74b8670b9",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "76ef40d6-db5f-4946-bcc6-60a74b8670b9",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "76ef40d6-db5f-4946-bcc6-60a74b8670b9",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 150,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 165,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "a7d773a7-0746-4363-a514-34ee3fb9cf8e",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "a7d773a7-0746-4363-a514-34ee3fb9cf8e",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "a7d773a7-0746-4363-a514-34ee3fb9cf8e",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 165,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 180,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "bf671e9f-e41e-46c3-82c3-e598e2c1bc28",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "bf671e9f-e41e-46c3-82c3-e598e2c1bc28",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "bf671e9f-e41e-46c3-82c3-e598e2c1bc28",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 180,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 195,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "a95e562c-9ab2-4c4e-ac6d-3cc1bf02cee3",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "a95e562c-9ab2-4c4e-ac6d-3cc1bf02cee3",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "a95e562c-9ab2-4c4e-ac6d-3cc1bf02cee3",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 195,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 210,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "0aa42571-47ac-4ed8-b50c-8d7d826bbba3",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "0aa42571-47ac-4ed8-b50c-8d7d826bbba3",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "0aa42571-47ac-4ed8-b50c-8d7d826bbba3",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 210,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 225,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "013d12f2-fad0-4d07-9144-b500b331869b",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "013d12f2-fad0-4d07-9144-b500b331869b",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "013d12f2-fad0-4d07-9144-b500b331869b",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 225,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 240,
+          "recordingId": "06e621b4-417b-4f0a-be4a-c314299e4333",
+          "sourceRevision": 1,
+          "traceId": "a7c77cd9-87dd-48aa-b314-cdd2d17c4b92",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0118",
+            "message": "Script runtime is active",
+            "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+            "workspaceId": null,
+            "traceId": "a7c77cd9-87dd-48aa-b314-cdd2d17c4b92",
+            "correlationId": "bcf5d234-bcea-444d-9412-3f2fead1bf5b",
+            "causationId": "8b7f99bd-37ac-42b7-b85c-c25a242d7d9f",
+            "sceneRevision": 1,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "a7c77cd9-87dd-48aa-b314-cdd2d17c4b92",
+                  "projectId": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+                  "workspaceId": null,
+                  "sceneRevision": 1,
+                  "frame": 240,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0118",
+                "message": "Script runtime is active",
+                "facts": {
+                  "buildId": "0fb00050-0325-43ab-9f88-c6c83f927262"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        }
+      ],
+      "range": {
+        "from": 120,
+        "to": 240
+      },
+      "checkpoint": 120,
+      "restoration": "verified input-prefix reconstruction",
+      "recording": {
+        "id": "06e621b4-417b-4f0a-be4a-c314299e4333",
+        "name": "M15 \u00b7 Seeded Input Replay",
+        "scope": {
+          "id": "project://50821723-d2fe-4f88-a7d6-acc2b0d646af",
+          "sceneRevision": 1,
+          "workspaceId": null,
+          "resources": [
+            {
+              "id": "asset://196d732253519ac95f965c0017b65933c7a9d4db45749fd9417487f3577ca0f5",
+              "buildKey": "50e2c0902a0ca4f3e854776af61ed6a85fd676023c1b45792250e2876ba3010c"
+            }
+          ],
+          "script": "0fb00050-0325-43ab-9f88-c6c83f927262"
+        },
+        "seed": 42,
+        "frames": 240,
+        "checkpoints": [
+          0,
+          60,
+          120,
+          180,
+          240
+        ]
+      }
+    },
+    {
+      "id": "2895e7c3-9e02-4b6f-a42f-cfc0e504d2cb",
+      "kind": "replay",
+      "status": "completed",
+      "frames": 120,
+      "verifiedCheckpoints": 3,
+      "diagnostics": [
+        {
+          "frame": 60,
+          "recordingId": "191ce888-2092-4e0b-b34c-4524b9ecba61",
+          "sourceRevision": 2,
+          "traceId": "cd0d73fe-af66-4dcf-9c08-745e781415ae",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0124",
+            "message": "Collision contact observed",
+            "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+            "workspaceId": null,
+            "traceId": "cd0d73fe-af66-4dcf-9c08-745e781415ae",
+            "correlationId": "896241ee-16ef-4f34-85ec-a0d9527fe963",
+            "causationId": "7805330b-5b8c-43af-b721-e0c126ade262",
+            "sceneRevision": 2,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "cd0d73fe-af66-4dcf-9c08-745e781415ae",
+                  "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+                  "workspaceId": null,
+                  "sceneRevision": 2,
+                  "frame": 60,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0124",
+                "message": "Collision contact observed",
+                "facts": {
+                  "contact": {
+                    "a": "entity://4ee88d61-22e5-4c05-9d58-5a5fb404f11a",
+                    "b": "entity://87671fe2-95da-41be-a00a-d47e9893bbe2",
+                    "trigger": false,
+                    "depth": 0.003506282333482047,
+                    "normal": [
+                      0,
+                      1,
+                      0
+                    ],
+                    "point": [
+                      0.5000000005014233,
+                      -0.5017531411667411,
+                      0.5000000132703978
+                    ]
+                  }
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 75,
+          "recordingId": "191ce888-2092-4e0b-b34c-4524b9ecba61",
+          "sourceRevision": 2,
+          "traceId": "e1410cf4-e695-46fa-914d-42613d93fe58",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0124",
+            "message": "Collision contact observed",
+            "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+            "workspaceId": null,
+            "traceId": "e1410cf4-e695-46fa-914d-42613d93fe58",
+            "correlationId": "896241ee-16ef-4f34-85ec-a0d9527fe963",
+            "causationId": "7805330b-5b8c-43af-b721-e0c126ade262",
+            "sceneRevision": 2,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "e1410cf4-e695-46fa-914d-42613d93fe58",
+                  "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+                  "workspaceId": null,
+                  "sceneRevision": 2,
+                  "frame": 75,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0124",
+                "message": "Collision contact observed",
+                "facts": {
+                  "contact": {
+                    "a": "entity://4ee88d61-22e5-4c05-9d58-5a5fb404f11a",
+                    "b": "entity://87671fe2-95da-41be-a00a-d47e9893bbe2",
+                    "trigger": false,
+                    "depth": 0.0035062823335452187,
+                    "normal": [
+                      0,
+                      1,
+                      0
+                    ],
+                    "point": [
+                      0.5000000005583871,
+                      -0.5017531411667727,
+                      0.5000000139967988
+                    ]
+                  }
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 90,
+          "recordingId": "191ce888-2092-4e0b-b34c-4524b9ecba61",
+          "sourceRevision": 2,
+          "traceId": "55d295ee-5a32-4dc2-a0b4-8a837f0e3d2b",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0124",
+            "message": "Collision contact observed",
+            "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+            "workspaceId": null,
+            "traceId": "55d295ee-5a32-4dc2-a0b4-8a837f0e3d2b",
+            "correlationId": "896241ee-16ef-4f34-85ec-a0d9527fe963",
+            "causationId": "7805330b-5b8c-43af-b721-e0c126ade262",
+            "sceneRevision": 2,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "55d295ee-5a32-4dc2-a0b4-8a837f0e3d2b",
+                  "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+                  "workspaceId": null,
+                  "sceneRevision": 2,
+                  "frame": 90,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0124",
+                "message": "Collision contact observed",
+                "facts": {
+                  "contact": {
+                    "a": "entity://4ee88d61-22e5-4c05-9d58-5a5fb404f11a",
+                    "b": "entity://87671fe2-95da-41be-a00a-d47e9893bbe2",
+                    "trigger": false,
+                    "depth": 0.0035062823336090565,
+                    "normal": [
+                      0,
+                      1,
+                      0
+                    ],
+                    "point": [
+                      0.500000000615616,
+                      -0.5017531411668044,
+                      0.5000000147230594
+                    ]
+                  }
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 105,
+          "recordingId": "191ce888-2092-4e0b-b34c-4524b9ecba61",
+          "sourceRevision": 2,
+          "traceId": "cfdec752-3616-481e-bcc9-17dba5156f26",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0124",
+            "message": "Collision contact observed",
+            "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+            "workspaceId": null,
+            "traceId": "cfdec752-3616-481e-bcc9-17dba5156f26",
+            "correlationId": "896241ee-16ef-4f34-85ec-a0d9527fe963",
+            "causationId": "7805330b-5b8c-43af-b721-e0c126ade262",
+            "sceneRevision": 2,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "cfdec752-3616-481e-bcc9-17dba5156f26",
+                  "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+                  "workspaceId": null,
+                  "sceneRevision": 2,
+                  "frame": 105,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0124",
+                "message": "Collision contact observed",
+                "facts": {
+                  "contact": {
+                    "a": "entity://4ee88d61-22e5-4c05-9d58-5a5fb404f11a",
+                    "b": "entity://87671fe2-95da-41be-a00a-d47e9893bbe2",
+                    "trigger": false,
+                    "depth": 0.003506282333672339,
+                    "normal": [
+                      0,
+                      1,
+                      0
+                    ],
+                    "point": [
+                      0.5000000006731103,
+                      -0.5017531411668362,
+                      0.5000000154491799
+                    ]
+                  }
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        },
+        {
+          "frame": 120,
+          "recordingId": "191ce888-2092-4e0b-b34c-4524b9ecba61",
+          "sourceRevision": 2,
+          "traceId": "a910fcbb-0dea-4669-9ae6-c8b6fe90d058",
+          "evidence": {
+            "status": "explained",
+            "code": "AX_CAUSAL_0124",
+            "message": "Collision contact observed",
+            "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+            "workspaceId": null,
+            "traceId": "a910fcbb-0dea-4669-9ae6-c8b6fe90d058",
+            "correlationId": "896241ee-16ef-4f34-85ec-a0d9527fe963",
+            "causationId": "7805330b-5b8c-43af-b721-e0c126ade262",
+            "sceneRevision": 2,
+            "nodes": [
+              {
+                "id": "decision-0",
+                "code": "AX_CAUSAL_0100",
+                "message": "Evidence scope",
+                "facts": {
+                  "traceId": "a910fcbb-0dea-4669-9ae6-c8b6fe90d058",
+                  "projectId": "project://a9f63672-72d5-4157-b484-909f1a655001",
+                  "workspaceId": null,
+                  "sceneRevision": 2,
+                  "frame": 120,
+                  "view": "game",
+                  "playing": true
+                }
+              },
+              {
+                "id": "decision-1",
+                "code": "AX_CAUSAL_0124",
+                "message": "Collision contact observed",
+                "facts": {
+                  "contact": {
+                    "a": "entity://4ee88d61-22e5-4c05-9d58-5a5fb404f11a",
+                    "b": "entity://87671fe2-95da-41be-a00a-d47e9893bbe2",
+                    "trigger": false,
+                    "depth": 0.003506282333735844,
+                    "normal": [
+                      0,
+                      1,
+                      0
+                    ],
+                    "point": [
+                      0.50000000073087,
+                      -0.5017531411668679,
+                      0.50000001617516
+                    ]
+                  }
+                }
+              }
+            ],
+            "edges": [
+              {
+                "from": "decision-0",
+                "to": "decision-1"
+              }
+            ]
+          }
+        }
+      ],
+      "range": {
+        "from": 60,
+        "to": 120
+      },
+      "checkpoint": 60,
+      "restoration": "verified input-prefix reconstruction",
+      "recording": {
+        "id": "191ce888-2092-4e0b-b34c-4524b9ecba61",
+        "name": "M15 \u00b7 Collision Diagnostic Replay",
+        "scope": {
+          "id": "project://a9f63672-72d5-4157-b484-909f1a655001",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "resources": [
+            {
+              "id": "asset://196d732253519ac95f965c0017b65933c7a9d4db45749fd9417487f3577ca0f5",
+              "buildKey": "50e2c0902a0ca4f3e854776af61ed6a85fd676023c1b45792250e2876ba3010c"
+            }
+          ],
+          "script": null
+        },
+        "seed": 7,
+        "frames": 120,
+        "checkpoints": [
+          0,
+          60,
+          120
+        ]
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "passed": true
+}

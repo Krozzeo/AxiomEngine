@@ -1,3 +1,5 @@
+import {mountReplayEditor} from './replay-editor.mjs';
+import {mountAiMenu} from './ai-menu.mjs';
 import {mountGameTestEditor} from './game-test-editor.mjs';
 import {readSessionToken} from './session-token.mjs';
 import {createEditorDocument} from './dock-layout.mjs';
@@ -144,6 +146,8 @@ async function boot() {
   }
   try {
     await initializeWebGpu();
+    const stopReplay=mountReplayEditor({document,getRenderer:()=>renderer,getSnapshot:()=>projectEditor.snapshot(),reportError});addEventListener('pagehide',stopReplay,{once:true});
+    const stopAi=mountAiMenu({document,getSnapshot:()=>projectEditor.snapshot(),save:value=>projectEditor.saveAiSettings(value),reportError});addEventListener('pagehide',stopAi,{once:true});
     const stopTests=mountGameTestEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,save:values=>projectEditor.saveTestSuites(values),reportError});addEventListener('pagehide',stopTests,{once:true});
     const stopProfiler=mountProfilerEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,reportError});addEventListener("pagehide",stopProfiler,{once:true});
     if(agentBridgeEnabled){const stop=startAgentBridge({api,projectEditor,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,takeErrors:()=>agentErrors.splice(0),onProposals:proposalEditor.refresh,reportError});addEventListener("pagehide",stop,{once:true});}

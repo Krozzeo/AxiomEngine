@@ -1,3 +1,7 @@
+import {primitiveSprite} from '../../engine/scene/primitive-sprites.mjs';
+import {PNG} from 'pngjs';
+import {twoDDefaults,component2DDefaults} from '../../engine/renderer/two-d-plan.mjs';
+import {activateCamera,cameraRotation} from '../../engine/scene/camera.mjs';
 import {addExample} from '../../engine/scene/examples.mjs';
 import {readPcm} from '../../engine/assets/audio.mjs';
 import {orderEntities,updateTransforms,selectedRoots} from '../../engine/scene/editor-operations.mjs';
@@ -166,7 +170,25 @@ export class SceneWorkspace {
       if (this.dirty && (data.discardChanges !== true || data.expectedSceneRevision !== this.revision)) fail("AX_SCENE_0003", "Save or explicitly discard unsaved scene changes first");
       const result = await this.store.run(type, data);
       await this.pipeline.build(result.project.id,result.project.scene,result.project.scene.assets??[]);
-      return this.activate(result.project);
+      const snapshot=this.activate(result.project);
+      if(type==='project.create'&&data.dimension){
+        const mutate=(type,value)=>this.run(type,{id:this.project.id,expectedSceneRevision:this.revision,...value});
+        if(data.dimension===3)await mutate('scene.primitive.create',{dimension:3,shape:'cube'});
+        else {
+          await mutate('scene.twoD.update',{value:{...structuredClone(twoDDefaults),ambient:[0,0,0]}});
+          const png=new PNG({width:32,height:32});png.data.fill(255);
+          await mutate('asset.import',{name:'Square.png',base64:PNG.sync.write(png).toString('base64')});
+          await mutate('scene.asset.place',{assetId:this.project.scene.assets[0].id});
+          const square=this.project.scene.entities[0];
+          await mutate('scene.entity.update',{entityId:square.id,name:'Square',transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]}});
+          await mutate('scene.sprite2D.set',{entityId:square.id,value:structuredClone(component2DDefaults.sprite2D)});
+        }
+        await mutate('scene.example.create',{example:'Camera'});
+        await mutate('scene.example.create',{example:data.dimension===3?'Directional Light':'2D Light'});
+        if(data.dimension===3){this.project.scene.rendering.environment=[0,0,0];this.project.scene.entities.find(e=>e.light).transform.rotation=cameraRotation([0,6,4],[0,0,0]);}
+        await mutate('scene.save',{});this.past=[];this.future=[];return this.snapshot();
+      }
+      return snapshot;
     }
     if (type === "project.save") {
       if (this.dirty && data.id === this.project.id) fail("AX_SCENE_0003", "Use scene.save to save the active draft");
@@ -224,6 +246,7 @@ export class SceneWorkspace {
       const size=resource.bounds?Math.max(...resource.bounds.maximum.map((v,i)=>v-resource.bounds.minimum[i])):2*Math.max(1,resource.width/resource.height);
       const scale=size>1e-6?2/size:1;
       scene.entities.push({id:`entity://${randomUUID()}`,name:asset.name,transform:{position:[(asset.kind==="sprite"?-1.5:1.5)-center[0]*scale,-center[1]*scale,-center[2]*scale],rotation:[0,0,0,1],scale:[scale,scale,scale]},renderable:{kind:asset.kind,assetId:asset.id}});
+    } else if(type==='scene.camera.set'){if(index<0)fail('AX_SCENE_0001','Camera entity no longer exists');activateCamera(scene,data.entityId,data.value);
     } else if(["scene.audioSource.set","scene.audioListener.set","scene.animator.set","scene.sprite2D.set","scene.spriteAnimation.set","scene.tilemap.set","scene.light2D.set","scene.particles2D.set","scene.ui2D.set","scene.collider.set","scene.rigidBody.set","scene.material.set","scene.light.set","scene.lod.set"].includes(type)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
       scene.entities[index][type.split(".")[1]]=copy(data.value);
@@ -236,13 +259,13 @@ export class SceneWorkspace {
       const removed=new Set(selectedRoots(scene.entities,data.entityIds));let changed=true;while(changed){changed=false;for(const e of scene.entities)if(removed.has(e.parentId)&&!removed.has(e.id)){removed.add(e.id);changed=true;}}
       scene.entities=scene.entities.filter(e=>!removed.has(e.id));if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>!removed.has(id));
     } else if(type==="scene.primitive.create") {
-      const bytes=primitiveGlb(data.dimension,data.shape),asset=await this.assets.put(this.project.id,`${data.dimension}D-${data.shape}.glb`,bytes.toString('base64'),importInWorker);
+      const sprite=scene.twoD&&data.dimension===2,bytes=sprite?primitiveSprite(data.shape):primitiveGlb(data.dimension,data.shape),asset=await this.assets.put(this.project.id,`${data.dimension}D-${data.shape}.${sprite?'png':'glb'}`,bytes.toString('base64'),importInWorker);
       scene.assets??=[];if(!scene.assets.some(a=>a.id===asset.id)){if(scene.assets.length>=128)fail("AX_ASSET_0001","Project asset limit is 128");scene.assets.push(asset);}
-      scene.entities.push({id:`entity://${randomUUID()}`,name:`${data.dimension}D ${data.shape}`,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:'mesh',assetId:asset.id}});
+      scene.entities.push({id:`entity://${randomUUID()}`,name:`${data.dimension}D ${data.shape}`,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:sprite?'sprite':'mesh',assetId:asset.id},...(sprite?{sprite2D:structuredClone(component2DDefaults.sprite2D)}:{})});
       await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
-    } else if(type==="scene.component.remove" && ["AudioSource","AudioListener","Animator","Sprite2D","SpriteAnimation","Tilemap","Light2D","Particles2D","UI2D","Collider","RigidBody","Material","Light","LOD"].includes(data.component)) {
+    } else if(type==="scene.component.remove" && ["Camera","AudioSource","AudioListener","Animator","Sprite2D","SpriteAnimation","Tilemap","Light2D","Particles2D","UI2D","Collider","RigidBody","Material","Light","LOD"].includes(data.component)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
-      delete scene.entities[index][({AudioSource:"audioSource",AudioListener:"audioListener",Animator:"animator",Sprite2D:"sprite2D",SpriteAnimation:"spriteAnimation",Tilemap:"tilemap",Light2D:"light2D",Particles2D:"particles2D",UI2D:"ui2D",Collider:"collider",RigidBody:"rigidBody",Material:"material",Light:"light",LOD:"lod"})[data.component]];
+      delete scene.entities[index][({Camera:"camera",AudioSource:"audioSource",AudioListener:"audioListener",Animator:"animator",Sprite2D:"sprite2D",SpriteAnimation:"spriteAnimation",Tilemap:"tilemap",Light2D:"light2D",Particles2D:"particles2D",UI2D:"ui2D",Collider:"collider",RigidBody:"rigidBody",Material:"material",Light:"light",LOD:"lod"})[data.component]];
       if(data.component==="Sprite2D")delete scene.entities[index].spriteAnimation;
       if(data.component==="Collider")delete scene.entities[index].rigidBody;
     } else if(type==="scene.component.add" || type==="scene.component.remove") {
@@ -263,12 +286,12 @@ export class SceneWorkspace {
     } else if(type==='scene.audio.update') {
       scene.audio=copy(data.value);
     } else if(type==='scene.twoD.update') {
-      scene.twoD=copy(data.value);scene.camera={position:[0,0,10],target:[0,0,0],fov:60,orthoHeight:6,...scene.camera,projection:'orthographic'};
+      scene.twoD=copy(data.value);if(scene.cameraMode!=='entities')scene.camera={position:[0,0,10],target:[0,0,0],fov:60,orthoHeight:6,...scene.camera,projection:'orthographic'};
     } else if(type==="scene.rendering.update") {
       scene.rendering=copy(data.value);
     } else if(type==="scene.camera.update") {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
-      scene.camera={projection:"perspective",position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
+      if(scene.cameraMode==='entities'){const e=scene.entities.find(e=>e.camera?.active);if(!e)fail('AX_SCENE_0001','No active Camera entity');for(const key of ['projection','fov','orthoHeight'])if(data.camera[key]!==undefined)e.camera[key]=data.camera[key];if(data.camera.position)e.transform.position=copy(data.camera.position);if(data.camera.target)e.transform.rotation=cameraRotation(e.transform.position,data.camera.target);}else scene.camera={projection:'perspective',position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
     } else if(type==="scene.example.create") {
       try{addExample(scene,data.example,`entity://${randomUUID()}`);}catch(e){fail("AX_PROJECT_0002",e.message);}
     } else if (type === "scene.entity.create") {

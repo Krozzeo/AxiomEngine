@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-05",
-  "engineVersion": "0.0.27",
-  "activeMilestone": 14,
+  "engineVersion": "0.0.28",
+  "activeMilestone": 15,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 80,
+    "wholeProjectPercent": 84,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -76,8 +76,8 @@
       "percent": 100
     },
     "15": {
-      "status": "planned",
-      "percent": 0
+      "status": "complete",
+      "percent": 100
     }
   },
   "implementation": {
@@ -97,7 +97,7 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_three_m14_and_earlier_demos",
+    "editableDemos": "verified_three_m15_and_earlier_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
@@ -105,14 +105,17 @@
     "scenePixelFiltering": "verified_nearest_independent_of_game_camera_snapping",
     "audio": "verified_web_audio_spatial_mixer_pcm_streaming_csharp_agent_null_activation",
     "gameTesting": "verified_bounded_public_isolated_fixed_step_input_runtime_collision_animation_pixel_assertions",
-    "parallelViews": "verified_same_runtime_independent_cameras_scene_game_popup_input"
+    "parallelViews": "verified_same_runtime_independent_cameras_scene_game_popup_input",
+    "replay": "verified_bounded_input_plans_seeded_csharp_prefix_checkpoint_ranges_diagnostics",
+    "entityCameras": "verified_inspector_transform_gizmos_parallel_game_and_explicit_starters",
+    "aiProjectContext": "verified_six_menu_options_plain_master_documents_external_mcp_context"
   },
   "verified": {
     "nodeTests": {
-      "passed": 169,
+      "passed": 183,
       "failed": 0
     },
-    "schemaDocuments": 17,
+    "schemaDocuments": 18,
     "architectureRules": 3,
     "daemonStartup": true,
     "httpStaticDelivery": true,
@@ -140,7 +143,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M14 0.0.27"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M15 0.0.28"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -226,37 +229,38 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.27",
-      "commit": "9bd1ea533df830c170b4a99e0dffc81354697030",
-      "tree": "086cfb3a1621ed15ad5101273117f753a1cacbb9",
-      "runId": 37346013283,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37346013283",
-      "jobCount": 24,
+      "version": "0.0.28",
+      "commit": "6a2e93ba430837f6a2bffeea7fbd59a49a17382d",
+      "tree": "e244ffd01da8e2558c23db2d2433d5dbcdcc705b",
+      "runId": 37386247344,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37386247344",
+      "jobCount": 25,
       "jobs": [
         "rust",
         "script-boundaries (macos-latest)",
+        "csharp-wasm-spike (windows-latest, development)",
         "browser-milestones (m10)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "bootstrap (windows-latest)",
         "csharp-wasm-spike (ubuntu-latest, development)",
         "bootstrap (ubuntu-latest)",
+        "browser-milestones (m4)",
+        "browser-milestones (m13)",
         "script-boundaries (ubuntu-latest)",
         "script-boundaries (windows-latest)",
-        "browser-milestones (m13-1)",
-        "browser-milestones (m8)",
-        "browser-milestones (m6)",
-        "browser-milestones (m9)",
-        "csharp-wasm-spike (windows-latest, development)",
-        "browser-milestones (m3)",
-        "browser-milestones (m11)",
-        "browser-milestones (corrections)",
-        "browser-milestones (m12)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
         "browser-milestones (m2)",
-        "browser-milestones (m5)",
-        "browser-milestones (m4)",
-        "bootstrap (windows-latest)",
-        "browser-milestones (m13)",
+        "browser-milestones (m15)",
+        "browser-milestones (m11)",
         "browser-milestones (m14)",
-        "browser-milestones (m7)"
+        "browser-milestones (m3)",
+        "browser-milestones (m13-1)",
+        "browser-milestones (m12)",
+        "browser-milestones (m9)",
+        "browser-milestones (corrections)",
+        "browser-milestones (m7)",
+        "browser-milestones (m5)",
+        "browser-milestones (m6)",
+        "browser-milestones (m8)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -496,6 +500,17 @@
       "evidence": "docs/reports/m14-browser-evidence.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m15Acceptance": {
+      "passed": true,
+      "criteriaPassed": 14,
+      "criteriaTotal": 14,
+      "runId": 37386247344,
+      "executableCommit": "6a2e93ba430837f6a2bffeea7fbd59a49a17382d",
+      "executableTree": "e244ffd01da8e2558c23db2d2433d5dbcdcc705b",
+      "evidence": "docs/reports/m15-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -600,7 +615,14 @@
     "demos/M14_GUIDE.md",
     "docs/reports/m14-browser-evidence.json",
     "docs/architecture/M15_PLAN.md",
-    "docs/adr/0028-isolated-game-tests-and-parallel-view-targets.md"
+    "docs/adr/0028-isolated-game-tests-and-parallel-view-targets.md",
+    "docs/adr/0029-verified-prefix-replay-and-ai-project-context.md",
+    "docs/reports/M15_CURRENT_REPORT.md",
+    "demos/M15_GUIDE.md",
+    "docs/architecture/M15_REPLAY.md",
+    "docs/architecture/M16_PLAN.md",
+    "docs/adr/0030-entity-cameras-explicit-lighting.md",
+    "docs/reports/m15-browser-evidence.json"
   ],
-  "nextTask": "Implement M15 replay and diagnostic replay per M15_PLAN.md and master section 134. Preserve M14 authored isolation, public test boundaries, cancellation and parallel ownership; keep stacked PRs unmerged."
+  "nextTask": "Implement M16 Performance & Low-End Pass per M16_PLAN.md and master section 135; M15 is complete. Preserve bounded replay, MAIN isolation, entity cameras and prior gates. Keep stacked PRs unmerged."
 }

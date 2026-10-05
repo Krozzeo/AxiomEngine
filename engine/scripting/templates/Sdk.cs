@@ -35,6 +35,11 @@ public abstract class Script {
  public virtual void OnUpdate(double deltaSeconds) {}
  public virtual void OnStop() {}
 }
+public static class ReplayRandom {
+ private static uint state=1;
+ internal static void Reset(uint seed) => state=seed;
+ public static double NextDouble() {state=unchecked(state*1664525u+1013904223u);return state/4294967296.0;}
+}
 public static class Input {
  public static bool IsDown(string code) => Context.Keys.Contains(code);
  public static double Axis(string negative, string positive) => (IsDown(positive)?1:0)-(IsDown(negative)?1:0);
@@ -43,6 +48,8 @@ public static class Log {public static void Info(string message) => Context.Log(
 internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0);
 internal static class Context {
  internal static int Generation;
+ internal static bool DeterministicSpawn;
+ internal static uint ReplaySeed;
  internal static readonly Dictionary<string,Transform> Entities = new();
  internal static readonly Dictionary<string,RigidBody> Bodies = new();
  internal static readonly Dictionary<string,JsonElement> Animators = new();
@@ -89,7 +96,7 @@ internal static class Context {
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
   if(Spawned>=Limits.Spawns||Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
-  var id="entity://"+Guid.NewGuid();Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
+  var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
  internal static void Log(string message) {
   if(message.Length>2048||Logs>=Limits.Logs)throw new InvalidOperationException("AX_SCRIPT_0003: log limit exceeded");

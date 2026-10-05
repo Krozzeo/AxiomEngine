@@ -33,7 +33,7 @@ try {
   await page.waitForFunction(()=>/^WebGPU/.test(document.querySelector("#gpu-state").textContent));
   report.backend=await page.locator("#gpu-state").textContent();
   assert.match(report.backend,/^WebGPU/);report.criteria.push("open Axiom");
-  await (await control(page,"#project-name")).fill("M2 browser acceptance");await (await control(page,"#project-new")).click();
+  await (await control(page,"#project-name")).fill("M2 browser acceptance");await (await control(page,'#project-dimension')).selectOption('empty');await (await control(page,"#project-new")).click();
   await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("M2 browser acceptance"));report.criteria.push("create project");
   for(const [name,mimeType,buffer] of [["checker.png","image/png",imageFixture()],["cube.glb","model/gltf-binary",glbFixture()]]) {
     await (await control(page,"#asset-file")).setInputFiles({name,mimeType,buffer});await (await control(page,"#asset-import")).click();
@@ -42,6 +42,7 @@ try {
     await (await control(page,"#asset-place")).click();
     await page.waitForFunction(count=>document.querySelectorAll("#entities .entity").length===count,name.endsWith("png")?1:2);
   }
+  {const snapshot=await state(),mesh=snapshot.project.scene.entities.find(e=>e.renderable?.kind==='mesh');const response=await fetch(daemon.origin+'/v1/commands',{method:'POST',headers:{Origin:daemon.origin,Authorization:'Bearer '+daemon.token,'Content-Type':'application/json'},body:JSON.stringify(envelope('command',{type:'scene.light.set',data:{id:snapshot.project.id,expectedSceneRevision:snapshot.sceneRevision,entityId:mesh.id,value:{kind:'directional',color:[1,1,1],intensity:1.5,range:10,direction:[0,0,-1],innerAngle:15,outerAngle:30,shadow:false}}}))});assert.equal((await response.json()).kind,'event');await (await control(page,'#workspace-refresh')).click();await page.waitForFunction(()=>document.querySelector('#editor-workspace').getAttribute('aria-busy')==='false');}
   report.criteria.push("import image and GLB","place sprite","place mesh");
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
   // Persisted-render comparisons use the authored Game camera. Scene now has
@@ -52,7 +53,7 @@ try {
   await (await control(page,"#position-0")).fill("-1.8");await (await control(page,"#position-1")).fill("0.4");await page.getByRole("button",{name:"Apply changes"}).click();
   await page.locator("#entities .entity").filter({hasText:"cube.glb"}).click();
   await (await control(page,"#position-0")).fill("1.7");await (await control(page,"#position-1")).fill("-0.3");await page.getByRole("button",{name:"Apply changes"}).click();
-  await (await control(page,"#camera-projection")).selectOption("orthographic");
+  {const snapshot=await state();const response=await fetch(daemon.origin+'/v1/commands',{method:'POST',headers:{Origin:daemon.origin,Authorization:'Bearer '+daemon.token,'Content-Type':'application/json'},body:JSON.stringify(envelope('command',{type:'scene.camera.update',data:{id:snapshot.project.id,expectedSceneRevision:snapshot.sceneRevision,camera:{projection:'orthographic'}}}))});assert.equal((await response.json()).kind,'event');await (await control(page,'#workspace-refresh')).click();await page.waitForFunction(()=>document.querySelector('#editor-workspace').getAttribute('aria-busy')==='false');}
   await page.waitForFunction(()=>!document.querySelector("#scene-save").disabled);
   report.criteria.push("move both objects");
   await (await control(page,"#scene-save")).click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);

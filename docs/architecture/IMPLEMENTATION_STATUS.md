@@ -1,15 +1,17 @@
 # Implementation status
 
-M14 (0.0.27) is complete, 100%. Project progress is approximately 80% (83/104 roadmap weight points).
-Isolated game tests support controlled input, exact fixed frames, runtime/collision/
-animation/pixel assertions, saved human suites and bounded public agent controls.
-Scene and Game can render simultaneously in separate windows through one runtime.
-Dock tabs persist order and closure; menus, quick examples and confirmed Save/Ctrl+S
-are complete. Three editable demos include passing, deliberately failing and visual suites.
-169 Node tests, 39 Rust tests, 13 new browser criteria and all 24 CI jobs pass.
-See docs/reports/M14_CURRENT_REPORT.md, M14_GAME_TESTING.md and ADR-0028.
-PR #17 is ready for review, stacked on unmerged #16; do not merge automatically.
-Next: M15 replay and diagnostic replay, planned but not implemented.
+M15 (0.0.28) is complete, 100%. Project progress is approximately 84% (87/104 roadmap weight points).
+Controlled input-plan recording, seeded C#, verified checkpoints/ranges and fresh
+causal diagnostic replay share one isolated runtime. Three editable replay demos
+include Camera entities with Audio Listeners and explicit lights. Camera projection
+and pose live in Inspector/Transform, with stopped and parallel Game views.
+New 2D/3D templates contain camera, light and object; fixed legacy sunlight is gone.
+The six AI menu options and Config Project Master Document support external MCP
+setup, project context and proposal review; integrated provider chat remains future work.
+183 Node tests, 39 Rust tests, 14 new browser criteria and all 25 CI jobs pass.
+See docs/reports/M15_CURRENT_REPORT.md, M15_REPLAY.md and ADR-0029/0030.
+PR #18 is ready/open, stacked on unmerged #17; keep milestone PRs unmerged.
+Next: M16 Performance & Low-End Pass, planned and not started.
 
 Historical completed baseline:
 

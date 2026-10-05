@@ -1,6 +1,6 @@
 # M15 — Replay and Diagnostic Replay
 
-Status: planned, not implemented. Master specification section 134.
+Status: complete, 100%; acceptance and closure documented in M15_CURRENT_REPORT.md. Master specification section 134.
 
 Start from completed M14 and preserve its isolated runtime, bounded public controls,
 fixed frame/input contract, cancellation, simultaneous view ownership and authored

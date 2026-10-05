@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axiomengine.dev/schema/replay-recording-v1.json",
+  "type": "object",
+  "required": [
+    "version",
+    "id",
+    "name",
+    "scope",
+    "seed",
+    "delta",
+    "inputs",
+    "checkpoints"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "enum": [
+        1
+      ]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f-]{36}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "id",
+        "sceneRevision"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^project://[0-9a-f-]{36}$"
+        },
+        "sceneRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workspaceId": {},
+        "resources": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "buildKey"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "buildKey": {}
+            },
+            "additionalProperties": false
+          }
+        },
+        "script": {}
+      }
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "delta": {
+      "enum": [
+        0.016666666666666666
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 600,
+      "items": {
+        "type": "array",
+        "maxItems": 16,
+        "items": {
+          "type": "string",
+          "pattern": "^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$"
+        }
+      }
+    },
+    "checkpoints": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 11,
+      "items": {
+        "type": "object",
+        "required": [
+          "frame",
+          "state"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "frame": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 600
+          },
+          "state": {
+            "type": "object",
+            "required": [
+              "entities",
+              "physics",
+              "animation",
+              "time"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "entities": {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "transform",
+                    "rigidBody"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^entity://[0-9a-f-]{36}$"
+                    },
+                    "transform": {
+                      "type": "object",
+                      "required": [
+                        "position",
+                        "rotation",
+                        "scale"
+                      ],
+                      "properties": {
+                        "position": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": -1000000,
+                            "maximum": 1000000
+                          }
+                        },
+                        "rotation": {
+                          "type": "array",
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "items": {
+                            "type": "number",
+                            "minimum": -1000000,
+                            "maximum": 1000000
+                          }
+                        },
+                        "scale": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": -1000000,
+                            "maximum": 1000000
+                          }
+                        }
+                      }
+                    },
+                    "rigidBody": {}
+                  }
+                }
+              },
+              "physics": {},
+              "animation": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {}
+              },
+              "time": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

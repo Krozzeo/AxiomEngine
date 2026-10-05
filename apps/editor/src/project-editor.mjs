@@ -1,3 +1,4 @@
+import {cameraDefaults} from '../../../engine/scene/camera.mjs';
 import {mountAudioEditor} from './audio-editor.mjs';
 import {mountTwoDEditor} from './two-d-editor.mjs';
 import {hierarchyRows,rangeSelection} from '../../../engine/scene/editor-operations.mjs';
@@ -23,7 +24,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     const attached=project?.scene.script?.attachments.includes(entity?.id);
     if($('selection-status')){
       $('selection-status').textContent=selection.size>1?`${selection.size} entities selected · transform editing enabled`:entity?.name??'Select an entity';
-      for(const [id,visible]of [['material',!!entity?.material],['light',!!entity?.light],['lod',!!entity?.lod],['physics',!!entity?.collider],['rigidbody',!!entity?.rigidBody],['renderable',!!entity?.renderable],['script',!!entity&&(attached||scriptDraft.has(entity.id))]])$(id+'-component').hidden=!visible;
+      for(const [id,visible]of [['camera',!!entity?.camera],['material',!!entity?.material],['light',!!entity?.light],['lod',!!entity?.lod],['physics',!!entity?.collider],['rigidbody',!!entity?.rigidBody],['renderable',!!entity?.renderable],['script',!!entity&&(attached||scriptDraft.has(entity.id))]])$(id+'-component').hidden=!visible;
       $('component-add').disabled=!enabled||busy||state.playing||!entity;
       $('renderable-status').textContent=entity?.renderable?`${entity.renderable.kind} · ${project.scene.assets?.find(a=>a.id===entity.renderable.assetId)?.name??''}`:'';
       $('physics-freeze').checked=entity?.rigidBody?.freezeRotation??false;
@@ -61,7 +62,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("asset-file").disabled=!editing||!project;
     $("asset-import").disabled=!editing||!project;
     $("asset-place").disabled=!editing||!project||!$("asset-list").value;
-    $("camera-projection").disabled=!editing||!project;
+    $("camera-fields").disabled=!editing||!entity?.camera;
     $("play-start").disabled=!editing||!project;
     $("play-stop").disabled=busy||!state.playing;
     $("scene-tab").disabled=busy||!project;
@@ -103,7 +104,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("asset-texture").replaceChildren();
     for(const asset of project?.scene.assets??[])if(asset.kind==="sprite"){const option=document.createElement("option");option.value=asset.id;option.textContent=asset.name;$("asset-texture").append(option);}
     if(project?.scene.assets?.some(a=>a.id===textureSelection))$("asset-texture").value=textureSelection;
-    $("camera-projection").value=project?.scene.camera?.projection??"perspective";
+    $("camera-projection").value=entity?.camera?.projection??"perspective";$("camera-active").checked=entity?.camera?.active??false;$("camera-fov").value=String(entity?.camera?.fov??60);$("camera-ortho").value=String(entity?.camera?.orthoHeight??6);
     $("entity-name").value = entity?.name ?? "";
     if($("rotation-0"))eulerFromQuaternion(entity?.transform.rotation??[0,0,0,1]).forEach((v,i)=>$("rotation-"+i).value=String(v));
     const m={...materialDefaults,...entity?.material},l=entity?.light??{kind:'point',color:[1,1,1],intensity:20,range:10,direction:[0,-1,0],innerAngle:15,outerAngle:30,shadow:false},r={...renderingDefaults,...project?.scene.rendering};
@@ -220,7 +221,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("project-new").addEventListener("click", () => {
     const name = $("project-name").value.trim();
     if (!name) { $("project-error").textContent = "Enter a project name."; return; }
-    return act(() => switchProject("project.create", { name }));
+    return act(() => switchProject("project.create", { name,...(["2","3"].includes($("project-dimension")?.value)?{dimension:Number($("project-dimension").value)}:{}) }));
   });
   $("project-open").addEventListener("click", () => act(() => switchProject("project.open", { id: $("project-list").value })));
   $("asset-list").addEventListener("change",draw);
@@ -252,7 +253,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("asset-explain").addEventListener("click",()=>act(async()=>{$("asset-explanation").textContent=JSON.stringify(await run("asset.explain",{id:state.project.id,assetId:$("asset-list").value}),null,2);}));
   $("asset-cancel").addEventListener("click",async()=>{try{if(currentJob)await send("asset.job.cancel",{id:state.project.id,jobId:currentJob.id});}catch(error){reportError(error);}});
   $("asset-place").addEventListener("click",()=>act(()=>run("scene.asset.place",mutation({assetId:$("asset-list").value}))));
-  $("camera-projection").addEventListener("change",()=>{const projection=$("camera-projection").value;return act(()=>run("scene.camera.update",mutation({camera:{projection}})));});
+  $("camera-form").addEventListener("submit",event=>{event.preventDefault();return act(()=>run('scene.camera.set',mutation({entityId:selected,value:{active:$("camera-active").checked,projection:$("camera-projection").value,fov:number('camera-fov'),orthoHeight:number('camera-ortho')}})));});
+  $("camera-remove").addEventListener('click',()=>act(()=>run('scene.component.remove',mutation({entityId:selected,component:'Camera'}))));
   $("project-close").addEventListener("click",()=>act(async()=>{if(state.dirty&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
   $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());if(!getRenderer()?.parallelViewport?.()){view='game';panels.activateView('game');}}));
   $("play-stop").addEventListener("click",()=>act(()=>run("play.stop",mutation())));
@@ -273,6 +275,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   function deleteSelected(){if(!selection.size||state.playing||busy)return;return act(()=>run('scene.entities.delete',mutation({entityIds:[...selection]})));}
   if($('component-add')){
     $('component-add').addEventListener('click',()=>act(async()=>{const component=$('component-choice').value,entity=state.project.scene.entities.find(e=>e.id===selected);if(selection.size!==1)throw Error('Select one entity');
+      if(component==='Camera'){if(entity.camera)throw Error('Camera is already attached');await run('scene.camera.set',mutation({entityId:selected,value:{...cameraDefaults,projection:state.project.scene.twoD?'orthographic':'perspective'}}));return;}
       if(await audioEditor.add(component,entity))return;
       if(await animationEditor.add(component,entity))return;
       if(await twoDEditor.add(component,entity))return;
@@ -285,7 +288,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     for(const [id,component]of [['renderable','Renderable'],['collider','Collider'],['rigidbody','RigidBody'],['script','Script']])$(id+'-remove').addEventListener('click',()=>act(async()=>{if(component==='Script'&&!state.project.scene.script){scriptDraft.delete(selected);return;}await run('scene.component.remove',mutation({entityId:selected,component}));scriptDraft.delete(selected);}));
     for(const button of document.querySelectorAll?.('.create-example')??[])button.addEventListener('click',()=>act(()=>run('scene.example.create',mutation({example:button.dataset.example}))));
     for(const button of document.querySelectorAll?.('.create-primitive')??[])button.addEventListener('click',()=>act(()=>run('scene.primitive.create',mutation({dimension:Number(button.dataset.dimension),shape:button.dataset.shape}))));
-    $('component-search')?.addEventListener('input',()=>{const query=$('component-search').value.trim().toLowerCase();const choice=$('component-choice'),names=['Renderable','Material','Light','LOD','Collider','RigidBody','Script','Animator',...audioEditor.names,...twoDEditor.names].filter(name=>name.toLowerCase().startsWith(query));choice.replaceChildren();for(const name of names){const option=document.createElement('option');option.textContent=option.value=name;choice.append(option);}$('component-add').disabled=!names.length||selection.size!==1||busy||state.playing;});
+    $('component-search')?.addEventListener('input',()=>{const query=$('component-search').value.trim().toLowerCase();const choice=$('component-choice'),names=['Camera','Renderable','Material','Light','LOD','Collider','RigidBody','Script','Animator',...audioEditor.names,...twoDEditor.names].filter(name=>name.toLowerCase().startsWith(query));choice.replaceChildren();for(const name of names){const option=document.createElement('option');option.textContent=option.value=name;choice.append(option);}$('component-add').disabled=!names.length||selection.size!==1||busy||state.playing;});
     for(const detail of document.querySelectorAll?.('.menubar details')??[]){detail.addEventListener('toggle',()=>{if(!detail.open)return;const popup=detail.querySelector(':scope > .submenu');if(!popup?.getBoundingClientRect)return;popup.style.left='100%';popup.style.right='auto';if(popup.getBoundingClientRect().right>globalThis.innerWidth){popup.style.left='auto';popup.style.right='100%';}});detail.querySelector('summary')?.addEventListener('click',()=>{for(const sibling of detail.parentElement.children)if(sibling!==detail&&sibling.tagName==='DETAILS')sibling.open=false;});}
     $('toolbar-save')?.addEventListener('click',()=>{if(!$("scene-save").disabled)$("scene-save").click();});
     globalThis.addEventListener?.('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.code==='KeyS'){event.preventDefault();if(!state.playing&&!state.workspaceId&&!busy&&enabled&&state.project&&state.dirty)void act(()=>run('scene.save',mutation()));return;}if(/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??'')||event.target?.isContentEditable)return;
@@ -298,10 +301,12 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   return {
     isBusy:()=>busy,
     selectedEntity:()=>selected,
+    snapshot:()=>structuredClone(state),
     selectedEntities:()=>[...selection],
     selectEntity(id,options=false){select(id,options);},
     transformEntities(updates){return act(()=>run("scene.entities.update",mutation({updates,space:"world"})));},
     transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform:localTransform(state.project.scene.entities,entityId,transform)})));},
+    async saveAiSettings(value){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,...value}})));},
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},

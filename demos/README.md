@@ -1,3 +1,8 @@
+# Current demos: M12
+
+npm run demo creates Spatial Sound Stage and Streaming Mixer Lab. See M12_GUIDE.md.
+Previous M11 demos remain available with npm run demo:m11; all projects are preserved.
+
 # M11 demos
 
 `npm run demo` creates Skinned Robot Studio, Clip and State Lab and Pixel Scene

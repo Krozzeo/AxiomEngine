@@ -1,0 +1,30 @@
+{
+  "scope": "Canonical PCM render/resample loop used by AudioWorklet; excludes asset I/O, browser scheduling, physical output and full-frame performance",
+  "admissionThresholdMs": 50,
+  "reports": [
+    {
+      "voices": 1,
+      "quantumFrames": 128,
+      "p95Ms": 0.023810999999998472,
+      "allocatedQueueBytes": 131072
+    },
+    {
+      "voices": 8,
+      "quantumFrames": 128,
+      "p95Ms": 0.012208999999998582,
+      "allocatedQueueBytes": 1048576
+    },
+    {
+      "voices": 32,
+      "quantumFrames": 128,
+      "p95Ms": 0.054185000000003924,
+      "allocatedQueueBytes": 4194304
+    }
+  ],
+  "source": {
+    "runId": 37245601863,
+    "artifactId": 11318308595,
+    "executableCommit": "aef19432107a017de935319f94d443390972aed1",
+    "executableTree": "178e257f6ffc86e5d1909b274d9a0462c031c6de"
+  }
+}

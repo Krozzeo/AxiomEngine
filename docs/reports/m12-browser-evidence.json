@@ -1,0 +1,542 @@
+{
+  "criteria": [
+    "Stopped Scene/Game previews are silent and do not advance WAV playback",
+    "Human AudioSource editing uses canonical validation and one Undo",
+    "Actual Web Audio stereo signal demonstrates spatial pan and listener-relative attenuation",
+    "C# pause/resume freezes the clip and Arrow movement changes actual left/right output",
+    "AI volume/bus controls expose observed reasons, Scene is silent, and Stop resets without authoring mutation",
+    "Actual AudioWorklet streams a 90-second stereo WAV in bounded chunks, with measured output and pause-preserved playhead",
+    "Human one-shot starts from stopped state, produces a real effect and completes while a muted stream keeps its transport",
+    "Authored bus lowpass attenuates actual streamed signal and one Undo restores mixer settings",
+    "Null exposes semantic audio state with explicitly unavailable sound, zero decoded memory and no PCM reads",
+    "A fresh non-gesture Play reports browser activation required; a human gesture enables actual output"
+  ],
+  "samples": [
+    {
+      "name": "left spatial signal",
+      "audio": {
+        "stereoRms": [
+          0.03612996677583574,
+          0.010939277549805797
+        ],
+        "backend": "webaudio",
+        "contextState": "running",
+        "fault": null,
+        "loaded": true,
+        "reads": 48,
+        "decodedBytes": 192000,
+        "masterRms": 0.02353462219555959,
+        "listener": {
+          "entityId": "entity://f829e535-0fef-442b-b628-17f9c0f084d0",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "forward": [
+            0,
+            0,
+            -1
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ]
+        },
+        "mixer": {
+          "masterVolume": 1,
+          "limiter": true,
+          "buses": [
+            {
+              "name": "Master",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Music",
+              "volume": 0.6,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Effects",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            }
+          ]
+        },
+        "sources": [
+          {
+            "entityId": "entity://b73d8f81-c9cb-4de4-bb3a-05b633e1cda5",
+            "assetId": "asset://7a45cfb13c57280cc8399c05af1015dc8278110aae70d2999d2aa25098ef2553",
+            "bus": "Effects",
+            "stream": false,
+            "spatial": true,
+            "transportActive": true,
+            "positionSeconds": 0.24961451247165556,
+            "durationSeconds": 3,
+            "volume": 0.7,
+            "playing": true,
+            "whyAudioNotPlaying": null,
+            "attenuation": 0.2773500981126145,
+            "queuedFrames": 0,
+            "capacityFrames": 0,
+            "underruns": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "right spatial signal",
+      "audio": {
+        "stereoRms": [
+          0.03962425375573095,
+          0.0519882785435331
+        ],
+        "backend": "webaudio",
+        "contextState": "running",
+        "fault": null,
+        "loaded": true,
+        "reads": 48,
+        "decodedBytes": 192000,
+        "masterRms": 0.04580626622871916,
+        "listener": {
+          "entityId": "entity://f829e535-0fef-442b-b628-17f9c0f084d0",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "forward": [
+            0,
+            0,
+            -1
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ]
+        },
+        "mixer": {
+          "masterVolume": 1,
+          "limiter": true,
+          "buses": [
+            {
+              "name": "Master",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Music",
+              "volume": 0.6,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Effects",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            }
+          ]
+        },
+        "sources": [
+          {
+            "entityId": "entity://b73d8f81-c9cb-4de4-bb3a-05b633e1cda5",
+            "assetId": "asset://7a45cfb13c57280cc8399c05af1015dc8278110aae70d2999d2aa25098ef2553",
+            "bus": "Effects",
+            "stream": false,
+            "spatial": true,
+            "transportActive": true,
+            "positionSeconds": 1.7705215419501137,
+            "durationSeconds": 3,
+            "volume": 0.7,
+            "playing": true,
+            "whyAudioNotPlaying": null,
+            "attenuation": 0.47552681813605757,
+            "queuedFrames": 0,
+            "capacityFrames": 0,
+            "underruns": 0
+          }
+        ]
+      }
+    },
+    {
+      "status": "observed",
+      "frame": 191,
+      "traceId": "f228a3e6-77c5-48d9-a415-df8526bf4f9b",
+      "generation": 4,
+      "sceneRevision": 4,
+      "mixer": {
+        "masterVolume": 1,
+        "limiter": true,
+        "buses": [
+          {
+            "name": "Master",
+            "volume": 1,
+            "muted": false,
+            "lowpassHz": 20000
+          },
+          {
+            "name": "Music",
+            "volume": 0.6,
+            "muted": false,
+            "lowpassHz": 20000
+          },
+          {
+            "name": "Effects",
+            "volume": 1,
+            "muted": true,
+            "lowpassHz": 20000
+          }
+        ]
+      },
+      "listener": {
+        "entityId": "entity://f829e535-0fef-442b-b628-17f9c0f084d0",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "forward": [
+          0,
+          0,
+          -1
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ]
+      },
+      "backend": "webaudio",
+      "contextState": "running",
+      "masterRms": 0,
+      "stereoRms": [
+        0,
+        0
+      ],
+      "decodedBytes": 192000,
+      "reads": 48,
+      "items": [
+        {
+          "entityId": "entity://b73d8f81-c9cb-4de4-bb3a-05b633e1cda5",
+          "assetId": "asset://7a45cfb13c57280cc8399c05af1015dc8278110aae70d2999d2aa25098ef2553",
+          "bus": "Effects",
+          "stream": false,
+          "spatial": true,
+          "transportActive": true,
+          "positionSeconds": 0.22176870748299304,
+          "durationSeconds": 3,
+          "volume": 0.05,
+          "playing": false,
+          "whyAudioNotPlaying": "Bus muted",
+          "attenuation": 0.4719409492307996,
+          "queuedFrames": 0,
+          "capacityFrames": 0,
+          "underruns": 0
+        }
+      ],
+      "total": 1,
+      "nextOffset": null
+    },
+    {
+      "name": "bounded streaming output",
+      "audio": {
+        "stereoRms": [
+          0.08400760589520188,
+          0.0833138666497487
+        ],
+        "backend": "webaudio",
+        "contextState": "running",
+        "fault": null,
+        "loaded": true,
+        "reads": 75,
+        "decodedBytes": 64000,
+        "masterRms": 0.06439620464685564,
+        "listener": {
+          "entityId": "entity://f2393eb1-ee07-43f8-bba1-cad6c0ed141a",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "forward": [
+            0,
+            0,
+            -1
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ]
+        },
+        "mixer": {
+          "masterVolume": 1,
+          "limiter": true,
+          "buses": [
+            {
+              "name": "Master",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Music",
+              "volume": 0.6,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Effects",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            }
+          ]
+        },
+        "sources": [
+          {
+            "entityId": "entity://ba6d4bb3-d375-455c-83b7-287d6b41c988",
+            "assetId": "asset://44c499df5d6c8f44f7bf1fda80a1315b78a5fc813e5938fe42490539638620fd",
+            "bus": "Music",
+            "stream": true,
+            "spatial": false,
+            "transportActive": true,
+            "positionSeconds": 1.2509375,
+            "durationSeconds": 90,
+            "volume": 0.7,
+            "playing": true,
+            "whyAudioNotPlaying": null,
+            "attenuation": 1,
+            "queuedFrames": 8657,
+            "capacityFrames": 16384,
+            "underruns": 0
+          },
+          {
+            "entityId": "entity://4b66c626-79a5-4fc2-ad1d-9833d86dc04a",
+            "assetId": "asset://53329b5fd323fc5c882b2765bd96c8fd8bd5816a73ba9ed1ab1ce9d407cabaf0",
+            "bus": "Effects",
+            "stream": false,
+            "spatial": false,
+            "transportActive": false,
+            "positionSeconds": 0,
+            "durationSeconds": 1,
+            "volume": 0.7,
+            "playing": false,
+            "whyAudioNotPlaying": "Source stopped",
+            "attenuation": 1,
+            "queuedFrames": 0,
+            "capacityFrames": 0,
+            "underruns": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "measured lowpass output",
+      "audio": {
+        "stereoRms": [
+          0.0007104369942875312,
+          0.00043365773647194864
+        ],
+        "backend": "webaudio",
+        "contextState": "running",
+        "fault": null,
+        "loaded": true,
+        "reads": 103,
+        "decodedBytes": 64000,
+        "masterRms": 0.0003423699756187634,
+        "listener": {
+          "entityId": "entity://f2393eb1-ee07-43f8-bba1-cad6c0ed141a",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "forward": [
+            0,
+            0,
+            -1
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ]
+        },
+        "mixer": {
+          "masterVolume": 1,
+          "limiter": true,
+          "buses": [
+            {
+              "name": "Master",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Music",
+              "volume": 0.6,
+              "muted": false,
+              "lowpassHz": 20
+            },
+            {
+              "name": "Effects",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            }
+          ]
+        },
+        "sources": [
+          {
+            "entityId": "entity://ba6d4bb3-d375-455c-83b7-287d6b41c988",
+            "assetId": "asset://44c499df5d6c8f44f7bf1fda80a1315b78a5fc813e5938fe42490539638620fd",
+            "bus": "Music",
+            "stream": true,
+            "spatial": false,
+            "transportActive": true,
+            "positionSeconds": 0.4846875,
+            "durationSeconds": 90,
+            "volume": 0.7,
+            "playing": true,
+            "whyAudioNotPlaying": null,
+            "attenuation": 1,
+            "queuedFrames": 8629,
+            "capacityFrames": 16384,
+            "underruns": 0
+          },
+          {
+            "entityId": "entity://4b66c626-79a5-4fc2-ad1d-9833d86dc04a",
+            "assetId": "asset://53329b5fd323fc5c882b2765bd96c8fd8bd5816a73ba9ed1ab1ce9d407cabaf0",
+            "bus": "Effects",
+            "stream": false,
+            "spatial": false,
+            "transportActive": false,
+            "positionSeconds": 0,
+            "durationSeconds": 1,
+            "volume": 0.7,
+            "playing": false,
+            "whyAudioNotPlaying": "Source stopped",
+            "attenuation": 1,
+            "queuedFrames": 0,
+            "capacityFrames": 0,
+            "underruns": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "unactivated browser context",
+      "audio": {
+        "stereoRms": [
+          0,
+          0
+        ],
+        "backend": "webaudio",
+        "contextState": "suspended",
+        "fault": null,
+        "loaded": true,
+        "reads": 8,
+        "decodedBytes": 64000,
+        "masterRms": null,
+        "listener": {
+          "entityId": "entity://f2393eb1-ee07-43f8-bba1-cad6c0ed141a",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "forward": [
+            0,
+            0,
+            -1
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ]
+        },
+        "mixer": {
+          "masterVolume": 1,
+          "limiter": true,
+          "buses": [
+            {
+              "name": "Master",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Music",
+              "volume": 0.6,
+              "muted": false,
+              "lowpassHz": 20000
+            },
+            {
+              "name": "Effects",
+              "volume": 1,
+              "muted": false,
+              "lowpassHz": 20000
+            }
+          ]
+        },
+        "sources": [
+          {
+            "entityId": "entity://ba6d4bb3-d375-455c-83b7-287d6b41c988",
+            "assetId": "asset://44c499df5d6c8f44f7bf1fda80a1315b78a5fc813e5938fe42490539638620fd",
+            "bus": "Music",
+            "stream": true,
+            "spatial": false,
+            "transportActive": false,
+            "positionSeconds": 0,
+            "durationSeconds": 90,
+            "volume": 0.7,
+            "playing": false,
+            "whyAudioNotPlaying": "Browser audio activation required",
+            "attenuation": 1,
+            "queuedFrames": 0,
+            "capacityFrames": 16384,
+            "underruns": 0
+          },
+          {
+            "entityId": "entity://4b66c626-79a5-4fc2-ad1d-9833d86dc04a",
+            "assetId": "asset://53329b5fd323fc5c882b2765bd96c8fd8bd5816a73ba9ed1ab1ce9d407cabaf0",
+            "bus": "Effects",
+            "stream": false,
+            "spatial": false,
+            "transportActive": false,
+            "positionSeconds": 0,
+            "durationSeconds": 1,
+            "volume": 0.7,
+            "playing": false,
+            "whyAudioNotPlaying": "Browser audio activation required",
+            "attenuation": 1,
+            "queuedFrames": 0,
+            "capacityFrames": 0,
+            "underruns": 0
+          }
+        ]
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "passed": true,
+  "source": {
+    "runId": 37245601863,
+    "artifactId": 11318308595,
+    "executableCommit": "aef19432107a017de935319f94d443390972aed1",
+    "executableTree": "178e257f6ffc86e5d1909b274d9a0462c031c6de",
+    "visualReview": "Final spatial editor/left/right, streaming, Null and activation-required screenshots reviewed"
+  }
+}

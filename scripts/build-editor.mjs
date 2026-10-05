@@ -51,6 +51,8 @@ export async function buildEditor() {
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));
   await writeFile(resolve(destination,'animation-host.mjs'),(await readFile(resolve(root,'engine/wasm/animation-host.mjs'),'utf8')).replace('../renderer/','./'));
   await cp(resolve(root,"engine/wasm/physics-host.mjs"),resolve(destination,"physics-host.mjs"));
+  for(const name of ['audio-session','audio-worklet','audio-editor'])await writeFile(resolve(destination,name+'.mjs'),(await readFile(resolve(root,'apps/editor/src',name+'.mjs'),'utf8')).replaceAll('../../../engine/audio/','./'));
+  for(const name of ['plan','pcm-stream'])await cp(resolve(root,'engine/audio',name+'.mjs'),resolve(destination,name+'.mjs'));
   const source = await readFile(resolve(root, "apps/editor/src/main.ts"), "utf8");
   if (/\binterface\s+|:\s*(string|number|boolean)\b/.test(source)) {
     throw new Error("Bootstrap TypeScript must remain directly executable until the compiler toolchain is installed");

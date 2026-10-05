@@ -4,23 +4,24 @@ Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.
 
-M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.
-General GLB animation includes skeletons/skins, rigid TRS clips, Rust playback,
-shortest-path rotation interpolation, crossfades and bounded state machines.
-Animator Inspector, C# and AI controls share observed runtime state; canonical
-editing retains revisions, Undo, Save and isolated proposals. WebGPU skinning
-works in legacy/HDR, and Null consumes the same Rust poses. Pixel-perfect Scene
-uses nearest texture filtering while preserving its free editor camera.
-All 20 jobs in CI run 37239883665 pass at executable commit
-cc4b072cef49ffe7b9e9d8b9aea4a095275f8172 (tree c265d3894305fae4973816320eb08bee6d2d0f8f).
-135 Node and 39 Rust tests, nine new browser criteria and earlier regressions pass.
-Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
-Read docs/reports/M11_CURRENT_REPORT.md, docs/architecture/M11_ANIMATION.md and
-demos/M11_GUIDE.md. Next: M12 audio, per M12_PLAN.md/master section 131.
-PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
+M12 (0.0.24) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 75%.
+Optional AudioSource/AudioListener, spatial pan and attenuation, mixer buses,
+lowpass filters and master dynamics work through Web Audio. Long PCM WAVs stream
+through bounded AudioWorklet queues. Human/C#/AI runtime controls are transient;
+canonical editing preserves revisions, Undo/Save and isolated proposals.
+Stopped previews are silent. Scene and simulation pause preserve transport;
+Stop resets it. Null and browser activation expose truthful unavailable reasons.
+All 21 jobs in CI run 37245601863 pass at executable commit
+aef19432107a017de935319f94d443390972aed1 (tree 178e257f6ffc86e5d1909b274d9a0462c031c6de).
+144 Node and 39 Rust tests, ten new browser criteria and earlier regressions pass.
+Actual graph signal, stereo pan, pause, streaming and lowpass were measured.
+Final screenshots were reviewed. No user-only test remains.
+Read docs/reports/M12_CURRENT_REPORT.md, docs/architecture/M12_AUDIO.md,
+ADR-0025 and demos/M12_GUIDE.md. Next: M13 profiler/explainFrameSpike.
+PR #14 is ready for review, stacked on unmerged #13; do not merge automatically.
 
-`npm.cmd run demo` creates three editable M11 projects. Preserve the complete
-`.axiom/projects` folder when upgrading. See [demo guide](demos/M11_GUIDE.md).
+`npm.cmd run demo` creates two editable M12 audio projects. Preserve the complete
+`.axiom/projects` folder when upgrading. See [demo guide](demos/M12_GUIDE.md).
 
 ## Run the verified bootstrap
 
@@ -147,11 +148,12 @@ gravity, impulses/friction, triggers, collision layers, raycasts and fixed steps
 The Physics Inspector and generated C# velocity bindings work in isolated Play.
 See [contracts and limits](docs/architecture/M7_PHYSICS.md).
 
-Create four editable demos. .NET 10 SDK with wasm-tools is needed for the 2D C# keyboard controller:
+Create the physics pair with demo:m7 and the editor pair with demo:m8. .NET 10 SDK with wasm-tools is needed for the 2D C# keyboard controller:
 
 ```powershell
 npm.cmd ci
-npm.cmd run demo
+npm.cmd run demo:m7
+npm.cmd run demo:m8
 npm.cmd run dev
 ```
 

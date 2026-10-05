@@ -1,6 +1,6 @@
 # M12 — Audio foundation
 
-Status: planned; implementation not started. Roadmap weight: 3%.
+Status: complete; 8/8 required acceptance groups passed. Roadmap weight: 3%.
 Master specification sections 39 and 131.
 Begin after full M11 acceptance and synchronized closure. Read the master,
 M11_ANIMATION.md / ADR-0024, M6_WORKSPACES.md, asset import contracts,

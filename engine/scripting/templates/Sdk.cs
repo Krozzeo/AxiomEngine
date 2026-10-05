@@ -22,6 +22,11 @@ public readonly record struct Entity(string Id, int Generation) {
  public void PlayAnimation(string state,double crossfadeSeconds=0.3) => Context.Animate(this,"state",state,0,crossfadeSeconds);
  public void PauseAnimation() => Context.Animate(this,"pause",null,0,0);
  public void ResumeAnimation() => Context.Animate(this,"resume",null,0,0);
+ public void PlayAudio() => Context.Audio(this,"play",0);
+ public void PauseAudio() => Context.Audio(this,"pause",0);
+ public void ResumeAudio() => Context.Audio(this,"resume",0);
+ public void StopAudio() => Context.Audio(this,"stop",0);
+ public void SetAudioVolume(double volume) => Context.Audio(this,"volume",volume);
  public Entity Spawn(Vec3 position) => Context.Spawn(this,position);
 }
 public abstract class Script {
@@ -42,6 +47,7 @@ internal static class Context {
  internal static readonly Dictionary<string,RigidBody> Bodies = new();
  internal static readonly Dictionary<string,JsonElement> Animators = new();
  internal static readonly Dictionary<string,JsonElement> AnimationStates = new();
+ internal static readonly HashSet<string> AudioSources = new();
  internal static readonly HashSet<string> Keys = new();
  internal static readonly List<Operation> Operations = new();
  internal static int Spawned,Logs;
@@ -62,6 +68,10 @@ internal static class Context {
   if(action=="state"&&!a.GetProperty("states").EnumerateArray().Any(s=>s.GetProperty("name").GetString()==name)||action=="parameter"&&!a.GetProperty("parameters").EnumerateArray().Any(p=>p.GetProperty("name").GetString()==name))throw new ArgumentException("AX_ANIMATION_0001: unknown state/parameter");
   Add(new("animation",entity.Id,null,default,null,action,name,value,duration));
  }
+ internal static void Audio(Entity entity,string action,double value) {
+  _=Read(entity);if(!AudioSources.Contains(entity.Id)||!double.IsFinite(value)||value<0||value>1)throw new ArgumentException("AX_AUDIO_0001: invalid source or volume");
+  Add(new("audio",entity.Id,null,default,null,action,null,value));
+ }
  internal static void Velocity(Entity entity,Vec3 velocity) {
   _=ReadBody(entity);Position(velocity);if(Math.Max(Math.Abs(velocity.X),Math.Max(Math.Abs(velocity.Y),Math.Abs(velocity.Z)))>10000)throw new ArgumentException("AX_PHYSICS_0001: invalid velocity");
   Add(new("velocity",entity.Id,null,velocity,null));Bodies[entity.Id]=new RigidBody(velocity);
@@ -79,16 +89,17 @@ internal static class Context {
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
   if(Spawned>=Limits.Spawns||Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
-  var id="entity://"+Guid.NewGuid();Add(new("spawn",id,template.Id,position,null));Spawned++;Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
+  var id="entity://"+Guid.NewGuid();Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
  internal static void Log(string message) {
   if(message.Length>2048||Logs>=Limits.Logs)throw new InvalidOperationException("AX_SCRIPT_0003: log limit exceeded");
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
-  Entities.Clear();Bodies.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Operations.Clear();Logs=0;
+  Entities.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {
    if(Entities.Count>=Limits.Entities)throw new ArgumentException("Entity limit exceeded");
+   if(e.TryGetProperty("audioSource",out _))AudioSources.Add(e.GetProperty("id").GetString()!);
    if(e.TryGetProperty("animator",out var animator))Animators.Add(e.GetProperty("id").GetString()!,animator.Clone());
    if(e.TryGetProperty("animationState",out var animationState))AnimationStates.Add(e.GetProperty("id").GetString()!,animationState.Clone());
    if(e.TryGetProperty("rigidBody",out var body))Bodies.Add(e.GetProperty("id").GetString()!,RigidBody.Read(body));
@@ -104,8 +115,8 @@ internal static class Context {
    if(error==null)foreach(var op in Operations) {
     writer.WriteStartObject();writer.WriteString("kind",op.Kind);writer.WriteString("id",op.Id);
     if(op.Template!=null)writer.WriteString("template",op.Template);
-    if(op.Kind=="animation"){writer.WriteString("action",op.Action);if(op.Name!=null)writer.WriteString("name",op.Name);writer.WriteNumber("value",op.Value);writer.WriteNumber("duration",op.Duration);}
-    if(op.Kind!="log"&&op.Kind!="animation"){writer.WritePropertyName("position");op.Position.Write(writer);}
+    if(op.Kind=="animation"||op.Kind=="audio"){writer.WriteString("action",op.Action);if(op.Name!=null)writer.WriteString("name",op.Name);writer.WriteNumber("value",op.Value);writer.WriteNumber("duration",op.Duration);}
+    if(op.Kind!="log"&&op.Kind!="animation"&&op.Kind!="audio"){writer.WritePropertyName("position");op.Position.Write(writer);}
     if(op.Message!=null)writer.WriteString("message",op.Message);
     writer.WriteEndObject();
    }

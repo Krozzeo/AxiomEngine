@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.0.26 — M13.1 workspace and profiler corrections
+
+M13.1 (0.0.26) is complete: six correction groups, 100%. Project progress remains approximately 76% (79/104 roadmap weight points); these corrections do not advance M14.
+Profiler captures survive Stop, retain their original session and can be saved,
+exported/imported and reopened after reload. Analysis visibly identifies its frame.
+Eight tabs drag independently into five fixed dock sections, preserving the old
+initial arrangement. Separate windows share selection and canonical editing through
+one renderer lease; closing returns their controls. Project layout saves without
+publishing unsaved scene edits. Same-tab credentials survive reload; pagehide
+releases the old lease. Dev opens the default browser, with a printed-link fallback.
+All 23 CI jobs pass at 03607cdf87bef62732b4bb39c432be97f3e79611 (tree ae36db768f7c484a02966442b01c401cdf94b08c).
+158 Node tests, 39 Rust tests and nine new browser criteria pass, including all
+prior gameplay and C# development/AOT regressions. Final screenshots reviewed.
+See docs/reports/M13_1_CURRENT_REPORT.md and demos/M13_1_GUIDE.md.
+PR #16 is ready for review, stacked on unmerged #15; do not merge automatically.
+Next: M14 automated game testing.
+
 ## 0.0.25 — M13 Profiler and explainFrameSpike
 
 M13 (0.0.25) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 76% (79/104 roadmap weight points).

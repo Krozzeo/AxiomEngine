@@ -1,3 +1,6 @@
+Read the completed M13.1 correction contract and current report first; preserve
+saved capture isolation, independent dock tabs and explicit lease release.
+
 # M14 — Automated Game Testing
 
 Status: planned, 0%. Roadmap weight: 4 points. Master specification section 133.

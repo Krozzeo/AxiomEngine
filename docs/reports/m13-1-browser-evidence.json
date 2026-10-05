@@ -1,0 +1,25 @@
+{
+  "criteria": [
+    "Token is removed from URL and reload reconnects the same tab",
+    "Explanation visibly confirms each action and identifies the selected frame",
+    "Stop retains the previous Play capture and historical analysis uses its original revision",
+    "Capture JSON export/import and browser persistence preserve identical analysis after reload",
+    "Real click-and-drag relocates an individual tab into the central section",
+    "Panels dock on different sides and tab groups retain bidirectional selection",
+    "Separate-window Inspector edits the real scene through one editor lease; closing returns its controls",
+    "Scene and Game are separately draggable tabs and the active viewport follows its panel",
+    "Project layout survives reload and Reset restores the default workspace"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "passed": true,
+  "provenance": {
+    "executableCommit": "03607cdf87bef62732b4bb39c432be97f3e79611",
+    "executableTree": "ae36db768f7c484a02966442b01c401cdf94b08c",
+    "runId": 37325146035,
+    "artifactId": 11351442266,
+    "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37325146035",
+    "screenshotsReviewed": true,
+    "environment": "Chromium/Xvfb, Null for new workspace acceptance; real WebGPU/C# in full prior regression matrix"
+  }
+}

@@ -1,3 +1,7 @@
+# Current demos: M13.1
+
+The default demo command now creates the workspace/capture demos. See M13_1_GUIDE.md.
+
 # Current demos: M13
 
 npm run demo creates Frame Spike Lab and 2D Pass Timing. See M13_GUIDE.md.

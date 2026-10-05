@@ -27,6 +27,23 @@ Non-negotiable foundations:
 
 ## Current state
 
+M13.1 (0.0.26) is complete: six correction groups, 100%. Project progress remains approximately 76% (79/104 roadmap weight points); these corrections do not advance M14.
+Profiler captures survive Stop, retain their original session and can be saved,
+exported/imported and reopened after reload. Analysis visibly identifies its frame.
+Eight tabs drag independently into five fixed dock sections, preserving the old
+initial arrangement. Separate windows share selection and canonical editing through
+one renderer lease; closing returns their controls. Project layout saves without
+publishing unsaved scene edits. Same-tab credentials survive reload; pagehide
+releases the old lease. Dev opens the default browser, with a printed-link fallback.
+All 23 CI jobs pass at 03607cdf87bef62732b4bb39c432be97f3e79611 (tree ae36db768f7c484a02966442b01c401cdf94b08c).
+158 Node tests, 39 Rust tests and nine new browser criteria pass, including all
+prior gameplay and C# development/AOT regressions. Final screenshots reviewed.
+See docs/reports/M13_1_CURRENT_REPORT.md and demos/M13_1_GUIDE.md.
+PR #16 is ready for review, stacked on unmerged #15; do not merge automatically.
+Next: M14 automated game testing.
+
+Historical M13 baseline:
+
 M13 (0.0.25) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 76% (79/104 roadmap weight points).
 The Profiler tab and readonly semantic tools share bounded frame history,
 main/worker/wait scopes, sampled GPU passes and median/MAD spike explanations.
@@ -114,7 +131,7 @@ M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
 RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
 triggers, layer masks, raycasts and repeatable golden scenes. M9.1 adds angular dynamics and rotated contacts; CCD and GPU physics remain
 outside scope. See ADR-0020 for historical M7 limits and M9_1_CORRECTIONS.md for
-the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the M13 pair; demo:m12 retains audio samples.
+the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the M13.1 pair; demo:m12 retains audio samples.
 M8 adds independent stopped Game preview, an editor-only Scene camera, triangle
 picking, two-way selection, move/rotate/scale gizmos with one-command Undo and
 Escape cancellation, orbit/pan/zoom/fly/framing and an absolute XYZ widget.
@@ -203,9 +220,9 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Implement M14 per M14_PLAN.md and master section 133. M13 is complete;
-PR #15 is ready, stacked on unmerged #14. Read M13_PROFILER.md, ADR-0026,
-M13_CURRENT_REPORT.md, M7/M11/M12 contracts and the architecture manifest first.
+Implement M14 per M14_PLAN.md and master section 133. M13.1 corrections are complete;
+PR #16 is ready, stacked on unmerged #15. Read M13_1_EDITOR_WORKSPACE.md, ADR-0027,
+M13_1_CURRENT_REPORT.md, M13_PROFILER.md, M7/M11/M12 contracts and the architecture manifest first.
 Inventory RAF, worker, physics, animation, audio and generation ownership before
 adding deterministic frame stepping, simulation input and public test assertions.
 Preserve measured profiler evidence, real stopped Game preview, proposals and

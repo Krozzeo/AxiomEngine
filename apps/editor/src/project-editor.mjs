@@ -66,13 +66,15 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("play-stop").disabled=busy||!state.playing;
     $("scene-tab").disabled=busy||!project;
     $("game-tab").disabled=busy||!project;
-    $("scene-tab").className=view==='scene'?"active":"";
-    $("game-tab").className=view==='game'?"active":"";
+    if(!$("editor-workspace").classList.contains?.("docked")){
+      $("scene-tab").className=view==='scene'?"active":"";
+      $("game-tab").className=view==='game'?"active":"";
+    }
     $("play-status").textContent=state.playing?"Play · runtime copy":"Stopped · authoring";
     $("preview-note").textContent=project ? `${project.name} · ${view==='game'?'Game camera':'Scene camera'}` : "Create or open a project to begin";
     $("entities").replaceChildren();
     const entities=project?.scene.entities??[];
-    function drop(node,parentId,beforeId){node.addEventListener('dragover',event=>{event.preventDefault();event.stopPropagation();node.classList.add('drag-target');});node.addEventListener('dragleave',()=>node.classList.remove('drag-target'));node.addEventListener('drop',event=>{event.preventDefault();event.stopPropagation();node.classList.remove('drag-target');try{const ids=JSON.parse(event.dataTransfer.getData('application/axiom-entities'));void act(()=>run('scene.entity.reparent',mutation({entityIds:ids,...(parentId?{parentId}:{}),...(beforeId?{beforeId}:{})})));}catch(error){reportError(error);}});}
+    function drop(node,parentId,beforeId){node.addEventListener('dragover',event=>{if(!event.dataTransfer.types.includes('application/axiom-entities'))return;event.preventDefault();event.stopPropagation();node.classList.add('drag-target');});node.addEventListener('dragleave',()=>node.classList.remove('drag-target'));node.addEventListener('drop',event=>{if(!event.dataTransfer.types.includes('application/axiom-entities'))return;event.preventDefault();event.stopPropagation();node.classList.remove('drag-target');try{const ids=JSON.parse(event.dataTransfer.getData('application/axiom-entities'));void act(()=>run('scene.entity.reparent',mutation({entityIds:ids,...(parentId?{parentId}:{}),...(beforeId?{beforeId}:{})})));}catch(error){reportError(error);}});}
     const root=document.createElement('div');root.className='tree-row scene-root';root.setAttribute('role','treeitem');root.setAttribute('aria-expanded',String(!collapsed.has('root')));const rootToggle=document.createElement('button');rootToggle.className='tree-toggle';rootToggle.textContent=collapsed.has('root')?'▸':'▾';rootToggle.setAttribute('aria-label','Expand or collapse Scene root');rootToggle.addEventListener('click',()=>{if(collapsed.has('root'))collapsed.delete('root');else collapsed.add('root');draw(false);});root.append(rootToggle);const rootButton=document.createElement('button');rootButton.className='scene-root-button';rootButton.textContent='Scene root';rootButton.addEventListener('click',()=>select(null));root.append(rootButton);drop(root,null);$('entities').append(root);
     function branch(parentId=null,depth=1){const siblings=entities.filter(e=>(e.parentId??null)===parentId);for(const item of siblings){
       const gap=document.createElement('div');gap.className='tree-gap';gap.dataset.beforeId=item.id;gap.dataset.parentId=parentId??'';gap.setAttribute('aria-label','Insert before '+item.name);drop(gap,parentId,item.id);$('entities').append(gap);

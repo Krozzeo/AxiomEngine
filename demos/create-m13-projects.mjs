@@ -12,9 +12,9 @@ public sealed class GameScript : Script {
   Entity.Move(new Vec3(Input.Axis("ArrowLeft","ArrowRight"),0,0)*deltaSeconds*2);
  }
 }`;
-export async function createM13Demos(root,{compile=false,requireScript=false,onProgress=()=>{}}={}){
+export async function createM13Demos(root,{compile=false,requireScript=false,label='M13',onProgress=()=>{}}={}){
  const w=new SceneWorkspace(new ProjectStore(root)),projects=[],args=x=>({id:w.project.id,expectedSceneRevision:w.revision,...x});
- for(const dimension of [3,2]){await w.run('project.create',{name:dimension===3?'Demo · M13 Frame Spike Lab':'Demo · M13 2D Pass Timing'});
+ for(const dimension of [3,2]){await w.run('project.create',{name:dimension===3?`Demo · ${label} Frame Spike Lab`:`Demo · ${label} 2D Pass Timing`});
   if(dimension===2){await w.run('scene.twoD.update',args({value:twoDDefaults}));await w.run('asset.import',args({name:'M13-timing-atlas.png',base64:atlasPNG().toString('base64')}));}
   for(let i=0;i<5;i++){if(dimension===3)await w.run('scene.primitive.create',args({dimension,shape:'cube'}));else await w.run('scene.entity.create',args({name:'Sprite'}));const id=w.project.scene.entities.at(-1).id;if(dimension===2){await w.run('scene.component.add',args({entityId:id,component:'Renderable',value:{kind:'sprite',assetId:w.project.scene.assets.find(a=>a.name==='M13-timing-atlas.png').id}}));await w.run('scene.sprite2D.set',args({entityId:id,value:{...component2DDefaults.sprite2D,columns:8,frame:i%4}}));}
   await w.run('scene.entity.update',args({entityId:id,name:i===0?(dimension===3?'Controller · arrows move, 1 adds one measured pulse':'Reference sprite · edit transform and atlas'):'Measured geometry '+i,transform:{position:[(i-2)*1.3,Math.sin(i),0],scale:[.5,.5,.5]}}));}

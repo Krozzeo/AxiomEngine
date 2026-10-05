@@ -19,7 +19,7 @@ try {
  async function open(demo){await (await control(page,'#project-list')).selectOption(demo.id);await (await control(page,'#project-open')).click();return ready();}
  let s;const args=data=>({id:s.project.id,expectedSceneRevision:s.sceneRevision,...data});
  const test=data=>command('gameTest.control',args(data));
- async function until(status){const end=Date.now()+60000;while(Date.now()<end){const r=await test({action:'query'});if(status.includes(r.status))return r;await page.waitForTimeout(30);}throw Error('Test did not finish');}
+ async function until(status){const end=Date.now()+60000;while(Date.now()<end){const r=await test({action:'query'});if(status.includes(r.status))return r;if(['failed','cancelled','completed'].includes(r.status))throw Error('Unexpected test result: '+JSON.stringify(r));await page.waitForTimeout(30);}throw Error('Test did not finish');}
  async function run(suite){await test({action:'run',suite});return until(['completed','failed','cancelled']);}
  await next();s=await open(demos[0]);await page.locator('#gpu-state').filter({hasText:'WebGPU ·'}).waitFor();
  assert.deepEqual(await page.locator('.menubar > details > summary').allTextContents(),['File','Create','Panels','Config','Help']);

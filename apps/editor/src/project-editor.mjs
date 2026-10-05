@@ -254,7 +254,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("asset-place").addEventListener("click",()=>act(()=>run("scene.asset.place",mutation({assetId:$("asset-list").value}))));
   $("camera-projection").addEventListener("change",()=>{const projection=$("camera-projection").value;return act(()=>run("scene.camera.update",mutation({camera:{projection}})));});
   $("project-close").addEventListener("click",()=>act(async()=>{if(state.dirty&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
-  $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());view='game';panels.activateView('game');}));
+  $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());if(!getRenderer()?.parallelViewport?.()){view='game';panels.activateView('game');}}));
   $("play-stop").addEventListener("click",()=>act(()=>run("play.stop",mutation())));
   for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;panels.activateView(name);draw(false);});
   $("project-list").addEventListener("change", draw);

@@ -132,6 +132,7 @@ try {
   await writeFile(join(evidence,"report.json"),JSON.stringify(report,null,2));
   console.log(JSON.stringify(report,null,2));
 } catch(error) {
+  await writeFile(join(evidence,"failure-state.json"),JSON.stringify(await state().catch(e=>({error:e.message})),null,2));
   if(browser) for(const context of browser.contexts())for(const page of context.pages()) {
     await page.screenshot({path:join(evidence,"failure.png")}).catch(()=>{});
     const detail=await page.locator("body").innerText().catch(()=>"");console.error("Browser failure state:\n"+detail);await writeFile(join(evidence,"failure.txt"),detail+"\n"+error.stack+"\n"+errors.join("\n"));

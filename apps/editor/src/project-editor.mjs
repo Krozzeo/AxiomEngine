@@ -66,7 +66,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("play-stop").disabled=busy||!state.playing;
     $("scene-tab").disabled=busy||!project;
     $("game-tab").disabled=busy||!project;
-    if(!$("editor-workspace").classList.contains?.("docked")){
+    if(!$("editor-workspace").classList?.contains?.("docked")){
       $("scene-tab").className=view==='scene'?"active":"";
       $("game-tab").className=view==='game'?"active":"";
     }

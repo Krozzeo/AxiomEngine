@@ -23,8 +23,12 @@
 #scene-content .dock-viewport-surface,#game-content .dock-viewport-surface {flex:1;min-height:0;}
 .viewport-inactive {padding:15px;color:#9fb3ce;}
 .dock-target {outline:3px solid #6ec7ff;outline-offset:-3px;background:#193850;}
-.workspace.dock-dragging > .dock-slot[hidden] {display:flex!important;min-height:45px;opacity:.85;}
-.workspace.dock-dragging {grid-template-rows:80px minmax(150px,1fr) var(--bottom-height,190px)!important;grid-template-columns:var(--left-width,220px) minmax(300px,1fr) var(--right-width,290px)!important;}
+.workspace.dock-dragging > .dock-slot[hidden] {display:flex!important;position:absolute;z-index:15;min-height:45px;width:150px;height:60px;opacity:.95;grid-area:auto;}
+.workspace.dock-dragging > .dock-top[hidden] {top:85px;left:calc(50% - 75px);}
+.workspace.dock-dragging > .dock-bottom[hidden] {bottom:12px;left:calc(50% - 75px);}
+.workspace.dock-dragging > .dock-left[hidden] {left:8px;top:45%;}
+.workspace.dock-dragging > .dock-right[hidden] {right:8px;top:45%;}
+.workspace.dock-dragging > .dock-center[hidden] {left:calc(50% - 75px);top:45%;}
 .dock-slot[hidden]::before {content:'Drop panel here';padding:10px;color:#8dd9ff;}
 .dock-tabs button {cursor:grab;}
 .dock-body {min-height:0;flex:1;overflow:auto;}.dock-tabs {flex-wrap:wrap;flex-shrink:0;}

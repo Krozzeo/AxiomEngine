@@ -18,7 +18,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   const panels=mountPanelLayout({document,onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
   function draw(updateFields = true) {
     $("editor-workspace").setAttribute("aria-busy",String(busy));
-    const project = state.project;panels.set(project?.editor);
+    const project = state.project;if(!busy)panels.set(project?.editor);
     const entity = selection.size===1?project?.scene.entities.find(item => item.id === selected):null;
     const attached=project?.scene.script?.attachments.includes(entity?.id);
     if($('selection-status')){

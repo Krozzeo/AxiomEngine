@@ -27,24 +27,21 @@ Non-negotiable foundations:
 
 ## Current state
 
-M12 (0.0.24) is in progress on codex/m12-audio, stacked on M11 #13.
-Read M12_AUDIO.md. PCM transport/components/demos and local tests are implemented;
-real browser audio, full CI and closure remain pending. Baseline progress: 72%.
-
-M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.
-General GLB animation includes skeletons/skins, rigid TRS clips, Rust playback,
-shortest-path rotation interpolation, crossfades and bounded state machines.
-Animator Inspector, C# and AI controls share observed runtime state; canonical
-editing retains revisions, Undo, Save and isolated proposals. WebGPU skinning
-works in legacy/HDR, and Null consumes the same Rust poses. Pixel-perfect Scene
-uses nearest texture filtering while preserving its free editor camera.
-All 20 jobs in CI run 37239883665 pass at executable commit
-cc4b072cef49ffe7b9e9d8b9aea4a095275f8172 (tree c265d3894305fae4973816320eb08bee6d2d0f8f).
-135 Node and 39 Rust tests, nine new browser criteria and earlier regressions pass.
-Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
-Read docs/reports/M11_CURRENT_REPORT.md, docs/architecture/M11_ANIMATION.md and
-demos/M11_GUIDE.md. Next: M12 audio, per M12_PLAN.md/master section 131.
-PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
+M12 (0.0.24) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 75%.
+Optional AudioSource/AudioListener, spatial pan and attenuation, mixer buses,
+lowpass filters and master dynamics work through Web Audio. Long PCM WAVs stream
+through bounded AudioWorklet queues. Human/C#/AI runtime controls are transient;
+canonical editing preserves revisions, Undo/Save and isolated proposals.
+Stopped previews are silent. Scene and simulation pause preserve transport;
+Stop resets it. Null and browser activation expose truthful unavailable reasons.
+All 21 jobs in CI run 37245601863 pass at executable commit
+aef19432107a017de935319f94d443390972aed1 (tree 178e257f6ffc86e5d1909b274d9a0462c031c6de).
+144 Node and 39 Rust tests, ten new browser criteria and earlier regressions pass.
+Actual graph signal, stereo pan, pause, streaming and lowpass were measured.
+Final screenshots were reviewed. No user-only test remains.
+Read docs/reports/M12_CURRENT_REPORT.md, docs/architecture/M12_AUDIO.md,
+ADR-0025 and demos/M12_GUIDE.md. Next: M13 profiler/explainFrameSpike.
+PR #14 is ready for review, stacked on unmerged #13; do not merge automatically.
 
 M9.2 (0.0.21) editor refinements are complete (12/12, 100%). Read
 M9_2_REFINEMENTS.md, M9_2_CURRENT_REPORT.md and demos/M9_2_GUIDE.md first.
@@ -118,7 +115,7 @@ M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
 RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
 triggers, layer masks, raycasts and repeatable golden scenes. M9.1 adds angular dynamics and rotated contacts; CCD and GPU physics remain
 outside scope. See ADR-0020 for historical M7 limits and M9_1_CORRECTIONS.md for
-the current contract. Run npm run demo to create nine samples.
+the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the M12 pair.
 M8 adds independent stopped Game preview, an editor-only Scene camera, triangle
 picking, two-way selection, move/rotate/scale gizmos with one-command Undo and
 Escape cancellation, orbit/pan/zoom/fly/framing and an absolute XYZ widget.
@@ -141,6 +138,8 @@ folders, when moving snapshots. IDs are stable; paths are never client authority
 - `daemon/axiom-daemon/`: native Rust daemon shell and security policy.
 - `engine/core/`: IDs, clocks, resource/jobs primitives and authoring runtime matrices.
 - `engine/assets/`: bounded PNG/GLB/PCM WAV importers and fixed worker entry.
+- `engine/audio/`: pure listener/attenuation planning and bounded PCM rendering.
+- `apps/editor/src/audio-*.mjs`: Web Audio adapter, worklet and human controls.
 - `engine/scripting/`: generated C# SDK, worker lifecycle and validated operations.
 - `daemon/bootstrap/scripting/`: fixed compiler capability and bundle validation.
 - `engine/wasm/`: ABI v1 exports and host wrapper (ADR-0016).
@@ -205,12 +204,13 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Implement M12 per M12_PLAN.md and master specification sections 39/131. M11 is
-complete; PR #13 is ready, stacked on unmerged #12. Preserve existing animation,
-C# gameplay, M6 proposal isolation, stopped Game preview and 2D/legacy/HDR.
-Read M11_ANIMATION.md, ADR-0024 and M11_CURRENT_REPORT.md before audio changes.
-Include editable demos, real browser acceptance and complete milestone closure.
-No required user-only M11 test remains.
+Implement M13 per M13_PLAN.md and master section 132. M12 is complete;
+PR #14 is ready, stacked on unmerged #13. Preserve audio transport and activation,
+animation/C# gameplay, proposal isolation, stopped Game preview and 2D/legacy/HDR.
+Read M12_AUDIO.md, ADR-0025, M12_CURRENT_REPORT.md, M8 causal diagnostics and
+FrameProfiler first. Add bounded CPU/GPU histories, anomaly comparison, top
+contributors and explainFrameSpike with artificial regression acceptance.
+Include an editable profiling demo and synchronized closure. No user-only M12 test remains.
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and

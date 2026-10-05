@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.0.24 — M12 Audio
+
+M12 (0.0.24) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 75%.
+Optional AudioSource/AudioListener, spatial pan and attenuation, mixer buses,
+lowpass filters and master dynamics work through Web Audio. Long PCM WAVs stream
+through bounded AudioWorklet queues. Human/C#/AI runtime controls are transient;
+canonical editing preserves revisions, Undo/Save and isolated proposals.
+Stopped previews are silent. Scene and simulation pause preserve transport;
+Stop resets it. Null and browser activation expose truthful unavailable reasons.
+All 21 jobs in CI run 37245601863 pass at executable commit
+aef19432107a017de935319f94d443390972aed1 (tree 178e257f6ffc86e5d1909b274d9a0462c031c6de).
+144 Node and 39 Rust tests, ten new browser criteria and earlier regressions pass.
+Actual graph signal, stereo pan, pause, streaming and lowpass were measured.
+Final screenshots were reviewed. No user-only test remains.
+Read docs/reports/M12_CURRENT_REPORT.md, docs/architecture/M12_AUDIO.md,
+ADR-0025 and demos/M12_GUIDE.md. Next: M13 profiler/explainFrameSpike.
+PR #14 is ready for review, stacked on unmerged #13; do not merge automatically.
+
+
 ## 0.0.23 — M11 General Animation
 
 M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.

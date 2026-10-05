@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-04",
+  "updatedAt": "2026-10-05",
   "engineVersion": "0.0.24",
   "activeMilestone": 12,
-  "milestoneStatus": "in_progress",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 0,
-    "wholeProjectPercent": 72,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 75,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -60,7 +60,11 @@
       "percent": 100
     },
     "12": {
-      "status": "in_progress",
+      "status": "complete",
+      "percent": 100
+    },
+    "13": {
+      "status": "not_started",
       "percent": 0
     }
   },
@@ -81,16 +85,17 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_three_m11_and_earlier_demos",
+    "editableDemos": "verified_two_m12_and_earlier_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
     "generalAnimation": "verified_rust_trs_skin_crossfade_state_machine_legacy_hdr_null",
-    "scenePixelFiltering": "verified_nearest_independent_of_game_camera_snapping"
+    "scenePixelFiltering": "verified_nearest_independent_of_game_camera_snapping",
+    "audio": "verified_web_audio_spatial_mixer_pcm_streaming_csharp_agent_null_activation"
   },
   "verified": {
     "nodeTests": {
-      "passed": 135,
+      "passed": 144,
       "failed": 0
     },
     "schemaDocuments": 16,
@@ -121,7 +126,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M11 0.0.23"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M12 0.0.24"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -207,32 +212,33 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.23",
-      "commit": "cc4b072cef49ffe7b9e9d8b9aea4a095275f8172",
-      "runId": 37239883665,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37239883665",
-      "jobCount": 20,
+      "version": "0.0.24",
+      "commit": "aef19432107a017de935319f94d443390972aed1",
+      "runId": 37245601863,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37245601863",
+      "jobCount": 21,
       "jobs": [
-        "rust",
-        "browser-milestones (m5)",
-        "script-boundaries (windows-latest)",
-        "bootstrap (windows-latest)",
-        "browser-milestones (m4)",
-        "script-boundaries (macos-latest)",
-        "browser-milestones (m11)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
-        "browser-milestones (m3)",
-        "browser-milestones (corrections)",
-        "browser-milestones (m9)",
-        "browser-milestones (m6)",
-        "browser-milestones (m10)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (m2)",
         "bootstrap (ubuntu-latest)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "browser-milestones (m2)",
+        "rust",
+        "browser-milestones (corrections)",
+        "script-boundaries (windows-latest)",
+        "script-boundaries (ubuntu-latest)",
         "csharp-wasm-spike (windows-latest, development)",
+        "script-boundaries (macos-latest)",
+        "browser-milestones (m10)",
+        "browser-milestones (m9)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "bootstrap (windows-latest)",
+        "browser-milestones (m12)",
+        "browser-milestones (m11)",
         "browser-milestones (m7)",
         "browser-milestones (m8)",
-        "script-boundaries (ubuntu-latest)"
+        "browser-milestones (m3)",
+        "browser-milestones (m4)",
+        "browser-milestones (m6)",
+        "browser-milestones (m5)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -399,7 +405,7 @@
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
     },
-    "semanticToolCount": 67,
+    "semanticToolCount": 76,
     "m10Acceptance": {
       "passed": true,
       "criteriaPassed": 8,
@@ -424,11 +430,22 @@
       "benchmark": "docs/reports/m11-animation-benchmark.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m12Acceptance": {
+      "passed": true,
+      "criteriaPassed": 8,
+      "criteriaTotal": 8,
+      "browserCriteriaPassed": 10,
+      "runId": 37245601863,
+      "executableCommit": "aef19432107a017de935319f94d443390972aed1",
+      "executableTree": "178e257f6ffc86e5d1909b274d9a0462c031c6de",
+      "evidence": "docs/reports/m12-browser-evidence.json",
+      "benchmark": "docs/reports/m12-audio-benchmark.json",
+      "manualTestsRequired": false,
+      "physicalAudioOutputMeasured": false
     }
   },
-  "blockedChecks": [
-    "M12 browser/CI acceptance and documentation closure pending"
-  ],
+  "blockedChecks": [],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -505,7 +522,14 @@
     "docs/reports/M11_CURRENT_REPORT.md",
     "docs/reports/m11-browser-evidence.json",
     "docs/reports/m11-animation-benchmark.json",
-    "demos/M11_GUIDE.md"
+    "demos/M11_GUIDE.md",
+    "docs/architecture/M12_AUDIO.md",
+    "docs/architecture/M13_PLAN.md",
+    "docs/adr/0025-bounded-web-audio-and-pcm-streaming.md",
+    "docs/reports/M12_CURRENT_REPORT.md",
+    "docs/reports/m12-browser-evidence.json",
+    "docs/reports/m12-audio-benchmark.json",
+    "demos/M12_GUIDE.md"
   ],
-  "nextTask": "Complete M12 real-audio browser and full CI acceptance, editable demos and synchronized closure; keep the milestone PR unmerged."
+  "nextTask": "Implement M13 profiler/explainFrameSpike per M13_PLAN.md and master section 132; preserve audio, earlier behavior, bounded causal evidence and proposal isolation; keep PR #14 unmerged."
 }

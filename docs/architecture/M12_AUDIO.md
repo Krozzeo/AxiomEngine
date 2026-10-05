@@ -1,6 +1,6 @@
 # M12 — Bounded audio contracts
 
-Status: implementation in progress; browser/CI acceptance pending. Version 0.0.24.
+Status: complete; full CI and real browser audio acceptance verified. Version 0.0.24.
 
 Sources reuse immutable PCM WAV imports: mono/stereo, 8/16/24/32-bit integer,
 8–192 kHz, existing 8 MiB source limit, at most 600 seconds. The daemon converts

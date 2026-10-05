@@ -1,20 +1,21 @@
 # Implementation status
 
-Last updated: 2026-10-04. Version 0.0.23.
-M11 (0.0.23) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 72%.
-General GLB animation includes skeletons/skins, rigid TRS clips, Rust playback,
-shortest-path rotation interpolation, crossfades and bounded state machines.
-Animator Inspector, C# and AI controls share observed runtime state; canonical
-editing retains revisions, Undo, Save and isolated proposals. WebGPU skinning
-works in legacy/HDR, and Null consumes the same Rust poses. Pixel-perfect Scene
-uses nearest texture filtering while preserving its free editor camera.
-All 20 jobs in CI run 37239883665 pass at executable commit
-cc4b072cef49ffe7b9e9d8b9aea4a095275f8172 (tree c265d3894305fae4973816320eb08bee6d2d0f8f).
-135 Node and 39 Rust tests, nine new browser criteria and earlier regressions pass.
-Final software WebGPU/Null screenshots were reviewed. No user-only test remains.
-Read docs/reports/M11_CURRENT_REPORT.md, docs/architecture/M11_ANIMATION.md and
-demos/M11_GUIDE.md. Next: M12 audio, per M12_PLAN.md/master section 131.
-PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
+Last updated: 2026-10-05. Version 0.0.24.
+M12 (0.0.24) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 75%.
+Optional AudioSource/AudioListener, spatial pan and attenuation, mixer buses,
+lowpass filters and master dynamics work through Web Audio. Long PCM WAVs stream
+through bounded AudioWorklet queues. Human/C#/AI runtime controls are transient;
+canonical editing preserves revisions, Undo/Save and isolated proposals.
+Stopped previews are silent. Scene and simulation pause preserve transport;
+Stop resets it. Null and browser activation expose truthful unavailable reasons.
+All 21 jobs in CI run 37245601863 pass at executable commit
+aef19432107a017de935319f94d443390972aed1 (tree 178e257f6ffc86e5d1909b274d9a0462c031c6de).
+144 Node and 39 Rust tests, ten new browser criteria and earlier regressions pass.
+Actual graph signal, stereo pan, pause, streaming and lowpass were measured.
+Final screenshots were reviewed. No user-only test remains.
+Read docs/reports/M12_CURRENT_REPORT.md, docs/architecture/M12_AUDIO.md,
+ADR-0025 and demos/M12_GUIDE.md. Next: M13 profiler/explainFrameSpike.
+PR #14 is ready for review, stacked on unmerged #13; do not merge automatically.
 
 ## Implemented and verified
 
@@ -32,7 +33,7 @@ PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
 - Native Rust M0 HTTP/security adapter and shared protocol parity tests.
 - Stable asset source revisions, embedded Asset DB, dependency-derived cache,
   background workers, cancellation, hot reload and resource explanations.
-- PCM WAV audio source metadata; playback remains future work.
+- M12 PCM WAV playback, listener/spatial pan, mixer buses/filters, bounded streaming and diagnostics.
 - Generated C# Transform bindings, fixed compiler jobs, diagnostics and cancellation.
 - Dedicated .NET worker lifecycle, Transform/Input/movement/spawning/logging.
 - Compile/reload during Play, saved bundles and timeout/failure isolation.
@@ -69,7 +70,7 @@ PR #13 is ready for review, stacked on unmerged #12; do not merge automatically.
 
 ## Current evidence
 
-M9.2 implementation passes 119 Node tests, 16 schema documents, generated-binding
+Historical M9.2 implementation passes 119 Node tests, 16 schema documents, generated-binding
 consistency, 60 semantic tools, three architecture rules and M0 parity. Rust passes
 33 tests, formatting, Clippy with warnings denied and core Wasm compilation.
 Current CI and M2–M9 browser evidence is recorded in M9_2_CURRENT_REPORT.md.
@@ -109,7 +110,7 @@ asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
 M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
 M8 verifies four causal queries, ten faults, bounded/expired/stale evidence,
 Scene/Game separation, two-way selection, transforms, navigation and editable demos.
-Follow M11_PLAN.md and master specification section 130 for general animation.
+Follow M13_PLAN.md and master section 132 for profiler/explainFrameSpike.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.
@@ -120,7 +121,7 @@ Follow M11_PLAN.md and master specification section 130 for general animation.
 - M8 acceptance: ../reports/M8_CURRENT_REPORT.md and M8_DIAGNOSTICS_AND_EDITOR.md.
 - Completion weights and delivery rules: MILESTONE_REPORTING.md.
 
-PR #9 is stacked on #8, #7, #6, #5, #4, #3, #2 and #1; all remain unmerged. CI success does not imply main was merged.
+PR #14 is stacked on #13 and the earlier milestone chain; all remain unmerged. CI success does not imply main was merged.
 
 ## Roadmap release slices
 
@@ -132,3 +133,7 @@ PR #9 is stacked on #8, #7, #6, #5, #4, #3, #2 and #1; all remain unmerged. CI s
 - M11 bounded GLB skin/TRS import, Rust states/crossfades and GPU skinning in legacy/HDR.
 - Optional Animator, canonical editing/proposals, transient C#/AI controls and observed query evidence.
 - Three M11 demos and nearest Scene filtering independent from Game camera snapping.
+
+- M12 optional audio components, canonical Inspector/proposal edits and transient C#/AI control.
+- Spatial pan, inverse attenuation, lowpass/master dynamics and bounded PCM streaming.
+- Truthful browser activation/Null reasons and two editable audio demos.

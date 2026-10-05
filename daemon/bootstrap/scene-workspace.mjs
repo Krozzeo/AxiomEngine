@@ -1,3 +1,4 @@
+import {primitiveSprite} from '../../engine/scene/primitive-sprites.mjs';
 import {PNG} from 'pngjs';
 import {twoDDefaults,component2DDefaults} from '../../engine/renderer/two-d-plan.mjs';
 import {activateCamera,cameraRotation} from '../../engine/scene/camera.mjs';
@@ -258,9 +259,9 @@ export class SceneWorkspace {
       const removed=new Set(selectedRoots(scene.entities,data.entityIds));let changed=true;while(changed){changed=false;for(const e of scene.entities)if(removed.has(e.parentId)&&!removed.has(e.id)){removed.add(e.id);changed=true;}}
       scene.entities=scene.entities.filter(e=>!removed.has(e.id));if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>!removed.has(id));
     } else if(type==="scene.primitive.create") {
-      const bytes=primitiveGlb(data.dimension,data.shape),asset=await this.assets.put(this.project.id,`${data.dimension}D-${data.shape}.glb`,bytes.toString('base64'),importInWorker);
+      const sprite=scene.twoD&&data.dimension===2,bytes=sprite?primitiveSprite(data.shape):primitiveGlb(data.dimension,data.shape),asset=await this.assets.put(this.project.id,`${data.dimension}D-${data.shape}.${sprite?'png':'glb'}`,bytes.toString('base64'),importInWorker);
       scene.assets??=[];if(!scene.assets.some(a=>a.id===asset.id)){if(scene.assets.length>=128)fail("AX_ASSET_0001","Project asset limit is 128");scene.assets.push(asset);}
-      scene.entities.push({id:`entity://${randomUUID()}`,name:`${data.dimension}D ${data.shape}`,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:'mesh',assetId:asset.id}});
+      scene.entities.push({id:`entity://${randomUUID()}`,name:`${data.dimension}D ${data.shape}`,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:sprite?'sprite':'mesh',assetId:asset.id},...(sprite?{sprite2D:structuredClone(component2DDefaults.sprite2D)}:{})});
       await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     } else if(type==="scene.component.remove" && ["Camera","AudioSource","AudioListener","Animator","Sprite2D","SpriteAnimation","Tilemap","Light2D","Particles2D","UI2D","Collider","RigidBody","Material","Light","LOD"].includes(data.component)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");

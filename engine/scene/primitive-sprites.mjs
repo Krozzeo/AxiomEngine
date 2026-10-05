@@ -1,0 +1,3 @@
+import {PNG} from 'pngjs';
+// Production 2D geometry is a sprite; preserve the separate legacy mesh primitive API.
+export function primitiveSprite(shape){if(!['square','disc','capsule','triangle'].includes(shape))throw Error('Unsupported 2D primitive');const png=new PNG({width:64,height:64});for(let y=0;y<64;y++)for(let x=0;x<64;x++){const px=(x+.5)/32-1,py=1-(y+.5)/32;const inside=shape==='square'||shape==='disc'&&px*px+py*py<=1||shape==='capsule'&&px*px+Math.max(0,Math.abs(py)-.5)**2<=.25||shape==='triangle'&&Math.abs(px)<=(1-py)/2;if(inside)png.data.set([255,255,255,255],(y*64+x)*4);}return PNG.sync.write(png);}

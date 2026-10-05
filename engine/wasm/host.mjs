@@ -1,3 +1,4 @@
+import {activeGameCamera} from '../scene/camera.mjs';
 import {worldScene,localTransform,worldTransforms,reparent} from '../scene/hierarchy.mjs';
 const sharedVertices=new WeakMap();
 function verticesFor(primitive){let value=sharedVertices.get(primitive);if(!value){value=new Float32Array(primitive.vertices);sharedVertices.set(primitive,value);}return value;}
@@ -78,7 +79,7 @@ export async function loadKernel(bytes) {
     stepScene(delta, trace, aspect) {
       if(disposed||!compiled) throw new Error("AX_WASM_0003: missing compiled scene");
       if(typeof trace!=="bigint"||trace<0n||trace>0xffffffffffffffffn) throw new Error("AX_WASM_0005: invalid trace");
-      const c=compiled.scene.camera??{position:[0,0,6],target:[0,0,0],projection:"perspective",fov:60,orthoHeight:6};
+      const c=activeGameCamera(compiled.scene)??{position:[0,0,6],target:[0,0,0],projection:"perspective",fov:60,orthoHeight:6};
       if(api.axiom_scene_camera(id,...c.position,...c.target,aspect,c.projection==="orthographic"?1:0,c.projection==="orthographic"?c.orthoHeight:c.fov)!==0) throw new Error("AX_WASM_0004: invalid camera");
       if(api.axiom_tick(id,delta,trace)!==0) throw new Error("AX_TIME_0001: invalid kernel tick");
       const physical=physics.step(api.axiom_fixed_steps(id));

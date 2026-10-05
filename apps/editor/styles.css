@@ -165,3 +165,9 @@ input[type="file"] { font-size: 11px; }
 .animation-row{border:1px solid #29435e;margin:5px 0;padding:5px}#animation-component fieldset{margin:8px 0;padding:8px;border:1px solid #29435e}#animation-component pre{max-height:260px;overflow:auto;font-size:11px}
 
 #animation-component form>details{margin:6px 0;border:1px solid #29435e;padding:6px}#animation-component label{display:flex;flex-direction:column;gap:3px;margin:5px 0}
+
+#profiler-content {padding:8px;overflow:auto;height:calc(100% - 36px)}
+.profiler-controls {display:flex;gap:8px;align-items:center;flex-wrap:wrap}.profiler-controls label {display:flex;gap:6px;align-items:center}.profiler-controls input[type=number] {width:90px}.profiler-note {color:#9bb2c9;font-size:11px}.profiler-columns {display:grid;grid-template-columns: minmax(400px, 3fr) minmax(250px, 2fr);gap:12px}.profiler-history {overflow:auto}.profiler-history table {width:100%;border-collapse:collapse;font-size:11px}.profiler-history td,.profiler-history th {padding:3px 6px;text-align:left;border-bottom:1px solid #26384d}.profiler-history .selected {background:#213d59}.profiler-history td:last-child {min-width:80px}.profiler-bar {display:block;height:6px;background:#63c4ff}#profiler-detail {margin:0;max-height:350px;overflow:auto;white-space:pre-wrap;font-size:11px}
+.profiler-controls input[type=checkbox] {width:auto;margin:0}.profiler-controls select {width:auto;max-width:210px}.profiler-controls label {margin:0;white-space:nowrap}#profiler-summary,.profiler-note {margin:4px 0}.profiler-controls button {white-space:nowrap}
+
+.profiler-analysis {font-size:11px;overflow:auto;max-height:350px}.profiler-analysis p {margin:0 0 5px}.profiler-analysis ol {padding-left:20px}.profiler-analysis li {margin:4px 0}.profiler-analysis summary {cursor:pointer;color:#9bb2c9}

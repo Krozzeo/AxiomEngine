@@ -9,7 +9,7 @@
   <body>
     <header class="topbar">
       <strong>Axiom Engine</strong>
-      <span class="badge">M12</span><nav class="menubar" aria-label="Editor menus"><details id="file-menu"><summary>Archivo</summary><div class="menu-popup"><details id="project-menu"><summary>Proyectos · Create / Open</summary><div class="submenu">          <label for="project-name">New project name</label>
+      <span class="badge">M13</span><nav class="menubar" aria-label="Editor menus"><details id="file-menu"><summary>Archivo</summary><div class="menu-popup"><details id="project-menu"><summary>Proyectos · Create / Open</summary><div class="submenu">          <label for="project-name">New project name</label>
           <input id="project-name" maxlength="128" placeholder="My project">
           <button id="project-new" disabled>Create project</button>
           <label for="project-list">Saved projects</label>
@@ -66,8 +66,13 @@
           <div id="gpu-state" class="viewport-message">Detecting WebGPU…</div>
         </div>
         <section class="console panel"><div id="bottom-resizer" class="panel-resizer horizontal" role="separator" aria-label="Resize bottom panel" tabindex="0"></div>
-          <nav class="tabs"><button id="project-tab" class="active">Project</button><button id="console-tab">Structured Console</button><button id="diagnostics-tab">Diagnostics</button></nav>
+          <nav class="tabs"><button id="project-tab" class="active">Project</button><button id="console-tab">Structured Console</button><button id="diagnostics-tab">Diagnostics</button><button id="profiler-tab">Profiler</button></nav>
           <div id="project-content"><div id="project-files" role="tree" aria-label="Project folders"></div><div class="project-browser"><div id="project-breadcrumb">Project</div><div id="project-icons" role="list" aria-label="Project file icons"></div><pre id="project-file-preview" hidden></pre></div></div><div id="console-content" hidden><div class="console-actions"><button id="clear">⌫ Clear console</button></div><ol id="logs"></ol></div>
+          <div id="profiler-content" hidden>
+            <div class="profiler-controls"><label><input id="profiler-pause" type="checkbox">Pause collection</label><button id="profiler-refresh">Refresh history</button><button id="profiler-clear">Clear history</button><label>Frame<input id="profiler-frame" type="number" min="1" step="1" aria-label="Profiler frame"></label><select id="profiler-metric" aria-label="Profiler metric"><option value="elapsed">Elapsed interval</option><option value="main">Measured main scopes</option><option value="gpu">GPU instrumented passes</option></select><button id="profiler-explain">Explain frame spike</button></div>
+            <p id="profiler-summary" role="status">Waiting for measured frames.</p><p class="profiler-note">Milliseconds. Elapsed includes waits; main scopes measure synchronous work. Worker dispatch overlaps script roundtrip. GPU timestamps cover sampled passes, not queue wait. Click a frame to compare it with earlier frames.</p>
+            <div class="profiler-columns"><div class="profiler-history"><table><thead><tr><th>Frame</th><th>Elapsed</th><th>Main</th><th>GPU</th><th>Timestamp evidence</th><th>Context</th><th>Elapsed trend</th></tr></thead><tbody id="profiler-rows"></tbody></table></div><div class="profiler-analysis"><p id="profiler-verdict" role="status">Select a retained frame to compare.</p><ol id="profiler-contributors"></ol><details><summary>Raw frame evidence</summary><pre id="profiler-detail">Select a retained frame to explain its measured contributors.</pre></details></div></div>
+          </div>
           <div id="diagnostics-content" hidden>
             <div class="diagnostic-controls"><select id="diagnostic-kind" aria-label="Diagnostic question"><option>whyNotRendered</option><option>whyNotColliding</option><option>whyAssetNotLoaded</option><option>whyScriptNotRunning</option></select><select id="diagnostic-other" aria-label="Other collision entity"></select><button id="diagnostic-explain">Explain selected</button><label><input id="deep-trace" type="checkbox">Deep trace</label><input id="diagnostic-trace" placeholder="Optional retained frame trace ID" aria-label="Retained frame trace ID"></div>
             <p id="causal-summary">Select an entity and ask a question.</p><ol id="causal-path"></ol>

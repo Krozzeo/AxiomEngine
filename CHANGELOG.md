@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.0.25 — M13 Profiler and explainFrameSpike
+
+M13 (0.0.25) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 76% (79/104 roadmap weight points).
+The Profiler tab and readonly semantic tools share bounded frame history,
+main/worker/wait scopes, sampled GPU passes and median/MAD spike explanations.
+Observed contributor increases are separated from overlapping waits and unavailable
+GPU evidence. Pause/Clear never pause the game or mutate authored scenes.
+Snapshot loading and late GPU replies cannot contaminate a new session.
+Two editable demos include a real C# 140ms pulse and independent 2D pass timing.
+All 22 jobs in CI run 37259458544 pass at executable commit
+0ef4db00bf6b6bc4ec4d016b5d5ddd3f31b02190 (tree 4b247daa5f2a5786ca2ad002cd3f8cb4fdc4118d).
+152 Node and 39 Rust tests, eight new browser criteria and earlier regressions pass.
+Final profiler screenshots were reviewed. No user-only test remains.
+Read docs/reports/M13_CURRENT_REPORT.md, docs/architecture/M13_PROFILER.md,
+ADR-0026 and demos/M13_GUIDE.md. Next: M14 automated game testing.
+PR #15 is ready for review, stacked on unmerged #14; do not merge automatically.
+
 ## 0.0.24 — M12 Audio
 
 M12 (0.0.24) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 75%.

@@ -6,6 +6,7 @@ import { webcrypto } from "node:crypto";
 import { mountProposalEditor } from "../apps/editor/src/proposal-editor.mjs";
 import { mountProjectEditor } from "../apps/editor/src/project-editor.mjs";
 import { createAudioSession } from '../apps/editor/src/audio-session.mjs';
+import {createGpuProfiler} from "../apps/editor/src/gpu-profiler.mjs";
 import { FrameProfiler } from "../apps/editor/src/frame-profiler.mjs";
 import { loadKernel } from "../engine/wasm/host.mjs";
 import {DecisionEvidence} from '../apps/editor/src/causal-diagnostics.mjs';
@@ -29,7 +30,7 @@ for (const mode of ["forced", "unavailable"]) {
       return { dataset:{},style:{}, width: 960, height: 540, textContent: "", append() {}, prepend() {}, setAttribute() {},addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
     }
     const context = vm.createContext({
-      createAudioSession,worldScene,renderPlan,createProductionGPU,FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor,DecisionEvidence,cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry,mountSceneTools:()=>({select(){},dispose(){}}), URLSearchParams, crypto: webcrypto, performance, structuredClone,
+      createGpuProfiler,mountProfilerEditor:()=>()=>{},createAudioSession,worldScene,renderPlan,createProductionGPU,FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor,DecisionEvidence,cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry,mountSceneTools:()=>({select(){},dispose(){}}), URLSearchParams, TextEncoder, crypto: webcrypto, performance, structuredClone,
       location: { hash: "#token=test", pathname: "/", search: mode === "forced" ? "?renderer=null" : "" },
       history: { replaceState(_state, _title, url) { replacedUrl = url; } },
       navigator: mode === "forced" ? { gpu: { requestAdapter() { throw new Error("forced Null must bypass GPU"); } } } : {},
@@ -58,6 +59,16 @@ for (const mode of ["forced", "unavailable"]) {
     assert.ok(trace.stages.includes("render.null"));
     assert.equal(trace.gpuTimeMs, null);
     assert.ok(Number.isFinite(trace.cpuTimeMs));
+    // RAF must not record the previous world under a new snapshot lease while
+    // asynchronous kernel/resource preparation is still pending.
+    const loading=vm.runInContext(`renderer.setSnapshot({project:{id:'project://11111111-1111-4111-8111-111111111111',scene:{entities:[]}},sceneRevision:1,playing:false})`,context);
+    callbacks.shift()(116);
+    assert.equal(JSON.parse(elements.get("#frame-trace").textContent).frameSequence,trace.frameSequence);
+    await loading;
+    callbacks.shift()(132);
+    const replaced=JSON.parse(elements.get("#frame-trace").textContent);
+    assert.equal(replaced.profileContext.sceneRevision,1);
+    assert.equal(replaced.profileContext.projectId,'project://11111111-1111-4111-8111-111111111111');
     for(const fn of pagehide)fn();
     const queued = callbacks.shift();
     queued(116);

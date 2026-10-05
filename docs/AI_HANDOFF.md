@@ -27,21 +27,20 @@ Non-negotiable foundations:
 
 ## Current state
 
-M12 (0.0.24) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 75%.
-Optional AudioSource/AudioListener, spatial pan and attenuation, mixer buses,
-lowpass filters and master dynamics work through Web Audio. Long PCM WAVs stream
-through bounded AudioWorklet queues. Human/C#/AI runtime controls are transient;
-canonical editing preserves revisions, Undo/Save and isolated proposals.
-Stopped previews are silent. Scene and simulation pause preserve transport;
-Stop resets it. Null and browser activation expose truthful unavailable reasons.
-All 21 jobs in CI run 37245601863 pass at executable commit
-aef19432107a017de935319f94d443390972aed1 (tree 178e257f6ffc86e5d1909b274d9a0462c031c6de).
-144 Node and 39 Rust tests, ten new browser criteria and earlier regressions pass.
-Actual graph signal, stereo pan, pause, streaming and lowpass were measured.
-Final screenshots were reviewed. No user-only test remains.
-Read docs/reports/M12_CURRENT_REPORT.md, docs/architecture/M12_AUDIO.md,
-ADR-0025 and demos/M12_GUIDE.md. Next: M13 profiler/explainFrameSpike.
-PR #14 is ready for review, stacked on unmerged #13; do not merge automatically.
+M13 (0.0.25) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 76% (79/104 roadmap weight points).
+The Profiler tab and readonly semantic tools share bounded frame history,
+main/worker/wait scopes, sampled GPU passes and median/MAD spike explanations.
+Observed contributor increases are separated from overlapping waits and unavailable
+GPU evidence. Pause/Clear never pause the game or mutate authored scenes.
+Snapshot loading and late GPU replies cannot contaminate a new session.
+Two editable demos include a real C# 140ms pulse and independent 2D pass timing.
+All 22 jobs in CI run 37259458544 pass at executable commit
+0ef4db00bf6b6bc4ec4d016b5d5ddd3f31b02190 (tree 4b247daa5f2a5786ca2ad002cd3f8cb4fdc4118d).
+152 Node and 39 Rust tests, eight new browser criteria and earlier regressions pass.
+Final profiler screenshots were reviewed. No user-only test remains.
+Read docs/reports/M13_CURRENT_REPORT.md, docs/architecture/M13_PROFILER.md,
+ADR-0026 and demos/M13_GUIDE.md. Next: M14 automated game testing.
+PR #15 is ready for review, stacked on unmerged #14; do not merge automatically.
 
 M9.2 (0.0.21) editor refinements are complete (12/12, 100%). Read
 M9_2_REFINEMENTS.md, M9_2_CURRENT_REPORT.md and demos/M9_2_GUIDE.md first.
@@ -115,7 +114,7 @@ M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
 RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
 triggers, layer masks, raycasts and repeatable golden scenes. M9.1 adds angular dynamics and rotated contacts; CCD and GPU physics remain
 outside scope. See ADR-0020 for historical M7 limits and M9_1_CORRECTIONS.md for
-the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the M12 pair.
+the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the M13 pair; demo:m12 retains audio samples.
 M8 adds independent stopped Game preview, an editor-only Scene camera, triangle
 picking, two-way selection, move/rotate/scale gizmos with one-command Undo and
 Escape cancellation, orbit/pan/zoom/fly/framing and an absolute XYZ widget.
@@ -204,13 +203,15 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Implement M13 per M13_PLAN.md and master section 132. M12 is complete;
-PR #14 is ready, stacked on unmerged #13. Preserve audio transport and activation,
-animation/C# gameplay, proposal isolation, stopped Game preview and 2D/legacy/HDR.
-Read M12_AUDIO.md, ADR-0025, M12_CURRENT_REPORT.md, M8 causal diagnostics and
-FrameProfiler first. Add bounded CPU/GPU histories, anomaly comparison, top
-contributors and explainFrameSpike with artificial regression acceptance.
-Include an editable profiling demo and synchronized closure. No user-only M12 test remains.
+Implement M14 per M14_PLAN.md and master section 133. M13 is complete;
+PR #15 is ready, stacked on unmerged #14. Read M13_PROFILER.md, ADR-0026,
+M13_CURRENT_REPORT.md, M7/M11/M12 contracts and the architecture manifest first.
+Inventory RAF, worker, physics, animation, audio and generation ownership before
+adding deterministic frame stepping, simulation input and public test assertions.
+Preserve measured profiler evidence, real stopped Game preview, proposals and
+2D/legacy/HDR/Null. Include editable test/demo projects, known passing/failing
+assertions, complete browser/CI regression gates and synchronized closure.
+No user-only M13 test remains.
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and

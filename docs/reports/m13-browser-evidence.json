@@ -1,0 +1,1369 @@
+{
+  "criteria": [
+    "Stopped Game previews collect real bounded scopes without entering Play",
+    "A real 140ms C# regression is attributed to measured worker dispatch and overlapping roundtrip, with a prior comparable baseline",
+    "Human and agent spike explanations are identical; pause collection keeps gameplay advancing and leaves authoring untouched",
+    "Repeated asynchronous GPU samples carry exact frame/session provenance, or explicit timestamp unavailability",
+    "Clear, Stop and snapshot replacement discard old evidence; Stop restores the authored scene",
+    "HDR compute, shadow, color, bloom and post passes use bounded GPU timestamp instrumentation",
+    "Editable sprite demo exposes the independent 2D pass and never mixes project histories",
+    "Null continues measured main scopes and reports GPU unavailable rather than zero"
+  ],
+  "samples": [
+    {
+      "status": "explained",
+      "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+      "sceneRevision": 2,
+      "workspaceId": null,
+      "generation": 2,
+      "frameSequence": 116,
+      "metric": "elapsed",
+      "traceId": "916d5140-b95c-4058-8fd8-7b663867fe3e",
+      "target": {
+        "frameSequence": 116,
+        "traceId": "916d5140-b95c-4058-8fd8-7b663867fe3e",
+        "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+        "sceneRevision": 2,
+        "workspaceId": null,
+        "generation": 2,
+        "view": "game",
+        "playing": true,
+        "route": "legacy",
+        "renderer": "submitted",
+        "elapsedMs": 143.22499999999127,
+        "measuredMainMs": 0.5449999999837019,
+        "scopes": [
+          {
+            "name": "script.prepare",
+            "kind": "main",
+            "milliseconds": 0.059999999997671694
+          },
+          {
+            "name": "script.roundtrip",
+            "kind": "wall",
+            "milliseconds": 142.69499999999243
+          },
+          {
+            "name": "worker.dispatch",
+            "kind": "worker",
+            "milliseconds": 142.42499999998836
+          },
+          {
+            "name": "script.apply",
+            "kind": "main",
+            "milliseconds": 0.2449999999953434
+          },
+          {
+            "name": "kernel.world-physics",
+            "kind": "main",
+            "milliseconds": 0.07499999999708962
+          },
+          {
+            "name": "animation.evaluate",
+            "kind": "main",
+            "milliseconds": 0
+          },
+          {
+            "name": "render.prepare",
+            "kind": "main",
+            "milliseconds": 0.024999999994179234
+          },
+          {
+            "name": "render.submit",
+            "kind": "main",
+            "milliseconds": 0.1300000000046566
+          },
+          {
+            "name": "audio.update",
+            "kind": "main",
+            "milliseconds": 0.00999999999476131
+          }
+        ],
+        "gpuTimeMs": null,
+        "gpuScopes": [],
+        "gpuReason": "Not sampled / readback in flight",
+        "gpuStatus": "unavailable"
+      },
+      "baseline": {
+        "samples": 30,
+        "firstFrame": 86,
+        "lastFrame": 115,
+        "medianMs": 2.5675000000046566,
+        "madMs": 0.8400000000110595,
+        "thresholdMs": 7.607500000071013
+      },
+      "spike": true,
+      "deltaMs": 140.6574999999866,
+      "contributors": [
+        {
+          "name": "worker.dispatch",
+          "kind": "worker",
+          "milliseconds": 142.42499999998836,
+          "baselineMs": 1.0899999999965075,
+          "deltaMs": 141.33499999999185,
+          "overlap": "Worker dispatch is contained in script roundtrip; these durations must not be added together"
+        },
+        {
+          "name": "script.roundtrip",
+          "kind": "wall",
+          "milliseconds": 142.69499999999243,
+          "baselineMs": 2.0050000000046566,
+          "deltaMs": 140.68999999998778,
+          "overlap": "Worker dispatch is contained in script roundtrip; these durations must not be added together"
+        },
+        {
+          "name": "script.apply",
+          "kind": "main",
+          "milliseconds": 0.2449999999953434,
+          "baselineMs": 0.0900000000037835,
+          "deltaMs": 0.1549999999915599,
+          "overlap": null
+        }
+      ],
+      "message": "Measured spike compared with earlier frames; contributors show observed increases, not speculative causes",
+      "limitations": [
+        "Synchronous timings include scheduling/preemption",
+        "GPU sum covers instrumented passes, excludes queue wait and uninstrumented skin compute",
+        "Elapsed intervals and remote worker scopes can overlap"
+      ]
+    },
+    {
+      "name": "legacy timestamps",
+      "items": [
+        {
+          "frameSequence": 60,
+          "traceId": "fc71446b-9a78-4b42-921f-7bb5e9ecc0f0",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "generation": 2,
+          "view": "game",
+          "playing": true,
+          "route": "legacy",
+          "renderer": "submitted",
+          "elapsedMs": 9.775000000008731,
+          "measuredMainMs": 0.5349999999889405,
+          "scopes": [
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.07499999999708962
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 9.264999999999418
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 6.309999999997672
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.15499999999883585
+            },
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.11999999999534339
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.029999999998835847
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.13999999999941792
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.00999999999476131
+            }
+          ],
+          "gpuTimeMs": 0.804953,
+          "gpuScopes": [
+            {
+              "name": "legacy.color",
+              "milliseconds": 0.804953
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 70,
+          "traceId": "34f23465-a5a3-4d5a-ac37-a52615f6268f",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "generation": 2,
+          "view": "game",
+          "playing": true,
+          "route": "legacy",
+          "renderer": "submitted",
+          "elapsedMs": 5.009999999994761,
+          "measuredMainMs": 2.5450000000128057,
+          "scopes": [
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 2.2550000000046566
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 4.679999999993015
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 4.494999999995343
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.08000000000174623
+            },
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.0650000000023283
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.020000000004074536
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.11000000000058208
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.00999999999476131
+            }
+          ],
+          "gpuTimeMs": 2.047384,
+          "gpuScopes": [
+            {
+              "name": "legacy.color",
+              "milliseconds": 2.047384
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 80,
+          "traceId": "7f7b8d04-8ad8-4a62-927f-8624991a0e72",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "generation": 2,
+          "view": "game",
+          "playing": true,
+          "route": "legacy",
+          "renderer": "submitted",
+          "elapsedMs": 1.9550000000017462,
+          "measuredMainMs": 0.444999999992433,
+          "scopes": [
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.059999999997671694
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 1.5249999999941792
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 1.2700000000040745
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.10000000000582077
+            },
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.09500000000116415
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.00999999999476131
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.020000000004074536
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.14999999999417923
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.00999999999476131
+            }
+          ],
+          "gpuTimeMs": 0.667829,
+          "gpuScopes": [
+            {
+              "name": "legacy.color",
+              "milliseconds": 0.667829
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 90,
+          "traceId": "b9df4c6a-83f3-4be7-b686-072d5883e839",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "generation": 2,
+          "view": "game",
+          "playing": true,
+          "route": "legacy",
+          "renderer": "submitted",
+          "elapsedMs": 1.8300000000017462,
+          "measuredMainMs": 0.3800000000046566,
+          "scopes": [
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.05000000000291038
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 1.4400000000023283
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 0.8800000000046566
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.07499999999708962
+            },
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.0650000000023283
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.020000000004074536
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.01999999998952262
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.13999999999941792
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            }
+          ],
+          "gpuTimeMs": 0.886359,
+          "gpuScopes": [
+            {
+              "name": "legacy.color",
+              "milliseconds": 0.886359
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 100,
+          "traceId": "076d5565-710b-4d5b-81e2-b31a461a1a5f",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "generation": 2,
+          "view": "game",
+          "playing": true,
+          "route": "legacy",
+          "renderer": "submitted",
+          "elapsedMs": 1.4349999999976717,
+          "measuredMainMs": 0.3099999999976717,
+          "scopes": [
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.05499999999301508
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 1.139999999999418
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 0.7299999999959255
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.05000000000291038
+            },
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.06499999998777639
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.014999999999417923
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.11000000000058208
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            }
+          ],
+          "gpuTimeMs": 0.904565,
+          "gpuScopes": [
+            {
+              "name": "legacy.color",
+              "milliseconds": 0.904565
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 110,
+          "traceId": "f0e233bc-978c-4ddd-a99f-cf17cad4118e",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "generation": 2,
+          "view": "game",
+          "playing": true,
+          "route": "legacy",
+          "renderer": "submitted",
+          "elapsedMs": 1.75,
+          "measuredMainMs": 0.40499999999883585,
+          "scopes": [
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.0650000000023283
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 1.360000000000582
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 0.9700000000011642
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.08500000000640284
+            },
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.08999999999650754
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.020000000004074536
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.020000000004074536
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.11999999999534339
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.004999999990104698
+            }
+          ],
+          "gpuTimeMs": 0.977175,
+          "gpuScopes": [
+            {
+              "name": "legacy.color",
+              "milliseconds": 0.977175
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 120,
+          "traceId": "91bc50b3-d854-4c8d-a553-7f90c0601fe3",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 2,
+          "workspaceId": null,
+          "generation": 2,
+          "view": "game",
+          "playing": true,
+          "route": "legacy",
+          "renderer": "submitted",
+          "elapsedMs": 2.3150000000023283,
+          "measuredMainMs": 0.5549999999930151,
+          "scopes": [
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.08499999999185093
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 1.8149999999877764
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 1.5450000000128057
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.10000000000582077
+            },
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.08999999999650754
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.02500000000873115
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.024999999994179234
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.21499999999650754
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.014999999999417923
+            }
+          ],
+          "gpuTimeMs": 1.323641,
+          "gpuScopes": [
+            {
+              "name": "legacy.color",
+              "milliseconds": 1.323641
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        }
+      ]
+    },
+    {
+      "name": "HDR timestamps",
+      "items": [
+        {
+          "frameSequence": 550,
+          "traceId": "5b69aaa2-75eb-4d9b-bb76-599c5240f905",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 4,
+          "workspaceId": null,
+          "generation": 4,
+          "view": "game",
+          "playing": false,
+          "route": "hdr",
+          "renderer": "submitted",
+          "elapsedMs": 3.459999999991851,
+          "measuredMainMs": 3.3950000000186265,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.2600000000093132
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.23999999999068677
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 2.875
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            }
+          ],
+          "gpuTimeMs": 175.492763,
+          "gpuScopes": [
+            {
+              "name": "hdr.light-tiles",
+              "milliseconds": 0.468941
+            },
+            {
+              "name": "hdr.culling",
+              "milliseconds": 0.055919
+            },
+            {
+              "name": "hdr.shadow",
+              "milliseconds": 0.532061
+            },
+            {
+              "name": "hdr.color",
+              "milliseconds": 6.974167
+            },
+            {
+              "name": "hdr.bloom",
+              "milliseconds": 58.557286
+            },
+            {
+              "name": "hdr.post",
+              "milliseconds": 108.904389
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 560,
+          "traceId": "a2730248-7387-4734-bb82-f71a4f726773",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 4,
+          "workspaceId": null,
+          "generation": 4,
+          "view": "game",
+          "playing": false,
+          "route": "hdr",
+          "renderer": "submitted",
+          "elapsedMs": 0.7200000000011642,
+          "measuredMainMs": 0.6499999999650754,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.08499999999185093
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.004999999975552782
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.1800000000221189
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.3699999999953434
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.009999999980209395
+            }
+          ],
+          "gpuTimeMs": 187.86155,
+          "gpuScopes": [
+            {
+              "name": "hdr.light-tiles",
+              "milliseconds": 0.214634
+            },
+            {
+              "name": "hdr.culling",
+              "milliseconds": 0.048098
+            },
+            {
+              "name": "hdr.shadow",
+              "milliseconds": 0.519924
+            },
+            {
+              "name": "hdr.color",
+              "milliseconds": 6.8525
+            },
+            {
+              "name": "hdr.bloom",
+              "milliseconds": 62.625889
+            },
+            {
+              "name": "hdr.post",
+              "milliseconds": 117.600505
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 570,
+          "traceId": "6a523d21-3fe6-479d-af5e-24623426506d",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 4,
+          "workspaceId": null,
+          "generation": 4,
+          "view": "game",
+          "playing": false,
+          "route": "hdr",
+          "renderer": "submitted",
+          "elapsedMs": 0.7299999999813735,
+          "measuredMainMs": 0.6549999999988358,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.08499999999185093
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.1900000000023283
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.3649999999906868
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            }
+          ],
+          "gpuTimeMs": 186.418951,
+          "gpuScopes": [
+            {
+              "name": "hdr.light-tiles",
+              "milliseconds": 0.195194
+            },
+            {
+              "name": "hdr.culling",
+              "milliseconds": 0.765894
+            },
+            {
+              "name": "hdr.shadow",
+              "milliseconds": 0.487859
+            },
+            {
+              "name": "hdr.color",
+              "milliseconds": 7.342695
+            },
+            {
+              "name": "hdr.bloom",
+              "milliseconds": 62.248352
+            },
+            {
+              "name": "hdr.post",
+              "milliseconds": 115.378957
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 580,
+          "traceId": "e734a2fa-bd8d-4d8a-8d2e-f8030e7dcdf5",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 4,
+          "workspaceId": null,
+          "generation": 4,
+          "view": "game",
+          "playing": false,
+          "route": "hdr",
+          "renderer": "submitted",
+          "elapsedMs": 0.7099999999918509,
+          "measuredMainMs": 0.6499999999941792,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.07000000000698492
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.014999999984866008
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.18500000002677552
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.3699999999953434
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.009999999980209395
+            }
+          ],
+          "gpuTimeMs": 166.034399,
+          "gpuScopes": [
+            {
+              "name": "hdr.light-tiles",
+              "milliseconds": 0.328495
+            },
+            {
+              "name": "hdr.culling",
+              "milliseconds": 0.049235
+            },
+            {
+              "name": "hdr.shadow",
+              "milliseconds": 0.519223
+            },
+            {
+              "name": "hdr.color",
+              "milliseconds": 7.38922
+            },
+            {
+              "name": "hdr.bloom",
+              "milliseconds": 55.713935
+            },
+            {
+              "name": "hdr.post",
+              "milliseconds": 102.034291
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 590,
+          "traceId": "24a1867a-ce81-4285-920f-191906a56728",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 4,
+          "workspaceId": null,
+          "generation": 4,
+          "view": "game",
+          "playing": false,
+          "route": "hdr",
+          "renderer": "submitted",
+          "elapsedMs": 0.6499999999941792,
+          "measuredMainMs": 0.5899999999965075,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.0650000000023283
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.009999999980209395
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.20000000001164153
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.29999999998835847
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.015000000013969839
+            }
+          ],
+          "gpuTimeMs": 140.826518,
+          "gpuScopes": [
+            {
+              "name": "hdr.light-tiles",
+              "milliseconds": 0.377848
+            },
+            {
+              "name": "hdr.culling",
+              "milliseconds": 0.036294
+            },
+            {
+              "name": "hdr.shadow",
+              "milliseconds": 0.539111
+            },
+            {
+              "name": "hdr.color",
+              "milliseconds": 6.210581
+            },
+            {
+              "name": "hdr.bloom",
+              "milliseconds": 45.850156
+            },
+            {
+              "name": "hdr.post",
+              "milliseconds": 87.812528
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 600,
+          "traceId": "3ac7ba71-5c2b-4d69-a33c-834c404756df",
+          "projectId": "project://6e7851ab-187f-4217-971c-f69a9b9366d2",
+          "sceneRevision": 4,
+          "workspaceId": null,
+          "generation": 4,
+          "view": "game",
+          "playing": false,
+          "route": "hdr",
+          "renderer": "submitted",
+          "elapsedMs": 0.5199999999895226,
+          "measuredMainMs": 0.4449999999778811,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.05499999999301508
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.139999999984866
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.2400000000197906
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.004999999975552782
+            }
+          ],
+          "gpuTimeMs": 140.875238,
+          "gpuScopes": [
+            {
+              "name": "hdr.light-tiles",
+              "milliseconds": 0.216248
+            },
+            {
+              "name": "hdr.culling",
+              "milliseconds": 0.050367
+            },
+            {
+              "name": "hdr.shadow",
+              "milliseconds": 0.506365
+            },
+            {
+              "name": "hdr.color",
+              "milliseconds": 7.15661
+            },
+            {
+              "name": "hdr.bloom",
+              "milliseconds": 46.464222
+            },
+            {
+              "name": "hdr.post",
+              "milliseconds": 86.481426
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        }
+      ]
+    },
+    {
+      "name": "2D timestamp samples",
+      "items": [
+        {
+          "frameSequence": 640,
+          "traceId": "96814f6e-cfe6-48f5-b782-6088485abd31",
+          "projectId": "project://b3c561ce-6d70-427d-b8e1-d3f1ede2e9cf",
+          "sceneRevision": 5,
+          "workspaceId": null,
+          "generation": 5,
+          "view": "game",
+          "playing": false,
+          "route": "2d",
+          "renderer": "submitted",
+          "elapsedMs": 0.5700000000069849,
+          "measuredMainMs": 0.5299999999988358,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.0650000000023283
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.32500000001164153
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.125
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.009999999980209395
+            }
+          ],
+          "gpuTimeMs": 1.854376,
+          "gpuScopes": [
+            {
+              "name": "2d.color",
+              "milliseconds": 1.854376
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 650,
+          "traceId": "ff752a2e-8dd9-430d-a86c-8176f959df96",
+          "projectId": "project://b3c561ce-6d70-427d-b8e1-d3f1ede2e9cf",
+          "sceneRevision": 5,
+          "workspaceId": null,
+          "generation": 5,
+          "view": "game",
+          "playing": false,
+          "route": "2d",
+          "renderer": "submitted",
+          "elapsedMs": 0.3850000000093132,
+          "measuredMainMs": 0.35499999998137355,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.04999999998835847
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.17499999998835847
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.11000000001513399
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.014999999984866008
+            }
+          ],
+          "gpuTimeMs": 1.236897,
+          "gpuScopes": [
+            {
+              "name": "2d.color",
+              "milliseconds": 1.236897
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 660,
+          "traceId": "5243a195-2dfd-493a-85fb-67eb95638373",
+          "projectId": "project://b3c561ce-6d70-427d-b8e1-d3f1ede2e9cf",
+          "sceneRevision": 5,
+          "workspaceId": null,
+          "generation": 5,
+          "view": "game",
+          "playing": false,
+          "route": "2d",
+          "renderer": "submitted",
+          "elapsedMs": 0.6149999999906868,
+          "measuredMainMs": 0.5700000000069849,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.07500000001164153
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.004999999975552782
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.3150000000023283
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.16500000000814907
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            }
+          ],
+          "gpuTimeMs": 1.501596,
+          "gpuScopes": [
+            {
+              "name": "2d.color",
+              "milliseconds": 1.501596
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 670,
+          "traceId": "30cab44d-842a-4ec6-8529-d59b2d30ca4d",
+          "projectId": "project://b3c561ce-6d70-427d-b8e1-d3f1ede2e9cf",
+          "sceneRevision": 5,
+          "workspaceId": null,
+          "generation": 5,
+          "view": "game",
+          "playing": false,
+          "route": "2d",
+          "renderer": "submitted",
+          "elapsedMs": 0.7150000000256114,
+          "measuredMainMs": 0.6700000000128057,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.07500000001164153
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.25
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.32500000001164153
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.009999999980209395
+            }
+          ],
+          "gpuTimeMs": 1.466336,
+          "gpuScopes": [
+            {
+              "name": "2d.color",
+              "milliseconds": 1.466336
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 680,
+          "traceId": "14703641-6e1b-4720-9c34-dcb92a231946",
+          "projectId": "project://b3c561ce-6d70-427d-b8e1-d3f1ede2e9cf",
+          "sceneRevision": 5,
+          "workspaceId": null,
+          "generation": 5,
+          "view": "game",
+          "playing": false,
+          "route": "2d",
+          "renderer": "submitted",
+          "elapsedMs": 0.5900000000256114,
+          "measuredMainMs": 0.5500000000174623,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.07000000000698492
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.005000000004656613
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.28500000000349246
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.17999999999301508
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            }
+          ],
+          "gpuTimeMs": 1.495364,
+          "gpuScopes": [
+            {
+              "name": "2d.color",
+              "milliseconds": 1.495364
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        },
+        {
+          "frameSequence": 690,
+          "traceId": "0584aa37-6f5e-402f-8221-9edf23627e08",
+          "projectId": "project://b3c561ce-6d70-427d-b8e1-d3f1ede2e9cf",
+          "sceneRevision": 5,
+          "workspaceId": null,
+          "generation": 5,
+          "view": "game",
+          "playing": false,
+          "route": "2d",
+          "renderer": "submitted",
+          "elapsedMs": 0.39000000001396984,
+          "measuredMainMs": 0.34999999997671694,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.04999999998835847
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.010000000009313226
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.16000000000349246
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.11999999999534339
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.009999999980209395
+            }
+          ],
+          "gpuTimeMs": 1.338605,
+          "gpuScopes": [
+            {
+              "name": "2d.color",
+              "milliseconds": 1.338605
+            }
+          ],
+          "gpuReason": null,
+          "gpuStatus": "observed"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "passed": true,
+  "provenance": {
+    "executableCommit": "0ef4db00bf6b6bc4ec4d016b5d5ddd3f31b02190",
+    "executableTree": "4b247daa5f2a5786ca2ad002cd3f8cb4fdc4118d",
+    "runId": 37259458544,
+    "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37259458544",
+    "environment": "Chromium software Vulkan/SwiftShader, Xvfb, real .NET 10 C# worker",
+    "physicalGpuBenchmark": false,
+    "screenshotsReviewed": true
+  }
+}

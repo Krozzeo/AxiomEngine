@@ -19,6 +19,10 @@ Open **Demo · M14 Collision Assertions**. Ordinary Play drops a cube on a floor
 Its PASS suite steps 120 frames and checks a real non-trigger collision plus two
 runtime entities. Scene edits remain unchanged when tests finish or are cancelled.
 
+Open **Demo · M14 Animation Assertions**. The imported animated GLB runs Idle.
+Its PASS suite checks real animator state and the entity’s base quaternion after
+120 frames. FAIL deliberately expects Wave and must report the actual Idle state.
+
 To compare cameras, select Game and use its separate-window icon: Scene remains in
 the main window while Game renders in the popup. Focus Game for gameplay arrows.
 Both views observe the same falling objects/controller; only cameras differ. Close

@@ -3,7 +3,7 @@
 Version 0.0.27. Status: implementation under acceptance; not a completed release.
 
 Implemented public bounded test controls, fixed frame stepping/synthetic input,
-runtime/collision/animation/pixel assertions, human saved suites and two editable
+runtime/collision/animation/pixel assertions, human saved suites and three editable
 demos. Editor changes include parallel Scene/Game, ordered/closed dock panels,
 compact controls, File/Create/Panels/Config/Help, quick examples and confirmed dirty
 save icon/Ctrl+S. See M14_GAME_TESTING.md and ADR-0028 for limits and ownership.

@@ -85,3 +85,14 @@ collects evidence; it never clicks editing controls. Unit tests cover protocol,
 context limits, revision conflicts, retention gaps and capture lease failures.
 M6 adds isolated transactional workspaces; this milestone intentionally shares
 the authoring draft and never modifies MAIN or any git ref.
+
+## M13 measured profiling API
+
+`profiler.query` reads transient frame metrics using project ID, exact scene
+revision and optional workspace ID. `limit` is 1–20; `beforeFrame` paginates older
+retained frames. Replies fit 15,000 bytes and may contain fewer records.
+`profiler.explainFrameSpike` takes `frameSequence`, `metric` (elapsed/main/gpu) and
+`baselineWindow` (8–60). Eight earlier measured comparable frames are required.
+Both tools are readonly and use the renderer session via its bridge; replies bind
+client/revision/workspace/generation. No live matching editor means unavailable.
+See M13_PROFILER.md for scope coverage, overlap and missing GPU evidence.

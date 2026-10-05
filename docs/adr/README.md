@@ -13,3 +13,5 @@ Consequences and Status.
 
 - [ADR-0024: bounded general animation](0024-bounded-general-animation.md).
 - [ADR-0025: bounded Web Audio and PCM streaming](0025-bounded-web-audio-and-pcm-streaming.md).
+
+- [ADR-0026: bounded measured frame profiler](0026-bounded-measured-frame-profiler.md).

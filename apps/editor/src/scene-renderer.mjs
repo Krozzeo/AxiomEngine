@@ -48,6 +48,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let skinGPU=null;
   let device=null, context=null, pipeline=null, sampler=null, depth=null;
   let gpuProfiler=null,gpuSample=null;
+  let snapshotLoading=false;
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
@@ -129,6 +130,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
     audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
+    snapshotLoading=true;
+    try {
     profiler.reset({projectId:snapshot.project?.id??null,sceneRevision:snapshot.sceneRevision,workspaceId:snapshot.workspaceId??null,generation:ticket});
     scriptRuntime=null;
     if(oldRuntime) {
@@ -183,9 +186,11 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(scene.twoD)used.add("white");
       for(const [key,texture] of textures)if(!used.has(key)){texture.destroy();textures.delete(key);}
     } catch(error) {if(ticket===generation)audio.clear();nextRuntime?.dispose();replacement.dispose();destroyResources(pending);throw error;}
+    }finally{if(ticket===generation)snapshotLoading=false;}
   }
   async function frame(now) {
     if(disposed)return;
+    if(snapshotLoading){animationId=requestAnimationFrame(frame);return;}
     const ticket=generation;
     try {
       const delta=previousTime===null?0:Math.min((now-previousTime)/1000,0.25);previousTime=now;

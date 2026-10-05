@@ -1,3 +1,4 @@
+import {mountGameTestEditor} from './game-test-editor.mjs';
 import {readSessionToken} from './session-token.mjs';
 import {createEditorDocument} from './dock-layout.mjs';
 import {mountProfilerEditor} from "./profiler-editor.mjs";
@@ -143,6 +144,7 @@ async function boot() {
   }
   try {
     await initializeWebGpu();
+    const stopTests=mountGameTestEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,save:values=>projectEditor.saveTestSuites(values),reportError});addEventListener('pagehide',stopTests,{once:true});
     const stopProfiler=mountProfilerEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,reportError});addEventListener("pagehide",stopProfiler,{once:true});
     if(agentBridgeEnabled){const stop=startAgentBridge({api,projectEditor,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,takeErrors:()=>agentErrors.splice(0),onProposals:proposalEditor.refresh,reportError});addEventListener("pagehide",stop,{once:true});}
   } catch (error) {

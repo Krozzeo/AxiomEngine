@@ -208,3 +208,19 @@ input[type="file"] { font-size: 11px; }
 .profiler-controls input[type=checkbox] {width:auto;margin:0}.profiler-controls select {width:auto;max-width:210px}.profiler-controls label {margin:0;white-space:nowrap}#profiler-summary,.profiler-note {margin:4px 0}.profiler-controls button {white-space:nowrap}
 
 .profiler-analysis {font-size:11px;overflow:auto;max-height:350px}.profiler-analysis p {margin:0 0 5px}.profiler-analysis ol {padding-left:20px}.profiler-analysis li {margin:4px 0}.profiler-analysis summary {cursor:pointer;color:#9bb2c9}
+
+.dock-tabs {flex-wrap:nowrap;overflow-x:auto;align-items:center;gap:2px;}
+.dock-panel-controls {margin-left:auto;padding:2px;flex-shrink:0;}
+.dock-panel-controls button {padding:3px 6px;display:flex;align-items:center;}
+.dock-panel-controls select {font-size:11px;max-width:85px;padding:3px;}
+.parallel-viewport {display:block;width:100%;height:auto;max-height:100%;object-fit:contain;min-height:0;}
+.parallel-viewport[hidden] {display:none;}
+#scene-content,#game-content {align-items:stretch;}
+.detached-editor > .tabs {flex-shrink:0;}
+
+.game-test-editor {width:650px;max-height:85vh;overflow:auto;}
+.game-test-editor textarea {width:100%;font-family:monospace;}
+.game-test-editor pre {max-height:240px;overflow:auto;}
+
+#toolbar-save {display:flex;gap:2px;align-items:center;padding:5px 7px;}
+#save-dirty {font-weight:bold;color:#ffd074;}

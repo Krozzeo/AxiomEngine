@@ -6,7 +6,7 @@ const schema = JSON.parse(readFileSync(new URL("../schema/project-document.schem
 export const projectError = (code, message) => Object.assign(new Error(message), { code });
 
 function checkVocabulary(rule) {
-  const supported = ["$schema", "$id", "type", "required", "properties", "const", "pattern", "minLength", "maxLength", "minimum", "minItems", "maxItems", "items", "enum", "maximum"];
+  const supported = ["$schema", "$id", "type", "required", "properties", "const", "pattern", "minLength", "maxLength", "minimum", "minItems", "maxItems", "items", "enum", "maximum", "uniqueItems", "additionalProperties"];
   for (const key of Object.keys(rule)) if (!supported.includes(key)) throw new Error(`Unsupported project schema keyword: ${key}`);
   for (const child of Object.values(rule.properties ?? {})) checkVocabulary(child);
   if (rule.items) checkVocabulary(rule.items);
@@ -20,6 +20,7 @@ function validate(value, rule, path) {
   if ("const" in rule && value !== rule.const) fail();
   if (rule.type === "object") {
     if (!value || typeof value !== "object" || Array.isArray(value)) fail();
+    if(rule.additionalProperties===false&&Object.keys(value).some(k=>!Object.hasOwn(rule.properties??{},k)))fail();
     for (const key of rule.required ?? []) if (!Object.hasOwn(value, key)) fail();
     for (const [key, child] of Object.entries(rule.properties ?? {})) {
       if (Object.hasOwn(value, key)) validate(value[key], child, `${path}.${key}`);
@@ -27,6 +28,7 @@ function validate(value, rule, path) {
   }
   if (rule.type === "array") {
     if (!Array.isArray(value) || value.length < (rule.minItems ?? 0) || value.length > (rule.maxItems ?? Infinity)) fail();
+    if(rule.uniqueItems&&new Set(value.map(v=>JSON.stringify(v))).size!==value.length)fail();
     value.forEach((entry, i) => validate(entry, rule.items, `${path}[${i}]`));
   }
   if (rule.type === "string" && (typeof value !== "string" || value.length < (rule.minLength ?? 0) || value.length > (rule.maxLength ?? Infinity) || (rule.pattern && !new RegExp(rule.pattern).test(value)))) fail();

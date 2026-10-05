@@ -3,7 +3,7 @@ saved capture isolation, independent dock tabs and explicit lease release.
 
 # M14 — Automated Game Testing
 
-Status: planned, 0%. Roadmap weight: 4 points. Master specification section 133.
+Status: complete; see M14_CURRENT_REPORT.md and m14-browser-evidence.json. Roadmap weight: 4 points. Master specification section 133.
 
 Begin after M13 synchronized acceptance closure. Read the master, architecture
 manifest, M13_PROFILER.md / ADR-0026, current report and M7/M11/M12 contracts.

@@ -12,7 +12,7 @@ export function validate(schema,value,path='arguments',depth=0) {
   if(!value||typeof value!=='object'||Array.isArray(value))fail();
   for(const key of schema.required??[])if(!Object.hasOwn(value,key))fail();
   for(const [key,child]of Object.entries(value)){if(['__proto__','constructor','prototype'].includes(key))fail();if(!Object.hasOwn(schema.properties??{},key)){if(schema.additionalProperties===false)fail();}else validate(schema.properties[key],child,`${path}.${key}`,depth+1);}break;
- case 'array':if(!Array.isArray(value)||value.length<(schema.minItems??0)||value.length>(schema.maxItems??4096))fail();for(const child of value)validate(schema.items??{},child,path+'[]',depth+1);break;
+ case 'array':if(!Array.isArray(value)||value.length<(schema.minItems??0)||value.length>(schema.maxItems??4096))fail();if(schema.uniqueItems&&new Set(value.map(v=>JSON.stringify(v))).size!==value.length)fail();for(const child of value)validate(schema.items??{},child,path+'[]',depth+1);break;
  case 'integer':if(!Number.isSafeInteger(value))fail(); // fall through
  case 'number':if(typeof value!=='number'||!Number.isFinite(value)||value<(schema.minimum??-Infinity)||value>(schema.maximum??Infinity))fail();break;
  case 'string':if(typeof value!=='string'||value.length<(schema.minLength??0)||value.length>(schema.maxLength??12000000)||(schema.pattern&&!new RegExp(schema.pattern).test(value)))fail();break;

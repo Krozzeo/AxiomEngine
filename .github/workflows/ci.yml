@@ -112,7 +112,7 @@ jobs:
       # Isolated runners: parallel browser jobs do not share GPU or scene state.
       max-parallel: 8
       matrix:
-        milestone: [m13-1, m13, m12, m11, m10, corrections, m9, m2, m3, m4, m5, m6, m7, m8]
+        milestone: [m14, m13-1, m13, m12, m11, m10, corrections, m9, m2, m3, m4, m5, m6, m7, m8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -124,11 +124,11 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - uses: actions/setup-dotnet@v4
-        if: contains(fromJSON('["m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
+        if: contains(fromJSON('["m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
         with:
           global-json-file: global.json
       - run: dotnet workload install wasm-tools
-        if: contains(fromJSON('["m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
+        if: contains(fromJSON('["m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
       - run: npm run build
       - name: Install software Vulkan and virtual display
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
@@ -162,6 +162,7 @@ jobs:
             .axiom/browser-m6-evidence
             .axiom/browser-m7-evidence
             .axiom/browser-corrections-evidence
+            .axiom/browser-m14-evidence
             .axiom/browser-m13-1-evidence
             .axiom/browser-m13-evidence
             .axiom/profiler-benchmark.json

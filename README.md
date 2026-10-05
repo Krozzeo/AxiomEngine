@@ -1,5 +1,18 @@
 # Axiom Engine
 
+M14 (0.0.27) is complete, 100%. Project progress is approximately 80% (83/104 roadmap weight points).
+Isolated game tests support controlled input, exact fixed frames, runtime/collision/
+animation/pixel assertions, saved human suites and bounded public agent controls.
+Scene and Game can render simultaneously in separate windows through one runtime.
+Dock tabs persist order and closure; menus, quick examples and confirmed Save/Ctrl+S
+are complete. Three editable demos include passing, deliberately failing and visual suites.
+169 Node tests, 39 Rust tests, 13 new browser criteria and all 24 CI jobs pass.
+See docs/reports/M14_CURRENT_REPORT.md, M14_GAME_TESTING.md and ADR-0028.
+PR #17 is ready for review, stacked on unmerged #16; do not merge automatically.
+Next: M15 replay and diagnostic replay, planned but not implemented.
+
+Historical completed baseline:
+
 Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.
@@ -17,10 +30,10 @@ All 23 CI jobs pass at 03607cdf87bef62732b4bb39c432be97f3e79611 (tree ae36db768f
 prior gameplay and C# development/AOT regressions. Final screenshots reviewed.
 See docs/reports/M13_1_CURRENT_REPORT.md and demos/M13_1_GUIDE.md.
 PR #16 is ready for review, stacked on unmerged #15; do not merge automatically.
-Next: M14 automated game testing.
+Historical next step at M13 closure: M14 automated game testing.
 
-`npm.cmd run demo` creates two editable M13.1 projects. Preserve `.axiom/projects`.
-See [demo guide](demos/M13_1_GUIDE.md).
+`npm.cmd run demo` creates three editable M14 projects. Preserve `.axiom/projects`.
+See [demo guide](demos/M14_GUIDE.md); `demo:m13-1` preserves the earlier workspace demos.
 
 ## Run the verified bootstrap
 

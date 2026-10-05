@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.27 — M14 — automated game testing and editor workspace
+
+- Public isolated game-test controls, exact stepping/input and bounded assertions.
+- Saved/importable test suites and Frame Step / Collision / Animation editable demos.
+- Parallel Scene/Game targets, persistent tab order/closure and compact headers.
+- File/Create/Panels/Config/Help menus and canonical quick-create examples.
+- Save toolbar icon with confirmed dirty asterisk and Ctrl+S.
+
+
 ## 0.0.26 — M13.1 workspace and profiler corrections
 
 M13.1 (0.0.26) is complete: six correction groups, 100%. Project progress remains approximately 76% (79/104 roadmap weight points); these corrections do not advance M14.

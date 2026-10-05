@@ -383,7 +383,9 @@ async fn static_asset(
         Ok(content) => {
             let content_type = match path.extension().and_then(|extension| extension.to_str()) {
                 Some("html") => "text/html; charset=utf-8",
-                Some("js") => "text/javascript; charset=utf-8",
+                Some("js") | Some("mjs") => "text/javascript; charset=utf-8",
+                Some("json") => "application/json",
+                Some("wasm") => "application/wasm",
                 Some("css") => "text/css; charset=utf-8",
                 _ => "application/octet-stream",
             };

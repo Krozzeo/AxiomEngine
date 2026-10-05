@@ -2165,6 +2165,167 @@
                       "bottom",
                       "center"
                     ]
+                  },
+                  "order": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "uniqueItems": true,
+                    "items": {
+                      "enum": [
+                        "hierarchy",
+                        "inspector",
+                        "project",
+                        "console",
+                        "diagnostics",
+                        "profiler",
+                        "scene",
+                        "game"
+                      ]
+                    }
+                  },
+                  "closed": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "uniqueItems": true,
+                    "items": {
+                      "enum": [
+                        "hierarchy",
+                        "inspector",
+                        "project",
+                        "console",
+                        "diagnostics",
+                        "profiler",
+                        "scene",
+                        "game"
+                      ]
+                    }
+                  }
+                }
+              },
+              "gameTests": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "name",
+                    "steps"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "steps": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 12,
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "frames"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "frames": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 120
+                          },
+                          "keys": {
+                            "type": "array",
+                            "maxItems": 16,
+                            "items": {
+                              "type": "string",
+                              "pattern": "^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$"
+                            }
+                          },
+                          "assertions": {
+                            "type": "array",
+                            "maxItems": 16,
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "kind"
+                              ],
+                              "additionalProperties": false,
+                              "properties": {
+                                "kind": {
+                                  "enum": [
+                                    "entityCount",
+                                    "position",
+                                    "rotation",
+                                    "collision",
+                                    "pixel",
+                                    "animation"
+                                  ]
+                                },
+                                "entityId": {
+                                  "type": "string",
+                                  "pattern": "^entity://[0-9a-f-]{36}$"
+                                },
+                                "otherId": {
+                                  "type": "string",
+                                  "pattern": "^entity://[0-9a-f-]{36}$"
+                                },
+                                "count": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 1024
+                                },
+                                "value": {
+                                  "type": "array",
+                                  "minItems": 3,
+                                  "maxItems": 4,
+                                  "items": {
+                                    "type": "number",
+                                    "minimum": -1000000,
+                                    "maximum": 1000000
+                                  }
+                                },
+                                "tolerance": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 255
+                                },
+                                "expected": {
+                                  "type": "boolean"
+                                },
+                                "trigger": {
+                                  "type": "boolean"
+                                },
+                                "x": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 959
+                                },
+                                "y": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 539
+                                },
+                                "rgba": {
+                                  "type": "array",
+                                  "minItems": 4,
+                                  "maxItems": 4,
+                                  "items": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 255
+                                  }
+                                },
+                                "state": {
+                                  "type": "string",
+                                  "maxLength": 128
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -2926,6 +3087,314 @@
           "id",
           "expectedSceneRevision",
           "frameSequence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "gameTest.control",
+      "description": "Run or step a bounded isolated fixed-delta gameplay test, simulate input, assert runtime/contacts/pixels, query or cancel. Does not mutate authored MAIN.",
+      "mutates": false,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "action": {
+            "enum": [
+              "run",
+              "begin",
+              "step",
+              "finish",
+              "cancel",
+              "query"
+            ]
+          },
+          "suite": {
+            "type": "object",
+            "required": [
+              "name",
+              "steps"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "steps": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "frames"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "frames": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 120
+                    },
+                    "keys": {
+                      "type": "array",
+                      "maxItems": 16,
+                      "items": {
+                        "type": "string",
+                        "pattern": "^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$"
+                      }
+                    },
+                    "assertions": {
+                      "type": "array",
+                      "maxItems": 16,
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "kind"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "entityCount",
+                              "position",
+                              "rotation",
+                              "collision",
+                              "pixel",
+                              "animation"
+                            ]
+                          },
+                          "entityId": {
+                            "type": "string",
+                            "pattern": "^entity://[0-9a-f-]{36}$"
+                          },
+                          "otherId": {
+                            "type": "string",
+                            "pattern": "^entity://[0-9a-f-]{36}$"
+                          },
+                          "count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1024
+                          },
+                          "value": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 4,
+                            "items": {
+                              "type": "number",
+                              "minimum": -1000000,
+                              "maximum": 1000000
+                            }
+                          },
+                          "tolerance": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 255
+                          },
+                          "expected": {
+                            "type": "boolean"
+                          },
+                          "trigger": {
+                            "type": "boolean"
+                          },
+                          "x": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 959
+                          },
+                          "y": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 539
+                          },
+                          "rgba": {
+                            "type": "array",
+                            "minItems": 4,
+                            "maxItems": 4,
+                            "items": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 255
+                            }
+                          },
+                          "state": {
+                            "type": "string",
+                            "maxLength": 128
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "step": {
+            "type": "object",
+            "required": [
+              "frames"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "frames": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 120
+              },
+              "keys": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "string",
+                  "pattern": "^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$"
+                }
+              },
+              "assertions": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "kind"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "entityCount",
+                        "position",
+                        "rotation",
+                        "collision",
+                        "pixel",
+                        "animation"
+                      ]
+                    },
+                    "entityId": {
+                      "type": "string",
+                      "pattern": "^entity://[0-9a-f-]{36}$"
+                    },
+                    "otherId": {
+                      "type": "string",
+                      "pattern": "^entity://[0-9a-f-]{36}$"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1024
+                    },
+                    "value": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 4,
+                      "items": {
+                        "type": "number",
+                        "minimum": -1000000,
+                        "maximum": 1000000
+                      }
+                    },
+                    "tolerance": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "expected": {
+                      "type": "boolean"
+                    },
+                    "trigger": {
+                      "type": "boolean"
+                    },
+                    "x": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 959
+                    },
+                    "y": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 539
+                    },
+                    "rgba": {
+                      "type": "array",
+                      "minItems": 4,
+                      "maxItems": 4,
+                      "items": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                      }
+                    },
+                    "state": {
+                      "type": "string",
+                      "maxLength": 128
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.example.create",
+      "description": "Create a supported modular light, audio or 2D UI example as one atomic undoable edit.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "example": {
+            "enum": [
+              "Point Light",
+              "Directional Light",
+              "Audio Source",
+              "Audio Listener",
+              "UI Panel",
+              "UI Button",
+              "2D Light",
+              "Particles 2D"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "example"
         ],
         "additionalProperties": false
       }

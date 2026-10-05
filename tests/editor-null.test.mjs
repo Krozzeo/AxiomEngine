@@ -59,6 +59,16 @@ for (const mode of ["forced", "unavailable"]) {
     assert.ok(trace.stages.includes("render.null"));
     assert.equal(trace.gpuTimeMs, null);
     assert.ok(Number.isFinite(trace.cpuTimeMs));
+    // RAF must not record the previous world under a new snapshot lease while
+    // asynchronous kernel/resource preparation is still pending.
+    const loading=vm.runInContext(`renderer.setSnapshot({project:{id:'project://11111111-1111-4111-8111-111111111111',scene:{entities:[]}},sceneRevision:1,playing:false})`,context);
+    callbacks.shift()(116);
+    assert.equal(JSON.parse(elements.get("#frame-trace").textContent).frameSequence,trace.frameSequence);
+    await loading;
+    callbacks.shift()(132);
+    const replaced=JSON.parse(elements.get("#frame-trace").textContent);
+    assert.equal(replaced.profileContext.sceneRevision,1);
+    assert.equal(replaced.profileContext.projectId,'project://11111111-1111-4111-8111-111111111111');
     for(const fn of pagehide)fn();
     const queued = callbacks.shift();
     queued(116);

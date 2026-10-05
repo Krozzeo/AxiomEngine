@@ -226,6 +226,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         finally{scriptFlight=null;}
       }
       if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
+      diagnostic.profileContext.view=view;
       let stageStart=performance.now();
       const packet=kernel.stepScene(twoDPaused?0:delta,++trace,canvas.width/canvas.height);
       profiler.scope(diagnostic,'kernel.world-physics',stageStart,performance.now());stageStart=performance.now();

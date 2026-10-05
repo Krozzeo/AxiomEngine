@@ -2,10 +2,13 @@ import {randomUUID} from 'node:crypto';
 import {agentError,size} from './contracts.mjs';
 // One short-lived editor lease. Capture requests are never satisfied by stale reports.
 export class EditorBridge {
+ released=new Set();
+ release(clientId){if(this.client?.id!==clientId)return false;this.released.add(clientId);if(this.released.size>32)this.released.delete(this.released.values().next().value);this.close();this.client=null;return true;}
  constructor(workspace,onError,{timeoutMs=5000,leaseMs=5000}={}){this.workspace=workspace;this.onError=onError;this.timeoutMs=timeoutMs;this.leaseMs=leaseMs;this.client=null;this.pending=null;this.pendingDiagnostic=null;this.pendingAnimation=null;this.pendingAudio=null;this.pendingProfiler=null;}
  status(){const live=this.client&&Date.now()-this.client.at<this.leaseMs;return {connected:!!live,...(live?{...this.client.status,clientId:this.client.id}:{})};}
  sync(data){
   if(!data||typeof data.clientId!=='string'||!/^[0-9a-f-]{36}$/.test(data.clientId)||size(data)>850000)throw agentError('AX_AGENT_0001','Invalid editor report');
+  if(this.released.has(data.clientId))throw agentError('AX_AGENT_0002','Editor lease was released');
   if(this.client&&this.client.id!==data.clientId&&Date.now()-this.client.at<this.leaseMs)throw agentError('AX_AGENT_0002','Another editor owns the renderer lease');
   const s=data.status??{};
   if(size(s)>65536)throw agentError('AX_AGENT_0001','Editor status exceeds limit');

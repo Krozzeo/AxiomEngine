@@ -14,5 +14,5 @@ export function startAgentBridge({api,projectEditor,getRenderer,getSnapshot,take
   }catch(error){if(!stopped&&error.data?.code!=='AX_AGENT_0002')reportError(error);}
   finally{if(!stopped)timer=setTimeout(poll,300);}
  }
- void poll();return ()=>{stopped=true;clearTimeout(timer);};
+ void poll();return ()=>{stopped=true;clearTimeout(timer);void api('/v1/editor/disconnect',{method:'POST',keepalive:true,body:JSON.stringify({clientId})}).catch(()=>{});};
 }

@@ -6,6 +6,43 @@
   font-size: 14px;
 }
 * { box-sizing: border-box; }
+.workspace.docked {grid-template-areas:'left top right' 'left view right' 'left bottom right';grid-template-rows:0 minmax(150px,1fr) var(--bottom-height,190px);grid-template-columns:var(--left-width,220px) minmax(300px,1fr) var(--right-width,290px);}
+.workspace.docked:not(.dock-has-left) {grid-template-columns:0 minmax(300px,1fr) var(--right-width,290px);}
+.workspace.docked:not(.dock-has-right) {grid-template-columns:var(--left-width,220px) minmax(300px,1fr) 0;}
+.workspace.docked:not(.dock-has-left):not(.dock-has-right) {grid-template-columns:0 minmax(300px,1fr) 0;}
+.workspace.docked.dock-has-top {grid-template-rows:var(--bottom-height,190px) minmax(150px,1fr) var(--bottom-height,190px);}
+.workspace.docked:not(.dock-has-bottom) {grid-template-rows:0 minmax(150px,1fr) 0;}
+.workspace.docked.dock-has-top:not(.dock-has-bottom) {grid-template-rows:var(--bottom-height,190px) minmax(150px,1fr) 0;}
+.workspace.docked > .center {grid-area:view;grid-template-rows:35px minmax(0,1fr);min-height:0;}
+.dock-slot {min-width:0;min-height:0;background:#111a28;display:flex;flex-direction:column;border:1px solid #30435c;position:relative;}
+.dock-slot[hidden],.dock-panel[hidden] {display:none!important;}
+.dock-left {grid-area:left;}.dock-right {grid-area:right;}.dock-top {grid-area:top;}.dock-bottom {grid-area:bottom;}
+.dock-center {grid-area:view;}
+.dock-viewport-surface {height:calc(100% - 36px);display:grid;grid-template-rows:35px minmax(0,1fr);min-height:100px;}
+#scene-content,#game-content {display:flex;flex-direction:column;overflow:hidden;}
+#scene-content .dock-viewport-surface,#game-content .dock-viewport-surface {flex:1;min-height:0;}
+.viewport-inactive {padding:15px;color:#9fb3ce;}
+.dock-target {outline:3px solid #6ec7ff;outline-offset:-3px;background:#193850;}
+.workspace.dock-dragging > .dock-slot[hidden] {display:flex!important;position:absolute;z-index:15;min-height:45px;width:150px;height:60px;opacity:.95;grid-area:auto;}
+.workspace.dock-dragging > .dock-top[hidden] {top:85px;left:calc(50% - 75px);}
+.workspace.dock-dragging > .dock-bottom[hidden] {bottom:12px;left:calc(50% - 75px);}
+.workspace.dock-dragging > .dock-left[hidden] {left:8px;top:45%;}
+.workspace.dock-dragging > .dock-right[hidden] {right:8px;top:45%;}
+.workspace.dock-dragging > .dock-center[hidden] {left:calc(50% - 75px);top:45%;}
+.dock-slot[hidden]::before {content:'Drop panel here';padding:10px;color:#8dd9ff;}
+.dock-tabs button {cursor:grab;}
+.dock-body {min-height:0;flex:1;overflow:auto;}.dock-tabs {flex-wrap:wrap;flex-shrink:0;}
+.dock-panel-controls {display:flex;gap:6px;padding:4px;align-items:center;flex-shrink:0;}
+.dock-panel-controls select {width:auto;max-width:130px;}.dock-panel-controls button {font-size:11px;}
+.dock-panel {height:100%;min-height:0;overflow:auto;}
+#project-content.dock-panel {display:grid;grid-template-rows:auto minmax(0,1fr);}
+#project-content.dock-panel .dock-panel-controls {grid-column:1/-1;}
+.detached-editor {min-width:300px;overflow:auto;height:100vh;display:flex;flex-direction:column;}
+.detached-editor > .dock-panel {flex:1;min-height:0;}
+.profiler-analysis {border:1px solid #3f6e94;padding:8px;border-radius:5px;}
+#profiler-verdict {font-size:14px;color:#8dd9ff;white-space:pre-line;}
+.profiler-feedback {animation:profiler-flash .6s ease-out;}
+@keyframes profiler-flash {from {background:#285c85;} to {background:transparent;}}
 body { margin: 0; min-width: 840px; overflow: hidden; }
 button { color: inherit; background: #1b2738; border: 1px solid #30435c; border-radius: 5px; padding: 6px 10px; cursor: pointer; }
 button:hover { background: #273951; }

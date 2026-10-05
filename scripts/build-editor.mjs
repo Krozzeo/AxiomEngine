@@ -46,7 +46,7 @@ export async function buildEditor() {
   await cp(resolve(root,'apps/editor/src/animation-editor.mjs'),resolve(destination,'animation-editor.mjs'));
   await cp(resolve(root,'apps/editor/src/panel-layout.mjs'),resolve(destination,'panel-layout.mjs'));
   for(const name of ['render-plan','render-math','production-gpu','production-shaders','two-d-plan','two-d-gpu','skin-gpu'])await cp(resolve(root,'engine/renderer',name+'.mjs'),resolve(destination,name+'.mjs'));
-  for(const name of ['view-math','scene-tools','causal-diagnostics','gpu-profiler','profiler-editor'])await cp(resolve(root,'apps/editor/src',name+'.mjs'),resolve(destination,name+'.mjs'));
+  for(const name of ['view-math','scene-tools','causal-diagnostics','gpu-profiler','profiler-editor','dock-layout','session-token','frame-profiler'])await cp(resolve(root,'apps/editor/src',name+'.mjs'),resolve(destination,name+'.mjs'));
   for(const [name,target]of [["runtime.mjs","script-runtime.js"],["worker.mjs","script-worker.js"],["operations.mjs","script-operations.mjs"],["contract.mjs","contract.mjs"]])await cp(resolve(root,"engine/scripting",name),resolve(destination,target));
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));
   await writeFile(resolve(destination,'animation-host.mjs'),(await readFile(resolve(root,'engine/wasm/animation-host.mjs'),'utf8')).replace('../renderer/','./'));

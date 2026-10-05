@@ -1,3 +1,4 @@
+import {openEditor} from './open-editor.mjs';
 import {ProposalManager} from './workspaces/manager.mjs';
 import {tools,toolMap,validate,bounded} from './agent/contracts.mjs';
 import {AgentService,compactResult} from './agent/service.mjs';
@@ -142,6 +143,7 @@ export async function startServer(options = {}) {
 
       if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
       if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,{...bridge.sync(await readJson(request)),proposals:proposals.list()});
+      if(request.method==='POST'&&url.pathname==='/v1/editor/disconnect')return json(response,200,{released:bridge.release((await readJson(request)).clientId)});
       if(request.method==='POST'&&url.pathname==='/v1/tools/call'){
         const call=await readJson(request),tool=toolMap.get(call.name);
         if(!tool?.mcp)return json(response,404,{code:'AX_AGENT_0004',cause:'Tool is unavailable'});
@@ -225,4 +227,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const instance = await startServer({ port });
   console.log(`Axiom daemon bootstrap listening at ${instance.origin}`);
   console.log(`Open editor: ${instance.editorUrl}`);
+  if(process.env.AXIOM_OPEN_BROWSER!=='0'&&!process.env.CI&&!process.argv.includes('--no-open')) {
+    void openEditor(instance.editorUrl).then(opened=>{if(!opened)console.log('Automatic browser opening unavailable; use the editor URL above.');});
+  }
 }

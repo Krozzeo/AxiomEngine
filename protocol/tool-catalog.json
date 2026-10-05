@@ -41,8 +41,8 @@
       "mutates": true,
       "inputSchema": {
         "type": "object",
-        "additionalProperties": false,
-        "properties": {}
+        "properties": {},
+        "additionalProperties": false
       },
       "route": "workspace",
       "mcp": false
@@ -3709,6 +3709,100 @@
                 "type": "number",
                 "minimum": 120,
                 "maximum": 650
+              },
+              "docks": {
+                "type": "object",
+                "required": [
+                  "hierarchy",
+                  "inspector",
+                  "project",
+                  "console",
+                  "diagnostics",
+                  "profiler"
+                ],
+                "properties": {
+                  "hierarchy": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "project": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "console": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "diagnostics": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "profiler": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "scene": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "game": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "additionalProperties": false

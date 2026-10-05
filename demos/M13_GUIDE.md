@@ -17,7 +17,8 @@ must not be added. Main can stay small because the work runs in another worker.
 
 The last 20 rows are shown, out of a retained 120. Pause soon enough to retain the
 spike; press 1 again after releasing it if it has been evicted. Clear history starts
-a fresh baseline. Stop resets history and restores the authored scene.
+a fresh baseline. Stop resets live history and restores the authored scene. M13.1 also retains
+the previous capture; see M13_1_GUIDE.md.
 C# requires the configured .NET 10 SDK and wasm-tools. If compilation fails, demos
 remain saved and timing works, but the controlled keyboard pulse is unavailable;
 the creation command prints the actual compiler error.

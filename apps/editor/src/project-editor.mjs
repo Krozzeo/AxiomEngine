@@ -15,10 +15,10 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
   let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
-  const panels=mountPanelLayout({document,save:value=>act(()=>run('project.editor.update',mutation({value}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
+  const panels=mountPanelLayout({document,onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
   function draw(updateFields = true) {
     $("editor-workspace").setAttribute("aria-busy",String(busy));
-    const project = state.project;panels.set(project?.editor);
+    const project = state.project;if(!busy)panels.set(project?.editor);
     const entity = selection.size===1?project?.scene.entities.find(item => item.id === selected):null;
     const attached=project?.scene.script?.attachments.includes(entity?.id);
     if($('selection-status')){
@@ -66,13 +66,15 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("play-stop").disabled=busy||!state.playing;
     $("scene-tab").disabled=busy||!project;
     $("game-tab").disabled=busy||!project;
-    $("scene-tab").className=view==='scene'?"active":"";
-    $("game-tab").className=view==='game'?"active":"";
+    if(!$("editor-workspace").classList?.contains?.("docked")){
+      $("scene-tab").className=view==='scene'?"active":"";
+      $("game-tab").className=view==='game'?"active":"";
+    }
     $("play-status").textContent=state.playing?"Play · runtime copy":"Stopped · authoring";
     $("preview-note").textContent=project ? `${project.name} · ${view==='game'?'Game camera':'Scene camera'}` : "Create or open a project to begin";
     $("entities").replaceChildren();
     const entities=project?.scene.entities??[];
-    function drop(node,parentId,beforeId){node.addEventListener('dragover',event=>{event.preventDefault();event.stopPropagation();node.classList.add('drag-target');});node.addEventListener('dragleave',()=>node.classList.remove('drag-target'));node.addEventListener('drop',event=>{event.preventDefault();event.stopPropagation();node.classList.remove('drag-target');try{const ids=JSON.parse(event.dataTransfer.getData('application/axiom-entities'));void act(()=>run('scene.entity.reparent',mutation({entityIds:ids,...(parentId?{parentId}:{}),...(beforeId?{beforeId}:{})})));}catch(error){reportError(error);}});}
+    function drop(node,parentId,beforeId){node.addEventListener('dragover',event=>{if(!event.dataTransfer.types.includes('application/axiom-entities'))return;event.preventDefault();event.stopPropagation();node.classList.add('drag-target');});node.addEventListener('dragleave',()=>node.classList.remove('drag-target'));node.addEventListener('drop',event=>{if(!event.dataTransfer.types.includes('application/axiom-entities'))return;event.preventDefault();event.stopPropagation();node.classList.remove('drag-target');try{const ids=JSON.parse(event.dataTransfer.getData('application/axiom-entities'));void act(()=>run('scene.entity.reparent',mutation({entityIds:ids,...(parentId?{parentId}:{}),...(beforeId?{beforeId}:{})})));}catch(error){reportError(error);}});}
     const root=document.createElement('div');root.className='tree-row scene-root';root.setAttribute('role','treeitem');root.setAttribute('aria-expanded',String(!collapsed.has('root')));const rootToggle=document.createElement('button');rootToggle.className='tree-toggle';rootToggle.textContent=collapsed.has('root')?'▸':'▾';rootToggle.setAttribute('aria-label','Expand or collapse Scene root');rootToggle.addEventListener('click',()=>{if(collapsed.has('root'))collapsed.delete('root');else collapsed.add('root');draw(false);});root.append(rootToggle);const rootButton=document.createElement('button');rootButton.className='scene-root-button';rootButton.textContent='Scene root';rootButton.addEventListener('click',()=>select(null));root.append(rootButton);drop(root,null);$('entities').append(root);
     function branch(parentId=null,depth=1){const siblings=entities.filter(e=>(e.parentId??null)===parentId);for(const item of siblings){
       const gap=document.createElement('div');gap.className='tree-gap';gap.dataset.beforeId=item.id;gap.dataset.parentId=parentId??'';gap.setAttribute('aria-label','Insert before '+item.name);drop(gap,parentId,item.id);$('entities').append(gap);
@@ -245,9 +247,9 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("asset-place").addEventListener("click",()=>act(()=>run("scene.asset.place",mutation({assetId:$("asset-list").value}))));
   $("camera-projection").addEventListener("change",()=>{const projection=$("camera-projection").value;return act(()=>run("scene.camera.update",mutation({camera:{projection}})));});
   $("project-close").addEventListener("click",()=>act(async()=>{if(state.dirty&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
-  $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());view='game';}));
+  $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());view='game';panels.activateView('game');}));
   $("play-stop").addEventListener("click",()=>act(()=>run("play.stop",mutation())));
-  for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;draw(false);});
+  for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;panels.activateView(name);draw(false);});
   $("project-list").addEventListener("change", draw);
   $("project-refresh").addEventListener("click", () => act(list));
   $("workspace-refresh").addEventListener("click", () => act(async () => {await run("scene.get");if($("file-menu"))$("file-menu").open=false;if($("settings-menu"))$("settings-menu").open=false;}));

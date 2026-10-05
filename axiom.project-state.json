@@ -2,7 +2,7 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-05",
-  "engineVersion": "0.0.25",
+  "engineVersion": "0.0.26",
   "activeMilestone": 13,
   "milestoneStatus": "complete",
   "completion": {
@@ -70,6 +70,10 @@
     "14": {
       "status": "not_started",
       "percent": 0
+    },
+    "13.1": {
+      "status": "complete",
+      "percent": 100
     }
   },
   "implementation": {
@@ -78,9 +82,9 @@
     "csharpBrowserWasmSpike": "verified_browser_development_and_aot",
     "engineKernel": "verified_native_and_real_wasm",
     "renderGraph": "verified_native",
-    "frameProfiler": "verified_bounded_main_worker_wait_scopes_gpu_passes_history_median_mad_human_agent_exact_sessions",
+    "frameProfiler": "verified_bounded_main_worker_wait_scopes_gpu_passes_history_median_mad_human_agent_exact_sessions; bounded immutable saved sessions, origin storage and JSON roundtrip",
     "projectPersistence": "verified_bootstrap_http_restart",
-    "sceneEditor": "verified_modular_inspector_tree_range_selection_atomic_group_transforms_ordering_project_explorer_and_saved_layout",
+    "sceneEditor": "verified_modular_inspector_tree_range_selection_atomic_group_transforms_ordering_project_explorer_and_saved_layout; five docks, eight draggable tabs, dependent windows and preserved project layout",
     "assetImport": "verified_png_static_and_animated_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
@@ -99,7 +103,7 @@
   },
   "verified": {
     "nodeTests": {
-      "passed": 152,
+      "passed": 158,
       "failed": 0
     },
     "schemaDocuments": 16,
@@ -216,35 +220,36 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.25",
-      "commit": "0ef4db00bf6b6bc4ec4d016b5d5ddd3f31b02190",
-      "tree": "4b247daa5f2a5786ca2ad002cd3f8cb4fdc4118d",
-      "runId": 37259458544,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37259458544",
-      "jobCount": 22,
+      "version": "0.0.26",
+      "commit": "03607cdf87bef62732b4bb39c432be97f3e79611",
+      "tree": "ae36db768f7c484a02966442b01c401cdf94b08c",
+      "runId": 37325146035,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37325146035",
+      "jobCount": 23,
       "jobs": [
-        "browser-milestones (m11)",
-        "browser-milestones (m2)",
         "bootstrap (ubuntu-latest)",
-        "script-boundaries (macos-latest)",
-        "bootstrap (windows-latest)",
-        "browser-milestones (m6)",
-        "browser-milestones (m5)",
-        "csharp-wasm-spike (windows-latest, development)",
-        "browser-milestones (m7)",
-        "browser-milestones (m4)",
+        "browser-milestones (m11)",
         "browser-milestones (m9)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (m8)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
-        "script-boundaries (ubuntu-latest)",
-        "script-boundaries (windows-latest)",
         "rust",
         "browser-milestones (m3)",
-        "browser-milestones (m10)",
-        "browser-milestones (m13)",
         "browser-milestones (m12)",
-        "browser-milestones (corrections)"
+        "script-boundaries (windows-latest)",
+        "browser-milestones (corrections)",
+        "browser-milestones (m8)",
+        "csharp-wasm-spike (windows-latest, development)",
+        "script-boundaries (macos-latest)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (m5)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "browser-milestones (m10)",
+        "bootstrap (windows-latest)",
+        "browser-milestones (m4)",
+        "browser-milestones (m13)",
+        "browser-milestones (m2)",
+        "script-boundaries (ubuntu-latest)",
+        "browser-milestones (m13-1)",
+        "browser-milestones (m6)",
+        "browser-milestones (m7)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -462,6 +467,17 @@
       "benchmark": "docs/reports/m13-profiler-benchmark.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m13_1Acceptance": {
+      "passed": true,
+      "criteriaPassed": 6,
+      "criteriaTotal": 6,
+      "browserCriteriaPassed": 9,
+      "runId": 37325146035,
+      "executableCommit": "03607cdf87bef62732b4bb39c432be97f3e79611",
+      "executableTree": "ae36db768f7c484a02966442b01c401cdf94b08c",
+      "evidence": "docs/reports/m13-1-browser-evidence.json",
+      "desktopLaunchCheck": "user Windows default-browser integration; platform invocation automatically tested"
     }
   },
   "blockedChecks": [],
@@ -555,7 +571,12 @@
     "docs/reports/M13_CURRENT_REPORT.md",
     "docs/reports/m13-browser-evidence.json",
     "docs/reports/m13-profiler-benchmark.json",
-    "demos/M13_GUIDE.md"
+    "demos/M13_GUIDE.md",
+    "docs/architecture/M13_1_EDITOR_WORKSPACE.md",
+    "docs/reports/M13_1_CURRENT_REPORT.md",
+    "docs/reports/m13-1-browser-evidence.json",
+    "demos/M13_1_GUIDE.md",
+    "docs/adr/0027-modular-editor-and-retained-profiler-captures.md"
   ],
-  "nextTask": "Implement M14 automated game testing per M14_PLAN.md and master section 133; preserve profiler evidence, all earlier gameplay and proposal isolation; keep PR #15 unmerged."
+  "nextTask": "Implement M14 automated game testing after M13.1 corrections; read M14_PLAN.md, M13_1_EDITOR_WORKSPACE.md and current report. Preserve captures, one active viewport, explicit lease release and proposal isolation. Keep PR #16 unmerged."
 }

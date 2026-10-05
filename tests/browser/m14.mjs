@@ -22,9 +22,9 @@ try {
  async function until(status){const end=Date.now()+60000;while(Date.now()<end){const r=await test({action:'query'});if(status.includes(r.status))return r;if(['failed','cancelled','completed'].includes(r.status))throw Error('Unexpected test result: '+JSON.stringify(r));await page.waitForTimeout(30);}throw Error('Test did not finish');}
  async function run(suite){await test({action:'run',suite});return until(['completed','failed','cancelled']);}
  await next();s=await open(demos[0]);await page.locator('#gpu-state').filter({hasText:'WebGPU ·'}).waitFor();
- assert.deepEqual(await page.locator('.menubar > details > summary').allTextContents(),['File','Create','Panels','Config','Help']);
+ assert.deepEqual(await page.locator('.menubar > details > summary').allTextContents(),['File','Create','Panels','AI','Config','Help']);
  assert.equal(await page.locator('[data-dock="bottom"] [data-panel]').first().getAttribute('data-panel'),'project');
- await page.locator('#help-menu > summary').click();assert.match(await page.locator('#help-menu').textContent(),/0\.0\.27/);await page.locator('#help-menu > summary').click();
+ await page.locator('#help-menu > summary').click();assert.match(await page.locator('#help-menu').textContent(),/0\.0\.28/);await page.locator('#help-menu > summary').click();
  report.criteria.push('Default Project first; File/Create/Panels/Config/Help order and release version');
  const original=JSON.stringify((await command('scene.get')).project.scene);
  await test({action:'begin',suite:demos[0].suites[0]});let paused=await until(['paused']);assert.equal(paused.frames,0);await page.waitForTimeout(200);assert.equal((await test({action:'query'})).frames,0);

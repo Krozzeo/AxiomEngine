@@ -8,9 +8,10 @@ export class AgentService {
   const tool=toolMap.get(type);validate(tool.inputSchema,data);
   if(type.startsWith('workspace.'))return this.proposals.run(type,data,context);
   const w=data.workspaceId?this.proposals.get(data.workspaceId).child:this.workspace,project=w.project,summary={project:project?{id:project.id,name:project.name,revision:project.revision}:null,sceneRevision:w.revision,dirty:w.dirty,playing:w.playing};
-  if(['gameTest.control','profiler.query','profiler.explainFrameSpike','audio.query','audio.control','animation.query','animation.control','scene.query','entity.query','asset.query','renderer.capture','diagnostics.explain'].includes(type)&&(!project||data.id!==project.id))throw agentError('AX_SCENE_0001','Open this project first');
-  if(['gameTest.control','profiler.query','profiler.explainFrameSpike','audio.query','audio.control','animation.query','animation.control','entity.query','asset.query','renderer.capture','diagnostics.explain'].includes(type))w.check(data);
+  if(['replay.control','gameTest.control','profiler.query','profiler.explainFrameSpike','audio.query','audio.control','animation.query','animation.control','scene.query','entity.query','asset.query','renderer.capture','diagnostics.explain'].includes(type)&&(!project||data.id!==project.id))throw agentError('AX_SCENE_0001','Open this project first');
+  if(['replay.control','gameTest.control','profiler.query','profiler.explainFrameSpike','audio.query','audio.control','animation.query','animation.control','entity.query','asset.query','renderer.capture','diagnostics.explain'].includes(type))w.check(data);
   switch(type){
+   case 'replay.control':return this.bridge.replay(data);
    case 'gameTest.control':return this.bridge.gameTest(data);
    case 'project.query':return page((await w.store.run('project.list',{})).projects,data,{activeProjectId:project?.id??null});
    case 'scene.query':return bounded({...summary,sceneId:project.scene.id,entityCount:project.scene.entities.length,assetCount:project.scene.assets?.length??0,camera:project.scene.camera??null,twoD:project.scene.twoD??null,script:project.scene.script?{attachments:project.scene.script.attachments.length,build:project.scene.script.build.id}:null},data.maxBytes);

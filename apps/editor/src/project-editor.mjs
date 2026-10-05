@@ -298,10 +298,12 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   return {
     isBusy:()=>busy,
     selectedEntity:()=>selected,
+    snapshot:()=>structuredClone(state),
     selectedEntities:()=>[...selection],
     selectEntity(id,options=false){select(id,options);},
     transformEntities(updates){return act(()=>run("scene.entities.update",mutation({updates,space:"world"})));},
     transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform:localTransform(state.project.scene.entities,entityId,transform)})));},
+    async saveAiSettings(value){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,...value}})));},
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},

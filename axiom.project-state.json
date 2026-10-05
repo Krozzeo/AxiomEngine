@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-05",
-  "engineVersion": "0.0.27",
-  "activeMilestone": 14,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.28",
+  "activeMilestone": 15,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 80,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -76,7 +76,7 @@
       "percent": 100
     },
     "15": {
-      "status": "planned",
+      "status": "in_progress",
       "percent": 0
     }
   },
@@ -600,7 +600,10 @@
     "demos/M14_GUIDE.md",
     "docs/reports/m14-browser-evidence.json",
     "docs/architecture/M15_PLAN.md",
-    "docs/adr/0028-isolated-game-tests-and-parallel-view-targets.md"
+    "docs/adr/0028-isolated-game-tests-and-parallel-view-targets.md",
+    "docs/adr/0029-verified-prefix-replay-and-ai-project-context.md",
+    "docs/reports/M15_CURRENT_REPORT.md",
+    "demos/M15_GUIDE.md"
   ],
-  "nextTask": "Implement M15 replay and diagnostic replay per M15_PLAN.md and master section 134. Preserve M14 authored isolation, public test boundaries, cancellation and parallel ownership; keep stacked PRs unmerged."
+  "nextTask": "Complete M15 acceptance and closure per M15_PLAN.md and ADR-0029, including replay and requested AI/menu/master-document changes. Keep stacked PRs unmerged."
 }

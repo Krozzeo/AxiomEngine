@@ -33,6 +33,7 @@ export async function buildEditor() {
   await cp(resolve(root, "target/wasm32-unknown-unknown/release/axiom_wasm.wasm"), resolve(destination, "axiom-kernel.wasm"));
   await writeFile(resolve(destination,'kernel-host.js'),(await readFile(resolve(root,'engine/wasm/host.mjs'),'utf8')).replace('../scene/hierarchy.mjs','./hierarchy.mjs'));
   await writeFile(resolve(destination,"index.html"),(await readFile(resolve(root,"apps/editor/index.html"),"utf8")).replaceAll("__AXIOM_VERSION__",JSON.parse(await readFile(resolve(root,"package.json"),"utf8")).version));
+  await writeFile(resolve(destination,'replay-session.mjs'),(await readFile(resolve(root,'engine/replay/session.mjs'),'utf8')).replace('../testing/session.mjs','./test-session.mjs'));
   await cp(resolve(root, "apps/editor/styles.css"), resolve(destination, "styles.css"));
   await cp(resolve(root, "apps/editor/src/frame-profiler.mjs"), resolve(destination, "frame-profiler.js"));
   await writeFile(resolve(destination,"project-editor.js"),(await readFile(resolve(root,"apps/editor/src/project-editor.mjs"),"utf8")).replaceAll("../../../engine/renderer/","./").replaceAll("../../../engine/scene/","./"));
@@ -46,7 +47,7 @@ export async function buildEditor() {
   await cp(resolve(root,'apps/editor/src/animation-editor.mjs'),resolve(destination,'animation-editor.mjs'));
   await cp(resolve(root,'apps/editor/src/panel-layout.mjs'),resolve(destination,'panel-layout.mjs'));
   for(const name of ['render-plan','render-math','production-gpu','production-shaders','two-d-plan','two-d-gpu','skin-gpu'])await cp(resolve(root,'engine/renderer',name+'.mjs'),resolve(destination,name+'.mjs'));
-  for(const name of ['game-test-editor','parallel-view','view-math','scene-tools','causal-diagnostics','gpu-profiler','profiler-editor','dock-layout','session-token','frame-profiler'])await writeFile(resolve(destination,name+'.mjs'),(await readFile(resolve(root,'apps/editor/src',name+'.mjs'),'utf8')).replaceAll('../../../engine/renderer/','./'));
+  for(const name of ['replay-editor','ai-menu','game-test-editor','parallel-view','view-math','scene-tools','causal-diagnostics','gpu-profiler','profiler-editor','dock-layout','session-token','frame-profiler'])await writeFile(resolve(destination,name+'.mjs'),(await readFile(resolve(root,'apps/editor/src',name+'.mjs'),'utf8')).replaceAll('../../../engine/renderer/','./'));
   for(const [name,target]of [["runtime.mjs","script-runtime.js"],["worker.mjs","script-worker.js"],["operations.mjs","script-operations.mjs"],["contract.mjs","contract.mjs"]])await cp(resolve(root,"engine/scripting",name),resolve(destination,target));
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));
   await writeFile(resolve(destination,'animation-host.mjs'),(await readFile(resolve(root,'engine/wasm/animation-host.mjs'),'utf8')).replace('../renderer/','./'));

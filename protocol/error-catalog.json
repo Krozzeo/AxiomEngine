@@ -554,6 +554,22 @@
         "gameTest.control",
         "runtime.status"
       ]
+    },
+    {
+      "code": "AX_REPLAY_0001",
+      "meaning": "Invalid, divergent or unavailable bounded replay operation",
+      "inspect": [
+        "replay.control",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_REPLAY_0002",
+      "meaning": "Replay bridge timed out or disconnected",
+      "inspect": [
+        "replay.control",
+        "runtime.status"
+      ]
     }
   ]
 }

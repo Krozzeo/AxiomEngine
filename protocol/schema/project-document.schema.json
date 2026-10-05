@@ -1495,6 +1495,29 @@
               }
             }
           }
+        },
+        "masterDocument": {
+          "type": "object",
+          "required": [
+            "name",
+            "text"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 32768
+            }
+          }
+        },
+        "assistantInstructions": {
+          "type": "string",
+          "maxLength": 4000
         }
       }
     }

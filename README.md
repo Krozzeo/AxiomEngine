@@ -1,5 +1,9 @@
 # Axiom Engine
 
+M15 (0.0.28) is under acceptance. Read M15_CURRENT_REPORT.md and ADR-0029 for
+implemented replay/AI context behavior and limits. Full CI/browser gates pending.
+The completed M14 state below is the historical baseline.
+
 M14 (0.0.27) is complete, 100%. Project progress is approximately 80% (83/104 roadmap weight points).
 Isolated game tests support controlled input, exact fixed frames, runtime/collision/
 animation/pixel assertions, saved human suites and bounded public agent controls.

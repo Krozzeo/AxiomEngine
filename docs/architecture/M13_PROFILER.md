@@ -20,7 +20,7 @@ script.roundtrip; do not add those values. Scheduling/preemption can affect all
 CPU intervals. Unmeasured gaps are not attributed to speculative causes.
 
 Timestamp-query is optional. One fixed 32-entry query set and two 256-byte buffers
-sample at most 16 passes every 15 frames, with one asynchronous readback in flight.
+sample at most 16 passes every 10 frames, with one asynchronous readback in flight.
 Legacy color, 2D color and HDR tile/cull compute, shadow, color, bloom and post are
 instrumented. GPU total is the sum of observed passes. Queue waits and skinning
 compute are excluded. Negative/invalid ranges, missing feature and Null report

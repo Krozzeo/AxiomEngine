@@ -4,7 +4,7 @@ export function createGpuProfiler(device,onSample,onUnavailable){
  const set=enabled?device.createQuerySet({type:'timestamp',count:32}):null;
  const resolve=enabled?device.createBuffer({size:256,usage:GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC}):null;
  const read=enabled?device.createBuffer({size:256,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ}):null;
- function begin(sequence,generation){const selected=enabled&&!pending&&(sequence===1||sequence%15===0);let names=[],sent=false;
+ function begin(sequence,generation){const selected=enabled&&!pending&&(sequence===1||sequence%10===0);let names=[],sent=false;
   return {reason:!device?'Null renderer has no GPU timestamps':!enabled?'timestamp-query is unavailable':!selected?'Not sampled / readback in flight':'Waiting for readback',
    writes(name){if(!selected||names.length>=16)return undefined;const index=names.length*2;names.push(name);return {querySet:set,beginningOfPassWriteIndex:index,endOfPassWriteIndex:index+1};},
    resolve(encoder){if(selected&&names.length){encoder.resolveQuerySet(set,0,names.length*2,resolve,0);encoder.copyBufferToBuffer(resolve,0,read,0,names.length*16);sent=true;pending=true;}},

@@ -1,8 +1,15 @@
 # Implementation status
 
-M14 (0.0.27) is implemented and under acceptance, not yet a completed release.
-Read docs/reports/M14_CURRENT_REPORT.md, docs/architecture/M14_GAME_TESTING.md
-and ADR-0028. Browser/CI validation is pending; M15 has not started.
+M14 (0.0.27) is complete, 100%. Project progress is approximately 80% (83/104 roadmap weight points).
+Isolated game tests support controlled input, exact fixed frames, runtime/collision/
+animation/pixel assertions, saved human suites and bounded public agent controls.
+Scene and Game can render simultaneously in separate windows through one runtime.
+Dock tabs persist order and closure; menus, quick examples and confirmed Save/Ctrl+S
+are complete. Three editable demos include passing, deliberately failing and visual suites.
+169 Node tests, 39 Rust tests, 13 new browser criteria and all 24 CI jobs pass.
+See docs/reports/M14_CURRENT_REPORT.md, M14_GAME_TESTING.md and ADR-0028.
+PR #17 is ready for review, stacked on unmerged #16; do not merge automatically.
+Next: M15 replay and diagnostic replay, planned but not implemented.
 
 Historical completed baseline:
 
@@ -21,7 +28,7 @@ All 23 CI jobs pass at 03607cdf87bef62732b4bb39c432be97f3e79611 (tree ae36db768f
 prior gameplay and C# development/AOT regressions. Final screenshots reviewed.
 See docs/reports/M13_1_CURRENT_REPORT.md and demos/M13_1_GUIDE.md.
 PR #16 is ready for review, stacked on unmerged #15; do not merge automatically.
-Next: M14 automated game testing.
+Historical next step at M13 closure: M14 automated game testing.
 
 Historical M13 baseline:
 M13 (0.0.25) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 76% (79/104 roadmap weight points).
@@ -36,7 +43,7 @@ All 22 jobs in CI run 37259458544 pass at executable commit
 152 Node and 39 Rust tests, eight new browser criteria and earlier regressions pass.
 Final profiler screenshots were reviewed. No user-only test remains.
 Read docs/reports/M13_CURRENT_REPORT.md, docs/architecture/M13_PROFILER.md,
-ADR-0026 and demos/M13_GUIDE.md. Next: M14 automated game testing.
+ADR-0026 and demos/M13_GUIDE.md. Historical next step at M13 closure: M14 automated game testing.
 PR #15 is ready for review, stacked on unmerged #14; do not merge automatically.
 
 ## Implemented and verified
@@ -132,7 +139,7 @@ asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
 M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
 M8 verifies four causal queries, ten faults, bounded/expired/stale evidence,
 Scene/Game separation, two-way selection, transforms, navigation and editable demos.
-Follow M14_PLAN.md and master section 133 for automated game testing.
+M14 acceptance is complete; follow M15_PLAN.md and master section 134 for replay.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.

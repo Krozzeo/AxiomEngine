@@ -1,8 +1,15 @@
 # Axiom Engine — context-free AI handoff
 
-M14 (0.0.27) is implemented and under acceptance, not yet a completed release.
-Read docs/reports/M14_CURRENT_REPORT.md, docs/architecture/M14_GAME_TESTING.md
-and ADR-0028. Browser/CI validation is pending; M15 has not started.
+M14 (0.0.27) is complete, 100%. Project progress is approximately 80% (83/104 roadmap weight points).
+Isolated game tests support controlled input, exact fixed frames, runtime/collision/
+animation/pixel assertions, saved human suites and bounded public agent controls.
+Scene and Game can render simultaneously in separate windows through one runtime.
+Dock tabs persist order and closure; menus, quick examples and confirmed Save/Ctrl+S
+are complete. Three editable demos include passing, deliberately failing and visual suites.
+169 Node tests, 39 Rust tests, 13 new browser criteria and all 24 CI jobs pass.
+See docs/reports/M14_CURRENT_REPORT.md, M14_GAME_TESTING.md and ADR-0028.
+PR #17 is ready for review, stacked on unmerged #16; do not merge automatically.
+Next: M15 replay and diagnostic replay, planned but not implemented.
 
 Historical completed baseline:
 
@@ -31,7 +38,7 @@ Non-negotiable foundations:
 - measured performance and bounded diagnostics;
 - agent changes never mutate MAIN accidentally.
 
-## Current state
+## Historical M13.1 state
 
 M13.1 (0.0.26) is complete: six correction groups, 100%. Project progress remains approximately 76% (79/104 roadmap weight points); these corrections do not advance M14.
 Profiler captures survive Stop, retain their original session and can be saved,
@@ -46,7 +53,7 @@ All 23 CI jobs pass at 03607cdf87bef62732b4bb39c432be97f3e79611 (tree ae36db768f
 prior gameplay and C# development/AOT regressions. Final screenshots reviewed.
 See docs/reports/M13_1_CURRENT_REPORT.md and demos/M13_1_GUIDE.md.
 PR #16 is ready for review, stacked on unmerged #15; do not merge automatically.
-Next: M14 automated game testing.
+Historical next step at M13 closure: M14 automated game testing.
 
 Historical M13 baseline:
 
@@ -62,7 +69,7 @@ All 22 jobs in CI run 37259458544 pass at executable commit
 152 Node and 39 Rust tests, eight new browser criteria and earlier regressions pass.
 Final profiler screenshots were reviewed. No user-only test remains.
 Read docs/reports/M13_CURRENT_REPORT.md, docs/architecture/M13_PROFILER.md,
-ADR-0026 and demos/M13_GUIDE.md. Next: M14 automated game testing.
+ADR-0026 and demos/M13_GUIDE.md. Historical next step at M13 closure: M14 automated game testing.
 PR #15 is ready for review, stacked on unmerged #14; do not merge automatically.
 
 M9.2 (0.0.21) editor refinements are complete (12/12, 100%). Read
@@ -137,7 +144,7 @@ M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
 RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
 triggers, layer masks, raycasts and repeatable golden scenes. M9.1 adds angular dynamics and rotated contacts; CCD and GPU physics remain
 outside scope. See ADR-0020 for historical M7 limits and M9_1_CORRECTIONS.md for
-the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the M13.1 pair; demo:m12 retains audio samples.
+the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the three M14 tests; demo:m13-1 retains the workspace pair and demo:m12 retains audio samples.
 M8 adds independent stopped Game preview, an editor-only Scene camera, triangle
 picking, two-way selection, move/rotate/scale gizmos with one-command Undo and
 Escape cancellation, orbit/pan/zoom/fly/framing and an absolute XYZ widget.
@@ -226,15 +233,16 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Implement M14 per M14_PLAN.md and master section 133. M13.1 corrections are complete;
-PR #16 is ready, stacked on unmerged #15. Read M13_1_EDITOR_WORKSPACE.md, ADR-0027,
-M13_1_CURRENT_REPORT.md, M13_PROFILER.md, M7/M11/M12 contracts and the architecture manifest first.
-Inventory RAF, worker, physics, animation, audio and generation ownership before
-adding deterministic frame stepping, simulation input and public test assertions.
-Preserve measured profiler evidence, real stopped Game preview, proposals and
-2D/legacy/HDR/Null. Include editable test/demo projects, known passing/failing
-assertions, complete browser/CI regression gates and synchronized closure.
-No user-only M13 test remains.
+Implement M15 per M15_PLAN.md and master section 134. M14 is complete; PR #17
+is ready, stacked on unmerged #16. Read M14_GAME_TESTING.md, ADR-0028,
+M14_CURRENT_REPORT.md, M13_PROFILER.md and M7/M11/M12 contracts first.
+Inventory checkpoint serializability, random sources, worker/runtime ownership and
+input recording before adding replay. Preserve bounded public tools, cancellation,
+authored MAIN isolation, simultaneous cameras, retained profiler captures and
+2D/legacy/HDR/Null. Do not claim GPU/audio/wall-clock determinism.
+Include editable demos, complete browser/CI regressions and synchronized closure.
+No user-only M14 test remains. All stacked milestone PRs remain unmerged.
+
 M8 PR #8 is stacked on #7; all milestone PRs remain unmerged.
 
 M5 PR #5 (`codex/m5-ai-control`) is stacked on M4 PR #4, then M3 #3, M2 #2 and

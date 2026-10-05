@@ -4,10 +4,10 @@
   "updatedAt": "2026-10-05",
   "engineVersion": "0.0.27",
   "activeMilestone": 14,
-  "milestoneStatus": "in_progress",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 0,
-    "wholeProjectPercent": 76,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 80,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -68,12 +68,16 @@
       "percent": 100
     },
     "14": {
-      "status": "in_progress",
-      "percent": 0
+      "status": "complete",
+      "percent": 100
     },
     "13.1": {
       "status": "complete",
       "percent": 100
+    },
+    "15": {
+      "status": "planned",
+      "percent": 0
     }
   },
   "implementation": {
@@ -84,7 +88,7 @@
     "renderGraph": "verified_native",
     "frameProfiler": "verified_bounded_main_worker_wait_scopes_gpu_passes_history_median_mad_human_agent_exact_sessions; bounded immutable saved sessions, origin storage and JSON roundtrip",
     "projectPersistence": "verified_bootstrap_http_restart",
-    "sceneEditor": "verified_modular_inspector_tree_range_selection_atomic_group_transforms_ordering_project_explorer_and_saved_layout; five docks, eight draggable tabs, dependent windows and preserved project layout",
+    "sceneEditor": "verified_ordered_closed_draggable_dock_tabs_parallel_views_modular_quick_examples_confirmed_dirty_save_shortcuts",
     "assetImport": "verified_png_static_and_animated_glb",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
@@ -93,20 +97,22 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_two_m13_and_earlier_demos",
+    "editableDemos": "verified_three_m14_and_earlier_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
     "generalAnimation": "verified_rust_trs_skin_crossfade_state_machine_legacy_hdr_null",
     "scenePixelFiltering": "verified_nearest_independent_of_game_camera_snapping",
-    "audio": "verified_web_audio_spatial_mixer_pcm_streaming_csharp_agent_null_activation"
+    "audio": "verified_web_audio_spatial_mixer_pcm_streaming_csharp_agent_null_activation",
+    "gameTesting": "verified_bounded_public_isolated_fixed_step_input_runtime_collision_animation_pixel_assertions",
+    "parallelViews": "verified_same_runtime_independent_cameras_scene_game_popup_input"
   },
   "verified": {
     "nodeTests": {
-      "passed": 158,
+      "passed": 169,
       "failed": 0
     },
-    "schemaDocuments": 16,
+    "schemaDocuments": 17,
     "architectureRules": 3,
     "daemonStartup": true,
     "httpStaticDelivery": true,
@@ -134,7 +140,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M13 0.0.25"
+      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M14 0.0.27"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -220,35 +226,36 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.26",
-      "commit": "03607cdf87bef62732b4bb39c432be97f3e79611",
-      "tree": "ae36db768f7c484a02966442b01c401cdf94b08c",
-      "runId": 37325146035,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37325146035",
-      "jobCount": 23,
+      "version": "0.0.27",
+      "commit": "9bd1ea533df830c170b4a99e0dffc81354697030",
+      "tree": "086cfb3a1621ed15ad5101273117f753a1cacbb9",
+      "runId": 37346013283,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37346013283",
+      "jobCount": 24,
       "jobs": [
-        "bootstrap (ubuntu-latest)",
-        "browser-milestones (m11)",
-        "browser-milestones (m9)",
         "rust",
-        "browser-milestones (m3)",
-        "browser-milestones (m12)",
-        "script-boundaries (windows-latest)",
-        "browser-milestones (corrections)",
-        "browser-milestones (m8)",
-        "csharp-wasm-spike (windows-latest, development)",
         "script-boundaries (macos-latest)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (m5)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
         "browser-milestones (m10)",
-        "bootstrap (windows-latest)",
-        "browser-milestones (m4)",
-        "browser-milestones (m13)",
-        "browser-milestones (m2)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "bootstrap (ubuntu-latest)",
         "script-boundaries (ubuntu-latest)",
+        "script-boundaries (windows-latest)",
         "browser-milestones (m13-1)",
+        "browser-milestones (m8)",
         "browser-milestones (m6)",
+        "browser-milestones (m9)",
+        "csharp-wasm-spike (windows-latest, development)",
+        "browser-milestones (m3)",
+        "browser-milestones (m11)",
+        "browser-milestones (corrections)",
+        "browser-milestones (m12)",
+        "browser-milestones (m2)",
+        "browser-milestones (m5)",
+        "browser-milestones (m4)",
+        "bootstrap (windows-latest)",
+        "browser-milestones (m13)",
+        "browser-milestones (m14)",
         "browser-milestones (m7)"
       ]
     },
@@ -416,7 +423,7 @@
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
     },
-    "semanticToolCount": 78,
+    "semanticToolCount": 80,
     "m10Acceptance": {
       "passed": true,
       "criteriaPassed": 8,
@@ -478,6 +485,17 @@
       "executableTree": "ae36db768f7c484a02966442b01c401cdf94b08c",
       "evidence": "docs/reports/m13-1-browser-evidence.json",
       "desktopLaunchCheck": "user Windows default-browser integration; platform invocation automatically tested"
+    },
+    "m14Acceptance": {
+      "passed": true,
+      "criteriaPassed": 13,
+      "criteriaTotal": 13,
+      "runId": 37346013283,
+      "executableCommit": "9bd1ea533df830c170b4a99e0dffc81354697030",
+      "executableTree": "086cfb3a1621ed15ad5101273117f753a1cacbb9",
+      "evidence": "docs/reports/m14-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
     }
   },
   "blockedChecks": [],
@@ -579,7 +597,10 @@
     "docs/adr/0027-modular-editor-and-retained-profiler-captures.md",
     "docs/architecture/M14_GAME_TESTING.md",
     "docs/reports/M14_CURRENT_REPORT.md",
-    "demos/M14_GUIDE.md"
+    "demos/M14_GUIDE.md",
+    "docs/reports/m14-browser-evidence.json",
+    "docs/architecture/M15_PLAN.md",
+    "docs/adr/0028-isolated-game-tests-and-parallel-view-targets.md"
   ],
-  "nextTask": "Finish M14 acceptance/CI closure; preserve authored data, test cancellation, parallel target ownership and all prior milestones. M15 not started; keep stacked PRs unmerged."
+  "nextTask": "Implement M15 replay and diagnostic replay per M15_PLAN.md and master section 134. Preserve M14 authored isolation, public test boundaries, cancellation and parallel ownership; keep stacked PRs unmerged."
 }

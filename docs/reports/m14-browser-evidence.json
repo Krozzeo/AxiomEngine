@@ -1,0 +1,185 @@
+{
+  "criteria": [
+    "Default Project first; File/Create/Panels/Config/Help order and release version",
+    "Public begin pauses at frame zero; exact 30 real C# controlled frames move 1 unit; finish restores authored scene",
+    "Repeated real C#/Wasm fixed-step suites produce identical results",
+    "Known failing assertion is reported; real WebGPU pixel assertion passes",
+    "Public cancellation releases runtime/input and preserves authored source",
+    "Human Game Tests UI runs the same saved suite and displays assertions",
+    "Scene and Game render independent cameras simultaneously; popup keyboard controls one shared simulation; closing restores Game",
+    "Physical tab reorder, self-drop no-op, close/Panels reopen, persisted order and reset",
+    "Save icon precedes File; dirty asterisk and Ctrl+S work from Inspector",
+    "Ctrl+S from a detached Inspector field saves the owner project",
+    "Real Rust 3D collision assertions pass after exact 120 steps",
+    "Actual Wasm animator state and quaternion assertions pass",
+    "Null renderer explicitly fails pixel assertions without fabricated screenshot"
+  ],
+  "samples": [
+    {
+      "id": "e5c5e456-78dd-4a34-aa27-2b4177153ebc",
+      "name": "PASS \u00b7 controlled movement",
+      "status": "completed",
+      "frames": 30,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            0.9999999999999999,
+            0,
+            0
+          ],
+          "expected": [
+            1,
+            0,
+            0
+          ],
+          "frame": 30
+        }
+      ],
+      "delta": 0.016666666666666666,
+      "determinism": "fixed-delta CPU/Wasm and controlled input; no GPU, audio-clock or arbitrary C# wall-clock guarantee"
+    },
+    {
+      "id": "be33b246-4b38-4a4b-ae84-f0fc45835b11",
+      "name": "PASS \u00b7 controlled movement",
+      "status": "completed",
+      "frames": 30,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            0.9999999999999999,
+            0,
+            0
+          ],
+          "expected": [
+            1,
+            0,
+            0
+          ],
+          "frame": 30
+        }
+      ],
+      "delta": 0.016666666666666666,
+      "determinism": "fixed-delta CPU/Wasm and controlled input; no GPU, audio-clock or arbitrary C# wall-clock guarantee"
+    },
+    {
+      "id": "cd12bcb1-4cff-4c56-8f1a-9966a1efe35a",
+      "name": "VISUAL \u00b7 background pixel (WebGPU)",
+      "status": "completed",
+      "frames": 2,
+      "results": [
+        {
+          "kind": "pixel",
+          "passed": true,
+          "actual": [
+            6,
+            9,
+            14,
+            255
+          ],
+          "expected": [
+            6,
+            9,
+            14,
+            255
+          ],
+          "frame": 2
+        }
+      ],
+      "delta": 0.016666666666666666,
+      "determinism": "fixed-delta CPU/Wasm and controlled input; no GPU, audio-clock or arbitrary C# wall-clock guarantee"
+    },
+    {
+      "id": "0af3c375-7f36-47cb-9c77-29fe43011972",
+      "name": "PASS \u00b7 falling cube reaches floor",
+      "status": "completed",
+      "frames": 120,
+      "results": [
+        {
+          "kind": "collision",
+          "passed": true,
+          "actual": true,
+          "expected": true,
+          "frame": 120
+        },
+        {
+          "kind": "entityCount",
+          "passed": true,
+          "actual": 2,
+          "expected": 2,
+          "frame": 120
+        }
+      ],
+      "delta": 0.016666666666666666,
+      "determinism": "fixed-delta CPU/Wasm and controlled input; no GPU, audio-clock or arbitrary C# wall-clock guarantee"
+    },
+    {
+      "id": "4e9cb630-bd72-4ffa-b1fd-d3fa941a1a19",
+      "name": "PASS \u00b7 animator and base rotation",
+      "status": "completed",
+      "frames": 120,
+      "results": [
+        {
+          "kind": "animation",
+          "passed": true,
+          "actual": "Idle",
+          "expected": "Idle",
+          "frame": 120
+        },
+        {
+          "kind": "rotation",
+          "passed": true,
+          "actual": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "expected": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "frame": 120
+        }
+      ],
+      "delta": 0.016666666666666666,
+      "determinism": "fixed-delta CPU/Wasm and controlled input; no GPU, audio-clock or arbitrary C# wall-clock guarantee"
+    },
+    {
+      "id": "55c9a54f-a76f-46f4-8f3c-a0eb8136e9c9",
+      "name": "VISUAL \u00b7 background pixel (WebGPU)",
+      "status": "failed",
+      "frames": 2,
+      "results": [
+        {
+          "kind": "pixel",
+          "passed": false,
+          "actual": null,
+          "expected": [
+            6,
+            9,
+            14,
+            255
+          ],
+          "reason": "Pixels unavailable for Null renderer",
+          "frame": 2
+        }
+      ],
+      "delta": 0.016666666666666666,
+      "determinism": "fixed-delta CPU/Wasm and controlled input; no GPU, audio-clock or arbitrary C# wall-clock guarantee"
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "passed": true,
+  "runId": 37346013283,
+  "executableCommit": "9bd1ea533df830c170b4a99e0dffc81354697030",
+  "executableTree": "086cfb3a1621ed15ad5101273117f753a1cacbb9",
+  "environment": "Chromium on Ubuntu CI; Xvfb and SwiftShader software Vulkan",
+  "visualReview": "Game Tests, parallel Scene and parallel Game screenshots reviewed; no physical GPU benchmark"
+}

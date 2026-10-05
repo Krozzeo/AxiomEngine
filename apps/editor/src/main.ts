@@ -1,3 +1,4 @@
+import {mountProfilerEditor} from "./profiler-editor.mjs";
 import {mountProposalEditor} from "./proposal-editor.js";
 import {startAgentBridge} from "./agent-bridge.js";
 import { mountProjectEditor } from "./project-editor.js";
@@ -140,6 +141,7 @@ async function boot() {
   }
   try {
     await initializeWebGpu();
+    const stopProfiler=mountProfilerEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,reportError});addEventListener("pagehide",stopProfiler,{once:true});
     if(agentBridgeEnabled){const stop=startAgentBridge({api,projectEditor,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,takeErrors:()=>agentErrors.splice(0),onProposals:proposalEditor.refresh,reportError});addEventListener("pagehide",stop,{once:true});}
   } catch (error) {
     document.querySelector("#gpu-state").textContent = "Renderer initialization failed; preview disabled.";
@@ -151,7 +153,7 @@ document.querySelector("#ping").addEventListener("click", () => execute("system.
 document.querySelector("#increment").addEventListener("click", () => execute("demo.increment", { amount: 1 }));
 document.querySelector("#undo").addEventListener("click", () => execute("editor.undo"));
 document.querySelector("#clear").addEventListener("click", () => logs.replaceChildren());
-for(const name of ['project','console','diagnostics'])document.querySelector('#'+name+'-tab').addEventListener('click',()=>{for(const tab of ['project','console','diagnostics']){document.querySelector('#'+tab+'-tab').classList.toggle('active',tab===name);document.querySelector('#'+tab+'-content').hidden=tab!==name;}});
+for(const name of ['project','console','diagnostics','profiler'])document.querySelector('#'+name+'-tab').addEventListener('click',()=>{for(const tab of ['project','console','diagnostics','profiler']){document.querySelector('#'+tab+'-tab').classList.toggle('active',tab===name);document.querySelector('#'+tab+'-content').hidden=tab!==name;}});
 document.querySelector('#deep-trace').addEventListener('change',event=>renderer?.setDeepTrace(event.target.checked));
 document.querySelector('#diagnostic-explain').addEventListener('click',()=>{
  const kind=document.querySelector('#diagnostic-kind').value,entityId=projectEditor.selectedEntity(),otherId=document.querySelector('#diagnostic-other').value,assetId=document.querySelector('#asset-list').value,traceId=document.querySelector('#diagnostic-trace').value.trim();

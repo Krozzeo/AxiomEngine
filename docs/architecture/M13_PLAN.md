@@ -1,6 +1,6 @@
 # M13 — Profiler and explainFrameSpike
 
-Status: planned, 0%. Roadmap weight: 4%. Master specification section 132.
+Status: in progress; implementation ready for full CI acceptance. Roadmap weight: 4%. Master specification section 132.
 
 Begin after M12 acceptance and synchronized closure. Read the master, architecture
 manifest, M12_AUDIO.md / ADR-0025, M12 report, FrameProfiler and M8 causal diagnostics.

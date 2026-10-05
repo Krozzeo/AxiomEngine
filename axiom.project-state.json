@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-05",
-  "engineVersion": "0.0.24",
-  "activeMilestone": 12,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.25",
+  "activeMilestone": 13,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
-    "wholeProjectPercent": 75,
+    "activeMilestonePercent": 75,
+    "wholeProjectPercent": 78,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -64,8 +64,8 @@
       "percent": 100
     },
     "13": {
-      "status": "not_started",
-      "percent": 0
+      "status": "in_progress",
+      "percent": 75
     }
   },
   "implementation": {
@@ -531,5 +531,5 @@
     "docs/reports/m12-audio-benchmark.json",
     "demos/M12_GUIDE.md"
   ],
-  "nextTask": "Implement M13 profiler/explainFrameSpike per M13_PLAN.md and master section 132; preserve audio, earlier behavior, bounded causal evidence and proposal isolation; keep PR #14 unmerged."
+  "nextTask": "Complete M13 browser acceptance and all regression CI, then synchronize closure; keep M12 PR #14 unmerged."
 }

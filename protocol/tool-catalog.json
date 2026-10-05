@@ -4977,6 +4977,96 @@
       },
       "route": "workspace",
       "mcp": false
+    },
+    {
+      "name": "profiler.query",
+      "description": "Read bounded measured frame history from the live editor; milliseconds and timestamp availability are explicit.",
+      "mutates": false,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "beforeFrame": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxBytes": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 16384
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "profiler.explainFrameSpike",
+      "description": "Compare a retained frame against prior comparable frames and rank measured contributors; unavailable evidence is explicit.",
+      "mutates": false,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "frameSequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "metric": {
+            "type": "string",
+            "enum": [
+              "elapsed",
+              "main",
+              "gpu"
+            ]
+          },
+          "baselineWindow": {
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 60
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "frameSequence"
+        ],
+        "additionalProperties": false
+      }
     }
   ]
 }

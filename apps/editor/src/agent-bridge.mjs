@@ -1,12 +1,13 @@
 // Sync only snapshots accepted by the same public editor path; renderer owns pixels.
 export function startAgentBridge({api,projectEditor,getRenderer,getSnapshot,takeErrors,reportError,onProposals=()=>{}}){
- const clientId=crypto.randomUUID();let stopped=false,capture=null,diagnostic=null,animation=null,audio=null,timer;
+ const clientId=crypto.randomUUID();let stopped=false,capture=null,diagnostic=null,animation=null,audio=null,profiler=null,timer;
  async function poll(){
   try{
    const snapshot=getSnapshot(),renderer=getRenderer();
-   const result=await api('/v1/editor/sync',{method:'POST',body:JSON.stringify({clientId,workspaceId:snapshot?.workspaceId??null,sceneRevision:snapshot?.sceneRevision??-1,status:renderer?.status()??{},errors:takeErrors(),capture,diagnostic,animation,audio})});capture=null;diagnostic=null;animation=null;audio=null;onProposals(result.proposals??[]);
+   const result=await api('/v1/editor/sync',{method:'POST',body:JSON.stringify({clientId,workspaceId:snapshot?.workspaceId??null,sceneRevision:snapshot?.sceneRevision??-1,status:renderer?.status()??{},errors:takeErrors(),capture,diagnostic,animation,audio,profiler})});capture=null;diagnostic=null;animation=null;audio=null;profiler=null;onProposals(result.proposals??[]);
    if(result.snapshot)await projectEditor.synchronize(result.snapshot);
    if(result.animation){const requestId=result.animation.requestId;try{animation={requestId,value:getRenderer().animationControl(result.animation)};}catch(error){animation={requestId,error:error.message};}}
+   if(result.profiler){const requestId=result.profiler.requestId;try{profiler={requestId,value:getRenderer().profilerQuery(result.profiler)};}catch(error){profiler={requestId,error:error.message};}}
    if(result.audio){const requestId=result.audio.requestId;try{audio={requestId,value:getRenderer().audioControl(result.audio)};}catch(error){audio={requestId,error:error.message};}}
    if(result.capture){const requestId=result.capture.requestId;try{capture={requestId,value:await getRenderer().capture(result.capture)};}catch(error){capture={requestId,error:error.message};}}
    if(result.diagnostic){diagnostic={requestId:result.diagnostic.requestId,value:getRenderer().explain(result.diagnostic)};}

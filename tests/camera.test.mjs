@@ -1,3 +1,5 @@
+import {CommandBus} from '../daemon/bootstrap/command-bus.mjs';
+import {envelope} from '../protocol/src/protocol.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
@@ -15,3 +17,5 @@ test('camera and audio listener follow parent position and camera rotation, inde
 test('legacy lighting uniforms contain only authored directional lights and rotate their direction',()=>{assert.equal(legacyDirectionalUniforms({entities:[]}).count,0);const e={id:'light',transform:{...transform(),rotation:cameraRotation([0,0,1],[1,0,1])},light:{kind:'directional',direction:[0,0,-1],color:[1,.5,.25],intensity:2}};const l=legacyDirectionalUniforms({entities:[e]});assert.equal(l.count,1);assert.ok(Math.abs(l.data[0]-1)<1e-6);assert.equal(l.data[7],2);});
 
 test('Create 2D Objects produces compatible alpha sprites inside a production 2D starter',async t=>{const w=await workspace(t);await w.run('project.create',{name:'2D geometry',dimension:2});for(const shape of ['square','disc','capsule','triangle']){await w.run('scene.primitive.create',{id:w.project.id,expectedSceneRevision:w.revision,dimension:2,shape});const e=w.project.scene.entities.at(-1);assert.equal(e.renderable.kind,'sprite');assert.equal(e.sprite2D.lit,true);assert.equal(w.project.scene.entities.some(e=>e.renderable?.kind==='mesh'),false);}});
+
+test('Camera Inspector command is registered on the public command bus',async t=>{const w=await workspace(t);const bus=new CommandBus({projects:w});let event=await bus.dispatch(envelope('command',{type:'project.create',data:{name:'Public Camera',dimension:3}}));assert.equal(event.kind,'event');const e=w.project.scene.entities.find(e=>e.camera);event=await bus.dispatch(envelope('command',{type:'scene.camera.set',data:{id:w.project.id,expectedSceneRevision:w.revision,entityId:e.id,value:{...e.camera,fov:90}}}));assert.equal(event.kind,'event',JSON.stringify(event));assert.equal(w.project.scene.entities.find(n=>n.id===e.id).camera.fov,90);});

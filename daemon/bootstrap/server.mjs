@@ -143,6 +143,7 @@ export async function startServer(options = {}) {
 
       if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
       if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,{...bridge.sync(await readJson(request)),proposals:proposals.list()});
+      if(request.method==='POST'&&url.pathname==='/v1/editor/disconnect')return json(response,200,{released:bridge.release((await readJson(request)).clientId)});
       if(request.method==='POST'&&url.pathname==='/v1/tools/call'){
         const call=await readJson(request),tool=toolMap.get(call.name);
         if(!tool?.mcp)return json(response,404,{code:'AX_AGENT_0004',cause:'Tool is unavailable'});

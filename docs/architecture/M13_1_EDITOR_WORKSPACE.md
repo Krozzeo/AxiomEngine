@@ -29,6 +29,8 @@ export provides a portable durable copy. Only explicit Clear affects live histor
 
 The bootstrap credential is removed from the hash and retained in per-tab
 sessionStorage. A new bootstrap URL replaces it; daemon restart invalidates it.
+Authenticated pagehide disconnect releases the old editor lease; bounded tombstones
+reject late reports from that client. New tabs retain distinct renderer lease IDs.
 The credential never enters project layouts or profiler exports. Startup invokes
 rundll32 URL handler on Windows, open on macOS or xdg-open on Linux, without a shell.
 CI, AXIOM_OPEN_BROWSER=0 and --no-open disable automatic launch; failures preserve

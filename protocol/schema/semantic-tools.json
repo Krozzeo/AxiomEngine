@@ -41,7 +41,7 @@
       "mutates": true,
       "inputSchema": {
         "type": "object",
-                "properties": {}
+        "properties": {}
       },
       "route": "workspace",
       "mcp": false
@@ -2077,7 +2077,7 @@
               },
               "docks": {
                 "type": "object",
-                                "required": [
+                "required": [
                   "hierarchy",
                   "inspector",
                   "project",
@@ -2092,7 +2092,8 @@
                       "left",
                       "right",
                       "top",
-                      "bottom"
+                      "bottom",
+                      "center"
                     ]
                   },
                   "inspector": {
@@ -2101,7 +2102,8 @@
                       "left",
                       "right",
                       "top",
-                      "bottom"
+                      "bottom",
+                      "center"
                     ]
                   },
                   "project": {
@@ -2110,7 +2112,8 @@
                       "left",
                       "right",
                       "top",
-                      "bottom"
+                      "bottom",
+                      "center"
                     ]
                   },
                   "console": {
@@ -2119,7 +2122,8 @@
                       "left",
                       "right",
                       "top",
-                      "bottom"
+                      "bottom",
+                      "center"
                     ]
                   },
                   "diagnostics": {
@@ -2128,7 +2132,8 @@
                       "left",
                       "right",
                       "top",
-                      "bottom"
+                      "bottom",
+                      "center"
                     ]
                   },
                   "profiler": {
@@ -2137,7 +2142,28 @@
                       "left",
                       "right",
                       "top",
-                      "bottom"
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "scene": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "game": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
                     ]
                   }
                 }

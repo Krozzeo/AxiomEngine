@@ -15,7 +15,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
   let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
-  const panels=mountPanelLayout({document,save:value=>act(()=>run('project.editor.update',mutation({value}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
+  const panels=mountPanelLayout({document,onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
   function draw(updateFields = true) {
     $("editor-workspace").setAttribute("aria-busy",String(busy));
     const project = state.project;panels.set(project?.editor);
@@ -245,9 +245,9 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("asset-place").addEventListener("click",()=>act(()=>run("scene.asset.place",mutation({assetId:$("asset-list").value}))));
   $("camera-projection").addEventListener("change",()=>{const projection=$("camera-projection").value;return act(()=>run("scene.camera.update",mutation({camera:{projection}})));});
   $("project-close").addEventListener("click",()=>act(async()=>{if(state.dirty&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
-  $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());view='game';}));
+  $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());view='game';panels.activateView('game');}));
   $("play-stop").addEventListener("click",()=>act(()=>run("play.stop",mutation())));
-  for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;draw(false);});
+  for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;panels.activateView(name);draw(false);});
   $("project-list").addEventListener("change", draw);
   $("project-refresh").addEventListener("click", () => act(list));
   $("workspace-refresh").addEventListener("click", () => act(async () => {await run("scene.get");if($("file-menu"))$("file-menu").open=false;if($("settings-menu"))$("settings-menu").open=false;}));

@@ -1,5 +1,11 @@
 # Implementation status
 
+M14 (0.0.27) is implemented and under acceptance, not yet a completed release.
+Read docs/reports/M14_CURRENT_REPORT.md, docs/architecture/M14_GAME_TESTING.md
+and ADR-0028. Browser/CI validation is pending; M15 has not started.
+
+Historical completed baseline:
+
 Last updated: 2026-10-05. Version 0.0.26.
 
 M13.1 (0.0.26) is complete: six correction groups, 100%. Project progress remains approximately 76% (79/104 roadmap weight points); these corrections do not advance M14.

@@ -1,3 +1,4 @@
+import {addExample} from '../../engine/scene/examples.mjs';
 import {readPcm} from '../../engine/assets/audio.mjs';
 import {orderEntities,updateTransforms,selectedRoots} from '../../engine/scene/editor-operations.mjs';
 import {reparent,worldTransforms} from '../../engine/scene/hierarchy.mjs';
@@ -268,6 +269,8 @@ export class SceneWorkspace {
     } else if(type==="scene.camera.update") {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
       scene.camera={projection:"perspective",position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
+    } else if(type==="scene.example.create") {
+      try{addExample(scene,data.example,`entity://${randomUUID()}`);}catch(e){fail("AX_PROJECT_0002",e.message);}
     } else if (type === "scene.entity.create") {
       scene.entities.push({ id: `entity://${randomUUID()}`, name: data.name ?? "Entity", transform: { position: [0, 0, 0], rotation: [0, 0, 0, 1], scale: [1, 1, 1] } });
     } else if (["scene.entity.update", "scene.entity.delete"].includes(type)) {

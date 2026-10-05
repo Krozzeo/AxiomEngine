@@ -538,6 +538,22 @@
         "diagnostics.explain",
         "runtime.status"
       ]
+    },
+    {
+      "code": "AX_TEST_0001",
+      "meaning": "Invalid or unavailable gameplay test operation",
+      "inspect": [
+        "gameTest.control",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_TEST_0002",
+      "meaning": "Gameplay test cancelled, stale or budget exhausted",
+      "inspect": [
+        "gameTest.control",
+        "runtime.status"
+      ]
     }
   ]
 }

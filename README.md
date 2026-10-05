@@ -1,5 +1,11 @@
 # Axiom Engine
 
+M14 (0.0.27) is implemented and under acceptance, not yet a completed release.
+Read docs/reports/M14_CURRENT_REPORT.md, docs/architecture/M14_GAME_TESTING.md
+and ADR-0028. Browser/CI validation is pending; M15 has not started.
+
+Historical completed baseline:
+
 Axiom Engine is an open-source, browser-native, agent-native game engine. Its
 core is designed for Rust/WebAssembly and WebGPU; a capability-scoped local
 daemon provides filesystem, build, asset and automation services.

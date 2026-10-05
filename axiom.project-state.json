@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-05",
-  "engineVersion": "0.0.26",
-  "activeMilestone": 13,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.27",
+  "activeMilestone": 14,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 76,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -68,7 +68,7 @@
       "percent": 100
     },
     "14": {
-      "status": "not_started",
+      "status": "in_progress",
       "percent": 0
     },
     "13.1": {
@@ -576,7 +576,10 @@
     "docs/reports/M13_1_CURRENT_REPORT.md",
     "docs/reports/m13-1-browser-evidence.json",
     "demos/M13_1_GUIDE.md",
-    "docs/adr/0027-modular-editor-and-retained-profiler-captures.md"
+    "docs/adr/0027-modular-editor-and-retained-profiler-captures.md",
+    "docs/architecture/M14_GAME_TESTING.md",
+    "docs/reports/M14_CURRENT_REPORT.md",
+    "demos/M14_GUIDE.md"
   ],
-  "nextTask": "Implement M14 automated game testing after M13.1 corrections; read M14_PLAN.md, M13_1_EDITOR_WORKSPACE.md and current report. Preserve captures, one active viewport, explicit lease release and proposal isolation. Keep PR #16 unmerged."
+  "nextTask": "Finish M14 acceptance/CI closure; preserve authored data, test cancellation, parallel target ownership and all prior milestones. M15 not started; keep stacked PRs unmerged."
 }

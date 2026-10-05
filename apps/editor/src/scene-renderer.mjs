@@ -1,3 +1,5 @@
+import {GameTestSession,testError} from './test-session.mjs';
+import {parallelView} from './parallel-view.mjs';
 import {createAudioSession} from './audio-session.mjs';
 import {twoDPlan,uiHit} from '../../../engine/renderer/two-d-plan.mjs';
 import {createTwoDGPU} from '../../../engine/renderer/two-d-gpu.mjs';
@@ -48,7 +50,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let skinGPU=null;
   let device=null, context=null, pipeline=null, sampler=null, depth=null;
   let gpuProfiler=null,gpuSample=null;
-  let snapshotLoading=false;
+  let snapshotLoading=false,testing=false,frameInProgress=false,currentSnapshot=null,testSource=null,testGeneration=null;
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
@@ -57,12 +59,12 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let view='scene',editorCamera=null,transformPreview=null,geometry=[],lastPacket=null,lastTraceId=null,lineage=null;
   const decisions=new DecisionEvidence(),assetFailures=new Map();
   const keys=new Set();
-  const keydown=event=>{if(playing&&!twoDPaused&&view==='game'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
+  const keydown=event=>{if(playing&&!twoDPaused&&(event.axiomView??event.target?.dataset?.parallelView??view)==='game'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
   const keyup=event=>keys.delete(event.code),blur=()=>keys.clear();
   globalThis.addEventListener?.("keydown",keydown);globalThis.addEventListener?.("keyup",keyup);globalThis.addEventListener?.("blur",blur);
   const uiPointer=event=>{if(!playing||view!=='game'||!lastTwoDPlan)return;const rect=canvas.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-rect.left)*canvas.width/rect.width,(event.clientY-rect.top)*canvas.height/rect.height,lastTwoDPlan.pixel.viewport);if(!hit)return;event.preventDefault();event.stopImmediatePropagation();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;};
   canvas.addEventListener?.('pointerdown',uiPointer,{capture:true});
-  let textures=new Map(), assets=new Map(), assetKeys=new Map();
+  let parallel=null;let textures=new Map(), assets=new Map(), assetKeys=new Map();
   kernel.compileScene({entities:[]},new Map());
   function destroyResources(items) { for(const item of items) {item.vertex?.destroy();item.uniform?.destroy();} }
   function clearTextures() {for(const texture of textures.values())texture.destroy();textures=new Map();}
@@ -88,13 +90,14 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       depth=device.createTexture({size:[canvas.width,canvas.height],format:"depth24plus",usage:GPUTextureUsage.RENDER_ATTACHMENT});
       skinGPU=await createSkinGPU(device);
       const currentDevice=device;
-      device.lost.then(info=>{if(disposed)return;reportError(new Error(`AX_RENDERER_0003: GPU device lost (${info.reason}): ${info.message}`));skinGPU?.dispose();skinGPU=null;production?.dispose();production=null;twoDGPU?.dispose();twoDGPU=null;gpuProfiler?.dispose();gpuProfiler=createGpuProfiler(null,()=>{},()=>{});device=null;stateElement.textContent=`Null Renderer · GPU device lost (${info.reason})`;destroyResources(resources);resources=[];clearTextures();currentDevice.destroy();});
+      device.lost.then(info=>{if(disposed)return;reportError(new Error(`AX_RENDERER_0003: GPU device lost (${info.reason}): ${info.message}`));skinGPU?.dispose();skinGPU=null;production?.dispose();production=null;twoDGPU?.dispose();twoDGPU=null;gpuProfiler?.dispose();gpuProfiler=createGpuProfiler(null,()=>{},()=>{});const parallelTarget=parallel?.get();parallel?.dispose();device=null;parallel=parallelView({device:null,gpu,pipeline,textureFor,getTexture:()=>null,reportError});parallel.set(parallelTarget,runtimeScene,assets,geometry);stateElement.textContent=`Null Renderer · GPU device lost (${info.reason})`;destroyResources(resources);resources=[];clearTextures();currentDevice.destroy();});
       stateElement.textContent=`WebGPU · project scene${timestamps?" · GPU timestamps":""}`;
       stateElement.classList.add("success");
     } catch(error) {reportError(error);device?.destroy();device=null;}
   }
   if(!device) stateElement.textContent=`Null Renderer · ${forceNull?"selected explicitly":"WebGPU unavailable"}`;
   gpuProfiler=createGpuProfiler(device,(sequence,ms,scopes,ticket)=>{if(profiler.attachGpuTiming(sequence,ms,scopes,ticket))gpuSample={frameSequence:sequence,milliseconds:ms};},(sequence,reason,ticket)=>profiler.gpuUnavailable(sequence,reason,ticket));
+  parallel=parallelView({device,gpu,pipeline,textureFor,getTexture:url=>textures.get(url??'white'),reportError,onPointer:(event,target,plan)=>{if(!playing||target?.view!=='game'||!plan)return;const c=target.canvas,r=c.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-r.left)*c.width/r.width,(event.clientY-r.top)*c.height/r.height,plan.pixel.viewport);if(hit){event.preventDefault();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;}}});
   async function textureFor(url) {
     const key=url??"white";
     if(textures.has(key))return textures.get(key);
@@ -126,7 +129,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       pending.push({vertex,uniform,bind,count:draw.vertices.length/8,color:draw.color,unlit:draw.unlit});
     }return pending;}catch(error){destroyResources(pending);throw error;}
   }
-  async function setSnapshot(snapshot) {
+  async function setSnapshot(snapshot,internalTest=false) {
+    if(!internalTest){currentSnapshot=structuredClone(snapshot);if(testing){testing=false;if(testSession.job)testSession.job.cancel=true;}}
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
     audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
@@ -180,7 +184,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
       skinGPU?.reset();kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
       workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=nextScriptFault;
-      assets=localAssets;playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;await audio.configure(scene,localAssets,{playing});if(ticket!==generation||disposed)return;if(playing)for(const op of startAudioControls)audio.control(op);previousTime=null;trace=0n;gpuSample=null;
+      assets=localAssets;await parallel.prepare(scene,assets,draws);playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;await audio.configure(scene,localAssets,{playing});if(ticket!==generation||disposed)return;if(playing)for(const op of startAudioControls)audio.control(op);previousTime=null;trace=0n;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
       const used=new Set([...(scene.twoD?[...localAssets.values()].filter(a=>a.kind==='sprite').map(a=>({texture:a.dataUrl})):[]),...draws,...[...localAssets.values()].flatMap(a=>a.primitives??[])].map(draw=>draw.texture??"white"));
       if(scene.twoD)used.add("white");
@@ -188,12 +192,13 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     } catch(error) {if(ticket===generation)audio.clear();nextRuntime?.dispose();replacement.dispose();destroyResources(pending);throw error;}
     }finally{if(ticket===generation)snapshotLoading=false;}
   }
-  async function frame(now) {
+  async function frame(now,manual=null) {
     if(disposed)return;
-    if(snapshotLoading){animationId=requestAnimationFrame(frame);return;}
+    if(snapshotLoading||testing&&!manual){if(!manual)animationId=requestAnimationFrame(frame);return;}
+    frameInProgress=true;
     const ticket=generation;
     try {
-      const delta=previousTime===null?0:Math.min((now-previousTime)/1000,0.25);previousTime=now;
+      const delta=manual?.delta??(previousTime===null?0:Math.min((now-previousTime)/1000,0.25));previousTime=now;
       const diagnostic=profiler.begin(performance.now(),crypto.randomUUID(),{view,playing,route:runtimeScene.twoD?'2d':runtimeScene.rendering?'hdr':'legacy'});
       const timing=gpuProfiler.begin(diagnostic.frameSequence,ticket);diagnostic.gpuReason=timing.reason;
       if(playing&&!twoDPaused&&scriptRuntime) {
@@ -204,7 +209,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           scriptFlight=active.execute({action:"step",generation:ticket,entities:runtimeScene.entities.map(e=>({...e,animationState:animationStates.get(e.id)})),keys:[...keys],delta});
           profiler.scope(diagnostic,'script.prepare',scriptStart,performance.now());
           const packet=await scriptFlight;diagnostic.scriptRoundTripMs=performance.now()-scriptStart;
-          if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
+          if(ticket!==generation||disposed){if(!disposed&&!manual)animationId=requestAnimationFrame(frame);return;}
           profiler.scope(diagnostic,'script.roundtrip',scriptStart,performance.now(),'wall');
           if(Number.isFinite(packet.metrics?.workerDispatchMs)&&packet.metrics.workerDispatchMs>=0&&packet.metrics.workerDispatchMs<=2000)profiler.scope(diagnostic,'worker.dispatch',0,packet.metrics.workerDispatchMs,'worker');
           const applyStart=performance.now();
@@ -215,7 +220,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
               draws=scenePrimitives(result.scene,assets);if(result.scene.twoD&&device){await twoDGPU.prepare([...assets.values()].filter(a=>a.kind==='sprite').map(a=>a.dataUrl));}else if(result.scene.rendering&&device){production.reset();await production.prepare(draws);}else next=await buildResources(draws,ticket);
               if(ticket!==generation||disposed)throw new Error("Runtime generation changed");
               try {kernel.compileScene(result.scene,assets,true);kernel.configurePhysics(result.scene,true);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
-              destroyResources(resources);resources=next;geometry=draws;
+              destroyResources(resources);resources=next;geometry=draws;await parallel.prepare(result.scene,assets,draws);
             }catch(error){destroyResources(next);throw error;}
           }else kernel.setPositions(result.positions);
           kernel.setVelocities(result.velocities);
@@ -225,7 +230,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
         finally{scriptFlight=null;}
       }
-      if(ticket!==generation||disposed){if(!disposed)animationId=requestAnimationFrame(frame);return;}
+      if(ticket!==generation||disposed){if(!disposed&&!manual)animationId=requestAnimationFrame(frame);return;}
       diagnostic.profileContext.view=view;
       let stageStart=performance.now();
       const packet=kernel.stepScene(twoDPaused?0:delta,++trace,canvas.width/canvas.height);
@@ -272,14 +277,15 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         timing.resolve(encoder);device.queue.submit([encoder.finish()]);timing.submitted();
         }
       }
+      parallel.render({scene:previewScene??runtimeScene,assets,draws:geometry,resources,editorCamera,time:twoDTime,kernel,paused:twoDPaused,frame:packet.frame,generation});canvas.dataset.frame=String(packet.frame);canvas.dataset.camera=JSON.stringify(camera);
       profiler.scope(diagnostic,'render.submit',stageStart,performance.now());stageStart=performance.now();
-      const audioState=audio.step(runtimeScene,{playing,view,paused:twoDPaused});diagnostic.audio=audioState;diagnostic.audioProvenance={projectId:currentProject,sceneRevision,workspaceId,generation};
+      const audioState=audio.step(runtimeScene,{playing,view,paused:twoDPaused||testing});diagnostic.audio=audioState;diagnostic.audioProvenance={projectId:currentProject,sceneRevision,workspaceId,generation};
       profiler.scope(diagnostic,'audio.update',stageStart,performance.now());
       diagnostic.camera=structuredClone(lastTwoDPlan?.pixel.camera??camera);
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"stopped",view,sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
-      lastFrame={profiler:profiler.summary(),workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,traceId:diagnostic.traceId,view,renderer:device?'webgpu':'null',playing,generation,audio:audioState,animation:animations,fault:scriptFault,rendering:renderStats,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
+      lastFrame={profiler:profiler.summary(),workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,traceId:diagnostic.traceId,view,renderer:device?'webgpu':'null',playing,generation,gameTest:{id:testSession.job?.id??null,status:testSession.job?.status??'idle',frames:testSession.job?.frames??0},audio:audioState,animation:animations,fault:scriptFault,rendering:renderStats,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
       if(decisions.deep&&packet.frame%15===0)decisions.record(evidence());
       if(captureRequest){
         const request=captureRequest;captureRequest=null;
@@ -293,14 +299,21 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }catch(error){request.reject(error);}
       }
       if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
-    } catch(error) {audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";return;}
-    animationId=requestAnimationFrame(frame);
+    } catch(error) {audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;}
+    if(!manual)animationId=requestAnimationFrame(frame);
   }
+  const testSession=new GameTestSession({
+    async begin(){if(!currentSnapshot?.project||playing)throw testError('Open a stopped project first');testSource=currentSnapshot;testing=true;keys.clear();while(frameInProgress)await new Promise(r=>setTimeout(r,1));await setSnapshot({...testSource,playing:true},true);if(currentSnapshot!==testSource)throw testError('Project changed','AX_TEST_0002');testGeneration=generation;view='game';audio.clear();},
+    async step(input){if(!testing||generation!==testGeneration||currentSnapshot!==testSource)throw testError('Runtime generation changed','AX_TEST_0002');keys.clear();for(const key of input.keys)keys.add(key);try{await frame(0,input);if(scriptFault)throw testError(scriptFault);if(!testing||generation!==testGeneration)throw testError('Runtime changed','AX_TEST_0002');}finally{keys.clear();}},
+    async state(assertions){let pixels=null;if(assertions.some(a=>a.kind==='pixel')&&device){const target=canvas.ownerDocument.createElement('canvas');target.width=canvas.width;target.height=canvas.height;const ctx=target.getContext('2d',{willReadFrequently:true});ctx.drawImage(canvas,0,0);pixels={};for(const a of assertions.filter(a=>a.kind==='pixel'))pixels[a.x+','+a.y]=Array.from(ctx.getImageData(a.x,a.y,1,1).data);}return {entities:structuredClone(runtimeScene.entities),contacts:structuredClone(lastPacket?.physics?.contacts??[]),animation:kernel.animationStatus(),pixels};},
+    async end(){keys.clear();const source=testSource;testSource=null;testGeneration=null;const originalView=testView;try{if(!disposed&&source&&currentSnapshot===source)await setSnapshot(source,true);}finally{testing=false;if(source&&currentSnapshot===source)view=originalView;previousTime=null;}}
+  });let testView='scene';
+  function gameTestControl(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw testError('Project revision changed','AX_TEST_0002');if(args.action==='begin'||args.action==='run')testView=view;return testSession.control(args);}
   animationId=requestAnimationFrame(frame);
   function capture(args){
     if(disposed||!device||captureRequest||!lastFrame) return Promise.reject(new Error('WebGPU capture unavailable'));
     return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{if(captureRequest?.args===args)captureRequest=null;reject(new Error('Capture timed out'));},4000);captureRequest={args,resolve:value=>{clearTimeout(timer);resolve(value);},reject:error=>{clearTimeout(timer);reject(error);}};});
   }
   function evidence(){const camera=view==='scene'&&editorCamera?editorCamera:runtimeScene.camera??{position:[0,0,6],target:[0,0,0],projection:'perspective',fov:60,orthoHeight:6};return {traceId:lastTraceId,correlationId:lineage?.correlationId??null,causationId:lineage?.messageId??null,projectId:currentProject,workspaceId,sceneRevision,frame:lastPacket?.frame,view,playing,renderer:device?'webgpu':'null',camera,rendering:renderStats,physics:lastPacket?.physics??null,script:{attached:!!runtimeScene.script,attachments:runtimeScene.script?.attachments??[],buildId:runtimeScene.script?.build.id??null,active:!!scriptRuntime,fault:scriptFault?.slice(0,2048)??null},assets:(runtimeScene.assets??[]).map(a=>({id:a.id,kind:assets.get(a.id)?.kind??a.kind,loaded:assets.has(a.id),error:assetFailures.get(a.id)?.slice(0,2048)??null})),entities:runtimeScene.entities.map(e=>{const draws=(lastTwoDPlan?.items??lastRenderPlan?.items??geometry).filter(d=>d.entityId===e.id);return {id:e.id,renderable:!!e.renderable||!!e.tilemap||!!e.particles2D,assetId:e.renderable?.assetId??e.tilemap?.assetId,kind:e.renderable?.kind??(e.tilemap?"sprite":undefined),scale:e.transform.scale,collider:e.collider,degenerate:draws.length>0&&draws.every(collapsedGeometry),drawCount:draws.length,renderDecision:lastRenderPlan?{culling:lastRenderPlan.settings.culling,lod:draws.map(d=>d.lod),admittedReference:draws.some(d=>d.visible),alphaMode:e.material?.alphaMode??'imported',pixels:'unproven'}:null,inFrustum:draws.some(d=>lastRenderPlan?d.visible:clipVisible(d,camera,canvas.width/canvas.height))};})};}
-  return {setSnapshot,capture,profilerCaptures:()=>profiler.captures(),captureProfiler:()=>profiler.capture(),profilerQuery(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw Error('AX_SCENE_0002: Profiler revision is stale');return args.action==='explain'?profiler.explainFrameSpike(args):profiler.history(args);},setProfilerPaused:value=>profiler.pause(value),clearProfiler(){profiler.reset({projectId:currentProject,sceneRevision,workspaceId,generation});},unlockAudio:()=>audio.unlock(),audioControl(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw Error('AX_SCENE_0002: Audio control revision is stale');return audio.control(args);},animationControl(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw Error('AX_SCENE_0002: Animation control revision is stale');return kernel.animationControl(args);},interaction:()=>({scene:runtimeScene,draws:lastTwoDPlan?.items??lastRenderPlan?.items??geometry,view,playing,projectId:currentProject,sceneRevision}),setView(value){view=value;audio.step(runtimeScene,{playing,view,paused:twoDPaused});keys.clear();transformPreview=null;},setEditorCamera(value){editorCamera=structuredClone(value);},previewTransform(value){transformPreview=value;},setDeepTrace(value){decisions.setDeep(value);},explain(args){if(!lastFrame)return {status:'unavailable',code:'AX_CAUSAL_0001',message:'No frame evidence yet',nodes:[],edges:[]};if(!args.traceId)decisions.record(evidence());return decisions.query({...args,id:currentProject,workspaceId});},status:()=>lastFrame??{},dispose(){captureRequest?.reject(new Error('Renderer disposed'));captureRequest=null;disposed=true;audio.dispose();globalThis.removeEventListener?.('pointerdown',unlockAudio,{capture:true});globalThis.removeEventListener?.('keydown',unlockAudio,{capture:true});generation++;scriptRuntime?.dispose();globalThis.removeEventListener?.("keydown",keydown);globalThis.removeEventListener?.("keyup",keyup);globalThis.removeEventListener?.("blur",blur);if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();skinGPU?.dispose();production?.dispose();twoDGPU?.dispose();canvas.removeEventListener?.("pointerdown",uiPointer,{capture:true});destroyResources(resources);clearTextures();depth?.destroy();gpuProfiler?.dispose();device?.destroy();}};
+  return {gameTestControl,testStatus:()=>testSession.result(),setParallelViewport:value=>parallel.set(value,runtimeScene,assets,geometry),setSnapshot,capture,profilerCaptures:()=>profiler.captures(),captureProfiler:()=>profiler.capture(),profilerQuery(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw Error('AX_SCENE_0002: Profiler revision is stale');return args.action==='explain'?profiler.explainFrameSpike(args):profiler.history(args);},setProfilerPaused:value=>profiler.pause(value),clearProfiler(){profiler.reset({projectId:currentProject,sceneRevision,workspaceId,generation});},unlockAudio:()=>audio.unlock(),audioControl(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw Error('AX_SCENE_0002: Audio control revision is stale');return audio.control(args);},animationControl(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw Error('AX_SCENE_0002: Animation control revision is stale');return kernel.animationControl(args);},interaction:()=>({scene:runtimeScene,draws:lastTwoDPlan?.items??lastRenderPlan?.items??geometry,view,playing,projectId:currentProject,sceneRevision}),setView(value){if(testing){testView=value;return;}view=value;audio.step(runtimeScene,{playing,view,paused:twoDPaused});keys.clear();transformPreview=null;},setEditorCamera(value){editorCamera=structuredClone(value);},previewTransform(value){transformPreview=value;},setDeepTrace(value){decisions.setDeep(value);},explain(args){if(!lastFrame)return {status:'unavailable',code:'AX_CAUSAL_0001',message:'No frame evidence yet',nodes:[],edges:[]};if(!args.traceId)decisions.record(evidence());return decisions.query({...args,id:currentProject,workspaceId});},status:()=>({...lastFrame,projectId:currentProject,sceneRevision,workspaceId,generation,renderer:device?'webgpu':'null',playing,view,gameTest:{id:testSession.job?.id??null,status:testSession.job?.status??'idle',frames:testSession.job?.frames??0}}),dispose(){captureRequest?.reject(new Error('Renderer disposed'));captureRequest=null;disposed=true;if(testSession.job)testSession.job.cancel=true;parallel.dispose();audio.dispose();globalThis.removeEventListener?.('pointerdown',unlockAudio,{capture:true});globalThis.removeEventListener?.('keydown',unlockAudio,{capture:true});generation++;scriptRuntime?.dispose();globalThis.removeEventListener?.("keydown",keydown);globalThis.removeEventListener?.("keyup",keyup);globalThis.removeEventListener?.("blur",blur);if(animationId!==null)cancelAnimationFrame(animationId);kernel.dispose();skinGPU?.dispose();production?.dispose();twoDGPU?.dispose();canvas.removeEventListener?.("pointerdown",uiPointer,{capture:true});destroyResources(resources);clearTextures();depth?.destroy();gpuProfiler?.dispose();device?.destroy();}};
 }

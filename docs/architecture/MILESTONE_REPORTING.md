@@ -59,29 +59,29 @@ Report both values:
   The baseline weights live in the table below and change only through a
   documented scope decision.
 
-| Milestone | Weight |
+| Milestone | Weight (points) |
 | --- | ---: |
-| M0 Architecture Lock & Bootstrap | 5% |
-| M1 WebGPU + Engine Kernel | 6% |
-| M2 Beta Foundation | 7% |
-| M3 Asset Pipeline | 6% |
-| M4 C# Gameplay Runtime | 6% |
-| M5 AI Control Layer | 6% |
-| M6 Transactional AI Workspaces | 5% |
-| M7 Physics Foundation | 7% |
-| M8 Causal Diagnostics v1 | 6% |
-| M9 Renderer Production Foundation | 8% |
-| M10 2D Production Foundation | 6% |
-| M11 Animation | 4% |
-| M12 Audio | 3% |
-| M13 Profiler + explainFrameSpike | 4% |
-| M14 Automated Game Testing | 4% |
-| M15 Replay & Diagnostic Replay | 4% |
-| M16 Performance & Low-End Pass | 4% |
-| M17 Advanced Assets / CAD | 3% |
-| M18 Agent Autonomy Loop | 5% |
-| M19 MVP Hardening | 5% |
-| **Total** | **100%** |
+| M0 Architecture Lock & Bootstrap | 5 points |
+| M1 WebGPU + Engine Kernel | 6 points |
+| M2 Beta Foundation | 7 points |
+| M3 Asset Pipeline | 6 points |
+| M4 C# Gameplay Runtime | 6 points |
+| M5 AI Control Layer | 6 points |
+| M6 Transactional AI Workspaces | 5 points |
+| M7 Physics Foundation | 7 points |
+| M8 Causal Diagnostics v1 | 6 points |
+| M9 Renderer Production Foundation | 8 points |
+| M10 2D Production Foundation | 6 points |
+| M11 Animation | 4 points |
+| M12 Audio | 3 points |
+| M13 Profiler + explainFrameSpike | 4 points |
+| M14 Automated Game Testing | 4 points |
+| M15 Replay & Diagnostic Replay | 4 points |
+| M16 Performance & Low-End Pass | 4 points |
+| M17 Advanced Assets / CAD | 3 points |
+| M18 Agent Autonomy Loop | 5 points |
+| M19 MVP Hardening | 5 points |
+| **Total** | **104 points** |
 
 Partial milestone credit is allowed only for acceptance points with executable
 evidence. Documentation-only scaffolding does not count as functional credit.
@@ -121,3 +121,10 @@ Continue through the entire active milestone before handing off a downloadable
 release. An interim handoff requires a concrete blocker, necessary user-only test
 or another stated reason. Progress updates and CI commits are not partial user
 deliveries. This is a persistent user requirement.
+
+## M13 reporting arithmetic correction
+
+The existing milestone weights sum to 104 points, not the previously printed 100.
+Normalize completion as completed weight / 104; M0–M13 total 79 points, giving
+75.96%, reported approximately 76%. Scope and relative weights are unchanged.
+Earlier closure reports preserve their historical nominal estimates.

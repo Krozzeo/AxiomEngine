@@ -1,21 +1,20 @@
 # Implementation status
 
-Last updated: 2026-10-05. Version 0.0.24.
-M12 (0.0.24) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 75%.
-Optional AudioSource/AudioListener, spatial pan and attenuation, mixer buses,
-lowpass filters and master dynamics work through Web Audio. Long PCM WAVs stream
-through bounded AudioWorklet queues. Human/C#/AI runtime controls are transient;
-canonical editing preserves revisions, Undo/Save and isolated proposals.
-Stopped previews are silent. Scene and simulation pause preserve transport;
-Stop resets it. Null and browser activation expose truthful unavailable reasons.
-All 21 jobs in CI run 37245601863 pass at executable commit
-aef19432107a017de935319f94d443390972aed1 (tree 178e257f6ffc86e5d1909b274d9a0462c031c6de).
-144 Node and 39 Rust tests, ten new browser criteria and earlier regressions pass.
-Actual graph signal, stereo pan, pause, streaming and lowpass were measured.
-Final screenshots were reviewed. No user-only test remains.
-Read docs/reports/M12_CURRENT_REPORT.md, docs/architecture/M12_AUDIO.md,
-ADR-0025 and demos/M12_GUIDE.md. Next: M13 profiler/explainFrameSpike.
-PR #14 is ready for review, stacked on unmerged #13; do not merge automatically.
+Last updated: 2026-10-05. Version 0.0.25.
+M13 (0.0.25) is complete: 8/8 acceptance groups, 100%; weighted project progress is approximately 76% (79/104 roadmap weight points).
+The Profiler tab and readonly semantic tools share bounded frame history,
+main/worker/wait scopes, sampled GPU passes and median/MAD spike explanations.
+Observed contributor increases are separated from overlapping waits and unavailable
+GPU evidence. Pause/Clear never pause the game or mutate authored scenes.
+Snapshot loading and late GPU replies cannot contaminate a new session.
+Two editable demos include a real C# 140ms pulse and independent 2D pass timing.
+All 22 jobs in CI run 37259458544 pass at executable commit
+0ef4db00bf6b6bc4ec4d016b5d5ddd3f31b02190 (tree 4b247daa5f2a5786ca2ad002cd3f8cb4fdc4118d).
+152 Node and 39 Rust tests, eight new browser criteria and earlier regressions pass.
+Final profiler screenshots were reviewed. No user-only test remains.
+Read docs/reports/M13_CURRENT_REPORT.md, docs/architecture/M13_PROFILER.md,
+ADR-0026 and demos/M13_GUIDE.md. Next: M14 automated game testing.
+PR #15 is ready for review, stacked on unmerged #14; do not merge automatically.
 
 ## Implemented and verified
 
@@ -110,7 +109,7 @@ asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
 M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
 M8 verifies four causal queries, ten faults, bounded/expired/stale evidence,
 Scene/Game separation, two-way selection, transforms, navigation and editable demos.
-Follow M13_PLAN.md and master section 132 for profiler/explainFrameSpike.
+Follow M14_PLAN.md and master section 133 for automated game testing.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.
@@ -137,3 +136,7 @@ PR #14 is stacked on #13 and the earlier milestone chain; all remain unmerged. C
 - M12 optional audio components, canonical Inspector/proposal edits and transient C#/AI control.
 - Spatial pan, inverse attenuation, lowpass/master dynamics and bounded PCM streaming.
 - Truthful browser activation/Null reasons and two editable audio demos.
+
+- M13 bounded measured frame history, worker/main/wait scopes and sampled GPU passes.
+- Shared Profiler/semantic API explanations, exact session leases and robust baseline attribution.
+- Two editable profiling demos and complete regression acceptance.

@@ -1,6 +1,6 @@
 # M14 — Automated Game Testing
 
-Status: planned, 0%. Roadmap weight: 4%. Master specification section 133.
+Status: planned, 0%. Roadmap weight: 4 points. Master specification section 133.
 
 Begin after M13 synchronized acceptance closure. Read the master, architecture
 manifest, M13_PROFILER.md / ADR-0026, current report and M7/M11/M12 contracts.

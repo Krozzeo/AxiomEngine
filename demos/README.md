@@ -1,6 +1,7 @@
-# Current demos: M12
+# Current demos: M13
 
-npm run demo creates Spatial Sound Stage and Streaming Mixer Lab. See M12_GUIDE.md.
+npm run demo creates Frame Spike Lab and 2D Pass Timing. See M13_GUIDE.md.
+Use demo:m12 for the earlier Spatial Sound Stage and Streaming Mixer Lab.
 Previous M11 demos remain available with npm run demo:m11; all projects are preserved.
 
 # M11 demos

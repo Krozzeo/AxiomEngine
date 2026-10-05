@@ -1,0 +1,27 @@
+{
+  "scope": "Profiler bookkeeping only: bounded records, eight scopes, history and median/MAD comparison; excludes GPU, rendering, C# and OS scheduling",
+  "appendAdmissionMs": 20,
+  "queryAdmissionMs": 100,
+  "results": [
+    {
+      "capacity": 120,
+      "p95AppendMs": 0.015136000000001815,
+      "queryAndExplainMs": 1.1930010000000024,
+      "historyBytes": 13996,
+      "dropped": 880
+    },
+    {
+      "capacity": 240,
+      "p95AppendMs": 0.015280000000004179,
+      "queryAndExplainMs": 0.4799730000000011,
+      "historyBytes": 13996,
+      "dropped": 760
+    }
+  ],
+  "provenance": {
+    "executableCommit": "0ef4db00bf6b6bc4ec4d016b5d5ddd3f31b02190",
+    "executableTree": "4b247daa5f2a5786ca2ad002cd3f8cb4fdc4118d",
+    "runId": 37259458544,
+    "environment": "GitHub Linux runner; profiler bookkeeping only"
+  }
+}

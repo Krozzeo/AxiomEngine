@@ -22,7 +22,7 @@ C# requires the configured .NET 10 SDK and wasm-tools. If compilation fails, dem
 remain saved and timing works, but the controlled keyboard pulse is unavailable;
 the creation command prints the actual compiler error.
 
-Optional: Archivo rendering settings enable HDR on this 3D project. GPU samples
+Optional: Ajustes → HDR Rendering settings enable HDR on this 3D project. GPU samples
 then expose tile/culling compute, shadow, color, bloom and post independently.
 Legacy mode exposes legacy.color. GPU values appear only on sampled frames and
 only when timestamp-query is supported. Null deliberately has no GPU duration.

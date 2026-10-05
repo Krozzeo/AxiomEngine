@@ -1,3 +1,4 @@
+import recordingSchema from '../../protocol/schema/replay-recording.schema.json' with {type:'json'};
 import {validateTest} from '../testing/session.mjs';
 export const replayError=message=>Object.assign(Error('AX_REPLAY_0001: '+message),{code:'AX_REPLAY_0001'});
 // Checkpoints retain observable simulation state. Restoration reconstructs the
@@ -45,7 +46,7 @@ export class ReplaySession {
 
 export function validateRecording(text){
  if(typeof text!=='string'||new TextEncoder().encode(text).length>240000)throw replayError('Recording file exceeds 240 KiB');
- let r;try{r=JSON.parse(text);}catch{throw replayError('Invalid recording JSON');}
+ let r;try{r=validateTest(JSON.parse(text),recordingSchema,'recording');}catch{throw replayError('Invalid recording JSON or schema');}
  if(!r||r.version!==1||typeof r.id!=='string'||typeof r.name!=='string'||r.name.length>128||r.delta!==1/60||!Number.isSafeInteger(r.seed)||r.seed<0||r.seed>4294967295||!r.scope||!Array.isArray(r.inputs)||!r.inputs.length||r.inputs.length>600||!Array.isArray(r.checkpoints)||r.checkpoints.length<2||r.checkpoints.length>11)throw replayError('Invalid recording structure');
  for(const keys of r.inputs)validateTest({name:'Imported frame',steps:[{frames:1,keys}]});
  let previous=-1;for(const c of r.checkpoints){if(!Number.isSafeInteger(c.frame)||c.frame<=previous||c.frame>r.inputs.length||!c.state||!Array.isArray(c.state.entities)||!Array.isArray(c.state.animation)||!Number.isFinite(c.state.time))throw replayError('Invalid checkpoint');canonicalReplayState(c.state);previous=c.frame;}

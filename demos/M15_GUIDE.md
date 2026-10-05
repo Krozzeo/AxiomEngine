@@ -16,8 +16,9 @@ state. Cancel releases runtime/input without publishing a partial new recording.
 
 Collision Diagnostic Replay records 120 real physics frames as a block falls onto
 a floor. Animator Checkpoints records 120 frames of the actual Idle animation.
-Use ranges 60–120 to compare repeatability. Public replay.control additionally
-accepts a diagnostic question/entity pair to re-execute causal investigation.
+Use ranges 60–120 to compare repeatability. The diagnostic question/entity selectors and public replay.control re-execute
+causal investigation. Choose whyNotColliding and the block/floor pair to see the
+contact explanation.
 No GPU or audible output determinism is claimed; Null still runs CPU/Wasm replay.
 Record plan records explicit plan inputs, not live keyboard actions during Play.
 

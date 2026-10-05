@@ -33,7 +33,8 @@ export async function buildEditor() {
   await cp(resolve(root, "target/wasm32-unknown-unknown/release/axiom_wasm.wasm"), resolve(destination, "axiom-kernel.wasm"));
   await writeFile(resolve(destination,'kernel-host.js'),(await readFile(resolve(root,'engine/wasm/host.mjs'),'utf8')).replace('../scene/hierarchy.mjs','./hierarchy.mjs'));
   await writeFile(resolve(destination,"index.html"),(await readFile(resolve(root,"apps/editor/index.html"),"utf8")).replaceAll("__AXIOM_VERSION__",JSON.parse(await readFile(resolve(root,"package.json"),"utf8")).version));
-  await writeFile(resolve(destination,'replay-session.mjs'),(await readFile(resolve(root,'engine/replay/session.mjs'),'utf8')).replace('../testing/session.mjs','./test-session.mjs'));
+  await writeFile(resolve(destination,'replay-session.mjs'),(await readFile(resolve(root,'engine/replay/session.mjs'),'utf8')).replace('../testing/session.mjs','./test-session.mjs').replace('../../protocol/schema/replay-recording.schema.json','./replay-recording.schema.json'));
+  await cp(resolve(root,'protocol/schema/replay-recording.schema.json'),resolve(destination,'replay-recording.schema.json'));
   await cp(resolve(root, "apps/editor/styles.css"), resolve(destination, "styles.css"));
   await cp(resolve(root, "apps/editor/src/frame-profiler.mjs"), resolve(destination, "frame-profiler.js"));
   await writeFile(resolve(destination,"project-editor.js"),(await readFile(resolve(root,"apps/editor/src/project-editor.mjs"),"utf8")).replaceAll("../../../engine/renderer/","./").replaceAll("../../../engine/scene/","./"));

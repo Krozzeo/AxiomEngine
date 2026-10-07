@@ -94,5 +94,5 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  const keyup=e=>keys.delete(e.code),blur=()=>{keys.clear();navigation=null;cancel();};
  globalThis.addEventListener('keydown',keydown);globalThis.addEventListener('keyup',keyup);globalThis.addEventListener('blur',blur);
  setTool(tool);let animation;function tick(now){render(now);if(!disposed)animation=requestAnimationFrame(tick);}animation=requestAnimationFrame(tick);
- return {select(ids){selection=Array.isArray(ids)?ids:(ids?[ids]:[]);selected=selection.at(-1)??null;cancel();},dispose(){disposed=true;cancelAnimationFrame(animation);globalThis.removeEventListener('keydown',keydown);globalThis.removeEventListener('keyup',keyup);globalThis.removeEventListener('blur',blur);},get camera(){return structuredClone(camera);}};
+ return {locate(id){const e=data().scene.entities.find(e=>e.id===id);if(e){editor.selectEntity(id);setCamera(frameCamera(camera,e));}},select(ids){selection=Array.isArray(ids)?ids:(ids?[ids]:[]);selected=selection.at(-1)??null;cancel();},dispose(){disposed=true;cancelAnimationFrame(animation);globalThis.removeEventListener('keydown',keydown);globalThis.removeEventListener('keyup',keyup);globalThis.removeEventListener('blur',blur);},get camera(){return structuredClone(camera);}};
 }

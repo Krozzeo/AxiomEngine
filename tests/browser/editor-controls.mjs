@@ -1,5 +1,6 @@
 // Follow the current UI through real clicks; older milestone contracts remain tested.
-export async function control(page,selector){const locator=page.locator(selector);
+export async function control(page,selector){const removeLabels={'#camera-remove':'Camera','#light-remove':'Light','#material-remove':'PBR Material','#script-remove':'C# Script','#collider-remove':'Collider','#rigidbody-remove':'RigidBody'};
+ const mapped=removeLabels[selector]?'.property-close[aria-label="Remove '+removeLabels[selector]+'"]':selector;const locator=page.locator(mapped);
  if(!/-cancel/.test(selector))await page.waitForFunction(()=>document.querySelector("#editor-workspace").getAttribute("aria-busy")==="false");
  if(/^#script-(source|mode|compile)/.test(selector)&&await page.locator('#script-component').isHidden()){
   await page.locator('#component-choice').selectOption('Script');await page.locator('#component-add').click();

@@ -190,6 +190,10 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "parentId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -1893,6 +1897,10 @@
               "disc",
               "triangle"
             ]
+          },
+          "parentId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -3421,6 +3429,10 @@
               "Particles 2D",
               "Camera"
             ]
+          },
+          "parentId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -3674,6 +3686,211 @@
           "id",
           "expectedSceneRevision",
           "entityId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "project.files.edit",
+      "description": "Create, rename, move, copy or delete bounded relative project files; references retain asset identity.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "move",
+              "copy",
+              "delete"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          },
+          "to": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "paths": {
+            "type": "array",
+            "maxItems": 512,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            }
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "folder",
+              "script",
+              "json"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.entities.paste",
+      "description": "Instantiate copied entities with fresh IDs, remapped hierarchy and disabled duplicated cameras/listeners.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "entities": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 256,
+            "items": {
+              "$ref": "project-document.schema.json#/properties/scene/properties/entities/items"
+            }
+          },
+          "parentId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "scriptAttachments": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "pattern": "^entity://[0-9a-f-]{36}$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entities"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "project.files.reveal",
+      "description": "Export the bounded MAIN authoring files into an isolated directory and reveal it in the OS file manager. Export edits are not imported.",
+      "mutates": false,
+      "route": "workspace",
+      "mcp": false,
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.component.paste",
+      "description": "Paste validated optional component values or fundamental Transform onto one entity; asset and script references remain checked.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "component": {
+            "type": "string",
+            "enum": [
+              "Transform",
+              "Renderable",
+              "Script",
+              "Camera",
+              "Material",
+              "Light",
+              "LOD",
+              "Collider",
+              "RigidBody",
+              "Animator",
+              "AudioSource",
+              "AudioListener",
+              "Sprite2D",
+              "SpriteAnimation",
+              "Tilemap",
+              "Light2D",
+              "Particles2D",
+              "UI2D"
+            ]
+          },
+          "value": {}
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "component",
           "value"
         ],
         "additionalProperties": false

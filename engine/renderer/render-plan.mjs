@@ -1,6 +1,6 @@
 // Bounded, DOM-free decisions shared by WebGPU, Null and acceptance tests.
 import {cameraMatrix,matrixMultiply,modelMatrix,transform,unit} from './render-math.mjs';
-export const renderingDefaults=Object.freeze({tier:'medium',culling:'gpu',exposure:1,toneMapping:'aces',environment:[.12,.16,.24],shadows:true,shadowSize:20,bloom:.15,fxaa:true});
+export const renderingDefaults=Object.freeze({renderScale:1,tier:'medium',culling:'gpu',exposure:1,toneMapping:'aces',environment:[.12,.16,.24],shadows:true,shadowSize:20,bloom:.15,fxaa:true});
 export const materialDefaults=Object.freeze({baseColor:[1,1,1,1],metallic:0,roughness:.5,emissive:[0,0,0],alphaMode:'opaque',alphaCutoff:.5,unlit:false,castShadow:true});
 export const tierBudgets=Object.freeze({low:{lights:8,shadow:512,bloom:false},medium:{lights:32,shadow:1024,bloom:true},high:{lights:64,shadow:2048,bloom:true}});
 const boundsCache=new WeakMap();

@@ -386,6 +386,7 @@ async fn static_asset(
                 Some("js") | Some("mjs") => "text/javascript; charset=utf-8",
                 Some("json") => "application/json",
                 Some("wasm") => "application/wasm",
+                Some("svg") => "image/svg+xml",
                 Some("css") => "text/css; charset=utf-8",
                 _ => "application/octet-stream",
             };

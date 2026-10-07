@@ -33,7 +33,7 @@ try {
   await page.waitForFunction(()=>/^WebGPU/.test(document.querySelector("#gpu-state").textContent));
   report.backend=await page.locator("#gpu-state").textContent();
   assert.match(report.backend,/^WebGPU/);report.criteria.push("open Axiom");
-  await (await control(page,"#project-name")).fill("M2 browser acceptance");await (await control(page,'#project-dimension')).selectOption('empty');await (await control(page,"#project-new")).click();
+  await (await control(page,"#project-name")).fill("M2 browser acceptance");await (await control(page,'input[name="project-dimension"][value="empty"]')).check();await (await control(page,"#project-new")).click();
   await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("M2 browser acceptance"));report.criteria.push("create project");
   for(const [name,mimeType,buffer] of [["checker.png","image/png",imageFixture()],["cube.glb","model/gltf-binary",glbFixture()]]) {
     await (await control(page,"#asset-file")).setInputFiles({name,mimeType,buffer});await (await control(page,"#asset-import")).click();

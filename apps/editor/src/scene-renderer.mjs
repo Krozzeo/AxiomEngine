@@ -56,8 +56,10 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let gpuProfiler=null,gpuSample=null;
   let snapshotLoading=false,testing=false,frameInProgress=false,currentSnapshot=null,testSource=null,testGeneration=null,replaySeed=0,replaySeeded=false;
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
+  const baseWidth=canvas.width,baseHeight=canvas.height;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
+  let measuredFps=null,fpsStart=null,fpsCount=0;
   let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null;
   let authoredHierarchy={entities:[]};
   let view='scene',editorCamera=null,transformPreview=null,geometry=[],lastPacket=null,lastTraceId=null,lineage=null;
@@ -136,7 +138,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   async function setSnapshot(snapshot,internalTest=false) {
     if(!internalTest){currentSnapshot=structuredClone(snapshot);if(testing){testing=false;testSession.control({action:'cancel'});replaySession.control({action:'cancel'});}}
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
-    audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
+    measuredFps=null;fpsStart=null;fpsCount=0;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
     snapshotLoading=true;
     try {
@@ -148,16 +150,20 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     }
     if(ticket!==generation||disposed)return;
     const project=snapshot.project;
+    const scale=project?.scene.rendering?.renderScale??1,nextWidth=Math.round(baseWidth*scale),nextHeight=Math.round(baseHeight*scale);
+    if(nextWidth!==canvas.width||nextHeight!==canvas.height){canvas.width=nextWidth;canvas.height=nextHeight;production?.dispose();production=null;productionLoading=null;twoDGPU?.dispose();twoDGPU=null;if(device){depth?.destroy();depth=device.createTexture({size:[nextWidth,nextHeight],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}}
+
     lineage=snapshot.commandLineage??null;assetFailures.clear();authoredHierarchy=structuredClone(project?.scene??{entities:[]});
     let scene=worldScene(structuredClone(project?.scene??{entities:[]}));if(testing&&replaySeeded)for(const e of scene.entities)if(e.particles2D)e.particles2D.seed=replaySeed;for(const e of scene.entities)delete e.parentId;
     if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
     const referenced=new Set(scene.entities.flatMap(entity=>[entity.audioSource?.assetId,entity.renderable?.assetId,entity.tilemap?.assetId,...(entity.lod?.levels??[]).map(l=>l.assetId)]));
+    const drawableCounts=new Map();for(const entity of scene.entities)if(entity.renderable)drawableCounts.set(entity.renderable.assetId,(drawableCounts.get(entity.renderable.assetId)??0)+1);
     let totalVertices=0;
     for(const metadata of (scene.assets??[]).filter(asset=>referenced.has(asset.id))) {
       let asset=assetKeys.get(metadata.id)===(metadata.buildKey??metadata.id)?assets.get(metadata.id):null;
       if(!asset) {try{asset=await loadAsset(project.id,metadata.id,snapshot.workspaceId);}catch(error){assetFailures.set(metadata.id,error.message);reportError(error);continue;}if(ticket!==generation||disposed)return;assets.set(metadata.id,asset);assetKeys.set(metadata.id,metadata.buildKey??metadata.id);}
-      if(asset.kind!=="audio")totalVertices+=(asset.kind==="sprite"?6:asset.vertexCount)*scene.entities.filter(entity=>entity.renderable?.assetId===metadata.id).length;
+      if(asset.kind!=="audio")totalVertices+=(asset.kind==="sprite"?6:asset.vertexCount)*(drawableCounts.get(metadata.id)??0);
       if(totalVertices>300000)throw new Error("AX_SCENE_0006: scene exceeds 300000 vertices");
       localAssets.set(metadata.id,asset);
     }
@@ -293,7 +299,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"stopped",view,sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
       profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
-      lastFrame={profiler:profiler.summary(),workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,traceId:diagnostic.traceId,view,renderer:device?'webgpu':'null',playing,generation,replay:{id:replaySession.job?.id??null,status:replaySession.job?.status??'idle',kind:replaySession.job?.kind??null,recordingId:replaySession.recording?.id??null,frames:replaySession.job?.frames??0},gameTest:{id:testSession.job?.id??null,status:testSession.job?.status??'idle',frames:testSession.job?.frames??0},audio:audioState,animation:animations,fault:scriptFault,rendering:renderStats,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
+      if(!manual){if(fpsStart===null)fpsStart=now;fpsCount++;if(now-fpsStart>=500){measuredFps=fpsCount*1000/(now-fpsStart);fpsCount=0;fpsStart=now;}}
+      lastFrame={fps:measuredFps,wasmMemoryBytes:kernel.memoryBytes?.()??null,profiler:profiler.summary(),workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,traceId:diagnostic.traceId,view,renderer:device?'webgpu':'null',playing,generation,replay:{id:replaySession.job?.id??null,status:replaySession.job?.status??'idle',kind:replaySession.job?.kind??null,recordingId:replaySession.recording?.id??null,frames:replaySession.job?.frames??0},gameTest:{id:testSession.job?.id??null,status:testSession.job?.status??'idle',frames:testSession.job?.frames??0},audio:audioState,animation:animations,fault:scriptFault,rendering:renderStats,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
       if(decisions.deep&&packet.frame%15===0)decisions.record(evidence());
       if(captureRequest){
         const request=captureRequest;captureRequest=null;

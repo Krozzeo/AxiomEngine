@@ -162,6 +162,7 @@ jobs:
             const r=JSON.parse(await readFile('.axiom/browser-'+milestone+'-evidence/report.json','utf8'));
             console.log('BROWSER_EVIDENCE='+JSON.stringify({milestone,criteria:r.criteria,passed:r.passed,pageErrors:r.pageErrors,consoleErrors:r.consoleErrors,memorySamples:r.memorySamples,error:r.error}));
           } catch {}
+          if(milestone==='m16-1')for(const name of ['editor','failure'])try {console.log('M161_IMAGE_'+name+'='+(await readFile('.axiom/browser-m16-1-evidence/'+name+'.png')).toString('base64'));} catch {}
           if(milestone==='m16'){
             try {console.log('M16_BENCHMARK='+await readFile('.axiom/m16-benchmark.json','utf8'));} catch {}
             for(const name of ['workshop','low-end'])try {console.log('M16_IMAGE_'+name+'='+(await readFile('.axiom/browser-m16-evidence/'+name+'.png')).toString('base64'));} catch {}

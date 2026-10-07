@@ -153,7 +153,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if (!("project" in data)) return;
     const oldIds = new Set(state.project?.scene.entities.map(entity => entity.id));
     state = data;
-    if (!state.project?.scene.entities.some(entity => entity.id === selected)) selected = state.project?.scene.entities[0]?.id ?? null;
+    if (!state.project?.scene.entities.some(entity => entity.id === selected)) selected = null;
     const added = state.project?.scene.entities.find(entity => !oldIds.has(entity.id));
     if (added) {filePaths=[];browser.clear(false);selected = added.id;selection=new Set([selected]);}
     else {selection=new Set([...selection].filter(id=>state.project?.scene.entities.some(e=>e.id===id)));selected=[...selection].at(-1)??null;}

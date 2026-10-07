@@ -24,7 +24,7 @@ try {
  await next();s=await open(demos[0]);await page.locator('#gpu-state').filter({hasText:'WebGPU ·'}).waitFor();
  assert.deepEqual(await page.locator('.menubar > details > summary').allTextContents(),['File','Create','Panels','AI','Config','Help']);
  assert.equal(await page.locator('[data-dock="bottom"] [data-panel]').first().getAttribute('data-panel'),'project');
- await page.locator('#help-menu > summary').click();assert.match(await page.locator('#help-menu').textContent(),/0\.0\.29/);await page.locator('#help-menu > summary').click();
+ await page.locator('#help-menu > summary').click();assert.match(await page.locator('#help-menu').textContent(),/0\.0\.30/);await page.locator('#help-menu > summary').click();
  report.criteria.push('Default Project first; File/Create/Panels/Config/Help order and release version');
  const original=JSON.stringify((await command('scene.get')).project.scene);
  await test({action:'begin',suite:demos[0].suites[0]});let paused=await until(['paused']);assert.equal(paused.frames,0);await page.waitForTimeout(200);assert.equal((await test({action:'query'})).frames,0);

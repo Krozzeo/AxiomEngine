@@ -1412,7 +1412,7 @@
             },
             "order": {
               "type": "array",
-              "maxItems": 8,
+              "maxItems": 9,
               "uniqueItems": true,
               "items": {
                 "enum": [
@@ -1423,13 +1423,14 @@
                   "diagnostics",
                   "profiler",
                   "scene",
-                  "game"
+                  "game",
+                  "ide"
                 ]
               }
             },
             "closed": {
               "type": "array",
-              "maxItems": 8,
+              "maxItems": 9,
               "uniqueItems": true,
               "items": {
                 "enum": [
@@ -1440,9 +1441,20 @@
                   "diagnostics",
                   "profiler",
                   "scene",
-                  "game"
+                  "game",
+                  "ide"
                 ]
               }
+            },
+            "ide": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "top",
+                "bottom",
+                "center"
+              ]
             }
           }
         },

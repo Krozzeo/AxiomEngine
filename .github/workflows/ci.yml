@@ -112,7 +112,7 @@ jobs:
       # Isolated runners: parallel browser jobs do not share GPU or scene state.
       max-parallel: 8
       matrix:
-        milestone: [m16, m15, m14, m13-1, m13, m12, m11, m10, corrections, m9, m2, m3, m4, m5, m6, m7, m8]
+        milestone: [m16-1, m16, m15, m14, m13-1, m13, m12, m11, m10, corrections, m9, m2, m3, m4, m5, m6, m7, m8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -179,6 +179,7 @@ jobs:
             .axiom/browser-m6-evidence
             .axiom/browser-m7-evidence
             .axiom/browser-corrections-evidence
+            .axiom/browser-m16-1-evidence
             .axiom/browser-m16-evidence
             .axiom/m16-benchmark.json
             .axiom/browser-m15-evidence

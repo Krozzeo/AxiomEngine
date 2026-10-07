@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -27,7 +27,7 @@
     "mcp": "node daemon/mcp/stdio.mjs",
     "test:browser:m5": "node tests/browser/m5.mjs",
     "test:browser:m6": "node tests/browser/m6.mjs",
-    "demo": "node demos/create-m16-projects.mjs",
+    "demo": "node demos/create-m16-1-projects.mjs",
     "test:browser:m7": "node tests/browser/m7.mjs",
     "demo:m7": "node demos/create-projects.mjs",
     "test:browser:m8": "node tests/browser/m8.mjs",
@@ -50,7 +50,9 @@
     "test:browser:m15": "node tests/browser/m15.mjs",
     "demo:m15": "node demos/create-m15-projects.mjs",
     "test:browser:m16": "node tests/browser/m16.mjs",
-    "benchmark:m16": "node scripts/benchmarks/m16.mjs"
+    "benchmark:m16": "node scripts/benchmarks/m16.mjs",
+    "demo:m16": "node demos/create-m16-projects.mjs",
+    "test:browser:m16-1": "node tests/browser/m16-1.mjs"
   },
   "dependencies": {
     "pngjs": "7.0.0"

@@ -279,3 +279,5 @@ input[type="file"] { font-size: 11px; }
 
 /* Prose and input panes wrap; command-only panes size to their labels. */
 .submenu:has(p),.submenu:has(pre),.submenu:has(label),.submenu:has(input),.submenu:has(textarea){width:300px;min-width:300px;}
+
+.menu-popup button.dirty-save{font-weight:700;}

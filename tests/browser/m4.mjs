@@ -35,6 +35,8 @@ try {
  await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.entities.length===2&&d.kernel.meshes===2;}catch{return false;}});
  const before=await page.locator('#viewport').screenshot();let diagnostic=await page.locator('#frame-trace').textContent();const initial=JSON.parse(diagnostic);const x=initial.script.entities[0].position[0];
  await (await control(page,'#viewport')).click();await page.keyboard.down('ArrowRight');
+ // Reaffirming the same active view/redrawing authoring controls must not release held input.
+ await (await control(page,'#game-tab')).click();
  await page.waitForFunction(x=>JSON.parse(document.querySelector('#frame-trace').textContent).script.entities[0].position[0]>x+.2,x);await page.keyboard.up('ArrowRight');
  const after=await page.locator('#viewport').screenshot({path:join(evidence,'csharp-movement.png')});assert.notDeepEqual(before,after);assert.deepEqual((await state()).project.scene,authoring);
  const frameBeforeSpawn=JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame;
@@ -69,6 +71,6 @@ try {
  await page.screenshot({path:join(evidence,'editor.png')});console.log('M4_BROWSER='+JSON.stringify(report));
 }catch(error){
  report.failure=error.message;
- if(page){report.frame=await page.locator('#frame-trace').textContent().catch(()=>null);console.error('M4_FAILURE_FRAME='+report.frame);console.error('M4_FAILURE_STATE='+await page.locator('body').innerText());await page.screenshot({path:join(evidence,'failure.png')}).catch(()=>{});}
+ if(page){report.frame=await page.locator('#frame-trace').textContent().catch(()=>null);console.error('M4_FAILURE_FRAME='+report.frame);console.error('M4_FAILURE_STATE='+await page.locator('body').innerText());console.error('M4_FAILURE_COMMAND_ERROR='+await page.locator('#project-error').textContent());console.error('M4_FAILURE_SCRIPT_STATUS='+await page.locator('#script-status').textContent());console.error('M4_FAILURE_SCRIPT_DIAGNOSTICS='+await page.locator('#script-diagnostics').textContent());await page.screenshot({path:join(evidence,'failure.png')}).catch(()=>{});}
  throw error;
 }finally{report.errors=errors;await writeFile(join(evidence,'report.json'),JSON.stringify(report,null,2));await browser?.close();await daemon.close();await rm(root,{recursive:true,force:true});}

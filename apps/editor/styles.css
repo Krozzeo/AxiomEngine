@@ -276,3 +276,6 @@ input[type="file"] { font-size: 11px; }
 #ide-lines{border-radius:0;max-height:none;overflow:hidden;white-space:pre;flex:0 0 54px;margin:0;padding:12px 8px;text-align:right;color:#718298;border-right:1px solid #26364b;}
 #ide-code{resize:none;flex:1;min-height:0;width:100%;border:0;border-radius:0;padding:12px;font:14px/21px ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;tab-size:4;background:#09101a;color:#dce7f7;outline:none;}
 #ide-lines{font:14px/21px ui-monospace,SFMono-Regular,Consolas,monospace;}
+
+/* Prose and input panes wrap; command-only panes size to their labels. */
+.submenu:has(p),.submenu:has(pre),.submenu:has(label),.submenu:has(input),.submenu:has(textarea){width:300px;min-width:300px;}

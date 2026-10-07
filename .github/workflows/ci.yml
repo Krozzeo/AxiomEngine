@@ -152,6 +152,21 @@ jobs:
         run: xvfb-run -a -s "-screen 0 1700x1100x24" node tests/browser/${{ matrix.milestone }}.mjs
         env:
           AXIOM_HEADLESS: "false"
+      - name: Summarize browser evidence
+        if: always()
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile} from 'node:fs/promises';
+          const milestone='${{ matrix.milestone }}';
+          try {
+            const r=JSON.parse(await readFile('.axiom/browser-'+milestone+'-evidence/report.json','utf8'));
+            console.log('BROWSER_EVIDENCE='+JSON.stringify({milestone,criteria:r.criteria,passed:r.passed,pageErrors:r.pageErrors,consoleErrors:r.consoleErrors,memorySamples:r.memorySamples,error:r.error}));
+          } catch {}
+          if(milestone==='m16'){
+            try {console.log('M16_BENCHMARK='+await readFile('.axiom/m16-benchmark.json','utf8'));} catch {}
+            for(const name of ['workshop','low-end'])try {console.log('M16_IMAGE_'+name+'='+(await readFile('.axiom/browser-m16-evidence/'+name+'.png')).toString('base64'));} catch {}
+          }
+          JS
       - uses: actions/upload-artifact@v4
         if: always()
         with:

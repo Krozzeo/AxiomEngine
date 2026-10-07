@@ -206,11 +206,11 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     if(disposed)return;
     if(snapshotLoading||testing&&!manual){if(!manual)animationId=requestAnimationFrame(frame);return;}
     frameInProgress=true;
-    const ticket=generation;
+    const ticket=generation,presentFrame=manual?.present!==false;
     try {
       const delta=manual?.delta??(previousTime===null?0:Math.min((now-previousTime)/1000,0.25));previousTime=now;
       const diagnostic=profiler.begin(performance.now(),crypto.randomUUID(),{view,playing,route:runtimeScene.twoD?'2d':runtimeScene.rendering?'hdr':'legacy'});
-      const timing=gpuProfiler.begin(diagnostic.frameSequence,ticket);diagnostic.gpuReason=timing.reason;
+      const timing=presentFrame?gpuProfiler.begin(diagnostic.frameSequence,ticket):{reason:'Controlled simulation frame not presented',writes:()=>undefined,resolve(){},submitted(){}};diagnostic.gpuReason=timing.reason;
       if(playing&&!twoDPaused&&scriptRuntime) {
         const active=scriptRuntime;
         try {
@@ -266,17 +266,17 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         twoDTime=kernel.twoD(playing&&!twoDPaused?delta:0);
         lastTwoDPlan=twoDPlan(renderScene,assets,camera,canvas.width,canvas.height,{view,time:twoDTime,kernel,paused:twoDPaused});
         profiler.scope(diagnostic,'render.prepare',stageStart,performance.now());stageStart=performance.now();
-        renderStats=device?twoDGPU.render(lastTwoDPlan,context.getCurrentTexture().createView({format:gpu.getPreferredCanvasFormat()+'-srgb'}),timing):{...lastTwoDPlan.stats,submitted:0,backend:'null',pixels:'unavailable'};
+        renderStats=device&&presentFrame?twoDGPU.render(lastTwoDPlan,context.getCurrentTexture().createView({format:gpu.getPreferredCanvasFormat()+'-srgb'}),timing):{...lastTwoDPlan.stats,submitted:0,backend:device?'controlled-step':'null',pixels:'unavailable'};
         diagnostic.rendering=renderStats;diagnostic.camera=lastTwoDPlan.pixel.camera;
       }else if(runtimeScene.rendering){
         
         const plan=renderPlan(renderScene,visibleGeometry,camera,canvas.width/canvas.height,assets,{gpuCulling:!!device&&device.limits.maxStorageBuffersPerShaderStage>=4});
         profiler.scope(diagnostic,'render.prepare',stageStart,performance.now());stageStart=performance.now();
-        lastRenderPlan=plan;renderStats=device?production.render(plan,camera,context.getCurrentTexture().createView(),diagnostic.traceId,timing):{...plan.stats,submittedReference:0,fallbacks:plan.fallbacks,gpuSample:null,pixels:'unavailable'};
+        lastRenderPlan=plan;renderStats=device&&presentFrame?production.render(plan,camera,context.getCurrentTexture().createView(),diagnostic.traceId,timing):{...plan.stats,submittedReference:0,fallbacks:plan.fallbacks,gpuSample:null,pixels:'unavailable'};
         diagnostic.rendering=renderStats;
       }else {
         profiler.scope(diagnostic,'render.prepare',stageStart,performance.now());stageStart=performance.now();
-        if(device) {
+        if(device&&presentFrame) {
         const encoder=device.createCommandEncoder({label:"axiom-m2-scene"});
         for(let i=0;i<geometry.length;i++)skinGPU.skin(geometry[i],resources[i].vertex,encoder);
         const pass=encoder.beginRenderPass({timestampWrites:timing.writes('legacy.color'),colorAttachments:[{view:context.getCurrentTexture().createView(),clearValue:{r:0.025,g:0.035,b:0.055,a:1},loadOp:"clear",storeOp:"store"}],depthStencilAttachment:{view:depth.createView(),depthClearValue:1,depthLoadOp:"clear",depthStoreOp:"store"}});
@@ -291,14 +291,14 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         timing.resolve(encoder);device.queue.submit([encoder.finish()]);timing.submitted();
         }
       }
-      parallel.render({scene:previewScene??runtimeScene,assets,draws:geometry,resources,editorCamera,time:twoDTime,kernel,paused:twoDPaused,frame:packet.frame,generation});canvas.dataset.frame=String(packet.frame);canvas.dataset.camera=JSON.stringify(camera);
+      if(presentFrame){parallel.render({scene:previewScene??runtimeScene,assets,draws:geometry,resources,editorCamera,time:twoDTime,kernel,paused:twoDPaused,frame:packet.frame,generation});canvas.dataset.frame=String(packet.frame);canvas.dataset.camera=JSON.stringify(camera);}
       profiler.scope(diagnostic,'render.submit',stageStart,performance.now());stageStart=performance.now();
       const audioState=audio.step(runtimeScene,{playing,view:view==='game'||parallel.get()?.view==='game'?'game':'scene',paused:twoDPaused||testing});diagnostic.audio=audioState;diagnostic.audioProvenance={projectId:currentProject,sceneRevision,workspaceId,generation};
       profiler.scope(diagnostic,'audio.update',stageStart,performance.now());
       diagnostic.camera=structuredClone(lastTwoDPlan?.pixel.camera??camera);
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"stopped",view,sceneId};
       diagnostic.script={generation,active:!!scriptRuntime,fault:scriptFault,spawned,entities:playing?runtimeScene.entities.map(e=>({id:e.id,position:e.transform.position})):[]};
-      profiler.finish(diagnostic,performance.now(),device?"submitted":"null");
+      profiler.finish(diagnostic,performance.now(),device&&presentFrame?"submitted":device?"not-presented":"null");
       if(!manual){if(fpsStart===null)fpsStart=now;fpsCount++;if(now-fpsStart>=500){measuredFps=fpsCount*1000/(now-fpsStart);fpsCount=0;fpsStart=now;}}
       lastFrame={fps:measuredFps,wasmMemoryBytes:kernel.memoryBytes?.()??null,profiler:profiler.summary(),workspaceId,projectId:currentProject,sceneRevision,frame:packet.frame,traceId:diagnostic.traceId,view,renderer:device?'webgpu':'null',playing,generation,replay:{id:replaySession.job?.id??null,status:replaySession.job?.status??'idle',kind:replaySession.job?.kind??null,recordingId:replaySession.recording?.id??null,frames:replaySession.job?.frames??0},gameTest:{id:testSession.job?.id??null,status:testSession.job?.status??'idle',frames:testSession.job?.frames??0},audio:audioState,animation:animations,fault:scriptFault,rendering:renderStats,physics:packet.physics?{backend:packet.physics.backend,reason:packet.physics.reason,steps:packet.physics.steps,bodyCount:packet.physics.bodies.length,contactCount:packet.physics.contacts.length+packet.physics.omittedContacts,candidates:packet.physics.candidates}:null};
       if(decisions.deep&&packet.frame%15===0)decisions.record(evidence());
@@ -316,13 +316,13 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
       // Bound queued GPU work on slow adapters; manual test/replay pixels must
       // also complete before their next controlled frame. Device loss owns fallback.
-      if(device){const submittedDevice=device;await submittedDevice.queue.onSubmittedWorkDone().catch(()=>submittedDevice.lost);}
+      if(device&&presentFrame){const submittedDevice=device;await submittedDevice.queue.onSubmittedWorkDone().catch(()=>submittedDevice.lost);}
     } catch(error) {audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;}
     if(!manual)animationId=requestAnimationFrame(frame);
   }
   const isolatedAdapter={
     async begin({seed}={}){replaySeed=seed??0;replaySeeded=seed!==undefined;if(!currentSnapshot?.project||playing)throw testError('Open a stopped project first');testSource=currentSnapshot;testing=true;keys.clear();while(frameInProgress)await new Promise(r=>setTimeout(r,1));await setSnapshot({...testSource,playing:true},true);if(currentSnapshot!==testSource)throw testError('Project changed','AX_TEST_0002');testGeneration=generation;view='game';audio.clear();},
-    async step(input){if(!testing||generation!==testGeneration||currentSnapshot!==testSource)throw testError('Runtime generation changed','AX_TEST_0002');keys.clear();for(const key of input.keys)keys.add(key);try{await frame(0,input);if(scriptFault)throw testError(scriptFault);if(!testing||generation!==testGeneration)throw testError('Runtime changed','AX_TEST_0002');}finally{keys.clear();}},
+    async step(input,{present=true}={}){if(!testing||generation!==testGeneration||currentSnapshot!==testSource)throw testError('Runtime generation changed','AX_TEST_0002');keys.clear();for(const key of input.keys)keys.add(key);try{await frame(0,{...input,present});if(scriptFault)throw testError(scriptFault);if(!testing||generation!==testGeneration)throw testError('Runtime changed','AX_TEST_0002');}finally{keys.clear();}},
     async state(assertions){let pixels=null;if(assertions.some(a=>a.kind==='pixel')&&device){const target=canvas.ownerDocument.createElement('canvas');target.width=canvas.width;target.height=canvas.height;const ctx=target.getContext('2d',{willReadFrequently:true});ctx.drawImage(canvas,0,0);pixels={};for(const a of assertions.filter(a=>a.kind==='pixel'))pixels[a.x+','+a.y]=Array.from(ctx.getImageData(a.x,a.y,1,1).data);}return {entities:structuredClone(runtimeScene.entities),contacts:structuredClone(lastPacket?.physics?.contacts??[]),animation:kernel.animationStatus(),pixels};},
     async end(){keys.clear();const source=testSource;testSource=null;testGeneration=null;const originalView=testView;try{if(!disposed&&source&&currentSnapshot===source)await setSnapshot(source,true);}finally{testing=false;if(source&&currentSnapshot===source)view=originalView;previousTime=null;}}
   };

@@ -1,3 +1,4 @@
+import {mountEditorMenu} from './editor-menu.mjs';
 import {mountReplayEditor} from './replay-editor.mjs';
 import {mountAiMenu} from './ai-menu.mjs';
 import {mountGameTestEditor} from './game-test-editor.mjs';
@@ -11,6 +12,7 @@ import { createSceneRenderer } from "./scene-renderer.js";
 import {mountSceneTools} from './scene-tools.mjs';
 
 const document=createEditorDocument(globalThis.document);
+mountEditorMenu(document);
 const token = readSessionToken(location, globalThis.sessionStorage, history);
 
 const connection = document.querySelector("#connection");
@@ -88,7 +90,7 @@ async function execute(type, data = {}) {
 }
 const proposalEditor=mountProposalEditor({document,send:sendCommand,reportError});
 let unsavedScene = false;
-const projectEditor = mountProjectEditor({ getRenderer:()=>renderer,document, send: sendCommand, reportError,onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
+const projectEditor = mountProjectEditor({ getRenderer:()=>renderer,document, send: sendCommand, reportError,onLocate:id=>sceneTools?.locate(id),onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
   const changed=!pendingSnapshot||(pendingSnapshot.workspaceId??null)!==(snapshot.workspaceId??null)||pendingSnapshot.sceneRevision!==snapshot.sceneRevision||pendingSnapshot.project?.id!==snapshot.project?.id;
   pendingSnapshot=snapshot;
   if(renderer&&changed) await renderer.setSnapshot(snapshot);
@@ -170,4 +172,7 @@ document.querySelector('#diagnostic-explain').addEventListener('click',()=>{
 document.querySelector('#diagnostic-kind').addEventListener('change',()=>{const options=document.querySelector('#diagnostic-other');options.replaceChildren();for(const e of pendingSnapshot?.project?.scene.entities??[]){const option=document.createElement('option');option.value=e.id;option.textContent=e.name;options.append(option);}});
 // Native details menus close when focus moves back into the workspace.
 document.addEventListener('pointerdown',event=>{for(const menu of document.querySelectorAll('.menubar > details'))if(!menu.contains(event.target))menu.open=false;});
+
+const fpsTimer=setInterval(()=>{const checkbox=document.querySelector('#game-debug'),output=document.querySelector('#game-fps'),status=renderer?.status();if(!output)return;output.hidden=!checkbox?.checked||!status?.playing||activeView!=='game';if(!output.hidden)output.textContent=Number.isFinite(status.fps)?status.fps.toFixed(1)+' FPS':'Measuring FPS…';},250);addEventListener('pagehide',()=>clearInterval(fpsTimer),{once:true});
+
 boot();

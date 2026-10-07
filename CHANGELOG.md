@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.0.29 — M16 — editor authoring and low-end pass
+
+- Portable authoring files, folders, named C# templates, rename/move/copy/delete and bounded Explorer exports.
+- Scoped Project/Hierarchy/component context menus and clipboard; consistent list menus and component boxes.
+- Automatic Inspector values, radio templates, menubar title, matched Close icons and Game FPS toggle.
+- Indexed/virtualized Hierarchy, cached Wasm modules with isolated worlds, shared resource admission and reusable GPU staging.
+- Explicit render scaling, bounded GPU submission and two editable stress/workshop demos.
+
+- Reaffirming the active Game view preserves held gameplay input through editor redraws.
+- Scope-aware shortcuts survive Tree View redraw; Project deletion cannot fall through to entities.
+- Controlled tests retain completed boundary pixels; replay advances every simulation frame with bounded presentation.
+- All 26 CI jobs, 190 Node/39 Rust tests and 17 M16 browser criteria pass. M16 100%; project approximately 88%.
+
 ## 0.0.28 — M15 — verified replay and entity cameras
 
 - Bounded controlled input plans, ReplayRandom seeds, checkpoints and verified range replay.

@@ -224,3 +224,21 @@ input[type="file"] { font-size: 11px; }
 
 #toolbar-save {display:flex;gap:2px;align-items:center;padding:5px 7px;}
 #save-dirty {font-weight:bold;color:#ffd074;}
+
+/* M16: consistent compact commands, authoring files and component boundaries. */
+.menu-popup > button,.menu-popup > .menu-actions button,.submenu > button,#panels-menu .menu-popup button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:0;margin:0;padding:7px 10px;}
+.menu-popup button:hover:not(:disabled),.submenu > button:hover:not(:disabled){background:#294d71;}
+.menu-actions .actions{display:block}.dirty-save{font-weight:700}.project-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left:12px;color:#c8d9ef;}
+.project-template{display:flex;gap:14px;border:0;padding:4px 0}.project-template label{display:flex;gap:4px;align-items:center}.project-template input{width:auto;}
+.project-tree-row{display:flex;align-items:center;gap:4px;padding:2px 4px;min-height:24px;cursor:pointer;width:100%;border:0;background:transparent;text-align:left;}
+.project-tree-row .project-icon{width:18px;height:18px;object-fit:contain}.project-icon{width:42px;height:42px;object-fit:contain}.project-tree-row.selected,.project-file.selected{background:#294d71}.inline-name{max-width:100%;min-width:0;padding:2px;}
+.editor-context{position:fixed;z-index:1000;top:0;left:0;width:230px;}.editor-context .submenu{top:0}.inspector-property{border:1px solid #344961;border-radius:5px;margin:8px 0;padding:8px;background:#132033;}
+.property-heading{display:flex;align-items:center;justify-content:space-between;margin:0 0 6px;gap:8px;}.icon-button,.dock-panel-controls button{display:inline-flex;align-items:center;justify-content:center;width:30px;height:28px;padding:4px;}.icon-button img{width:18px;height:18px;object-fit:contain;filter:brightness(2.6);}.property-close{margin-left:auto;}.debug-toggle{display:flex;align-items:center;gap:4px;font-size:12px;}.game-fps{position:absolute;right:12px;top:12px;z-index:4;padding:4px 8px;background:#000b;color:#b5ffc9;pointer-events:none;font:12px monospace;}
+
+#entities .tree-row{height:24px;min-height:24px;box-sizing:border-box}#entities .tree-gap{height:4px;min-height:4px;margin:0;}
+
+.project-tree-row>.file-name{background:transparent;border:0;padding:0;text-align:left;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+#project-content.dock-panel{height:100%;grid-template-rows:minmax(0,1fr);}.project-browser{display:flex;flex-direction:column;min-height:0;}#project-icons{flex:1;overflow:auto;min-height:0;box-sizing:border-box;}#project-files .project-tree-row{display:flex;}#project-files .tree-toggle{width:18px;flex:0 0 18px;padding:0;}#project-files .file-name{width:auto;min-width:0;}
+
+#project-file-preview{max-height:60px;flex-shrink:0;}

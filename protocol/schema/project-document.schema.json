@@ -1141,6 +1141,11 @@
             },
             "fxaa": {
               "type": "boolean"
+            },
+            "renderScale": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 1
             }
           },
           "required": [
@@ -1252,6 +1257,42 @@
           "enum": [
             "entities"
           ]
+        },
+        "projectFiles": {
+          "type": "array",
+          "maxItems": 512,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "kind"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "folder",
+                  "asset",
+                  "script",
+                  "json"
+                ]
+              },
+              "assetId": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 65536
+              }
+            },
+            "additionalProperties": false
+          }
         }
       }
     },

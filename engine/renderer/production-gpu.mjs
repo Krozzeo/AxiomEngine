@@ -6,6 +6,7 @@ const vertexBuffers=[{arrayStride:32,attributes:[{shaderLocation:0,offset:0,form
 export async function createProductionGPU({device,format,width,height,textureFor,getTexture,reportError}){
  const B=GPUBufferUsage,T=GPUTextureUsage,S=GPUShaderStage;let disposed=false,pending=false,sample=null,frameNumber=0,epoch=0;
  const skinGPU=await createSkinGPU(device);
+ const scratch={instanceData:new Float32Array(1024*52),lightData:new Float32Array(64*16),groupData:new Uint32Array(1024*4),cpuVisible:new Uint32Array(1024),args:new Uint32Array(1024*4)};
  const owned=[],vertices=new Map(),bindings=new Map(),pipelineCache=new Map();
  const buffer=(size,usage)=>{const b=device.createBuffer({size,usage});owned.push(b);return b;};
  const texture=(w,h,fmt,usage)=>{const t=device.createTexture({size:[w,h],format:fmt,usage});owned.push(t);return t;};
@@ -44,7 +45,7 @@ export async function createProductionGPU({device,format,width,height,textureFor
   const settings=plan.settings,data=new Float32Array(52),light=plan.lights[plan.shadowIndex];let shadowCamera={position:[0,20,0],target:[0,0,0],projection:'orthographic',orthoHeight:settings.shadowSize};
   if(light){if(light.kind==='spot')shadowCamera={position:light.position,target:add(light.position,light.direction),projection:'perspective',fov:light.outerAngle*2,near:.01,far:light.range};else{const center=camera.target;shadowCamera={position:add(center,mul(light.direction,-settings.shadowSize)),target:center,projection:'orthographic',orthoHeight:settings.shadowSize,near:.01,far:settings.shadowSize*4};}}
   data.set(cameraMatrix(shadowCamera,1),0);data.set(cameraMatrix(camera,width/height),16);data.set(camera.position,32);data.set(settings.environment,36);data.set([settings.exposure,({none:0,aces:1,reinhard:2})[settings.toneMapping],settings.bloom,settings.fxaa?1:0],40);new Uint32Array(data.buffer).set([plan.lights.length,nx,width,height],44);data.set([plan.shadowIndex+1,shadowSize,.0003,settings.tier==='low'?0:1],48);device.queue.writeBuffer(frame,0,data);
-  const instanceData=new Float32Array(Math.max(1,plan.items.length)*52),lightData=new Float32Array(64*16),groupData=new Uint32Array(1024*4),cpuVisible=new Uint32Array(1024),args=new Uint32Array(1024*4);let submitted=0;
+  const {instanceData,lightData,groupData,cpuVisible,args}=scratch;for(const array of Object.values(scratch))array.fill(0);let submitted=0;
   for(const [i,item]of plan.items.entries()){const offset=i*52,m=item.material;instanceData.set(item.mvp,offset);instanceData.set(item.model,offset+16);instanceData.set(m.baseColor,offset+32);instanceData.set([m.metallic,m.roughness,1,m.unlit?1:0],offset+36);instanceData.set([...m.emissive,m.castShadow?1:0],offset+40);instanceData.set([...item.bounds.minimum,({opaque:0,mask:1,blend:2})[m.alphaMode]],offset+44);instanceData.set([...item.bounds.maximum,m.alphaCutoff],offset+48);}
   for(const [i,l]of plan.lights.entries()){const o=i*16;lightData.set([...l.position,l.range],o);lightData.set([...l.direction,Math.cos(l.outerAngle*Math.PI/180)],o+4);lightData.set([...l.color,l.intensity],o+8);lightData.set([({directional:0,point:1,spot:2})[l.kind],Math.cos(l.innerAngle*Math.PI/180),0,0],o+12);}
   const activeVertices=new Set(),activeBindings=new Set();
@@ -57,7 +58,7 @@ export async function createProductionGPU({device,format,width,height,textureFor
    batch.bindingKey=bindingKey;
   }
   for(const [key,v]of vertices)if(!activeVertices.has(key)){v.vertex.destroy();vertices.delete(key);}for(const [key,v]of bindings)if(!activeBindings.has(key)){v.uniform.destroy();bindings.delete(key);}
-  device.queue.writeBuffer(instances,0,instanceData);device.queue.writeBuffer(lights,0,lightData);device.queue.writeBuffer(groups,0,groupData);device.queue.writeBuffer(visible,0,cpuVisible);device.queue.writeBuffer(indirect,0,args);
+  device.queue.writeBuffer(instances,0,instanceData,0,Math.max(1,plan.items.length)*52);device.queue.writeBuffer(lights,0,lightData);device.queue.writeBuffer(groups,0,groupData);device.queue.writeBuffer(visible,0,cpuVisible);device.queue.writeBuffer(indirect,0,args);
   const encoder=device.createCommandEncoder({label:'M9 HDR production frame'});
   for(const batch of plan.batches)skinGPU.skin(plan.items[batch.first],vertices.get(batch.key).vertex,encoder);
   if(settings.tier!=='low'){const pass=encoder.beginComputePass({timestampWrites:timing?.writes('hdr.light-tiles')});pass.setPipeline(tilePipeline);pass.setBindGroup(0,tileBind);pass.dispatchWorkgroups(Math.ceil(nx*ny/64));pass.end();}

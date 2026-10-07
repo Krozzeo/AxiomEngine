@@ -1,3 +1,5 @@
+import {revealProjectFiles} from './project-explorer.mjs';
+import {editProjectFiles,syncImportedFiles} from '../../engine/scene/project-files.mjs';
 import {primitiveSprite} from '../../engine/scene/primitive-sprites.mjs';
 import {PNG} from 'pngjs';
 import {twoDDefaults,component2DDefaults} from '../../engine/renderer/two-d-plan.mjs';
@@ -73,6 +75,7 @@ export class SceneWorkspace {
     if (data.expectedSceneRevision !== this.revision) fail("AX_SCENE_0002", "Scene changed; refresh before editing");
   }
   commitScene(scene) {
+    syncImportedFiles(scene,this.project.scene);
     validateProject({...this.project,scene});
     if(Buffer.byteLength(JSON.stringify({...this.project,scene},null,2)+"\n")>192*1024)fail("AX_PROJECT_0002","Project size exceeds limit");
     this.past.push(copy(this.project.scene));if(this.past.length>64)this.past.shift();
@@ -202,6 +205,7 @@ export class SceneWorkspace {
       this.project.editor=result.project.editor;this.project.revision=result.project.revision;return this.snapshot();
     }
     this.check(data);
+    if(type==='project.files.reveal'){if(data.workspaceId)fail('AX_WORKSPACE_0001','Explorer export is only available for MAIN');try{return await revealProjectFiles(this,data.path??'');}catch(e){fail('AX_FS_0001',e.message);}}
     if(type==="asset.job.start")return this.startJob(data,context);
     if(type==="play.start" || type==="play.stop") {
       if(type==="play.start")await this.validateResources(this.project.scene);
@@ -246,6 +250,12 @@ export class SceneWorkspace {
       const size=resource.bounds?Math.max(...resource.bounds.maximum.map((v,i)=>v-resource.bounds.minimum[i])):2*Math.max(1,resource.width/resource.height);
       const scale=size>1e-6?2/size:1;
       scene.entities.push({id:`entity://${randomUUID()}`,name:asset.name,transform:{position:[(asset.kind==="sprite"?-1.5:1.5)-center[0]*scale,-center[1]*scale,-center[2]*scale],rotation:[0,0,0,1],scale:[scale,scale,scale]},renderable:{kind:asset.kind,assetId:asset.id}});
+    } else if(type==='scene.component.paste'){
+      if(index<0)fail('AX_SCENE_0001','Selected entity missing');
+      const key={Transform:'transform',Renderable:'renderable',Camera:'camera',Material:'material',Light:'light',LOD:'lod',Collider:'collider',RigidBody:'rigidBody',Animator:'animator',AudioSource:'audioSource',AudioListener:'audioListener',Sprite2D:'sprite2D',SpriteAnimation:'spriteAnimation',Tilemap:'tilemap',Light2D:'light2D',Particles2D:'particles2D',UI2D:'ui2D'}[data.component];
+      if(data.component==='Script'){if(!scene.script||data.value?.source!==scene.script.source)fail('AX_SCRIPT_0001','Compile the copied script in this project first');scene.script.attachments=[...new Set([...scene.script.attachments,data.entityId])];}
+      else if(data.component==='Camera')activateCamera(scene,data.entityId,data.value);
+      else if(key)scene.entities[index][key]=copy(data.value);else fail('AX_PROJECT_0002','Unsupported clipboard component');
     } else if(type==='scene.camera.set'){if(index<0)fail('AX_SCENE_0001','Camera entity no longer exists');activateCamera(scene,data.entityId,data.value);
     } else if(["scene.audioSource.set","scene.audioListener.set","scene.animator.set","scene.sprite2D.set","scene.spriteAnimation.set","scene.tilemap.set","scene.light2D.set","scene.particles2D.set","scene.ui2D.set","scene.collider.set","scene.rigidBody.set","scene.material.set","scene.light.set","scene.lod.set"].includes(type)) {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
@@ -292,6 +302,13 @@ export class SceneWorkspace {
     } else if(type==="scene.camera.update") {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
       if(scene.cameraMode==='entities'){const e=scene.entities.find(e=>e.camera?.active);if(!e)fail('AX_SCENE_0001','No active Camera entity');for(const key of ['projection','fov','orthoHeight'])if(data.camera[key]!==undefined)e.camera[key]=data.camera[key];if(data.camera.position)e.transform.position=copy(data.camera.position);if(data.camera.target)e.transform.rotation=cameraRotation(e.transform.position,data.camera.target);}else scene.camera={projection:'perspective',position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
+    } else if(type==='project.files.edit'){
+      try{scene.projectFiles=editProjectFiles(scene,data);}catch(error){fail('AX_FS_0001',error.message);}
+    } else if(type==='scene.entities.paste'){
+      if(!Array.isArray(data.entities)||!data.entities.length||data.entities.length>256)fail('AX_SCENE_0001','Copy up to 256 entities');
+      const ids=new Map(data.entities.map(e=>[e.id,'entity://'+randomUUID()]));if(ids.size!==data.entities.length)fail('AX_SCENE_0001','Duplicate clipboard entity IDs');
+      for(const source of data.entities){const e=copy(source);e.id=ids.get(source.id);e.name=source.name+' Copy';if(ids.has(source.parentId))e.parentId=ids.get(source.parentId);else if(data.parentId)e.parentId=data.parentId;else delete e.parentId;if(e.camera)e.camera.active=false;if(e.audioListener)e.audioListener.enabled=false;scene.entities.push(e);}
+      if(scene.script)for(const old of data.scriptAttachments??[])if(ids.has(old))scene.script.attachments.push(ids.get(old));
     } else if(type==="scene.example.create") {
       try{addExample(scene,data.example,`entity://${randomUUID()}`);}catch(e){fail("AX_PROJECT_0002",e.message);}
     } else if (type === "scene.entity.create") {
@@ -307,9 +324,11 @@ export class SceneWorkspace {
         }
       }
     } else fail("AX_COMMAND_0002", "Command type is not registered");
+    if(data.parentId&&['scene.entity.create','scene.example.create','scene.primitive.create'].includes(type)){if(!scene.entities.some(e=>e.id===data.parentId))fail('AX_SCENE_0001','Parent entity missing');scene.entities.at(-1).parentId=data.parentId;}
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
+    syncImportedFiles(scene,this.project.scene);
     validateProject({ ...this.project, scene });
-    if(["scene.audioSource.set","scene.animator.set","scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
+    if(["scene.component.paste","scene.audioSource.set","scene.animator.set","scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
     this.check(data);
     this.commitScene(scene);

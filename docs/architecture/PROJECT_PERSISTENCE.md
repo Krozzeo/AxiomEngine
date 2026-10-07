@@ -90,3 +90,9 @@ Remote CI #7 passed all four jobs on implementation commit
 https://github.com/Krozzeo/AxiomEngine/actions/runs/35760870433
 This includes the project command tests on Linux and Windows, plus Rust and C#
 Wasm. PR #2 targets the M1 branch while PR #1 remains unmerged.
+
+## M16 current authoring extension
+
+See M16_AUTHORING_AND_PERFORMANCE.md and ADR-0031 for portable scene.projectFiles,
+canonical file edits/history/save, typed contextual copies, isolated Explorer exports,
+and one-source C# authoring limits. M16_CURRENT_REPORT.md records executable evidence.

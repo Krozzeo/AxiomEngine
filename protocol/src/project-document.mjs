@@ -1,3 +1,4 @@
+import {validateFiles} from '../../engine/scene/project-files.mjs';
 import {activeGameCamera} from '../../engine/scene/camera.mjs';
 import {audioDefaults} from '../../engine/audio/plan.mjs';
 import {worldTransforms} from '../../engine/scene/hierarchy.mjs';
@@ -39,6 +40,7 @@ function validate(value, rule, path) {
 }
 
 export function validateProject(document) {
+  try{validateFiles(document.scene??{});}catch(error){throw projectError('AX_PROJECT_0002',error.message);}
   if((document.scene?.entities??[]).filter(e=>e.camera?.active).length>1)throw projectError('AX_PROJECT_0002','Only one Camera can be active');
 
   const inspect = (value, depth = 0) => {

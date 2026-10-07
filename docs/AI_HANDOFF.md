@@ -1,17 +1,17 @@
 # Axiom Engine — context-free AI handoff
 
-M15 (0.0.28) is complete, 100%. Project progress is approximately 84% (87/104 roadmap weight points).
-Controlled input-plan recording, seeded C#, verified checkpoints/ranges and fresh
-causal diagnostic replay share one isolated runtime. Three editable replay demos
-include Camera entities with Audio Listeners and explicit lights. Camera projection
-and pose live in Inspector/Transform, with stopped and parallel Game views.
-New 2D/3D templates contain camera, light and object; fixed legacy sunlight is gone.
-The six AI menu options and Config Project Master Document support external MCP
-setup, project context and proposal review; integrated provider chat remains future work.
-183 Node tests, 39 Rust tests, 14 new browser criteria and all 25 CI jobs pass.
-See docs/reports/M15_CURRENT_REPORT.md, M15_REPLAY.md and ADR-0029/0030.
-PR #18 is ready/open, stacked on unmerged #17; keep milestone PRs unmerged.
-Next: M16 Performance & Low-End Pass, planned and not started.
+M16 (0.0.29) is complete: 8/8 required groups, 100%. Weighted project progress is
+approximately 88% (91/104 roadmap points). Project authoring, typed context clipboard,
+Inspector auto-commit, consistent menus/icons and Game FPS are verified alongside
+indexed/virtualized Hierarchy, isolated cached Wasm, reused GPU storage and explicit
+render scale. Two editable demos are included. All 26 jobs in CI run 171 pass at
+executable commit e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2 (tree 978eaac0d41c72bb6a75050ae601254daaa4415b).
+190 Node tests, 39 Rust tests, 18 schemas, 86 semantic tools and 17 M16 browser
+criteria pass; earlier browser, C# Development/AOT and replay gates remain green.
+See docs/reports/M16_CURRENT_REPORT.md, demos/M16_GUIDE.md and
+M16_AUTHORING_AND_PERFORMANCE.md. PR #19 is ready/open, stacked on unmerged #18;
+keep milestone PRs unmerged. Next: M17 advanced assets/CAD, planned, not started.
+Software-GPU evidence is functional; it does not certify physical low-end FPS.
 
 Historical completed baseline:
 
@@ -235,13 +235,15 @@ Version numbers indicate migration capability, not long-term API stability.
 
 ## Safe next task
 
-Implement M16 per M16_PLAN.md and master section 135. M15 is complete; PR #18
-is ready/open, stacked on unmerged #17. Read M15_REPLAY.md, M15_CURRENT_REPORT.md,
-ADR-0029/0030 and the retained M14/profiler/rendering/physics/animation/audio contracts.
-Measure memory, render scaling, loading/shader/compiler costs and editor UI before
-optimizing Tier 0. Preserve Tier 2/3, public bounded controls, replay determinism,
-authored MAIN isolation, simultaneous cameras and explicit lighting. Do not claim
-physical-GPU or audible performance from software-GPU CI.
+Begin M17 per M17_PLAN.md and master section 136. First inventory the existing
+PNG/GLB import pipeline, derived resource identity and worker/job budgets. Define
+bounded fixtures/units/orientation before adding OBJ/STL; evaluate STEP/IGES parser,
+tessellation and license choices explicitly. Preserve M16 virtual authoring paths,
+clipboard scopes, bounded GPU presentation and exact replay/test assertion pixels.
+Read M16_CURRENT_REPORT.md, M16_AUTHORING_AND_PERFORMANCE.md, ADR-0031,
+PROJECT_PERSISTENCE.md, M3_ASSET_PIPELINE.md and the retained rendering/animation/
+physics contracts. M17 is planned, not implemented; do not start M18 autonomy.
+PR #19 and the prior stack remain open and unmerged.
 
 Historical PR stack:
 

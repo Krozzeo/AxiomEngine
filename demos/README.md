@@ -1,3 +1,11 @@
+# Current demos: M16
+
+`npm.cmd run demo` creates Editor & File Workshop and Low-End Instance Grid.
+See [M16 guide](M16_GUIDE.md). Older demos remain available through `demo:m15`,
+`demo:m14`, etc. Existing projects are preserved.
+
+Historical demo descriptions follow; their unqualified default commands are historical.
+
 # Current demos: M13.1
 
 The default demo command now creates the workspace/capture demos. See M13_1_GUIDE.md.

@@ -11,7 +11,7 @@ const root=await mkdtemp(join(tmpdir(),'axiom-csharp-')),compiler=new ScriptComp
 const mode=process.env.AXIOM_CSHARP_MODE??'development';
 let browser,server;
 try {
- const source=await readFile(new URL('../../engine/scripting/templates/Game.cs',import.meta.url),'utf8');
+ const source=(await readFile(new URL('../../engine/scripting/templates/Game.cs',import.meta.url),'utf8')).replace('class GameScript : Script','class NamedController : Script');
  const build=await compiler.build(projectId,source,mode);
  server=createServer(async(req,res)=>{try{
   const path=new URL(req.url,'http://localhost').pathname;

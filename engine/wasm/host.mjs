@@ -1,11 +1,13 @@
 import {activeGameCamera} from '../scene/camera.mjs';
 import {worldScene,localTransform,worldTransforms,reparent} from '../scene/hierarchy.mjs';
+const compiledModules=new WeakMap();
 const sharedVertices=new WeakMap();
 function verticesFor(primitive){let value=sharedVertices.get(primitive);if(!value){value=new Float32Array(primitive.vertices);sharedVertices.set(primitive,value);}return value;}
 import {animationHost} from './animation-host.mjs';
 import {physicsHost} from "./physics-host.mjs";
 export async function loadKernel(bytes) {
-  const { instance } = await WebAssembly.instantiate(bytes, {});
+  let pending=compiledModules.get(bytes);if(!pending){pending=WebAssembly.compile(bytes);compiledModules.set(bytes,pending);pending.catch(()=>compiledModules.delete(bytes));}
+  const module=await pending,instance=await WebAssembly.instantiate(module,{});
   const api = instance.exports;
   if (api.axiom_abi_version() !== 1) throw new Error("AX_WASM_0001: incompatible ABI");
   const id = api.axiom_create();
@@ -15,6 +17,7 @@ export async function loadKernel(bytes) {
   const physics=physicsHost(api,id);
   const animation=animationHost(api,id);
   return {
+    memoryBytes(){return api.memory?.buffer.byteLength??null;},
     animationStep(delta,playing){return animation.step(delta,playing,compiled?.draws??[]);},
     animationDraws(){return compiled?.draws??[];},
     animationControl(args){return animation.control(args);},

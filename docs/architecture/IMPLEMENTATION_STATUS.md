@@ -1,17 +1,17 @@
 # Implementation status
 
-M15 (0.0.28) is complete, 100%. Project progress is approximately 84% (87/104 roadmap weight points).
-Controlled input-plan recording, seeded C#, verified checkpoints/ranges and fresh
-causal diagnostic replay share one isolated runtime. Three editable replay demos
-include Camera entities with Audio Listeners and explicit lights. Camera projection
-and pose live in Inspector/Transform, with stopped and parallel Game views.
-New 2D/3D templates contain camera, light and object; fixed legacy sunlight is gone.
-The six AI menu options and Config Project Master Document support external MCP
-setup, project context and proposal review; integrated provider chat remains future work.
-183 Node tests, 39 Rust tests, 14 new browser criteria and all 25 CI jobs pass.
-See docs/reports/M15_CURRENT_REPORT.md, M15_REPLAY.md and ADR-0029/0030.
-PR #18 is ready/open, stacked on unmerged #17; keep milestone PRs unmerged.
-Next: M16 Performance & Low-End Pass, planned and not started.
+M16 (0.0.29) is complete: 8/8 required groups, 100%. Weighted project progress is
+approximately 88% (91/104 roadmap points). Project authoring, typed context clipboard,
+Inspector auto-commit, consistent menus/icons and Game FPS are verified alongside
+indexed/virtualized Hierarchy, isolated cached Wasm, reused GPU storage and explicit
+render scale. Two editable demos are included. All 26 jobs in CI run 171 pass at
+executable commit e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2 (tree 978eaac0d41c72bb6a75050ae601254daaa4415b).
+190 Node tests, 39 Rust tests, 18 schemas, 86 semantic tools and 17 M16 browser
+criteria pass; earlier browser, C# Development/AOT and replay gates remain green.
+See docs/reports/M16_CURRENT_REPORT.md, demos/M16_GUIDE.md and
+M16_AUTHORING_AND_PERFORMANCE.md. PR #19 is ready/open, stacked on unmerged #18;
+keep milestone PRs unmerged. Next: M17 advanced assets/CAD, planned, not started.
+Software-GPU evidence is functional; it does not certify physical low-end FPS.
 
 Historical completed baseline:
 
@@ -141,7 +141,7 @@ asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
 M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
 M8 verifies four causal queries, ten faults, bounded/expired/stale evidence,
 Scene/Game separation, two-way selection, transforms, navigation and editable demos.
-M14 acceptance is complete; follow M15_PLAN.md and master section 134 for replay.
+M16 acceptance is complete; follow M17_PLAN.md and master section 136 for advanced assets/CAD.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.

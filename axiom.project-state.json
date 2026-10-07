@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-05",
-  "engineVersion": "0.0.28",
-  "activeMilestone": 15,
+  "updatedAt": "2026-10-07",
+  "engineVersion": "0.0.29",
+  "activeMilestone": 16,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 84,
+    "wholeProjectPercent": 88,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -71,11 +71,15 @@
       "status": "complete",
       "percent": 100
     },
-    "13.1": {
+    "15": {
       "status": "complete",
       "percent": 100
     },
-    "15": {
+    "16": {
+      "status": "complete",
+      "percent": 100
+    },
+    "13.1": {
       "status": "complete",
       "percent": 100
     }
@@ -97,7 +101,7 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_three_m15_and_earlier_demos",
+    "editableDemos": "verified_two_m16_and_all_prior_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
@@ -108,11 +112,14 @@
     "parallelViews": "verified_same_runtime_independent_cameras_scene_game_popup_input",
     "replay": "verified_bounded_input_plans_seeded_csharp_prefix_checkpoint_ranges_diagnostics",
     "entityCameras": "verified_inspector_transform_gizmos_parallel_game_and_explicit_starters",
-    "aiProjectContext": "verified_six_menu_options_plain_master_documents_external_mcp_context"
+    "aiProjectContext": "verified_six_menu_options_plain_master_documents_external_mcp_context",
+    "projectFileAuthoring": "verified_portable_virtual_tree_templates_moves_copies_history_save_explorer_exports",
+    "editorContextActions": "verified_scoped_clipboard_parenting_autocommit_menus_fps_and_redraw_focus",
+    "lowEndPass": "verified_indexed_virtual_ui_fresh_cached_wasm_reused_gpu_storage_scale_bounded_submission"
   },
   "verified": {
     "nodeTests": {
-      "passed": 183,
+      "passed": 190,
       "failed": 0
     },
     "schemaDocuments": 18,
@@ -143,7 +150,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI; Rust 1.90.0; M15 0.0.28"
+      "evidenceEnvironment": "GitHub CI 171; Rust 1.90.0; M16 0.0.29"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -229,38 +236,39 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.28",
-      "commit": "6a2e93ba430837f6a2bffeea7fbd59a49a17382d",
-      "tree": "e244ffd01da8e2558c23db2d2433d5dbcdcc705b",
-      "runId": 37386247344,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37386247344",
-      "jobCount": 25,
+      "version": "0.0.29",
+      "commit": "e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2",
+      "tree": "978eaac0d41c72bb6a75050ae601254daaa4415b",
+      "runId": 37629606850,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37629606850",
+      "jobCount": 26,
       "jobs": [
         "rust",
-        "script-boundaries (macos-latest)",
-        "csharp-wasm-spike (windows-latest, development)",
-        "browser-milestones (m10)",
-        "bootstrap (windows-latest)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
         "bootstrap (ubuntu-latest)",
-        "browser-milestones (m4)",
-        "browser-milestones (m13)",
-        "script-boundaries (ubuntu-latest)",
-        "script-boundaries (windows-latest)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
-        "browser-milestones (m2)",
-        "browser-milestones (m15)",
-        "browser-milestones (m11)",
-        "browser-milestones (m14)",
         "browser-milestones (m3)",
-        "browser-milestones (m13-1)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "browser-milestones (m13)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
         "browser-milestones (m12)",
+        "browser-milestones (m4)",
         "browser-milestones (m9)",
+        "bootstrap (windows-latest)",
+        "csharp-wasm-spike (windows-latest, development)",
+        "browser-milestones (m11)",
+        "script-boundaries (ubuntu-latest)",
+        "browser-milestones (m13-1)",
+        "browser-milestones (m10)",
         "browser-milestones (corrections)",
-        "browser-milestones (m7)",
-        "browser-milestones (m5)",
+        "script-boundaries (windows-latest)",
         "browser-milestones (m6)",
-        "browser-milestones (m8)"
+        "browser-milestones (m7)",
+        "browser-milestones (m8)",
+        "browser-milestones (m5)",
+        "script-boundaries (macos-latest)",
+        "browser-milestones (m15)",
+        "browser-milestones (m14)",
+        "browser-milestones (m16)",
+        "browser-milestones (m2)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -427,7 +435,7 @@
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
     },
-    "semanticToolCount": 80,
+    "semanticToolCount": 86,
     "m10Acceptance": {
       "passed": true,
       "criteriaPassed": 8,
@@ -511,6 +519,29 @@
       "evidence": "docs/reports/m15-browser-evidence.json",
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
+    },
+    "m16Acceptance": {
+      "passed": true,
+      "requiredGroupsPassed": 8,
+      "requiredGroupsTotal": 8,
+      "criteriaPassed": 17,
+      "criteriaTotal": 17,
+      "pageErrors": 0,
+      "consoleErrors": 0,
+      "runId": 37629606850,
+      "commit": "e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2",
+      "tree": "978eaac0d41c72bb6a75050ae601254daaa4415b",
+      "evidence": "docs/reports/m16-browser-evidence.json",
+      "benchmark": "docs/reports/m16-performance-benchmark.json",
+      "hardwarePerformanceMeasured": false
+    },
+    "m16RegressionFix": {
+      "cause": "Reaffirming the same view cleared held gameplay input",
+      "fix": "Only actual view changes clear keys",
+      "evidence": "CI M4 holds ArrowRight while reselecting Game; preserves movement/spawn/reload",
+      "earlierRunId": 37627105416,
+      "passed": true,
+      "runId": 37629606850
     }
   },
   "blockedChecks": [],
@@ -622,7 +653,14 @@
     "docs/architecture/M15_REPLAY.md",
     "docs/architecture/M16_PLAN.md",
     "docs/adr/0030-entity-cameras-explicit-lighting.md",
-    "docs/reports/m15-browser-evidence.json"
+    "docs/reports/m15-browser-evidence.json",
+    "docs/architecture/M17_PLAN.md",
+    "docs/architecture/M16_AUTHORING_AND_PERFORMANCE.md",
+    "docs/adr/0031-portable-authoring-files-and-bounded-low-end-work.md",
+    "docs/reports/M16_CURRENT_REPORT.md",
+    "docs/reports/m16-browser-evidence.json",
+    "docs/reports/m16-performance-benchmark.json",
+    "demos/M16_GUIDE.md"
   ],
-  "nextTask": "Implement M16 Performance & Low-End Pass per M16_PLAN.md and master section 135; M15 is complete. Preserve bounded replay, MAIN isolation, entity cameras and prior gates. Keep stacked PRs unmerged."
+  "nextTask": "Begin M17 Advanced Assets/CAD per M17_PLAN.md and master section 136; M16 is complete and PR #19 stays open/unmerged."
 }

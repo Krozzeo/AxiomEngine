@@ -13,7 +13,7 @@ async function state(){const r=await fetch(daemon.origin+'/v1/commands',{method:
 try {
  browser=await chromium.launch({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
  page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(180000);
- await page.goto(daemon.editorUrl);await (await control(page,'#project-name')).fill('M4 C# gameplay');await (await control(page,'#project-dimension')).selectOption('empty');await (await control(page,'#project-new')).click();
+ await page.goto(daemon.editorUrl);await (await control(page,'#project-name')).fill('M4 C# gameplay');await (await control(page,'input[name="project-dimension"][value="empty"]')).check();await (await control(page,'#project-new')).click();
  await (await control(page,'#asset-file')).setInputFiles({name:'player.png',mimeType:'image/png',buffer:imageFixture()});await (await control(page,'#asset-import')).click();
  await page.waitForFunction(()=>document.querySelector('#asset-list').options.length===1);await (await control(page,'#asset-place')).click();
  await page.waitForFunction(()=>document.querySelectorAll('#entities .entity').length===1);
@@ -35,6 +35,8 @@ try {
  await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.entities.length===2&&d.kernel.meshes===2;}catch{return false;}});
  const before=await page.locator('#viewport').screenshot();let diagnostic=await page.locator('#frame-trace').textContent();const initial=JSON.parse(diagnostic);const x=initial.script.entities[0].position[0];
  await (await control(page,'#viewport')).click();await page.keyboard.down('ArrowRight');
+ // Reaffirming the same active view/redrawing authoring controls must not release held input.
+ await (await control(page,'#game-tab')).click();
  await page.waitForFunction(x=>JSON.parse(document.querySelector('#frame-trace').textContent).script.entities[0].position[0]>x+.2,x);await page.keyboard.up('ArrowRight');
  const after=await page.locator('#viewport').screenshot({path:join(evidence,'csharp-movement.png')});assert.notDeepEqual(before,after);assert.deepEqual((await state()).project.scene,authoring);
  const frameBeforeSpawn=JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame;
@@ -69,6 +71,6 @@ try {
  await page.screenshot({path:join(evidence,'editor.png')});console.log('M4_BROWSER='+JSON.stringify(report));
 }catch(error){
  report.failure=error.message;
- if(page){report.frame=await page.locator('#frame-trace').textContent().catch(()=>null);console.error('M4_FAILURE_FRAME='+report.frame);console.error('M4_FAILURE_STATE='+await page.locator('body').innerText());await page.screenshot({path:join(evidence,'failure.png')}).catch(()=>{});}
+ if(page){report.frame=await page.locator('#frame-trace').textContent().catch(()=>null);console.error('M4_FAILURE_FRAME='+report.frame);console.error('M4_FAILURE_STATE='+await page.locator('body').innerText());console.error('M4_FAILURE_COMMAND_ERROR='+await page.locator('#project-error').textContent());console.error('M4_FAILURE_SCRIPT_STATUS='+await page.locator('#script-status').textContent());console.error('M4_FAILURE_SCRIPT_DIAGNOSTICS='+await page.locator('#script-diagnostics').textContent());await page.screenshot({path:join(evidence,'failure.png')}).catch(()=>{});}
  throw error;
 }finally{report.errors=errors;await writeFile(join(evidence,'report.json'),JSON.stringify(report,null,2));await browser?.close();await daemon.close();await rm(root,{recursive:true,force:true});}

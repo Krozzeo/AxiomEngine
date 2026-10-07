@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.29 — M16 — editor authoring and low-end pass (acceptance in progress)
+
+- Portable authoring files, folders, named C# templates, rename/move/copy/delete and bounded Explorer exports.
+- Scoped Project/Hierarchy/component context menus and clipboard; consistent list menus and component boxes.
+- Automatic Inspector values, radio templates, menubar title, matched Close icons and Game FPS toggle.
+- Indexed/virtualized Hierarchy, cached Wasm modules with isolated worlds, shared resource admission and reusable GPU staging.
+- Explicit render scaling, bounded GPU submission and two editable stress/workshop demos.
+
 ## 0.0.28 — M15 — verified replay and entity cameras
 
 - Bounded controlled input plans, ReplayRandom seeds, checkpoints and verified range replay.

@@ -1,12 +1,12 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-05",
-  "engineVersion": "0.0.28",
-  "activeMilestone": 15,
-  "milestoneStatus": "complete",
+  "updatedAt": "2026-10-07",
+  "engineVersion": "0.0.29",
+  "activeMilestone": 16,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 84,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -78,6 +78,10 @@
     "15": {
       "status": "complete",
       "percent": 100
+    },
+    "16": {
+      "status": "in_progress",
+      "percent": 0
     }
   },
   "implementation": {
@@ -513,7 +517,9 @@
       "physicalGpuBenchmark": false
     }
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M16 browser acceptance and full regression CI in progress"
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -624,5 +630,5 @@
     "docs/adr/0030-entity-cameras-explicit-lighting.md",
     "docs/reports/m15-browser-evidence.json"
   ],
-  "nextTask": "Implement M16 Performance & Low-End Pass per M16_PLAN.md and master section 135; M15 is complete. Preserve bounded replay, MAIN isolation, entity cameras and prior gates. Keep stacked PRs unmerged."
+  "nextTask": "Complete M16 acceptance and evidence; do not mark ready or begin M17 before all 26 CI jobs pass."
 }

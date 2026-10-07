@@ -1,17 +1,14 @@
 # Implementation status
 
-M15 (0.0.28) is complete, 100%. Project progress is approximately 84% (87/104 roadmap weight points).
-Controlled input-plan recording, seeded C#, verified checkpoints/ranges and fresh
-causal diagnostic replay share one isolated runtime. Three editable replay demos
-include Camera entities with Audio Listeners and explicit lights. Camera projection
-and pose live in Inspector/Transform, with stopped and parallel Game views.
-New 2D/3D templates contain camera, light and object; fixed legacy sunlight is gone.
-The six AI menu options and Config Project Master Document support external MCP
-setup, project context and proposal review; integrated provider chat remains future work.
-183 Node tests, 39 Rust tests, 14 new browser criteria and all 25 CI jobs pass.
-See docs/reports/M15_CURRENT_REPORT.md, M15_REPLAY.md and ADR-0029/0030.
-PR #18 is ready/open, stacked on unmerged #17; keep milestone PRs unmerged.
-Next: M16 Performance & Low-End Pass, planned and not started.
+M16 (0.0.29) is in acceptance; M15 remains the completed baseline (84%, 87/104).
+Project file authoring, scoped context menus/clipboard, component boxes/autocommit,
+consistent menus, Game FPS and explicit render scale are implemented. Two editable
+M16 demos use canonical project APIs. Hierarchy rows are indexed/virtualized, Wasm
+modules are cached with fresh worlds, GPU staging storage is reused and submitted
+GPU work is bounded. Earlier game tests/replay and quality tiers remain required gates.
+Read demos/M16_GUIDE.md and docs/architecture/M16_AUTHORING_AND_PERFORMANCE.md.
+PR #19 is draft/open, stacked on unmerged #18; keep milestone PRs unmerged.
+Current validation is not a completed milestone or a hardware FPS claim.
 
 Historical completed baseline:
 

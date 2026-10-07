@@ -1,6 +1,6 @@
 # M16 — Performance & Low-End Pass
 
-Status: planned, not started. Master specification section 135.
+Status: implementation complete; browser/platform acceptance in progress. Master specification section 135.
 
 Use completed M15 as the baseline. Preserve fixed-step tests/replay, public revision
 contracts, entity Camera/Game preview, explicit lighting and authored MAIN isolation.
@@ -19,3 +19,14 @@ M14 game tests and M15 replay where applicable.
 Close with actual benchmark and acceptance evidence, current report/handoff/state/
 changelog, a complete source ZIP and ready/open/unmerged stacked PR. Do not begin
 M17 advanced asset/CAD work during this optimization milestone.
+
+Required closure groups: portable file operations and source templates; scoped contextual
+clipboard/entity/component actions; requested menus/Inspector/templates/FPS; indexed
+virtualized UI and measured memory bounds; cached isolated Wasm/resource admission;
+explicit primary/parallel scaling and bounded GPU work; editable demos and all earlier
+gates; synchronized evidence/docs/ready-open PR/full source release.
+
+Shader and C# speedups are not required without measured regressions; retain their
+existing caches and real platform Development/AOT checks. CPU and Wasm benchmark
+results do not establish physical Tier 0 FPS or total browser/editor RAM peaks.
+See M16_AUTHORING_AND_PERFORMANCE.md and ADR-0031.

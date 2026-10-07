@@ -1,3 +1,4 @@
+import {worldTransforms} from '../../../engine/scene/hierarchy.mjs';
 import {groupTransforms} from './editor-operations.mjs';
 import {add,sub,mul,dot,unit,length,basis,transform,modelMatrix,projectPoint,cameraRay,pickGeometry,frameCamera,axisQuaternion,quaternionMultiply,rotationDragAngle,orbitCamera} from './view-math.mjs';
 const axes=[[1,0,0],[0,1,0],[0,0,1]],colors=['#ff7070','#75e894','#70acff'];
@@ -10,6 +11,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  function data(){return getRenderer()?.interaction()??{scene:{entities:[]},draws:[],playing:false,view:'scene'};}
  function editable(){const d=data();return d.view==='scene'&&!d.playing&&!!d.projectId&&!editor.isBusy()&&selection.length>0;}
  function entity(){return data().scene.entities.find(e=>e.id===selected);}
+ function framedEntity(id){const entities=data().scene.entities,e=entities.find(e=>e.id===id);return e?{...e,transform:worldTransforms(entities).get(id)}:null;}
  function setCamera(c){camera=c;getRenderer()?.setEditorCamera(c);}
  function setTool(value){tool=value;for(const name of ['move','rotate','scale'])$('tool-'+name).classList.toggle('active',name===tool);}
  function point(event){const rect=canvas.getBoundingClientRect();return [(event.clientX-rect.left)*canvas.width/rect.width,(event.clientY-rect.top)*canvas.height/rect.height];}
@@ -85,7 +87,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  }
  async function up(event){navigation=null;keys.clear();if(!drag)return;const operation=drag,value=preview;cancel();if(value&&operation.revision===dRevision()&&editable())await editor.transformEntities(operation.updates);}
  function wheel(event){if(data().view!=='scene')return;event.preventDefault();if(navigation?.fly){navigation.speed=Math.max(.1,Math.min(10000,navigation.speed*Math.exp(-event.deltaY*.002)));return;}const factor=Math.exp(Math.max(-1,Math.min(1,event.deltaY*.001))),b=basis(camera);if(camera.projection==='orthographic')setCamera({...camera,orthoHeight:Math.max(.01,Math.min(1000000,camera.orthoHeight*factor))});else setCamera({...camera,position:add(camera.target,mul(b.forward,-Math.max(.05,length(sub(camera.position,camera.target))*factor)))});}
- function keydown(event){if(/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??''))return;if(event.code==='Escape'){cancel();navigation=null;keys.clear();return;}if(event.ctrlKey||event.metaKey||event.altKey)return;if(data().view!=='scene')return;if(navigation?.fly){keys.add(event.code);event.preventDefault();return;}if(event.code==='KeyF'&&entity()){setCamera(frameCamera(camera,entity()));event.preventDefault();}else if(editable()&&['KeyW','KeyE','KeyR'].includes(event.code)){setTool({KeyW:'move',KeyE:'rotate',KeyR:'scale'}[event.code]);event.preventDefault();}}
+ function keydown(event){if(/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??''))return;if(event.code==='Escape'){cancel();navigation=null;keys.clear();return;}if(event.ctrlKey||event.metaKey||event.altKey)return;if(data().view!=='scene')return;if(navigation?.fly){keys.add(event.code);event.preventDefault();return;}if(event.code==='KeyF'&&entity()){setCamera(frameCamera(camera,framedEntity(selected)));event.preventDefault();}else if(editable()&&['KeyW','KeyE','KeyR'].includes(event.code)){setTool({KeyW:'move',KeyE:'rotate',KeyR:'scale'}[event.code]);event.preventDefault();}}
  for(const node of [canvas,overlay]){node.addEventListener('pointerdown',down);node.addEventListener('pointermove',move);node.addEventListener('pointerup',up);node.addEventListener('pointercancel',()=>{cancel();navigation=null;});node.addEventListener('wheel',wheel,{passive:false});node.addEventListener('contextmenu',e=>e.preventDefault());}
  for(const name of ['move','rotate','scale'])$('tool-'+name).addEventListener('click',()=>setTool(name));$('tool-space').addEventListener('click',()=>{local=!local;$('tool-space').textContent=local?'Local':'World';});
  $('tool-projection').addEventListener('click',()=>setCamera({...camera,projection:camera.projection==='orthographic'?'perspective':'orthographic'}));
@@ -94,5 +96,5 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  const keyup=e=>keys.delete(e.code),blur=()=>{keys.clear();navigation=null;cancel();};
  globalThis.addEventListener('keydown',keydown);globalThis.addEventListener('keyup',keyup);globalThis.addEventListener('blur',blur);
  setTool(tool);let animation;function tick(now){render(now);if(!disposed)animation=requestAnimationFrame(tick);}animation=requestAnimationFrame(tick);
- return {locate(id){const e=data().scene.entities.find(e=>e.id===id);if(e){editor.selectEntity(id);setCamera(frameCamera(camera,e));}},select(ids){selection=Array.isArray(ids)?ids:(ids?[ids]:[]);selected=selection.at(-1)??null;cancel();},dispose(){disposed=true;cancelAnimationFrame(animation);globalThis.removeEventListener('keydown',keydown);globalThis.removeEventListener('keyup',keyup);globalThis.removeEventListener('blur',blur);},get camera(){return structuredClone(camera);}};
+ return {locate(id){const e=framedEntity(id);if(e){editor.selectEntity(id);setCamera(frameCamera(camera,e));}},select(ids){selection=Array.isArray(ids)?ids:(ids?[ids]:[]);selected=selection.at(-1)??null;cancel();},dispose(){disposed=true;cancelAnimationFrame(animation);globalThis.removeEventListener('keydown',keydown);globalThis.removeEventListener('keyup',keyup);globalThis.removeEventListener('blur',blur);},get camera(){return structuredClone(camera);}};
 }

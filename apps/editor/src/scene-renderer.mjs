@@ -314,6 +314,9 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }catch(error){request.reject(error);}
       }
       if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
+      // Bound queued GPU work on slow adapters; manual test/replay pixels must
+      // also complete before their next controlled frame. Device loss owns fallback.
+      if(device){const submittedDevice=device;await submittedDevice.queue.onSubmittedWorkDone().catch(()=>submittedDevice.lost);}
     } catch(error) {audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;}
     if(!manual)animationId=requestAnimationFrame(frame);
   }

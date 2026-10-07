@@ -60,7 +60,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
   let controlledPixels=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
-  let measuredFps=null,fpsStart=null,fpsCount=0;
+  let measuredFps=null,fpsStart=null,fpsCount=0,traceDisplayAt=-Infinity;
   let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null;
   let authoredHierarchy={entities:[]};
   let view='scene',editorCamera=null,transformPreview=null,geometry=[],lastPacket=null,lastTraceId=null,lineage=null;
@@ -139,7 +139,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   async function setSnapshot(snapshot,internalTest=false) {
     if(!internalTest){currentSnapshot=structuredClone(snapshot);if(testing){testing=false;testSession.control({action:'cancel'});replaySession.control({action:'cancel'});}}
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
-    controlledPixels=null;measuredFps=null;fpsStart=null;fpsCount=0;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
+    controlledPixels=null;measuredFps=null;fpsStart=null;fpsCount=0;traceDisplayAt=-Infinity;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
     snapshotLoading=true;
     try {
@@ -317,7 +317,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           target.toBlob(async blob=>{try{if(!blob||blob.size>512*1024)throw new Error('Capture exceeds 512 KiB');if(disposed||generation!==ticket)throw new Error('Capture generation changed');const data=new Uint8Array(await blob.arrayBuffer());let raw='';for(let i=0;i<data.length;i+=8192)raw+=String.fromCharCode(...data.subarray(i,i+8192));request.resolve({...value,base64:btoa(raw)});}catch(error){request.reject(error);}},'image/png');
         }catch(error){request.reject(error);}
       }
-      if(packet.frame===1||packet.frame%15===0)traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);
+      const traceTime=performance.now(),traceInterval=runtimeScene.entities.length>64?1000:200;
+      if(packet.frame===1||packet.frame%15===0||traceTime-traceDisplayAt>=traceInterval){traceOutput.textContent=JSON.stringify({...diagnostic,gpuSample},null,2);traceDisplayAt=traceTime;}
       // Bound queued GPU work on slow adapters; manual test/replay pixels must
       // also complete before their next controlled frame. Device loss owns fallback.
       if(device&&presentFrame){const submittedDevice=device;await submittedDevice.queue.onSubmittedWorkDone().catch(()=>submittedDevice.lost);}

@@ -76,6 +76,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     }
     $("play-status").textContent=state.playing?"Play · runtime copy":"Stopped · authoring";
     $("preview-note").textContent=project ? `${view==='game'?'Game camera':'Scene camera'}` : "Create or open a project to begin";
+    let hierarchyScrollTop=$("entities").scrollTop??0;
     $("entities").replaceChildren();
     const entities=project?.scene.entities??[];
     const childrenByParent=new Map();for(const e of entities){const p=e.parentId??null;if(!childrenByParent.has(p))childrenByParent.set(p,[]);childrenByParent.get(p).push(e);}
@@ -84,8 +85,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     const rows=collapsed.has('root')?[]:hierarchyRows(entities,collapsed),virtual=document.defaultView&&rows.length>150;
     const viewportHeight=Math.max(120,($('entities').parentElement?.clientHeight??650)-145),rowHeight=28;
     $('entities').style.maxHeight=virtual?viewportHeight+'px':'';$('entities').style.overflowY=virtual?'auto':'';
-    if(virtual&&!hierarchyScrolling&&selected){const index=rows.findIndex(r=>r.entity.id===selected);const top=$('entities').scrollTop??0;if(index*rowHeight<top||(index+1)*rowHeight>top+viewportHeight)$('entities').scrollTop=Math.max(0,index*rowHeight-viewportHeight/2);}
-    const start=virtual?Math.max(0,Math.floor(($('entities').scrollTop??0)/rowHeight)-6):0,end=virtual?Math.min(rows.length,start+Math.ceil(viewportHeight/rowHeight)+12):rows.length;
+    if(virtual&&!hierarchyScrolling&&selected){const index=rows.findIndex(r=>r.entity.id===selected);const top=hierarchyScrollTop;if(index>=0&&(index*rowHeight<top||(index+1)*rowHeight>top+viewportHeight))hierarchyScrollTop=Math.max(0,index*rowHeight-viewportHeight/2);}
+    const start=virtual?Math.max(0,Math.min(rows.length-1,Math.floor(hierarchyScrollTop/rowHeight)-6)):0,end=virtual?Math.min(rows.length,start+Math.ceil(viewportHeight/rowHeight)+12):rows.length;
     const spacer=height=>{const n=document.createElement('div');n.style.height=height+'px';n.setAttribute('aria-hidden','true');$('entities').append(n);};if(start)spacer(start*rowHeight);
     for(const {entity:item,depth} of rows.slice(start,end)){
       const parentId=item.parentId??null,gap=document.createElement('div');gap.className='tree-gap';gap.dataset.beforeId=item.id;gap.dataset.parentId=parentId??'';gap.setAttribute('aria-label','Insert before '+item.name);drop(gap,parentId,item.id);$('entities').append(gap);
@@ -94,7 +95,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       const button=document.createElement('button');button.textContent=item.name;button.className=selection.has(item.id)?'entity selected':'entity';button.setAttribute('aria-pressed',String(selection.has(item.id)));button.disabled=busy;button.draggable=!busy&&!state.playing;button.addEventListener('click',event=>select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey}));
       button.addEventListener('dragstart',event=>{if(!selection.has(item.id)){selection=new Set([item.id]);selected=item.id;anchor=item.id;}event.dataTransfer.setData('application/axiom-entities',JSON.stringify([...selection]));});drop(row,item.id);row.append(toggle,button);$('entities').append(row);
     }
-    if(end<rows.length)spacer((rows.length-end)*rowHeight);const endGap=document.createElement('div');endGap.className='tree-gap';endGap.setAttribute('aria-label','Append to Scene root');drop(endGap,null);$('entities').append(endGap);
+    if(end<rows.length)spacer((rows.length-end)*rowHeight);const endGap=document.createElement('div');endGap.className='tree-gap';endGap.setAttribute('aria-label','Append to Scene root');drop(endGap,null);$('entities').append(endGap);if(virtual)$('entities').scrollTop=hierarchyScrollTop;
     browser.draw();
     $("entity-empty").hidden = !!project?.scene.entities.length;
     if (updateFields) {
@@ -187,7 +188,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   const audioEditor=mountAudioEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null,getRenderer});
   const animationEditor=mountAnimationEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null,getRenderer});
   const twoDEditor=mountTwoDEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null});
-  const browser=mountProjectBrowser({document,getState:()=>state,mutate:data=>act(()=>run('project.files.edit',mutation(data))),selectAsset:id=>{$('asset-list').value=id;},reportError});
+  const browser=mountProjectBrowser({document,getState:()=>state,mutate:data=>act(()=>run('project.files.edit',mutation(data))),selectAsset:id=>{$('asset-list').value=id;},selectScript:file=>{if(selected)scriptDraft.add(selected);$('script-source').value=file.text;$('script-component').hidden=false;$('script-component').open=true;},reportError});
   const actions=mountEditorActions({document,getState:()=>state,getSelection:()=>[...selection],select,act,run,mutation,browser,reportError,locate:onLocate});
   const number=id=>Number($(id).value),vector=(id,n)=>Array.from({length:n},(_,i)=>number(id+'-'+i));
   for(const key of ['material','light','lod','render']){

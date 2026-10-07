@@ -10,9 +10,12 @@ export function scriptTemplate(name){
  const identifier=name.replace(/\.cs$/i,'');if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(identifier))throw Error('C# script name must be a valid identifier');
  return `using Axiom.Gameplay;\nnamespace Game;\npublic sealed class ${identifier} : Script {\n public override void OnStart() {\n }\n public override void OnUpdate(double deltaSeconds) {\n }\n public override void OnStop() {\n }\n}\n`;
 }
+function safeAssetName(asset){let name=leafName(asset.name).replace(/[<>:"|?*\\\u0000-\u001f]/g,'_').replace(/[. ]+$/,'');if(!name||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\.|$)/i.test(name))name='_'+(name||asset.id.slice(-8));return name;}
 export function projectFiles(scene){
  if(scene.projectFiles)return structuredClone(scene.projectFiles);
- return [...fileRoots.map(path=>({path,kind:'folder'})),...(scene.assets??[]).map(a=>({path:'Assets/'+leafName(a.name).replace(/[<>:"|?*\\\u0000-\u001f]/g,'_'),kind:'asset',assetId:a.id})),...(scene.script?[{path:'Scripts/Game.cs',kind:'script',text:scene.script.source}]:[])];
+ const files=fileRoots.map(path=>({path,kind:'folder'}));
+ for(const a of scene.assets??[]){const name=safeAssetName(a);let path='Assets/'+name,n=1;while(files.some(f=>f.path.toLowerCase()===path.toLowerCase()))path='Assets/'+n+++'_'+name;files.push({path,kind:'asset',assetId:a.id});}
+ if(scene.script)files.push({path:'Scripts/Game.cs',kind:'script',text:scene.script.source});return files;
 }
 export function validateFiles(scene){
  const files=scene.projectFiles;if(!files)return;
@@ -47,7 +50,17 @@ export function editProjectFiles(scene,data){
   }
  }else if(data.action==='delete'){
   const paths=roots(data.paths??[]);if(!paths.length||paths.some(p=>fileRoots.includes(p)||!lookup(p)))throw Error('Select removable files');
-  for(let i=files.length-1;i>=0;i--)if(paths.some(p=>files[i].path===p||files[i].path.startsWith(p+'/')))files.splice(i,1);
+  const deleting=files.filter(f=>paths.some(p=>f.path===p||f.path.startsWith(p+'/'))),remaining=files.filter(f=>!deleting.includes(f));
+  const removedAssets=new Set(deleting.filter(f=>f.kind==='asset'&&!remaining.some(r=>r.assetId===f.assetId)).map(f=>f.assetId));
+  for(const id of removedAssets){if(scene.entities.some(e=>e.renderable?.assetId===id||e.audioSource?.assetId===id||e.tilemap?.assetId===id||e.lod?.levels.some(l=>l.assetId===id))||scene.assets?.some(a=>!removedAssets.has(a.id)&&a.textureId===id))throw Error('Asset is referenced by the scene; remove its components or dependents first');}
+  if(scene.script&&deleting.some(f=>f.kind==='script'&&f.text===scene.script.source)&&!remaining.some(f=>f.kind==='script'&&f.text===scene.script.source)){if(scene.script.attachments.length)throw Error('Detach the compiled script before deleting its source');delete scene.script;}
+  if(removedAssets.size)scene.assets=scene.assets.filter(a=>!removedAssets.has(a.id));
+  files.splice(0,files.length,...remaining);
  }else throw Error('Unknown project file operation');
  validateFiles({...scene,projectFiles:files});return files;
+}
+
+export function syncImportedFiles(scene,previous){
+ if(!scene.projectFiles)return;
+ const known=new Set((previous.assets??[]).map(a=>a.id));for(const asset of scene.assets??[]){if(known.has(asset.id)||scene.projectFiles.some(f=>f.assetId===asset.id))continue;let name=safeAssetName(asset),path='Assets/'+name,n=1;while(scene.projectFiles.some(f=>f.path.toLowerCase()===path.toLowerCase()))path='Assets/'+n+++'_'+name;scene.projectFiles.push({path,kind:'asset',assetId:asset.id});}
 }

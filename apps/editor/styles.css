@@ -236,3 +236,7 @@ input[type="file"] { font-size: 11px; }
 .property-heading{display:flex;align-items:center;justify-content:space-between;margin:0 0 6px;gap:8px;}.icon-button,.dock-panel-controls button{display:inline-flex;align-items:center;justify-content:center;width:30px;height:28px;padding:4px;}.icon-button img{width:18px;height:18px;object-fit:contain;filter:brightness(2.6);}.property-close{margin-left:auto;}.debug-toggle{display:flex;align-items:center;gap:4px;font-size:12px;}.game-fps{position:absolute;right:12px;top:12px;z-index:4;padding:4px 8px;background:#000b;color:#b5ffc9;pointer-events:none;font:12px monospace;}
 
 #entities .tree-row{height:24px;min-height:24px;box-sizing:border-box}#entities .tree-gap{height:4px;min-height:4px;margin:0;}
+
+.project-tree-row>.file-name{background:transparent;border:0;padding:0;text-align:left;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+#project-content.dock-panel{height:100%;grid-template-rows:minmax(0,1fr);}.project-browser{display:flex;flex-direction:column;min-height:0;}#project-icons{flex:1;overflow:auto;min-height:0;box-sizing:border-box;}#project-files .project-tree-row{display:flex;}#project-files .tree-toggle{width:18px;flex:0 0 18px;padding:0;}#project-files .file-name{width:auto;min-width:0;}

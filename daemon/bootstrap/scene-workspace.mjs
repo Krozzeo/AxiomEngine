@@ -1,5 +1,5 @@
 import {revealProjectFiles} from './project-explorer.mjs';
-import {editProjectFiles} from '../../engine/scene/project-files.mjs';
+import {editProjectFiles,syncImportedFiles} from '../../engine/scene/project-files.mjs';
 import {primitiveSprite} from '../../engine/scene/primitive-sprites.mjs';
 import {PNG} from 'pngjs';
 import {twoDDefaults,component2DDefaults} from '../../engine/renderer/two-d-plan.mjs';
@@ -75,6 +75,7 @@ export class SceneWorkspace {
     if (data.expectedSceneRevision !== this.revision) fail("AX_SCENE_0002", "Scene changed; refresh before editing");
   }
   commitScene(scene) {
+    syncImportedFiles(scene,this.project.scene);
     validateProject({...this.project,scene});
     if(Buffer.byteLength(JSON.stringify({...this.project,scene},null,2)+"\n")>192*1024)fail("AX_PROJECT_0002","Project size exceeds limit");
     this.past.push(copy(this.project.scene));if(this.past.length>64)this.past.shift();
@@ -325,6 +326,7 @@ export class SceneWorkspace {
     } else fail("AX_COMMAND_0002", "Command type is not registered");
     if(data.parentId&&['scene.entity.create','scene.example.create','scene.primitive.create'].includes(type)){if(!scene.entities.some(e=>e.id===data.parentId))fail('AX_SCENE_0001','Parent entity missing');scene.entities.at(-1).parentId=data.parentId;}
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
+    syncImportedFiles(scene,this.project.scene);
     validateProject({ ...this.project, scene });
     if(["scene.component.paste","scene.audioSource.set","scene.animator.set","scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");

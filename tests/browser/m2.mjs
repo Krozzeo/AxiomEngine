@@ -50,9 +50,9 @@ try {
   await (await control(page,"#game-tab")).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   const initial=await page.locator("#viewport").screenshot();assert.ok(colors(initial).red>100&&colors(initial).green>100,"Both imported assets must produce colored pixels");
   await page.locator("#entities .entity").filter({hasText:"checker.png"}).click();
-  await (await control(page,"#position-0")).fill("-1.8");await (await control(page,"#position-1")).fill("0.4");await page.getByRole("button",{name:"Apply changes"}).click();
+  await (await control(page,"#position-0")).fill("-1.8");await (await control(page,"#position-1")).fill("0.4");await page.locator('#position-1').press('Enter');
   await page.locator("#entities .entity").filter({hasText:"cube.glb"}).click();
-  await (await control(page,"#position-0")).fill("1.7");await (await control(page,"#position-1")).fill("-0.3");await page.getByRole("button",{name:"Apply changes"}).click();
+  await (await control(page,"#position-0")).fill("1.7");await (await control(page,"#position-1")).fill("-0.3");await page.locator('#position-1').press('Enter');
   {const snapshot=await state();const response=await fetch(daemon.origin+'/v1/commands',{method:'POST',headers:{Origin:daemon.origin,Authorization:'Bearer '+daemon.token,'Content-Type':'application/json'},body:JSON.stringify(envelope('command',{type:'scene.camera.update',data:{id:snapshot.project.id,expectedSceneRevision:snapshot.sceneRevision,camera:{projection:'orthographic'}}}))});assert.equal((await response.json()).kind,'event');await (await control(page,'#workspace-refresh')).click();await page.waitForFunction(()=>document.querySelector('#editor-workspace').getAttribute('aria-busy')==='false');}
   await page.waitForFunction(()=>!document.querySelector("#scene-save").disabled);
   report.criteria.push("move both objects");

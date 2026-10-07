@@ -4,7 +4,7 @@ export function mountProjectBrowser({document,getState,mutate,selectAsset,select
  const q=id=>document.querySelector('#'+id),tree=q('project-files'),icons=q('project-icons');
  let folder='',selected=new Set(),collapsed=new Set(),signature='',renameTimer=null,anchor=null;
  const files=()=>projectFiles(getState().project?.scene??{});
- const icon=(node,f)=>{const image=document.createElement('img');image.src=f.kind==='folder'?'/icons/folder.svg':f.kind==='script'?'/icons/csharp.svg':'/icons/json.svg';image.alt='';image.className='project-icon';node.append(image);};
+ const icon=(node,f)=>{const image=document.createElement('img');image.src=f.kind==='folder'?'/icons/folder.svg':f.kind==='script'?'/icons/csharp.svg':f.kind==='json'?'/icons/json.svg':'/icons/asset.svg';image.alt='';image.className='project-icon';node.append(image);};
  function choose(path,event={}){if(event.shiftKey&&anchor){const visible=files().filter(f=>parentPath(f.path)===folder).map(f=>f.path),a=visible.indexOf(anchor),b=visible.indexOf(path);selected=new Set(a>=0?visible.slice(Math.min(a,b),Math.max(a,b)+1):[path]);}else if(event.ctrlKey||event.metaKey){if(selected.has(path))selected.delete(path);else selected.add(path);}else selected=new Set([path]);anchor=path;paintSelection();}
  function paintSelection(){for(const node of [...tree.querySelectorAll('[data-project-path]'),...icons.querySelectorAll('[data-project-path]')]){node.classList.toggle('selected',selected.has(node.dataset.projectPath));node.setAttribute('aria-selected',String(selected.has(node.dataset.projectPath)));}}
  async function edit(data){const ok=await mutate(data);if(ok!==false){signature='';draw();}return ok;}

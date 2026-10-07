@@ -58,6 +58,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
   const baseWidth=canvas.width,baseHeight=canvas.height;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
+  let controlledPixels=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
   let measuredFps=null,fpsStart=null,fpsCount=0;
   let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null;
@@ -138,7 +139,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   async function setSnapshot(snapshot,internalTest=false) {
     if(!internalTest){currentSnapshot=structuredClone(snapshot);if(testing){testing=false;testSession.control({action:'cancel'});replaySession.control({action:'cancel'});}}
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
-    measuredFps=null;fpsStart=null;fpsCount=0;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
+    controlledPixels=null;measuredFps=null;fpsStart=null;fpsCount=0;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
     snapshotLoading=true;
     try {
@@ -292,6 +293,9 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }
       }
       if(presentFrame){parallel.render({scene:previewScene??runtimeScene,assets,draws:geometry,resources,editorCamera,time:twoDTime,kernel,paused:twoDPaused,frame:packet.frame,generation});canvas.dataset.frame=String(packet.frame);canvas.dataset.camera=JSON.stringify(camera);}
+      // Preserve requested pixels before yielding: a presented WebGPU drawing
+      // buffer may be cleared before the async test adapter reads the canvas.
+      if(device&&presentFrame&&manual?.capturePixels){controlledPixels??=canvas.ownerDocument.createElement('canvas');controlledPixels.width=canvas.width;controlledPixels.height=canvas.height;controlledPixels.getContext('2d',{willReadFrequently:true}).drawImage(canvas,0,0);}
       profiler.scope(diagnostic,'render.submit',stageStart,performance.now());stageStart=performance.now();
       const audioState=audio.step(runtimeScene,{playing,view:view==='game'||parallel.get()?.view==='game'?'game':'scene',paused:twoDPaused||testing});diagnostic.audio=audioState;diagnostic.audioProvenance={projectId:currentProject,sceneRevision,workspaceId,generation};
       profiler.scope(diagnostic,'audio.update',stageStart,performance.now());
@@ -322,8 +326,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   }
   const isolatedAdapter={
     async begin({seed}={}){replaySeed=seed??0;replaySeeded=seed!==undefined;if(!currentSnapshot?.project||playing)throw testError('Open a stopped project first');testSource=currentSnapshot;testing=true;keys.clear();while(frameInProgress)await new Promise(r=>setTimeout(r,1));await setSnapshot({...testSource,playing:true},true);if(currentSnapshot!==testSource)throw testError('Project changed','AX_TEST_0002');testGeneration=generation;view='game';audio.clear();},
-    async step(input,{present=true}={}){if(!testing||generation!==testGeneration||currentSnapshot!==testSource)throw testError('Runtime generation changed','AX_TEST_0002');keys.clear();for(const key of input.keys)keys.add(key);try{await frame(0,{...input,present});if(scriptFault)throw testError(scriptFault);if(!testing||generation!==testGeneration)throw testError('Runtime changed','AX_TEST_0002');}finally{keys.clear();}},
-    async state(assertions){let pixels=null;if(assertions.some(a=>a.kind==='pixel')&&device){const target=canvas.ownerDocument.createElement('canvas');target.width=canvas.width;target.height=canvas.height;const ctx=target.getContext('2d',{willReadFrequently:true});ctx.drawImage(canvas,0,0);pixels={};for(const a of assertions.filter(a=>a.kind==='pixel'))pixels[a.x+','+a.y]=Array.from(ctx.getImageData(a.x,a.y,1,1).data);}return {entities:structuredClone(runtimeScene.entities),contacts:structuredClone(lastPacket?.physics?.contacts??[]),animation:kernel.animationStatus(),pixels};},
+    async step(input,{present=true,capturePixels=false}={}){if(!testing||generation!==testGeneration||currentSnapshot!==testSource)throw testError('Runtime generation changed','AX_TEST_0002');keys.clear();for(const key of input.keys)keys.add(key);try{await frame(0,{...input,present,capturePixels});if(scriptFault)throw testError(scriptFault);if(!testing||generation!==testGeneration)throw testError('Runtime changed','AX_TEST_0002');}finally{keys.clear();}},
+    async state(assertions){let pixels=null;if(assertions.some(a=>a.kind==='pixel')&&device){if(!controlledPixels)throw testError('Requested frame pixels were not retained');const ctx=controlledPixels.getContext('2d',{willReadFrequently:true});pixels={};for(const a of assertions.filter(a=>a.kind==='pixel'))pixels[a.x+','+a.y]=Array.from(ctx.getImageData(a.x,a.y,1,1).data);}return {entities:structuredClone(runtimeScene.entities),contacts:structuredClone(lastPacket?.physics?.contacts??[]),animation:kernel.animationStatus(),pixels};},
     async end(){keys.clear();const source=testSource;testSource=null;testGeneration=null;const originalView=testView;try{if(!disposed&&source&&currentSnapshot===source)await setSnapshot(source,true);}finally{testing=false;if(source&&currentSnapshot===source)view=originalView;previousTime=null;}}
   };
   const testSession=new GameTestSession(isolatedAdapter);

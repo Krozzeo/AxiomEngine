@@ -15,7 +15,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   const supported = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"];
   let enabled = false, pipelineEnabled=false, currentJob=null;
   let scriptEnabled=false,currentScriptJob=null,scriptProject=null,scriptBuild=null;
-  let busy = false;
+  let busy = false, assetRefreshing=false;
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
   let filePaths=[],ideDirty=false;
   let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
@@ -331,7 +331,13 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
-    async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},
+    async refreshAssets() {
+      if(!enabled||busy||assetRefreshing)return false;assetRefreshing=true;
+      try {const event=await send('scene.get'),data=event.payload.data;
+        if(busy||data.project?.id!==state.project?.id||(data.workspaceId??null)!==(state.workspaceId??null)||data.sceneRevision<state.sceneRevision||(data.project?.revision??0)<(state.project?.revision??0))return false;
+        adopt(data);await onState({...data,commandLineage:{messageId:event.causationId,correlationId:event.correlationId,traceId:event.traceId}});draw();return true;
+      }catch(error){reportError(error);return false;}finally{assetRefreshing=false;}
+    },
     async connect(capabilities) {
       scriptEnabled=["script.compile","script.job.get","script.job.cancel"].every(c=>capabilities.includes(`command.${c}`));
       pipelineEnabled=["asset.job.start","asset.job.get","asset.job.cancel","asset.explain"].every(c=>capabilities.includes(`command.${c}`));

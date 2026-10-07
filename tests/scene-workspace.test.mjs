@@ -168,3 +168,8 @@ test("editor respects unsupported daemon capabilities and reports stale-scene co
   await $("workspace-refresh").fire("click");
   assert.equal($("entities").children.filter(n=>n.className==='tree-row').length, 1);
 });
+test('Background asset refresh leaves commands enabled and cannot overwrite a newer edit',async t=>{
+ const {send}=await fixture(t),document=await fakeDocument(),$=id=>document.querySelector('#'+id);let hold=false,release,entered;const gate=new Promise(resolve=>{release=resolve;}),started=new Promise(resolve=>{entered=resolve;});const errors=[];
+ const editor=mountProjectEditor({document,send:async(type,data)=>{const event=await send(type,data);if(hold&&type==='scene.get'){entered();await gate;}return event;},reportError:error=>errors.push(error)});
+ await editor.connect(caps);$('project-name').value='Background read';await $('project-new').fire('click');await $('scene-add').fire('click');hold=true;const read=editor.refreshAssets();await started;assert.equal(editor.isBusy(),false);assert.equal($('scene-add').disabled,false);await $('scene-add').fire('click');assert.equal(editor.snapshot().project.scene.entities.length,2);release();assert.equal(await read,false);assert.equal(editor.snapshot().project.scene.entities.length,2);assert.deepEqual(errors,[]);
+});

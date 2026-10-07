@@ -12,7 +12,7 @@ const root=await mkdtemp(join(tmpdir(),"axiom-browser-m3-"));
 const evidence=resolve(".axiom/browser-m3-evidence");await mkdir(evidence,{recursive:true});
 let daemon=await startServer({projectRoot:root});
 let browser;
-const errors=[];
+const errors=[],commandRequests=[];
 const report={criteria:[],backend:null};
 async function state() {
   const response=await fetch(daemon.origin+"/v1/commands",{method:"POST",headers:{Origin:daemon.origin,Authorization:`Bearer ${daemon.token}`,"Content-Type":"application/json"},body:JSON.stringify(envelope("command",{type:"scene.get",data:{}}))});
@@ -28,6 +28,7 @@ try {
   browser=await chromium.launch({headless:process.env.AXIOM_HEADLESS!=="false",channel:"chromium",...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{}),args:["--no-sandbox","--enable-gpu","--enable-unsafe-webgpu","--enable-unsafe-swiftshader","--enable-features=Vulkan","--use-angle=vulkan","--use-vulkan=swiftshader","--use-webgpu-adapter=swiftshader","--disable-vulkan-surface","--disable-dev-shm-usage"]});
   const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});page.on("pageerror",error=>errors.push(error.message));
   page.setDefaultTimeout(30000);
+  page.on('request',request=>{if(!request.url().endsWith('/v1/commands'))return;try{const payload=JSON.parse(request.postData()??'{}').payload;if(payload){commandRequests.push({type:payload.type,revision:payload.data?.expectedSceneRevision,assetId:payload.data?.assetId});if(commandRequests.length>24)commandRequests.shift();}}catch{}});
   await page.goto(daemon.editorUrl);
   await page.waitForFunction(()=>document.querySelector("#connection").textContent.includes("Connected"));
   await page.waitForFunction(()=>/^WebGPU/.test(document.querySelector("#gpu-state").textContent));
@@ -136,6 +137,7 @@ try {
   await writeFile(join(evidence,"failure-state.json"),JSON.stringify(await state().catch(e=>({error:e.message})),null,2));
   if(browser) for(const context of browser.contexts())for(const page of context.pages()) {
     await page.screenshot({path:join(evidence,"failure.png")}).catch(()=>{});
+    console.error('M3_UI_DIAGNOSTICS='+JSON.stringify({projectError:await page.locator('#project-error').textContent(),commandRequests}));
     const detail=await page.locator("body").innerText().catch(()=>"");console.error("Browser failure state:\n"+detail);await writeFile(join(evidence,"failure.txt"),detail+"\n"+error.stack+"\n"+errors.join("\n"));
   }
   throw error;

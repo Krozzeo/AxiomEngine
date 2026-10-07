@@ -1,0 +1,168 @@
+{
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V45 96-Core Processor",
+    "logicalCpus": 4
+  },
+  "scope": "Node CPU algorithms and actual freshly built or explicitly cached Wasm; not a physical GPU or low-end hardware benchmark",
+  "hierarchy": [
+    {
+      "count": 128,
+      "visible": 122,
+      "before": {
+        "samples": 40,
+        "medianMs": 0.09542500000000231,
+        "p95Ms": 0.2543749999999996,
+        "minMs": 0.09340100000000007,
+        "maxMs": 0.3797940000000004
+      },
+      "after": {
+        "samples": 40,
+        "medianMs": 0.022645000000000692,
+        "p95Ms": 0.08093200000000067,
+        "minMs": 0.007941999999999894,
+        "maxMs": 0.10792299999999955
+      }
+    },
+    {
+      "count": 512,
+      "visible": 506,
+      "before": {
+        "samples": 40,
+        "medianMs": 0.8950940000000003,
+        "p95Ms": 1.6918489999999977,
+        "minMs": 0.8606420000000128,
+        "maxMs": 2.4997609999999995
+      },
+      "after": {
+        "samples": 40,
+        "medianMs": 0.05452300000000321,
+        "p95Ms": 0.17677799999999877,
+        "minMs": 0.03229899999999475,
+        "maxMs": 0.1771580000000057
+      }
+    },
+    {
+      "count": 1024,
+      "visible": 1018,
+      "before": {
+        "samples": 40,
+        "medianMs": 3.823514000000017,
+        "p95Ms": 6.658641999999986,
+        "minMs": 3.738474999999994,
+        "maxMs": 7.929994999999991
+      },
+      "after": {
+        "samples": 40,
+        "medianMs": 0.06762299999996912,
+        "p95Ms": 0.17685800000003837,
+        "minMs": 0.06632999999999356,
+        "maxMs": 0.21404400000000123
+      }
+    }
+  ],
+  "wasm": {
+    "beforeInstantiateBytes": {
+      "samples": 40,
+      "medianMs": 0.4374620000000391,
+      "p95Ms": 0.9960910000000354,
+      "minMs": 0.4107609999999795,
+      "maxMs": 2.9466070000000286
+    },
+    "afterCachedModuleFreshWorld": {
+      "samples": 40,
+      "medianMs": 0.04795200000000932,
+      "p95Ms": 0.09251900000003843,
+      "minMs": 0.037396000000001095,
+      "maxMs": 4.6289580000000115
+    },
+    "emptyWorldMemoryBytes": 1179648
+  },
+  "processMemory": {
+    "rss": 52830208,
+    "heapTotal": 6811648,
+    "heapUsed": 5317792,
+    "external": 2065801,
+    "arrayBuffers": 137503
+  },
+  "processMemoryAfter": {
+    "rss": 70922240,
+    "heapTotal": 10743808,
+    "heapUsed": 4984368,
+    "external": 57831869,
+    "arrayBuffers": 389216
+  },
+  "sceneCompiler": [
+    {
+      "count": 128,
+      "compile": {
+        "samples": 40,
+        "medianMs": 0.6245450000000119,
+        "p95Ms": 1.6098550000000387,
+        "minMs": 0.5559109999999805,
+        "maxMs": 1.683435999999972
+      },
+      "wasmMemoryBytes": 1179648,
+      "nullProcessedMeshes": 128,
+      "sharedAssetCount": 1
+    },
+    {
+      "count": 256,
+      "compile": {
+        "samples": 40,
+        "medianMs": 1.2417879999999855,
+        "p95Ms": 2.039796000000024,
+        "minMs": 1.1015259999999785,
+        "maxMs": 2.4376470000000268
+      },
+      "wasmMemoryBytes": 1179648,
+      "nullProcessedMeshes": 256,
+      "sharedAssetCount": 1
+    },
+    {
+      "count": 1024,
+      "compile": {
+        "samples": 40,
+        "medianMs": 4.925100000000043,
+        "p95Ms": 7.846138999999994,
+        "minMs": 4.647789999999986,
+        "maxMs": 8.013011000000006
+      },
+      "wasmMemoryBytes": 1376256,
+      "nullProcessedMeshes": 1024,
+      "sharedAssetCount": 1
+    }
+  ],
+  "allocationBudgets": {
+    "gpuInstanceScratchBytes": 253952,
+    "projectEntries": 512,
+    "projectTextBytes": 65536,
+    "explorerExports": 3,
+    "explorerExportBytes": 67108864
+  },
+  "version": "0.0.29",
+  "executableCommit": "e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2",
+  "runId": 37629606850,
+  "browserMemorySamples": [
+    {
+      "scene": "workshop",
+      "heap": {
+        "used": 13507915,
+        "total": 20354219
+      },
+      "mountedRows": 7
+    },
+    {
+      "scene": "256-instance-grid",
+      "heap": {
+        "used": 13755796,
+        "total": 28638300
+      },
+      "mountedRows": 43,
+      "width": 480,
+      "height": 270
+    }
+  ]
+}

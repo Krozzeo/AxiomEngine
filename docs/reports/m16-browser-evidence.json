@@ -1,0 +1,52 @@
+{
+  "milestone": "m16",
+  "criteria": [
+    "Project title belongs to menubar, not Scene/Game",
+    "Context C# creation commits entered filename and real empty lifecycle template",
+    "Rename updates C# type; scoped Ctrl+C/V copies project files without editing entities",
+    "Project Supr confirms deletion and cannot delete Hierarchy selection",
+    "Folder drag from icon view to tree persists destination",
+    "Hierarchy copies instantiate fresh IDs with retained renderable references",
+    "Inspector applies valid Transform on focus change with no Apply button",
+    "Tree-to-icon folder dragging persists the inverse move",
+    "Tree redraw keeps scoped Ctrl+C/V/Supr; file deletion cannot fall through to Hierarchy",
+    "Non-file clipboard disables Project Paste",
+    "Inspector clipboard adds a real Light component; component X removes it",
+    "Hierarchy context Rename edits the current row and Locate frames its Scene gizmo",
+    "Hierarchy Create uses the clicked entity as parent",
+    "Dirty Save*, hidden delete command and equal-sized Close/Separate icons",
+    "Dynamic AI submenus close previous branches",
+    "256-instance Hierarchy mounts a bounded window and scrolls to final entity",
+    "Low-end scale changes backing resolution; measured FPS appears only during Play"
+  ],
+  "passed": true,
+  "pageErrors": [],
+  "consoleErrors": [],
+  "memorySamples": [
+    {
+      "scene": "workshop",
+      "heap": {
+        "used": 13507915,
+        "total": 20354219
+      },
+      "mountedRows": 7
+    },
+    {
+      "scene": "256-instance-grid",
+      "heap": {
+        "used": 13755796,
+        "total": 28638300
+      },
+      "mountedRows": 43,
+      "width": 480,
+      "height": 270
+    }
+  ],
+  "version": "0.0.29",
+  "executableCommit": "e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2",
+  "executableTree": "978eaac0d41c72bb6a75050ae601254daaa4415b",
+  "runId": 37629606850,
+  "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37629606850",
+  "visualReview": "Final Workshop and Grid CI171 screenshots reviewed",
+  "hardwarePerformanceMeasured": false
+}

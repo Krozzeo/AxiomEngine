@@ -1,14 +1,17 @@
 # Implementation status
 
-M16 (0.0.29) is in acceptance; M15 remains the completed baseline (84%, 87/104).
-Project file authoring, scoped context menus/clipboard, component boxes/autocommit,
-consistent menus, Game FPS and explicit render scale are implemented. Two editable
-M16 demos use canonical project APIs. Hierarchy rows are indexed/virtualized, Wasm
-modules are cached with fresh worlds, GPU staging storage is reused and submitted
-GPU work is bounded. Earlier game tests/replay and quality tiers remain required gates.
-Read demos/M16_GUIDE.md and docs/architecture/M16_AUTHORING_AND_PERFORMANCE.md.
-PR #19 is draft/open, stacked on unmerged #18; keep milestone PRs unmerged.
-Current validation is not a completed milestone or a hardware FPS claim.
+M16 (0.0.29) is complete: 8/8 required groups, 100%. Weighted project progress is
+approximately 88% (91/104 roadmap points). Project authoring, typed context clipboard,
+Inspector auto-commit, consistent menus/icons and Game FPS are verified alongside
+indexed/virtualized Hierarchy, isolated cached Wasm, reused GPU storage and explicit
+render scale. Two editable demos are included. All 26 jobs in CI run 171 pass at
+executable commit e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2 (tree 978eaac0d41c72bb6a75050ae601254daaa4415b).
+190 Node tests, 39 Rust tests, 18 schemas, 86 semantic tools and 17 M16 browser
+criteria pass; earlier browser, C# Development/AOT and replay gates remain green.
+See docs/reports/M16_CURRENT_REPORT.md, demos/M16_GUIDE.md and
+M16_AUTHORING_AND_PERFORMANCE.md. PR #19 is ready/open, stacked on unmerged #18;
+keep milestone PRs unmerged. Next: M17 advanced assets/CAD, planned, not started.
+Software-GPU evidence is functional; it does not certify physical low-end FPS.
 
 Historical completed baseline:
 
@@ -138,7 +141,7 @@ asset promotion, conflicts, rollback and restart. See M6_CURRENT_REPORT.md.
 M7 verifies physics, editable 2D/3D demos, C# velocity control and Play isolation.
 M8 verifies four causal queries, ten faults, bounded/expired/stale evidence,
 Scene/Game separation, two-way selection, transforms, navigation and editable demos.
-M14 acceptance is complete; follow M15_PLAN.md and master section 134 for replay.
+M16 acceptance is complete; follow M17_PLAN.md and master section 136 for advanced assets/CAD.
 
 - M0 evidence: ../reports/M0_CURRENT_REPORT.md.
 - M1 evidence: ../reports/M1_CURRENT_REPORT.md.

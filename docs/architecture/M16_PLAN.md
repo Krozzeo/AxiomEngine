@@ -1,6 +1,6 @@
 # M16 — Performance & Low-End Pass
 
-Status: implementation complete; browser/platform acceptance in progress. Master specification section 135.
+Status: complete, 8/8 required groups passed. See M16_CURRENT_REPORT.md for exact evidence. Master specification section 135.
 
 Use completed M15 as the baseline. Preserve fixed-step tests/replay, public revision
 contracts, entity Camera/Game preview, explicit lighting and authored MAIN isolation.

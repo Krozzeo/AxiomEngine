@@ -1,6 +1,6 @@
 # ADR-0031 — Portable authoring files and bounded low-end work
 
-Accepted implementation contract for M16; acceptance evidence is pending.
+Accepted and verified in M16; evidence: M16_CURRENT_REPORT.md.
 
 Persist a bounded virtual authoring tree in the canonical scene document, referencing
 immutable asset IDs and source text. This preserves revisioned Undo, reviewed AI

@@ -71,3 +71,9 @@ unsaved-switch protection, save conflicts, bounded history and persistence. The
 controller tests simulate DOM events and do not claim screenshot or physical GPU
 validation. Existing real-Wasm Null tests still pass. Rust's 22 tests, formatting
 and Clippy pass. No new hardware rendering behavior is introduced by this slice.
+
+## M16 current authoring extension
+
+See M16_AUTHORING_AND_PERFORMANCE.md and ADR-0031 for portable scene.projectFiles,
+canonical file edits/history/save, typed contextual copies, isolated Explorer exports,
+and one-source C# authoring limits. M16_CURRENT_REPORT.md records executable evidence.

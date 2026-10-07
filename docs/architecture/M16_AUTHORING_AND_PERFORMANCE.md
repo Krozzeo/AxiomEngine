@@ -1,6 +1,6 @@
 # M16 — canonical file authoring and bounded performance
 
-Implementation is in acceptance; final evidence belongs in M16_CURRENT_REPORT.md.
+Implementation and acceptance are complete; see M16_CURRENT_REPORT.md.
 Protocol, project-document and scalar Wasm ABI remain v1. Named paths are an
 optional backward-compatible scene.projectFiles field, not unrestricted OS access.
 
@@ -25,7 +25,9 @@ remain enforced. Clipboard data is typed and project-scoped for files/entities.
 Existing app copies paste without prompting for browser clipboard permission;
 Ctrl+V may read external Axiom JSON only when no internal copy is present. Native
 clipboard writes are best effort; ordinary OS file/Unity clipboard formats are not
-imported. Copy Path clears the app copy. Invalid types disable contextual Paste.
+imported. Copy Path and native text copying clear the app copy. The last active panel retains
+keyboard scope when a tree redraw removes its focused node; text editors retain native
+keyboard behavior and Project Supr cannot fall through to entity deletion. Invalid types disable contextual Paste.
 
 Project → Show in Explorer writes a MAIN-only isolated export, with literal paths,
 no shell and no execution. Up to three 64 MiB exports are retained per project.
@@ -79,3 +81,14 @@ with a fresh world, actual scene compile/null mesh counts and Wasm memory at
 These CPU measurements are not total editor RAM peaks or physical low-end FPS.
 Shader caches and C# Development/AOT regressions are retained; no unmeasured shader
 or compiler speedup is claimed. See ADR-0031 for the scope and portability choice.
+
+Controlled GameTest steps advance every requested CPU frame and present exact
+assertion boundaries. Replay advances every input/checkpoint and presents first,
+every fifteenth, diagnostic-range and final boundary frames. Requested pixels are
+retained before yielding the WebGPU drawing buffer. These private presentation
+options do not drop simulation inputs or change the public fixed-step contract.
+Live Frame Diagnostics publishes with a bounded time cadence for slow adapters.
+
+Repeated editor redraws that reaffirm the same view preserve held Game keys. Actual
+view switches and window blur release input; CI M4 explicitly reselects Game while
+ArrowRight remains held and checks movement, spawn, compile/reload and saved reopen.

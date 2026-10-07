@@ -1,6 +1,6 @@
-# M16 demos — Editor authoring and low-end rendering
+# Demos M16 — edición de archivos y rendimiento
 
-Run from the release folder in PowerShell:
+En PowerShell, desde la carpeta de M16:
 
 ```powershell
 npm.cmd ci
@@ -8,60 +8,65 @@ npm.cmd run demo
 npm.cmd run dev
 ```
 
-Generation preserves existing projects. File → Projects → Refresh list, select a
-project and Open. These demos need Rust/Wasm for the normal build; creating or
-inspecting the empty C# source does not need .NET. Compiling it needs .NET 10 and
-wasm-tools. Play and Game remain separate controls.
+El generador conserva los proyectos existentes. File → Projects → Refresh list,
+selecciona una demo y Open. Conserva .axiom/projects con todos sus assets/scripts al
+pasar a otra carpeta de milestone. Game muestra la cámara; Play inicia la simulación.
+Crear/ver scripts no exige .NET; compilarlos requiere .NET 10 y wasm-tools.
 
 ## Editor & File Workshop
 
-Three lit primitives (cube, sphere, capsule), an editable Camera and a Directional
-Light appear. Config → HDR Rendering explicitly sets Environment RGB to
-0.12, 0.16, 0.24. This fills unlit faces: no hidden global sun was added. A new 3D
-starter deliberately uses Environment RGB = 0 and therefore has black unlit faces.
-Increase this explicit environment or create an additional light if you want fill.
+Verás un cubo, una esfera y una cápsula, una Camera editable y Directional Light.
+Config → HDR Rendering tiene Environment RGB 0.12, 0.16, 0.24: esa iluminación de
+relleno evita caras totalmente negras. El proyecto 3D nuevo usa Environment = 0;
+por eso sus caras sin luz directa quedan negras. Puedes configurar el relleno o
+crear otra luz. No se agregó una luz global oculta.
 
-In Project, inspect the folder tree and icon area. Scripts/Gameplay contains an
-empty WorkshopController.cs; Assets/Examples contains Settings.json. Right-click
-an empty icon area to create a folder or script; type its name and Enter, or leave
-the field to commit. Escape cancels. A renamed script updates its C# class name.
-Create → C# Script prompts for a name and uses the directory currently open here.
-Scripts expose empty OnStart, OnUpdate and OnStop methods; there is no Unity API.
+Project contiene Scripts/Gameplay/WorkshopController.cs y
+Assets/Examples/Settings.json. Click derecho en el área de iconos → New Folder o
+New C# Script; escribe el nombre y Enter, o cambia el foco. Escape cancela.
+Create → C# Script usa la carpeta abierta. Renombrar un script actualiza su clase;
+su plantilla tiene OnStart, OnUpdate(double) y OnStop vacíos, sin APIs de Unity.
 
-Drag a file or folder into another folder in either view, or onto Project/the
-current icon-area background to move it out. A second slow click on a selected
-item begins Rename. Ctrl+C/Ctrl+V copy files in Project; Supr asks for confirmation.
-The fixed Assets/Scripts/Scenes root folders cannot be removed. Assets still used
-by components or dependent assets must be detached before deleting their last file.
-Copying an asset file creates another reference to its immutable data, not a new
-editable geometry source. Show in Explorer exports the current authoring draft;
-editing that export does not automatically import changes. Copy Path gives its
-portable Project-relative path. Save/Undo/Redo apply to canonical file operations.
+Arrastra archivos/carpetas entre iconos y árbol, dentro de un directorio o hacia
+Project para llevarlos a la raíz. Un segundo click lento renombra. Ctrl+C/V copia;
+Supr pide confirmación. Assets/Scripts/Scenes son raíces protegidas. Un asset aún
+referenciado no permite eliminar su último archivo. Copiar assets conserva una
+referencia a sus datos inmutables. Save/Undo/Redo cubren las operaciones de archivos.
+Copy Path entrega la ruta relativa portable. Show in Explorer abre una exportación
+del borrador; editar esa exportación no actualiza automáticamente el proyecto.
 
-In Hierarchy, right-click an entity for Rename, Locate, Copy or Eliminate. Create
-there places the new entity under the clicked parent. Ctrl+C/Ctrl+V duplicate selected
-entities including children and remap parent IDs. Locate frames the world position
-in Scene. In Inspector, boxes delimit components; X removes an optional component.
-Transform is fundamental and cannot be removed. Right-click a component to Copy,
-Paste values into the same component type or Remove. Paste in the Inspector adds a
-copied missing component to the selected entity. Values apply on Enter/focus change;
-checkboxes and choices apply immediately. Save* in File and the save icon indicate
-unsaved changes. Ctrl+S saves the project.
+Hierarchy → click derecho: Rename, Locate, Copy, Eliminate y Create. Create sobre
+una entidad crea un hijo; Ctrl+C/V duplica entidades/hijos con IDs nuevos. Locate
+encuadra la entidad en Scene. Inspector delimita componentes con recuadros y X;
+Transform es fundamental. Click derecho permite copiar componentes, pegar valores
+en el mismo tipo, agregar un componente copiado o removerlo. Los números/textos se
+aplican al dar Enter/cambiar foco; checks/opciones al cambiar. Save* y el icono de
+guardado indican cambios pendientes; Ctrl+S guarda.
 
 ## Low-End Instance Grid
 
-256 cubes share one mesh asset. Scroll Hierarchy to the last cube: only its visible
-row window is mounted. Selection and the Inspector still use the full scene.
-The authored settings are Low quality, CPU culling, 50% render scale, no bloom and
-no shadows. Game uses the camera at [0, 10, 36] without starting simulation.
+Verás 256 cubos estáticos compartiendo un único asset. Desplázate hasta el último
+en Hierarchy: solo se montan las filas visibles, manteniendo la escena completa.
+La demo usa calidad Low, culling CPU, resolución 50%, sin bloom ni sombras.
+No es una demo de caída/física.
 
-Press Play and enable Debug beside Play/Stop. Actual presented-loop FPS appears at
-the upper-right of Game and hides on Stop. Config → HDR Rendering → Render scale
-can switch 50%, 75%, 100%; this intentionally changes backing resolution. Higher
-quality modes and 100% remain available. These cubes do not fall: this is an
-instance/render/editor stress scene, not another physics playground.
+Abre Game, activa Play y marca Debug: FPS aparece arriba a la derecha y desaparece
+con Stop. Config → HDR Rendering → Render scale permite 50%, 75%, 100%; el 50%
+reduce deliberadamente la resolución y puede verse menos nítido. Los modos de
+calidad superiores y 100% siguen disponibles. Profiler/Diagnostics muestran las
+mediciones. npm.cmd run benchmark:m16, después del build, mide CPU/Wasm localmente.
 
-Profiler and Diagnostics expose frame/render/asset data. FPS and software-GPU CI
-are measurements of their environment, not a promised frame rate on your computer.
-See docs/reports/M16_CURRENT_REPORT.md for reproducible CPU/Wasm measurements and
-known limits. Run `npm.cmd run benchmark:m16` after building for your own CPU data.
+## Límites y comprobación específica de Windows
+
+Los archivos del proyecto son rutas virtuales canónicas. Explorer muestra una
+exportación, no una carpeta con importación automática. Pueden crearse varios
+scripts, pero el runtime conserva un único contrato de fuente/clase compilada.
+Las pruebas con GPU de software verifican funciones; no garantizan FPS en tu equipo.
+
+Solo falta la comprobación específica de tu integración con Windows: en Project,
+click derecho sobre un archivo → Show in Explorer y verifica que Explorer lo
+seleccione; una carpeta debe abrirse. Si falla, comparte el último trace de Structured
+Console. Exportación, contenido, rutas y argumentos de lanzamiento están cubiertos
+por pruebas automáticas; no necesitas repetir las pruebas de edición, C# o física.
+
+Evidencia completa: docs/reports/M16_CURRENT_REPORT.md.

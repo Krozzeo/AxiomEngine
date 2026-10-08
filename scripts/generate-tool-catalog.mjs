@@ -7,7 +7,7 @@ async function expand(value) {
  if(!value||typeof value!=='object')return value;
  if(value.$ref){const [file,pointer]=value.$ref.split('#');if(file!=='project-document.schema.json')throw Error('Unsupported canonical reference');let schema=JSON.parse(await readFile(resolve(dir,file),'utf8'));for(const key of pointer.slice(1).split('/'))schema=schema[key];schema=structuredClone(schema);if(value.partial)delete schema.required;return expand(schema);}
  const result={};for(const [key,child]of Object.entries(value))result[key]=await expand(child);
- if(result.type==='object')result.additionalProperties=false;
+ if(result.type==='object'&&result.additionalProperties!==true)result.additionalProperties=false;
  return result;
 }
 const tools=await expand(source.tools);if(new Set(tools.map(t=>t.name)).size!==tools.length)throw Error('Duplicate tool');

@@ -1,18 +1,16 @@
 # M17 — Advanced Assets / CAD
 
-Status: planned, not started. Master specification section 136. M16 is the baseline.
+Status: complete, 12/12 acceptance groups, 100%. Version 0.0.31. Master section 136.
+Weighted project completion: 94/104, approximately 90%.
 
-Inventory the stable PNG/GLB pipeline and immutable source/build/dependency contracts.
-Define bounded import units, orientation, cleanup and validation fixtures before
-changing parsers. Add OBJ/STL through the existing import/resource/job APIs first.
-Evaluate STEP/IGES parsing and tessellation behind a worker and explicit resource
-budgets; do not promise support by adding format labels without executable fixtures.
-Cover normals, cleanup, LOD and collision generation with stable derived identity,
-diagnostics, cancellation and representative editable demos.
+OBJ/STL/STEP/IGES use the bounded immutable source/build/dependency pipeline.
+CAD tessellation, units/orientation, cleanup/normals, generated LODs and box collision
+are executable. The collision/static-CAD scope is recorded in ADR 017.
+This release also completes physical C# components, typed Inspector metadata,
+multi-tab IDE authoring and the requested UX corrections.
 
-Preserve M16 virtual authoring paths, replay/test boundaries, fresh worlds, render
-scales and prior gates. Document any third-party parser/license or capability scope
-decision in an ADR. Close with actual acceptance evidence, synchronized state/docs,
-source release and a ready/open/unmerged stacked PR. Do not start M18 autonomy
-during this asset milestone.
-
+Acceptance, executable commit/tree, CI evidence and limitations:
+../reports/M17_CURRENT_REPORT.md. Demo controls: ../../demos/M17_GUIDE.md.
+Architecture: ADR-017-CAD-AND-SCRIPT-COMPONENTS.md; licensing:
+../../THIRD_PARTY_NOTICES.md. PR #21 stays ready/open/unmerged on #20.
+Next: M18_PLAN.md; autonomy implementation has not started.

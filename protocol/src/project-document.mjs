@@ -1,3 +1,4 @@
+import {validateScriptComponents} from '../../engine/scripting/fields.mjs';
 import {validateFiles} from '../../engine/scene/project-files.mjs';
 import {activeGameCamera} from '../../engine/scene/camera.mjs';
 import {audioDefaults} from '../../engine/audio/plan.mjs';
@@ -59,10 +60,12 @@ export function validateProject(document) {
   const ids = document.scene.entities.map(entity => entity.id);
   if (new Set(ids).size !== ids.length) throw projectError("AX_PROJECT_0002", "Duplicate entity ID");
   try {worldTransforms(document.scene.entities);}catch(error){throw projectError("AX_PROJECT_0002",error.message);}
+  try{validateScriptComponents(document.scene);}catch(error){throw projectError('AX_PROJECT_0002',error.message);}
   const script=document.scene.script;
   if(script && (new Set(script.attachments).size!==script.attachments.length || script.attachments.some(id=>!ids.includes(id))))throw projectError("AX_PROJECT_0002","Invalid script attachments");
   const assets=document.scene.assets??[];
   if(new Set(assets.map(asset=>asset.id)).size!==assets.length) throw projectError("AX_PROJECT_0002","Duplicate asset ID");
+  for(const a of assets)if(a.variant){if(a.kind!=='mesh'||!assets.some(b=>b.id===a.variant.assetId&&b.kind==='mesh'))throw projectError('AX_PROJECT_0002','Missing LOD base mesh');const seen=new Set([a.id]);let current=a;while(current.variant){if(seen.has(current.variant.assetId))throw projectError('AX_PROJECT_0002','Cyclic LOD dependency');seen.add(current.variant.assetId);current=assets.find(b=>b.id===current.variant.assetId);if(!current)throw projectError('AX_PROJECT_0002','Missing LOD dependency');}}
   for(const asset of assets) if(asset.textureId && (asset.kind!=="mesh"||!assets.some(a=>a.id===asset.textureId&&a.kind==="sprite"))) throw projectError("AX_PROJECT_0002","Invalid mesh texture dependency");
   if(document.scene.entities.filter(e=>e.collider).length>256)throw projectError("AX_PROJECT_0002","Physics supports at most 256 colliders");
   for(const entity of document.scene.entities) {

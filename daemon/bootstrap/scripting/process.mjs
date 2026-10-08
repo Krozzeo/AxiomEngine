@@ -42,5 +42,5 @@ export function runCompiler(args,{cwd,signal,timeoutMs=180000,executable='dotnet
   });
 }
 export function compileDiagnostics(output) {
-  return output.split(/\r?\n/).flatMap(line=>{const match=line.match(/Game\.cs\((\d+),(\d+)\):\s*(error|warning)\s+([A-Z]+\d+):\s*(.*?)(?:\s+\[.*\])?$/);return match?[{file:'Game.cs',line:Number(match[1]),column:Number(match[2]),severity:match[3],code:match[4],message:match[5].slice(0,1000)}]:[];}).slice(0,64);
+ return output.split(/\r?\n/).flatMap(line=>{const match=line.match(/(?:^|[\/\\])([^\/\\():]+\.cs)\((\d+),(\d+)\):\s*(error|warning)\s+([A-Z]+\d+):\s*(.*?)(?:\s+\[.*\])?$/);return match?[{file:match[1],line:Number(match[2]),column:Number(match[3]),severity:match[4],code:match[5],message:match[6].slice(0,1000)}]:[];}).slice(0,64);
 }

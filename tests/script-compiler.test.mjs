@@ -41,3 +41,4 @@ test('compiler capability accepts only fixed development and AOT templates',asyn
  assert.ok(compilerArguments().includes('--disable-build-servers'));
  for(const mode of ['../escape','development -p:CustomAfterMicrosoftCommonTargets=evil',null,{}])assert.throws(()=>compilerArguments(mode),/Unsupported/);
 });
+test('Compiler diagnostics identify separate Project source files and host errors',()=>{const diagnostics=compileDiagnostics('/tmp/Sources/1.cs(12,4): error CS0103: Unknown identifier [Axiom.Game.csproj]\nC:\\Build\\Host.cs(9,7): error CS1002: Expected semicolon [Axiom.Game.csproj]');assert.deepEqual(diagnostics.map(d=>[d.file,d.line,d.column,d.code]),[['1.cs',12,4,'CS0103'],['Host.cs',9,7,'CS1002']]);});

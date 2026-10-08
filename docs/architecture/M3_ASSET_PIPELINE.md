@@ -2,6 +2,21 @@
 
 Status: complete; all seven acceptance criteria pass in CI, including browser hot reload.
 
+## Current M17 extension (0.0.31)
+
+Static OBJ/STL/STEP/IGES extend the existing PNG/GLB/WAV pipeline. Import settings
+persist and contribute to build identity. `asset.job.start` accepts `settings`
+for import/replace and `process` with assetId, entityId, generateLod and generateCollider.
+Settings: unitScale, upAxis (Y/Z), normals (flat/smooth), weldTolerance, center,
+linearDeflection and angularDeflection. Bounds are canonical in semantic-tools.json.
+Process atomically updates the base asset and selected entity; generated variants
+depend on its build key. Collision uses centered bounds rather than exact triangles.
+Cancellation and stale-revision protection preserve the M3 contract.
+See ADR-017-CAD-AND-SCRIPT-COMPONENTS.md for CAD/geometry budgets and scope, and
+../reports/M17_CURRENT_REPORT.md for executable evidence.
+
+The sections below preserve the historical M3 contract.
+
 ## Database, identity and dependency graph
 
 `scene.assetDbVersion = 1` identifies the embedded Asset DB. Its records live in

@@ -1057,6 +1057,28 @@
                           "maximum": 10000
                         }
                       }
+                    },
+                    "scriptComponents": {
+                      "type": "array",
+                      "maxItems": 8,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "path",
+                          "values"
+                        ],
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "maxLength": 240
+                          },
+                          "values": {
+                            "type": "object",
+                            "additionalProperties": true
+                          }
+                        }
+                      }
                     }
                   },
                   "additionalProperties": false
@@ -1100,6 +1122,68 @@
                     "buildKey": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "processing": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "unitScale": {
+                          "type": "number",
+                          "minimum": 0.000001,
+                          "maximum": 1000
+                        },
+                        "upAxis": {
+                          "type": "string",
+                          "enum": [
+                            "Y",
+                            "Z"
+                          ]
+                        },
+                        "normals": {
+                          "type": "string",
+                          "enum": [
+                            "flat",
+                            "smooth"
+                          ]
+                        },
+                        "weldTolerance": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "center": {
+                          "type": "boolean"
+                        },
+                        "linearDeflection": {
+                          "type": "number",
+                          "minimum": 0.0001,
+                          "maximum": 0.1
+                        },
+                        "angularDeflection": {
+                          "type": "number",
+                          "minimum": 0.1,
+                          "maximum": 1
+                        }
+                      }
+                    },
+                    "variant": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "assetId",
+                        "ratio"
+                      ],
+                      "properties": {
+                        "assetId": {
+                          "type": "string",
+                          "pattern": "^asset://[0-9a-f]{64}$"
+                        },
+                        "ratio": {
+                          "type": "number",
+                          "minimum": 0.05,
+                          "maximum": 0.95
+                        }
+                      }
                     }
                   },
                   "additionalProperties": false
@@ -1202,6 +1286,32 @@
                       }
                     },
                     "additionalProperties": false
+                  },
+                  "sources": {
+                    "type": "array",
+                    "maxItems": 128,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "path",
+                        "typeName"
+                      ],
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "maxLength": 240
+                        },
+                        "typeName": {
+                          "type": "string",
+                          "maxLength": 240
+                        }
+                      }
+                    }
+                  },
+                  "entryPath": {
+                    "type": "string",
+                    "maxLength": 240
                   }
                 },
                 "additionalProperties": false
@@ -1726,6 +1836,49 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "unitScale": {
+                "type": "number",
+                "minimum": 0.000001,
+                "maximum": 1000
+              },
+              "upAxis": {
+                "type": "string",
+                "enum": [
+                  "Y",
+                  "Z"
+                ]
+              },
+              "normals": {
+                "type": "string",
+                "enum": [
+                  "flat",
+                  "smooth"
+                ]
+              },
+              "weldTolerance": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "center": {
+                "type": "boolean"
+              },
+              "linearDeflection": {
+                "type": "number",
+                "minimum": 0.0001,
+                "maximum": 0.1
+              },
+              "angularDeflection": {
+                "type": "number",
+                "minimum": 0.1,
+                "maximum": 1
+              }
+            }
           }
         },
         "required": [
@@ -2000,12 +2153,15 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 240
           }
         },
         "required": [
           "id",
           "expectedSceneRevision",
-          "source",
           "attachments"
         ],
         "additionalProperties": false
@@ -2210,7 +2366,8 @@
             "enum": [
               "import",
               "replace",
-              "bindTexture"
+              "bindTexture",
+              "process"
             ]
           },
           "assetId": {
@@ -2232,6 +2389,59 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "unitScale": {
+                "type": "number",
+                "minimum": 0.000001,
+                "maximum": 1000
+              },
+              "upAxis": {
+                "type": "string",
+                "enum": [
+                  "Y",
+                  "Z"
+                ]
+              },
+              "normals": {
+                "type": "string",
+                "enum": [
+                  "flat",
+                  "smooth"
+                ]
+              },
+              "weldTolerance": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "center": {
+                "type": "boolean"
+              },
+              "linearDeflection": {
+                "type": "number",
+                "minimum": 0.0001,
+                "maximum": 0.1
+              },
+              "angularDeflection": {
+                "type": "number",
+                "minimum": 0.1,
+                "maximum": 1
+              }
+            }
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "generateLod": {
+            "type": "boolean"
+          },
+          "generateCollider": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -7056,6 +7266,28 @@
                       "maximum": 10000
                     }
                   }
+                },
+                "scriptComponents": {
+                  "type": "array",
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "path",
+                      "values"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "maxLength": 240
+                      },
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  }
                 }
               },
               "additionalProperties": false
@@ -7173,6 +7405,58 @@
           "value"
         ],
         "additionalProperties": false
+      }
+    },
+    {
+      "name": "scene.script.edit",
+      "description": "Attach, remove or edit serialized fields of a Project C# script component; revision and history scoped.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "entityId",
+          "path",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "attach",
+              "remove",
+              "values"
+            ]
+          },
+          "values": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
       }
     }
   ]

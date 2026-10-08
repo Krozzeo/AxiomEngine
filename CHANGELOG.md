@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.31 — M17 — advanced assets, reusable scripts and multi-tab IDE
+
+- Bounded worker import of OBJ/STL/STEP/IGES; CAD tessellation, units, axis, centering, cleanup and normals.
+- Undoable processing, two dependent LOD variants and generated bounding-box Colliders.
+- Physical Project C# files attach through class-name search or Inspector drag, with independent per-entity values.
+- Typed public/SerializeField Inspector fields; ReadOnly, HideInInspector, Title/Header, Space, Tooltip and Range.
+- SDK vectors and integer vectors, Quaternion, Color/Color32, Rect, Bounds and Mathf; compatible Vec3/Quat and MonoBehaviour lifecycle.
+- Independent IDE tabs, pending-edit indicators, open-tab list, Save/Save All and scoped Ctrl+S / Find-Replace.
+- No viewport context menu; matching Panels hover, italic project title and deselection resets rename state.
+- Two editable M17 demos; source reconciliation/migration and runtime snapshots preserve authoring isolation.
+- All 28 CI jobs, 214 Node/39 Rust tests, 87 tools and eight M17 browser criteria pass. M17 100%; project approximately 90%.
+
 ## 0.0.30 — M16.1 — source IDE, editor corrections and ambient light
 
 - Dockable C# IDE, line numbers/search/indentation, source transactions and Ctrl+S.

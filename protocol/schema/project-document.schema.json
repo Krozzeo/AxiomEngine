@@ -940,6 +940,28 @@
                     "maximum": 10000
                   }
                 }
+              },
+              "scriptComponents": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "path",
+                    "values"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "maxLength": 240
+                    },
+                    "values": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
               }
             }
           }
@@ -982,6 +1004,68 @@
               "buildKey": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$"
+              },
+              "processing": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "unitScale": {
+                    "type": "number",
+                    "minimum": 1e-06,
+                    "maximum": 1000
+                  },
+                  "upAxis": {
+                    "type": "string",
+                    "enum": [
+                      "Y",
+                      "Z"
+                    ]
+                  },
+                  "normals": {
+                    "type": "string",
+                    "enum": [
+                      "flat",
+                      "smooth"
+                    ]
+                  },
+                  "weldTolerance": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "center": {
+                    "type": "boolean"
+                  },
+                  "linearDeflection": {
+                    "type": "number",
+                    "minimum": 0.0001,
+                    "maximum": 0.1
+                  },
+                  "angularDeflection": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 1
+                  }
+                }
+              },
+              "variant": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "assetId",
+                  "ratio"
+                ],
+                "properties": {
+                  "assetId": {
+                    "type": "string",
+                    "pattern": "^asset://[0-9a-f]{64}$"
+                  },
+                  "ratio": {
+                    "type": "number",
+                    "minimum": 0.05,
+                    "maximum": 0.95
+                  }
+                }
               }
             }
           }
@@ -1081,6 +1165,32 @@
                   ]
                 }
               }
+            },
+            "sources": {
+              "type": "array",
+              "maxItems": 128,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "path",
+                  "typeName"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "maxLength": 240
+                  },
+                  "typeName": {
+                    "type": "string",
+                    "maxLength": 240
+                  }
+                }
+              }
+            },
+            "entryPath": {
+              "type": "string",
+              "maxLength": 240
             }
           }
         },

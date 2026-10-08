@@ -1,17 +1,24 @@
 # Implementation status
 
-M16.1 (0.0.30) is complete: 9/9 correction groups, 100%. Weighted project
-progress remains approximately 88% (91/104). Dockable C# source editing, exclusive
-selection, Project navigation and validation, viewport-safe menus and explicit
-2D/3D ambient fill are verified. Two editable laboratories are included.
-All 27 jobs in CI run 179 pass at executable commit 0b064c85105c443132c2a06d7a83d5c0458905f8
-(tree 90a815d569076970bccfffff5e90d3c9ff46c75d). 199 Node tests, 39 Rust tests, 18 schemas, 86 semantic tools
-and 16 M16.1 browser criteria pass alongside all earlier milestone and C# gates.
-See docs/reports/M16_1_CURRENT_REPORT.md, demos/M16_1_GUIDE.md and ADR 0032.
-PR #20 is ready/open, stacked on unmerged #19; keep milestone PRs unmerged.
-Next: M17 Advanced Assets/CAD, planned and not started.
-Source editing does not automatically compile or attach scripts. Copy Path points
-to a native export snapshot; external changes are not reimported automatically.
+M17 (0.0.31) is complete: 12/12 required acceptance groups, 100%. Weighted
+project progress is approximately 90% (94/104). Bounded OBJ/STL/STEP/IGES import,
+tessellation, cleanup/normals, dependent LODs and generated box Colliders use the
+existing asset pipeline. Physical Project C# scripts are reusable per-entity
+components with typed serialized Inspector fields and live readonly snapshots.
+The IDE has independent tabs, scoped save/all-save and Find/Replace. Viewport right
+mouse, Panels hover, project title and deselect/rename behavior are corrected.
+All 28 jobs in CI 185 pass at executable commit
+f3ca567d179b348210ac2495c7530025fdd08618 (tree 0cbd8bf9665722c4e27b7b612e725fe1b0d8e0a8).
+214 Node tests, 39 Rust tests, 18 schemas, 87 semantic tools and eight new browser
+criteria pass, including earlier milestones and C# Linux development/AOT and Windows
+development. Final demo screenshots reviewed; no user-only manual gate remains.
+Read docs/reports/M17_CURRENT_REPORT.md, demos/M17_GUIDE.md and
+docs/architecture/ADR-017-CAD-AND-SCRIPT-COMPONENTS.md before modifying these paths.
+PR #21 is ready/open/unmerged, stacked on #20. Next: M18 Agent Autonomy Loop,
+planned and not started; read docs/architecture/M18_PLAN.md.
+CAD is static geometry import; generated collision is a bounding-box approximation.
+The Inspector uses a bounded field grammar, not arbitrary C# reflection metadata.
+Source saving is explicit; Play compiles changed physical sources automatically.
 
 Historical completed baseline:
 

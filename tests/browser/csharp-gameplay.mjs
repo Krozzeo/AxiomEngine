@@ -1,3 +1,4 @@
+import {scriptMetadata} from '../../engine/scripting/fields.mjs';
 import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -12,7 +13,9 @@ const mode=process.env.AXIOM_CSHARP_MODE??'development';
 let browser,server;
 try {
  const source=(await readFile(new URL('../../engine/scripting/templates/Game.cs',import.meta.url),'utf8')).replace('class GameScript : Script','class NamedController : Script');
- const build=await compiler.build(projectId,source,mode);
+ const probe='using Axiom.Gameplay; namespace Game; public sealed class InspectorProbe : MonoBehaviour { [SerializeField] private Vector3 Offset=new Vector3(0,0,0); [ReadOnly] public int Frames=0; public Vector2Int Cell=new Vector2Int(0,0); public Color Tint=new Color(1,1,1,1); public override void OnStart(){Debug.Log("Hydrated="+Offset.X+","+Cell.Y);} public override void OnUpdate(double deltaSeconds){Frames++;} }';
+ const entries=[{path:'Scripts/NamedController.cs',kind:'script',text:source},{path:'Scripts/InspectorProbe.cs',kind:'script',text:probe}].map(f=>({...f,metadata:scriptMetadata(f)}));
+ const build=await compiler.build(projectId,source,mode,undefined,entries);
  server=createServer(async(req,res)=>{try{
   const path=new URL(req.url,'http://localhost').pathname;
   res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'");
@@ -27,7 +30,7 @@ try {
   const send=data=>new Promise((resolve,reject)=>{const ticket=++id;const timer=setTimeout(()=>{worker.terminate();reject(new Error('Script timeout'));},60000);worker.onerror=e=>{clearTimeout(timer);reject(new Error(e.message));};worker.onmessage=({data:r})=>{if(r.id!==ticket)return;clearTimeout(timer);r.error?reject(new Error(r.error)):resolve(r.result??r);};worker.postMessage({...data,id:ticket});});
   try {
    await send({type:'initialize',url:'/runtime/dotnet.js'});
-   const entity={id:'entity://11111111-1111-4111-8111-111111111111',name:'Player',transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]}};
+   const entity={id:'entity://11111111-1111-4111-8111-111111111111',name:'Player',transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},scriptComponents:[{path:'Scripts/NamedController.cs',values:{}},{path:'Scripts/InspectorProbe.cs',values:{Offset:[7,2,3],Cell:[4,9],Frames:0,Tint:[.2,.7,1,1]}}]};
    const base={generation:1,entities:[entity],keys:[],attachments:[entity.id]};
    const start=await send({request:{...base,action:'start'}});
    const step=await send({request:{...base,action:'step',delta:.25,keys:['ArrowRight']}});
@@ -38,5 +41,7 @@ try {
  for(const r of Object.values(results))assert.equal(r.error,undefined,JSON.stringify(r));
  assert.ok(results.start.operations.some(o=>o.kind==='log'));assert.ok(results.start.operations.some(o=>o.kind==='spawn'));
  assert.deepEqual(results.step.operations.find(o=>o.kind==='move').position,[.5,0,0]);assert.ok(results.stop.operations.some(o=>o.message==='C# stopped'));
+ assert.ok(results.start.operations.some(o=>o.message==='Hydrated=7,9'));
+ const fields=results.step.scriptValues.find(c=>c.path==='Scripts/InspectorProbe.cs').values;assert.equal(fields.Frames,1);assert.deepEqual(fields.Offset,[7,2,3]);assert.deepEqual(fields.Cell,[4,9]);assert.deepEqual(fields.Tint,[.2,.7,1,1]);
  console.log('CSHARP_GAMEPLAY='+JSON.stringify({passed:true,mode,build,results}));
 }finally{await browser?.close();if(server)await new Promise(r=>server.close(r));await rm(root,{recursive:true,force:true});}

@@ -1,3 +1,12 @@
+# Current demos: M17
+
+`npm.cmd run demo` creates CAD & Mesh Workshop and Script Component Lab.
+See [M17 guide](M17_GUIDE.md) for visuals, Inspector fields, IDE workflows and import
+settings. Existing projects are preserved. Use `demo:m16-1`, `demo:m16` and earlier
+versioned commands for historical demos.
+
+Historical demo descriptions follow.
+
 # Current demos: M16
 
 `npm.cmd run demo` creates Editor & File Workshop and Low-End Instance Grid.

@@ -299,3 +299,5 @@ input[type="file"] { font-size: 11px; }
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}
 
 .script-field {display:block;margin:8px 0}.script-field>span {display:block;margin-bottom:4px}.script-source-link {color:#92b5db;font-size:12px}.script-property h4 {margin:10px 0 4px;border-bottom:1px solid #33465c}.script-property input {min-width:0;width:100%}.script-property .vector-inputs {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+
+#script-component {display:none}

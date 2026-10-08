@@ -1075,7 +1075,7 @@
                           },
                           "values": {
                             "type": "object",
-                            "additionalProperties": false
+                            "additionalProperties": true
                           }
                         }
                       }
@@ -7284,7 +7284,7 @@
                       },
                       "values": {
                         "type": "object",
-                        "additionalProperties": false
+                        "additionalProperties": true
                       }
                     }
                   }

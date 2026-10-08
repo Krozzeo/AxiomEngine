@@ -253,7 +253,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if(file.size>8*1024*1024)throw new Error("The file exceeds 8 MiB.");
     const bytes=new Uint8Array(await file.arrayBuffer());let raw="";
     for(let i=0;i<bytes.length;i+=8192)raw+=String.fromCharCode(...bytes.subarray(i,i+8192));
-    return {name:file.name,base64:btoa(raw),...(document.defaultView?{settings:meshOptions()}: {})};
+    return {name:file.name,base64:btoa(raw),...(document.defaultView&&/\.(obj|stl|step|stp|iges|igs)$/i.test(file.name)?{settings:meshOptions()}: {})};
   }
   const meshOptions=()=>({unitScale:Number($('mesh-unit').value),upAxis:$('mesh-up').value,normals:$('mesh-normals').value,center:$('mesh-center').checked,linearDeflection:Number($('mesh-linear').value),angularDeflection:Number($('mesh-angular').value)});
   $('mesh-process')?.addEventListener('click',()=>act(()=>{const e=state.project.scene.entities.find(e=>e.id===selected);if(selection.size!==1||e?.renderable?.kind!=='mesh')throw Error('Select one mesh entity in Hierarchy');return assetJob({operation:'process',assetId:e.renderable.assetId,entityId:e.id,settings:meshOptions(),generateLod:$('mesh-lod').checked,generateCollider:$('mesh-collider').checked});}));

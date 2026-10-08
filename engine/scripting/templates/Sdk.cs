@@ -27,6 +27,10 @@ public readonly record struct Vector3(double X, double Y, double Z) {
  public static Vector3 Lerp(Vector3 a,Vector3 b,double t) => a+(b-a)*Math.Clamp(t,0,1);
  public static Vector3 Up => new(0,1,0);public static Vector3 Right => new(1,0,0);public static Vector3 Forward => new(0,0,-1);
  public static Vector3 Cross(Vector3 a,Vector3 b) => new(a.Y*b.Z-a.Z*b.Y,a.Z*b.X-a.X*b.Z,a.X*b.Y-a.Y*b.X);
+ public static Vector3 operator +(Vector3 a,Vec3 b)=>a+(Vector3)b;
+ public static Vector3 operator +(Vec3 a,Vector3 b)=>(Vector3)a+b;
+ public static Vector3 operator -(Vector3 a,Vec3 b)=>a-(Vector3)b;
+ public static Vector3 operator -(Vec3 a,Vector3 b)=>(Vector3)a-b;
  public static implicit operator Vector3(Vec3 v) => new(v.X,v.Y,v.Z);public static implicit operator Vec3(Vector3 v) => new(v.X,v.Y,v.Z);
  internal void Write(Utf8JsonWriter w) {w.WriteStartArray();w.WriteNumberValue(X);w.WriteNumberValue(Y);w.WriteNumberValue(Z);w.WriteEndArray();}
 }

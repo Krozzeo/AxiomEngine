@@ -957,7 +957,8 @@
                       "maxLength": 240
                     },
                     "values": {
-                      "type": "object"
+                      "type": "object",
+                      "additionalProperties": true
                     }
                   }
                 }

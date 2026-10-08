@@ -1,4 +1,4 @@
-import {reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
+import {materializeLegacyScripts,reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
 import {meshSettings} from '../../engine/assets/advanced.mjs';
 import {createHash} from 'node:crypto';
 import {revealProjectFiles} from './project-explorer.mjs';
@@ -142,7 +142,7 @@ export class SceneWorkspace {
       try {
         job.status="running";
     const {entries,selected:sourceFile}=compileSources(scene,data.path,data.source);scene.projectFiles=entries.map(({path,kind,text})=>({path,kind,text})).concat(projectFiles(scene).filter(f=>f.kind!=='script'));
-    reconcileScriptComponents(scene);
+    materializeLegacyScripts(scene);reconcileScriptComponents(scene);
     for(const entityId of scene.script?.attachments??[]){const entity=scene.entities.find(e=>e.id===entityId);if(entity&&!entity.scriptComponents?.length)setScriptComponent(scene,entityId,sourceFile.path,'attach');}
     for(const entityId of data.attachments){const e=scene.entities.find(e=>e.id===entityId);if(!e.scriptComponents?.some(c=>c.path===sourceFile.path))setScriptComponent(scene,entityId,sourceFile.path,'attach');}
 

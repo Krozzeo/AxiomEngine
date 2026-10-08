@@ -44,7 +44,7 @@ try {
  assert.ok(JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame>frameBeforeSpawn,'Runtime spawn must preserve the Rust clock');
  report.criteria.push('Transform and Input move rendered Rust world','spawn runtime entity','authoring isolation');
  await compile('using Axiom.Gameplay; namespace Game; public sealed class GameScript : Script { syntax error }','failed');
- assert.match(await page.locator('#script-diagnostics').textContent(),/(?:Game|0).cs:\d+:\d+ CS/);assert.deepEqual((await state()).project.scene,authoring);
+ assert.match(await page.locator('#script-diagnostics').textContent(),/(?:Game(?:Script)?|0).cs:\d+:\d+ CS/);assert.deepEqual((await state()).project.scene,authoring);
  await page.waitForFunction(()=>JSON.parse(document.querySelector('#frame-trace').textContent).script.active);report.criteria.push('compile error locations and last good runtime');
  await compile(source.replace('C# started:','C# reloaded:').replace('deltaSeconds*2','deltaSeconds*4'));
  await page.waitForFunction(g=>{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.generation>g&&d.script.entities.length===2;},initial.script.generation);

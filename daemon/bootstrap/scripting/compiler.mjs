@@ -34,8 +34,8 @@ export class ScriptCompiler {
   if(entries){await mkdir(join(root,'Sources'),{recursive:true});for(const[i,file]of entries.entries())await writeNew(join(root,'Sources',i+'.cs'),file.text);await writeNew(join(root,'Game.cs'),'// Project sources compiled from Sources/*.cs\n');}else await writeNew(join(root,'Game.cs'),source);await writeNew(join(root,'Axiom.Game.csproj'),GAME_PROJECT);
   await writeNew(join(root,'global.json'),JSON.stringify({sdk:{version:'10.0.100',rollForward:'latestFeature'}}));
   const start=performance.now();const result=await runCompiler(args,{cwd:root,signal,timeoutMs:mode==='aot'?CSHARP_COMPILER.aotTimeoutMs:CSHARP_COMPILER.developmentTimeoutMs});
-  const diagnostics=compileDiagnostics(result.output);
-  if(result.reason||result.code!==0){const error=Object.assign(new Error(result.reason??diagnostics.find(d=>d.severity==='error')?.message??'C# compilation failed; check .NET 10 and wasm-tools installation'),{code:'AX_SCRIPT_0001',diagnostics});throw error;}
+  const diagnostics=compileDiagnostics(result.output).map(d=>({...d,file:entries&&/^\d+\.cs$/.test(d.file)?entries[Number(d.file.replace('.cs',''))]?.path??d.file:d.file}));
+  if(result.reason||result.code!==0){const error=Object.assign(new Error(result.reason??diagnostics.find(d=>d.severity==='error')?.message??'C# compilation failed; check .NET 10 and wasm-tools installation'),{code:'AX_SCRIPT_0001',diagnostics,output:result.output.slice(-16000)});throw error;}
   if(signal?.aborted)fail('Compilation cancelled');
   const manifest={...await collectBundle(join(root,'publish')),id,mode,sourceHash:createHash('sha256').update(entries?JSON.stringify(entries.map(f=>[f.path,f.text])):source).digest('hex'),durationMs:performance.now()-start};
   await writeNew(join(root,'manifest.json'),JSON.stringify(manifest));

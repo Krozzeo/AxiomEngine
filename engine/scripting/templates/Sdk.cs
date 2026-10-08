@@ -143,6 +143,11 @@ public static class Input {
  public static bool IsDown(string code) => Context.Keys.Contains(code);
  public static double Axis(string negative, string positive) => (IsDown(positive)?1:0)-(IsDown(negative)?1:0);
 }
+public static class Debug {
+ public static void Log(object? value)=>Axiom.Gameplay.Log.Info(value?.ToString()??"");
+ public static void LogWarning(object? value)=>Axiom.Gameplay.Log.Info("Warning: "+value);
+ public static void LogError(object? value)=>Axiom.Gameplay.Log.Info("Error: "+value);
+}
 public static class Log {public static void Info(string message) => Context.Log(message);}
 internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0);
 internal static class Context {

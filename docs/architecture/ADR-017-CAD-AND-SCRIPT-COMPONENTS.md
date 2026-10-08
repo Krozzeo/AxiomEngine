@@ -45,7 +45,7 @@ separate so using directives and file-scoped namespaces remain valid. Multiple
 source classes compile together into one browser-Wasm bundle; an entity may attach
 up to eight distinct sources, with 32 script instances per scene. Legacy Script and
 Vec3/Quat remain supported; recompiling a legacy single-source project materializes
-its file and per-entity attachments.
+its file and per-entity attachments. Legacy Inspector cards resolve their physical Project source; the first field edit/removal materializes all old attachments together, preserving the other entities. Recompile once to enable live field snapshots in an older bundle.
 
 Inspector metadata is a bounded declarative source parser, not the C# compiler or
 a general reflection service. Supported instance fields are public, or non-public

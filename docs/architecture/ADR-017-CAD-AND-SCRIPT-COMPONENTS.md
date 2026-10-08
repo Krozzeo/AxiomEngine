@@ -1,6 +1,6 @@
 # ADR 017 — Bounded CAD meshes and physical script components
 
-Date: 2026-10-08. Decision implemented; acceptance verification pending.
+Date: 2026-10-08. Decision implemented and accepted; CI 185 verifies all 28 jobs.
 
 ## Assets
 

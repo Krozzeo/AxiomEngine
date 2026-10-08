@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-08",
-  "engineVersion": "0.0.30",
-  "activeMilestone": 16,
+  "engineVersion": "0.0.31",
+  "activeMilestone": 17,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 88,
+    "wholeProjectPercent": 90,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -79,6 +79,18 @@
       "status": "complete",
       "percent": 100
     },
+    "17": {
+      "status": "complete",
+      "percent": 100
+    },
+    "18": {
+      "status": "not_started",
+      "percent": 0
+    },
+    "19": {
+      "status": "not_started",
+      "percent": 0
+    },
     "13.1": {
       "status": "complete",
       "percent": 100
@@ -93,15 +105,15 @@
     "frameProfiler": "verified_bounded_main_worker_wait_scopes_gpu_passes_history_median_mad_human_agent_exact_sessions; bounded immutable saved sessions, origin storage and JSON roundtrip",
     "projectPersistence": "verified_bootstrap_http_restart",
     "sceneEditor": "verified_ordered_closed_draggable_dock_tabs_parallel_views_modular_quick_examples_confirmed_dirty_save_shortcuts",
-    "assetImport": "verified_png_static_and_animated_glb",
+    "assetImport": "verified_png_glb_wav_obj_stl_step_iges_bounded_workers",
     "projectSceneRendering": "verified_chromium_software_webgpu",
     "playMode": "verified_isolated_runtime",
     "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload",
-    "csharpGameplay": "verified_editor_compile_reload_isolated_runtime",
+    "csharpGameplay": "verified_physical_multiple_components_typed_fields_linux_dev_aot_windows_dev",
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_two_m16_and_all_prior_demos",
+    "editableDemos": "verified_two_m17_labs_and_all_prior_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
@@ -116,11 +128,14 @@
     "projectFileAuthoring": "verified_portable_virtual_tree_templates_moves_copies_history_save_explorer_exports",
     "editorContextActions": "verified_scoped_clipboard_parenting_autocommit_menus_fps_and_redraw_focus",
     "lowEndPass": "verified_indexed_virtual_ui_fresh_cached_wasm_reused_gpu_storage_scale_bounded_submission",
-    "editorCorrections": "verified_dockable_source_ide_exclusive_selection_project_validation_menus_ambient_fill"
+    "editorCorrections": "verified_dockable_source_ide_exclusive_selection_project_validation_menus_ambient_fill",
+    "advancedAssets": "verified_cad_tessellation_cleanup_normals_dependent_lods_generated_box_collision",
+    "scriptInspector": "verified_typed_per_instance_attributes_readonly_runtime_snapshots_authoring_isolation",
+    "sourceIDE": "verified_multiple_buffers_scoped_save_save_all_find_replace_reopen_center"
   },
   "verified": {
     "nodeTests": {
-      "passed": 199,
+      "passed": 214,
       "failed": 0
     },
     "schemaDocuments": 18,
@@ -151,7 +166,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI 179; Rust 1.90.0; M16.1 0.0.30"
+      "evidenceEnvironment": "GitHub CI 185; Rust 1.90.0; M17 0.0.31"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -237,40 +252,41 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.30",
-      "commit": "0b064c85105c443132c2a06d7a83d5c0458905f8",
-      "tree": "90a815d569076970bccfffff5e90d3c9ff46c75d",
-      "runId": 37673493328,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37673493328",
-      "jobCount": 27,
+      "version": "0.0.31",
+      "commit": "f3ca567d179b348210ac2495c7530025fdd08618",
+      "tree": "0cbd8bf9665722c4e27b7b612e725fe1b0d8e0a8",
+      "runId": 37825538456,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37825538456",
+      "jobCount": 28,
       "jobs": [
-        "browser-milestones (m16)",
-        "script-boundaries (ubuntu-latest)",
+        "rust",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (m2)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "bootstrap (windows-latest)",
+        "script-boundaries (windows-latest)",
         "script-boundaries (macos-latest)",
-        "browser-milestones (m13)",
-        "browser-milestones (m15)",
-        "browser-milestones (m10)",
-        "browser-milestones (m13-1)",
-        "browser-milestones (m5)",
-        "browser-milestones (m16-1)",
         "browser-milestones (m6)",
+        "browser-milestones (m16)",
+        "bootstrap (ubuntu-latest)",
+        "browser-milestones (m9)",
+        "script-boundaries (ubuntu-latest)",
+        "csharp-wasm-spike (windows-latest, development)",
+        "browser-milestones (m15)",
+        "browser-milestones (corrections)",
+        "browser-milestones (m3)",
+        "browser-milestones (m14)",
+        "browser-milestones (m13)",
         "browser-milestones (m12)",
         "browser-milestones (m11)",
-        "browser-milestones (m2)",
-        "browser-milestones (m9)",
         "browser-milestones (m7)",
-        "browser-milestones (m3)",
-        "browser-milestones (corrections)",
+        "browser-milestones (m17)",
+        "browser-milestones (m13-1)",
+        "browser-milestones (m16-1)",
+        "browser-milestones (m5)",
+        "browser-milestones (m10)",
         "browser-milestones (m4)",
-        "browser-milestones (m8)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (m14)",
-        "script-boundaries (windows-latest)",
-        "bootstrap (ubuntu-latest)",
-        "rust",
-        "bootstrap (windows-latest)",
-        "csharp-wasm-spike (windows-latest, development)",
-        "csharp-wasm-spike (ubuntu-latest, aot)"
+        "browser-milestones (m8)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -437,7 +453,7 @@
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
     },
-    "semanticToolCount": 86,
+    "semanticToolCount": 87,
     "m10Acceptance": {
       "passed": true,
       "criteriaPassed": 8,
@@ -551,6 +567,23 @@
       "pageErrors": 0,
       "consoleErrors": 0,
       "evidence": "docs/reports/m16-1-browser-evidence.json"
+    },
+    "m17Acceptance": {
+      "passed": true,
+      "requiredGroupsPassed": 12,
+      "requiredGroupsTotal": 12,
+      "browserCriteriaPassed": 8,
+      "runId": 37825538456,
+      "commit": "f3ca567d179b348210ac2495c7530025fdd08618",
+      "tree": "0cbd8bf9665722c4e27b7b612e725fe1b0d8e0a8",
+      "evidence": "docs/reports/m17-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
+    },
+    "m17LocalNodeTests": {
+      "passed": 208,
+      "failed": 0,
+      "scope": "excludes six clean-build server tests; existing kernel module build"
     }
   },
   "blockedChecks": [],
@@ -673,7 +706,13 @@
     "docs/reports/M16_1_CURRENT_REPORT.md",
     "docs/reports/m16-1-browser-evidence.json",
     "demos/M16_1_GUIDE.md",
-    "docs/adr/0032-editor-source-and-ambient.md"
+    "docs/adr/0032-editor-source-and-ambient.md",
+    "docs/reports/M17_CURRENT_REPORT.md",
+    "docs/reports/m17-browser-evidence.json",
+    "docs/architecture/ADR-017-CAD-AND-SCRIPT-COMPONENTS.md",
+    "demos/M17_GUIDE.md",
+    "THIRD_PARTY_NOTICES.md",
+    "docs/architecture/M18_PLAN.md"
   ],
-  "nextTask": "Begin M17 Advanced Assets/CAD per M17_PLAN.md and master section 136; M16.1 is complete and PR #20 stays open/unmerged."
+  "nextTask": "Begin M18 Agent Autonomy Loop per M18_PLAN.md and master section 137; M17 is complete and PR #21 stays ready/open/unmerged."
 }

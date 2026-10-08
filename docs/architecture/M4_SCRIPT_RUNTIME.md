@@ -3,6 +3,34 @@
 Status: all eight acceptance criteria passed. See
 `docs/reports/M4_CURRENT_REPORT.md` for evidence and limitations.
 
+## Current M17 extension (0.0.31)
+
+Create physical C# files in Project or Create → C# Script; edit them in IDE.
+Attach a Script/MonoBehaviour through Add Component class search or drag the
+Project file onto Inspector. Source code is no longer edited inside Inspector.
+Each entity stores up to eight scriptComponents `{path, values}`; total instances
+remain bounded at 32. `scene.script.edit` takes id, expectedSceneRevision, entityId,
+path, action (attach/remove/values), and values for a field update. Agent mutations
+require workspaceId through the existing proposal route. Source edits/moves reconcile
+metadata/references atomically; referenced deletion is rejected.
+
+Public instance fields and private SerializeField fields have typed controls.
+HideInInspector, ReadOnly/readonly, Title/Header, Space, Tooltip and Range control
+visibility/editing/layout. Transform uses Vector3/Quaternion; float and integer
+Vector2/3/4, Color/Color32, Rect, Bounds and Mathf are available. Vec3/Quat and Script
+remain compatible. Metadata is a bounded field parser, not full compiler reflection;
+computed initializers remain the C# constructor's responsibility. See ADR 017.
+
+Separate physical sources compile inside fixed generated build templates, preserving
+using directives and file-scoped namespaces. Play compiles changed sources; stale
+daemon starts require compilation. Typed hydration and readonly snapshots are
+verified in Linux development/AOT and Windows development. Snapshots affect runtime
+only; Stop restores authored values. IDE buffers retain edits across tabs and saving
+is explicit. Historical explicit-source compile and Play hot reload still work.
+Local scripts are user code, not a hardened boundary for hostile downloaded code.
+
+The sections below preserve the historical M4 single-source contract.
+
 ## Developer workflow
 
 Install .NET 10 SDK and `dotnet workload install wasm-tools`. Start the usual

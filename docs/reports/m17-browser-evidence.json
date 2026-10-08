@@ -1,0 +1,26 @@
+{
+  "criteria": [
+    "All four imported formats render in Game with generated collision and LOD components",
+    "Scene and Game, including a parallel detached viewport, right mouse do not open empty context menus",
+    "Physical Project scripts expose typed per-instance fields with readonly and layout attributes",
+    "Deselect/reselect clears delayed rename state",
+    "Multiple IDE buffers retain edits, Ctrl+S saves only the current script, Save All saves all",
+    "IDE scoped Find/Replace and save icon persist edited source",
+    "Add Component search and Project drag attach reusable scripts; Show in Project locates files; closed IDE reopens at center with all open tabs",
+    "Real .NET/Wasm compiles multiple classes, hydrates instance values and reports readonly fields without mutating authoring"
+  ],
+  "errors": [],
+  "passed": true,
+  "provenance": {
+    "runId": 37825538456,
+    "commit": "f3ca567d179b348210ac2495c7530025fdd08618",
+    "tree": "0cbd8bf9665722c4e27b7b612e725fe1b0d8e0a8",
+    "artifactId": 11571805325,
+    "artifactDigest": "sha256:57f28499d30f0a85195792c84a3e94aaac02374f47ec475b360de0ed28c23637",
+    "visualReview": [
+      "cad.png",
+      "scripts.png"
+    ],
+    "renderer": "Chromium, Xvfb, software Vulkan/WebGPU; no physical GPU benchmark"
+  }
+}

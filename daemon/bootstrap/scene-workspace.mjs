@@ -298,6 +298,7 @@ export class SceneWorkspace {
       if(index<0)fail("AX_SCENE_0001","Entity no longer exists");
       if(data.component==='Script'){
         if(!scene.script)fail("AX_SCRIPT_0001","Compile a script first");
+        if(scene.script.sources){if(type==='scene.component.remove')delete scene.entities[index].scriptComponents;else if(!scene.entities[index].scriptComponents?.some(c=>c.path===scene.script.entryPath))setScriptComponent(scene,data.entityId,scene.script.entryPath,'attach');}
         scene.script.attachments=type==='scene.component.remove'?scene.script.attachments.filter(id=>id!==data.entityId):[...new Set([...scene.script.attachments,data.entityId])];
       } else {
       if(data.component!=="Renderable")fail("AX_PROJECT_0002","Only the optional Renderable component is supported");
@@ -342,6 +343,7 @@ export class SceneWorkspace {
     } else fail("AX_COMMAND_0002", "Command type is not registered");
     if(data.parentId&&['scene.entity.create','scene.example.create','scene.primitive.create'].includes(type)){if(!scene.entities.some(e=>e.id===data.parentId))fail('AX_SCENE_0001','Parent entity missing');scene.entities.at(-1).parentId=data.parentId;}
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
+    if(scene.script?.sources)scene.script.attachments=scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id);
     syncImportedFiles(scene,this.project.scene);
     validateProject({ ...this.project, scene });
     if(["scene.component.paste","scene.audioSource.set","scene.animator.set","scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);

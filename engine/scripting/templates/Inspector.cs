@@ -21,7 +21,7 @@ case Color x: Numbers(writer,x.R,x.G,x.B,x.A);break;
 case Color32 x: Numbers(writer,x.R,x.G,x.B,x.A);break;
 case Rect x: Numbers(writer,x.X,x.Y,x.Width,x.Height);break;
 case Bounds x: Numbers(writer,x.Center.X,x.Center.Y,x.Center.Z,x.Size.X,x.Size.Y,x.Size.Z);break;
- default:writer.WriteNullValue();break;}}writer.WriteEndObject();}
+ case null:writer.WriteStringValue("");break;default:writer.WriteNullValue();break;}}writer.WriteEndObject();}
  private static void Numbers(Utf8JsonWriter writer,params double[] values){writer.WriteStartArray();foreach(var v in values)writer.WriteNumberValue(v);writer.WriteEndArray();}
  private static object Read(Type type,JsonElement e){
   if(type==typeof(bool))return e.GetBoolean();if(type==typeof(string))return e.GetString()??"";

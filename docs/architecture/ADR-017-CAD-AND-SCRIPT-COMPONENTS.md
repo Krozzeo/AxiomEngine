@@ -54,7 +54,7 @@ manual edits. Title/Header, Space, Tooltip and numeric Range control display.
 Auto-properties, arbitrary generic collections, nested serializable classes and
 computed initializers are outside this metadata grammar; use IDE for them.
 Supported literals, constructors and common vector constants initialize Inspector
-values; arbitrary initializers must not be assumed to be evaluated by the Inspector.
+values; arbitrary initializers are not evaluated by the Inspector: attachment leaves them unset so the C# constructor retains its value. Before Play their controls show the type default with a tooltip; editing explicitly overrides the initializer. Runtime snapshots show the actual value.
 
 Supported values: bool, string, byte/short/int/uint/long/float/double, enums,
 Vector2/3/4, Vector2Int/3Int/4Int, Quaternion, Color/Color32, Rect and Bounds. Vec3/Quat

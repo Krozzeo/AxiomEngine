@@ -1,8 +1,8 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-07",
-  "engineVersion": "0.0.29",
+  "updatedAt": "2026-10-08",
+  "engineVersion": "0.0.30",
   "activeMilestone": 16,
   "milestoneStatus": "complete",
   "completion": {
@@ -115,11 +115,12 @@
     "aiProjectContext": "verified_six_menu_options_plain_master_documents_external_mcp_context",
     "projectFileAuthoring": "verified_portable_virtual_tree_templates_moves_copies_history_save_explorer_exports",
     "editorContextActions": "verified_scoped_clipboard_parenting_autocommit_menus_fps_and_redraw_focus",
-    "lowEndPass": "verified_indexed_virtual_ui_fresh_cached_wasm_reused_gpu_storage_scale_bounded_submission"
+    "lowEndPass": "verified_indexed_virtual_ui_fresh_cached_wasm_reused_gpu_storage_scale_bounded_submission",
+    "editorCorrections": "verified_dockable_source_ide_exclusive_selection_project_validation_menus_ambient_fill"
   },
   "verified": {
     "nodeTests": {
-      "passed": 190,
+      "passed": 199,
       "failed": 0
     },
     "schemaDocuments": 18,
@@ -150,7 +151,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI 171; Rust 1.90.0; M16 0.0.29"
+      "evidenceEnvironment": "GitHub CI 179; Rust 1.90.0; M16.1 0.0.30"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -236,39 +237,40 @@
     "currentRemoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.29",
-      "commit": "e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2",
-      "tree": "978eaac0d41c72bb6a75050ae601254daaa4415b",
-      "runId": 37629606850,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37629606850",
-      "jobCount": 26,
+      "version": "0.0.30",
+      "commit": "0b064c85105c443132c2a06d7a83d5c0458905f8",
+      "tree": "90a815d569076970bccfffff5e90d3c9ff46c75d",
+      "runId": 37673493328,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37673493328",
+      "jobCount": 27,
       "jobs": [
-        "rust",
-        "bootstrap (ubuntu-latest)",
-        "browser-milestones (m3)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "browser-milestones (m16)",
+        "script-boundaries (ubuntu-latest)",
+        "script-boundaries (macos-latest)",
         "browser-milestones (m13)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (m15)",
+        "browser-milestones (m10)",
+        "browser-milestones (m13-1)",
+        "browser-milestones (m5)",
+        "browser-milestones (m16-1)",
+        "browser-milestones (m6)",
         "browser-milestones (m12)",
-        "browser-milestones (m4)",
+        "browser-milestones (m11)",
+        "browser-milestones (m2)",
         "browser-milestones (m9)",
+        "browser-milestones (m7)",
+        "browser-milestones (m3)",
+        "browser-milestones (corrections)",
+        "browser-milestones (m4)",
+        "browser-milestones (m8)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (m14)",
+        "script-boundaries (windows-latest)",
+        "bootstrap (ubuntu-latest)",
+        "rust",
         "bootstrap (windows-latest)",
         "csharp-wasm-spike (windows-latest, development)",
-        "browser-milestones (m11)",
-        "script-boundaries (ubuntu-latest)",
-        "browser-milestones (m13-1)",
-        "browser-milestones (m10)",
-        "browser-milestones (corrections)",
-        "script-boundaries (windows-latest)",
-        "browser-milestones (m6)",
-        "browser-milestones (m7)",
-        "browser-milestones (m8)",
-        "browser-milestones (m5)",
-        "script-boundaries (macos-latest)",
-        "browser-milestones (m15)",
-        "browser-milestones (m14)",
-        "browser-milestones (m16)",
-        "browser-milestones (m2)"
+        "csharp-wasm-spike (ubuntu-latest, aot)"
       ]
     },
     "m2PersistenceRemoteCi": {
@@ -542,6 +544,13 @@
       "earlierRunId": 37627105416,
       "passed": true,
       "runId": 37629606850
+    },
+    "m16_1Browser": {
+      "passed": true,
+      "criteriaPassed": 16,
+      "pageErrors": 0,
+      "consoleErrors": 0,
+      "evidence": "docs/reports/m16-1-browser-evidence.json"
     }
   },
   "blockedChecks": [],
@@ -660,7 +669,11 @@
     "docs/reports/M16_CURRENT_REPORT.md",
     "docs/reports/m16-browser-evidence.json",
     "docs/reports/m16-performance-benchmark.json",
-    "demos/M16_GUIDE.md"
+    "demos/M16_GUIDE.md",
+    "docs/reports/M16_1_CURRENT_REPORT.md",
+    "docs/reports/m16-1-browser-evidence.json",
+    "demos/M16_1_GUIDE.md",
+    "docs/adr/0032-editor-source-and-ambient.md"
   ],
-  "nextTask": "Begin M17 Advanced Assets/CAD per M17_PLAN.md and master section 136; M16 is complete and PR #19 stays open/unmerged."
+  "nextTask": "Begin M17 Advanced Assets/CAD per M17_PLAN.md and master section 136; M16.1 is complete and PR #20 stays open/unmerged."
 }

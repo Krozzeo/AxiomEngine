@@ -11,3 +11,5 @@ Copy Path invokes the same bounded export as Show in Explorer with `open:false`;
 Entity/file selections are exclusive. Selection has no implicit first-entity fallback after deletion. Source buffers are independent of selection. Nested menus use the owning viewport, flip horizontally and clamp vertically; oversized menus scroll.
 
 New 2D/3D starter scenes explicitly author ambient RGB `[0.12,0.16,0.24]`. Config Ambient light edits `twoD.ambient` for 2D or HDR `rendering.environment` for 3D, preserving the rest of the settings. Empty scenes retain the renderer defaults until dimensional authoring is configured, preserving 2D conversion compatibility. The environmental fill is intentionally uniform, not a replacement for directional/point lights or an implementation of global illumination.
+
+Source flushes reject Play and proposal preview writes, retaining pending MAIN text. Asset refreshes do not disable editing controls, reject stale revisions/project/workspace responses and retain command lineage. Native exports capture one project snapshot before awaiting I/O, so paths and contents remain consistent when the active project changes.

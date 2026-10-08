@@ -1,0 +1,27 @@
+{
+  "milestone": "m16-1",
+  "criteria": [
+    "IDE is a default center panel after Scene and Game",
+    "File/Panels item alignment, bottom Undo/Redo and distinct Create project button",
+    "Long AI labels fit and new branches close their siblings",
+    "Ambient light changes canonical RGB and marks the project title dirty",
+    "Project parent icon and scoped Backspace navigate to the parent folder",
+    "Duplicate C# names across folders retain inline editing until corrected",
+    "Empty folder context Delete completes without confirmation",
+    "Copy Path returns an absolute native export with the canonical source bytes",
+    "Folder hover highlights the actual tree destination and drop persists the move",
+    "Delayed rename responds to the filename only, never the icon",
+    "C# double-click opens IDE; Ctrl+S commits source and project; Panels restores a closed IDE",
+    "Escape, blank Project clicks and entity deletion clear selection; files/entities are exclusive",
+    "Rename refreshes file Inspector and context Open displays the renamed C# class in IDE",
+    "Nested context Create menus stay inside the viewport",
+    "2D ambient settings persist without adding incompatible HDR rendering",
+    "Debug checkbox is round and vertically aligned with Play"
+  ],
+  "passed": true,
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runId": 37673493328,
+  "commit": "0b064c85105c443132c2a06d7a83d5c0458905f8",
+  "tree": "90a815d569076970bccfffff5e90d3c9ff46c75d"
+}

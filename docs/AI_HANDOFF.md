@@ -1,17 +1,17 @@
 # Axiom Engine — context-free AI handoff
 
-M16 (0.0.29) is complete: 8/8 required groups, 100%. Weighted project progress is
-approximately 88% (91/104 roadmap points). Project authoring, typed context clipboard,
-Inspector auto-commit, consistent menus/icons and Game FPS are verified alongside
-indexed/virtualized Hierarchy, isolated cached Wasm, reused GPU storage and explicit
-render scale. Two editable demos are included. All 26 jobs in CI run 171 pass at
-executable commit e6ebb9e1fe4af2b93dfbd1dd1e61ebe7318497a2 (tree 978eaac0d41c72bb6a75050ae601254daaa4415b).
-190 Node tests, 39 Rust tests, 18 schemas, 86 semantic tools and 17 M16 browser
-criteria pass; earlier browser, C# Development/AOT and replay gates remain green.
-See docs/reports/M16_CURRENT_REPORT.md, demos/M16_GUIDE.md and
-M16_AUTHORING_AND_PERFORMANCE.md. PR #19 is ready/open, stacked on unmerged #18;
-keep milestone PRs unmerged. Next: M17 advanced assets/CAD, planned, not started.
-Software-GPU evidence is functional; it does not certify physical low-end FPS.
+M16.1 (0.0.30) is complete: 9/9 correction groups, 100%. Weighted project
+progress remains approximately 88% (91/104). Dockable C# source editing, exclusive
+selection, Project navigation and validation, viewport-safe menus and explicit
+2D/3D ambient fill are verified. Two editable laboratories are included.
+All 27 jobs in CI run 179 pass at executable commit 0b064c85105c443132c2a06d7a83d5c0458905f8
+(tree 90a815d569076970bccfffff5e90d3c9ff46c75d). 199 Node tests, 39 Rust tests, 18 schemas, 86 semantic tools
+and 16 M16.1 browser criteria pass alongside all earlier milestone and C# gates.
+See docs/reports/M16_1_CURRENT_REPORT.md, demos/M16_1_GUIDE.md and ADR 0032.
+PR #20 is ready/open, stacked on unmerged #19; keep milestone PRs unmerged.
+Next: M17 Advanced Assets/CAD, planned and not started.
+Source editing does not automatically compile or attach scripts. Copy Path points
+to a native export snapshot; external changes are not reimported automatically.
 
 Historical completed baseline:
 

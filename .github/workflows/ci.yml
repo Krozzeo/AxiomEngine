@@ -124,11 +124,11 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - uses: actions/setup-dotnet@v4
-        if: contains(fromJSON('["m18","m17","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
+        if: contains(fromJSON('["m18","m17","m16-1","m16","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
         with:
           global-json-file: global.json
       - run: dotnet workload install wasm-tools
-        if: contains(fromJSON('["m18","m17","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
+        if: contains(fromJSON('["m18","m17","m16-1","m16","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
       - run: npm run build
       - name: Install software Vulkan and virtual display
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers

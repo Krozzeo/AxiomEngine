@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-08",
-  "engineVersion": "0.0.31",
-  "activeMilestone": 17,
-  "milestoneStatus": "complete",
+  "engineVersion": "0.0.32",
+  "activeMilestone": 18,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 90,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -84,7 +84,7 @@
       "percent": 100
     },
     "18": {
-      "status": "not_started",
+      "status": "in_progress",
       "percent": 0
     },
     "19": {
@@ -712,7 +712,10 @@
     "docs/architecture/ADR-017-CAD-AND-SCRIPT-COMPONENTS.md",
     "demos/M17_GUIDE.md",
     "THIRD_PARTY_NOTICES.md",
-    "docs/architecture/M18_PLAN.md"
+    "docs/architecture/M18_PLAN.md",
+    "docs/architecture/M18_AUTONOMY.md",
+    "docs/reports/M18_CURRENT_REPORT.md",
+    "demos/M18_GUIDE.md"
   ],
-  "nextTask": "Begin M18 Agent Autonomy Loop per M18_PLAN.md and master section 137; M17 is complete and PR #21 stays ready/open/unmerged."
+  "nextTask": "Complete M18 full CI acceptance, screenshot review and documentation closure; PR #22 remains draft/open/unmerged. M19 not started."
 }

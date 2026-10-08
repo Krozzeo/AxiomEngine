@@ -1,5 +1,12 @@
 # Axiom Engine
 
+M18 (0.0.32) is implemented and undergoing full CI acceptance. PR #22 remains
+draft/open/unmerged. Read docs/reports/M18_CURRENT_REPORT.md,
+docs/architecture/M18_AUTONOMY.md and demos/M18_GUIDE.md. Accepted project progress
+remains approximately 90% until this milestone closes. M19 is not started.
+
+Historical M17 closure:
+
 M17 (0.0.31) is complete: 12/12 required acceptance groups, 100%. Weighted
 project progress is approximately 90% (94/104). Bounded OBJ/STL/STEP/IGES import,
 tessellation, cleanup/normals, dependent LODs and generated box Colliders use the

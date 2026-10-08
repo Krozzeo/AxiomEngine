@@ -1,6 +1,7 @@
 # M18 — Agent Autonomy Loop
 
-Status: planned, not started. Master specification section 137. M17 is complete.
+Status: implemented, full acceptance pending. Master specification section 137.
+Read M18_AUTONOMY.md and ../reports/M18_CURRENT_REPORT.md for current evidence.
 
 Demonstrate an agent receiving an objective, defining measurable acceptance criteria,
 editing an isolated workspace, compiling, running, inspecting evidence, diagnosing

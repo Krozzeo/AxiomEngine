@@ -1,3 +1,11 @@
+# Current demos: M18
+
+`npm.cmd run demo` creates Script Component Lab, Autonomy Position Repair and
+Autonomy Compiler Repair. See [M18 guide](M18_GUIDE.md). Existing projects are
+preserved; use versioned demo commands for historical releases.
+
+Historical M17 descriptions:
+
 # Current demos: M17
 
 `npm.cmd run demo` creates CAD & Mesh Workshop and Script Component Lab.

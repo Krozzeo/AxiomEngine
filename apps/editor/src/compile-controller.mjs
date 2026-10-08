@@ -13,7 +13,7 @@ export function mountCompileController({document,getState,dirty,compile,saveAuto
  }
  async function request({flush=true,force=false,legacy=false,onlyChanged=false}={}){if(flight)return flight;const state=getState();if(!state.project||state.workspaceId)return false;if(!force&&failed===signature()&&(!dirty()||!flush))return false;
   if(onlyChanged&&hash!==null&&hash===state.project.scene.script?.build.sourceHash&&state.project.scene.script?.build.sdkVersion===2)return true;
-  const file=projectFiles(state.project.scene).find(f=>f.kind==='script'&&scriptMetadata(f))??projectFiles(state.project.scene).find(f=>f.kind==='script');if(!file&&!legacy){draw();return true;}
+  const file=projectFiles(state.project.scene).find(f=>f.kind==='script'&&(()=>{try{return !!scriptMetadata(f);}catch{return false;}})())??projectFiles(state.project.scene).find(f=>f.kind==='script');if(!file&&!legacy){draw();return true;}
   clearTimeout(timer);flight=(async()=>{try{const ok=await compile(legacy?undefined:file.path,{flush});if(!ok){failed=signature();return false;}failed=null;return true;}catch(error){failed=signature();reportError(error);return false;}finally{flight=null;draw();}})();paint();return flight;
  }
  function sourceSaved(){draw();if(getState().project?.editor?.autoCompile){clearTimeout(timer);timer=setTimeout(()=>void request({flush:false,onlyChanged:true}),500);}}

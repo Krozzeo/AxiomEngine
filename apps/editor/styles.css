@@ -308,4 +308,6 @@ input[type="file"] { font-size: 11px; }
 
 .vector-inputs>.inspector-row{grid-template-columns:16px minmax(0,1fr);gap:3px}.inspector-row>label{margin:0}#ai-proposals>.submenu{max-height:calc(100vh - 100px);overflow:auto}#autonomy-panel textarea{width:100%;box-sizing:border-box}#autonomy-result{max-height:240px;overflow:auto}
 
-.inspector-vector-row{display:grid;grid-template-columns:minmax(65px,28%) minmax(0,1fr);gap:5px;align-items:center;margin:6px 0}.inspector-vector-row>p{margin:0;font-size:12px}.inspector-vector-row .vector-inputs{min-width:0;margin:0}
+.inspector-vector-row{display:grid;grid-template-columns:minmax(55px,25%) minmax(0,1fr);gap:5px;align-items:center;margin:6px 0}.inspector-vector-row>p{margin:0;font-size:12px}.inspector-vector-row .vector-inputs{min-width:0;margin:0}
+
+.inspector-vector-row .vector-inputs>.inspector-row{grid-template-columns:8px minmax(0,1fr);gap:2px}.inspector-vector-row input{padding:4px 3px}.inspector{container-type:inline-size}@container(max-width:240px){.inspector-vector-row{grid-template-columns:1fr}.inspector-vector-row>p{margin-bottom:2px}}

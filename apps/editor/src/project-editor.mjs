@@ -174,7 +174,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     let succeeded = false;
     try { await operation(); succeeded = true; }
     catch (error) { $("project-error").textContent = error.message; reportError(error); }
-    finally { busy = false; draw(succeeded);if(pendingOpenCompile){pendingOpenCompile=false;setTimeout(()=>{if(compiler.needsCompile())void compiler.request({flush:false});},0);} }
+    finally { busy = false;if(pendingOpenCompile){pendingOpenCompile=false;if(compiler.needsCompile())await compiler.request({flush:false});}draw(succeeded); }
     return succeeded;
   }
   async function run(type, data = {}) {

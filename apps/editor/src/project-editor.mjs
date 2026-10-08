@@ -248,7 +248,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       await run("scene.get");
     }finally{currentScriptJob=null;}
   });}
-  $("script-compile").addEventListener("click",()=>void compiler.request({legacy:!ide.current?.()}));
+  $("script-compile").addEventListener("click",()=>void compiler.request({legacy:!ide.current?.(),force:true}));
   $("script-cancel").addEventListener("click",async()=>{try{if(currentScriptJob)await send("script.job.cancel",{id:state.project.id,jobId:currentScriptJob.id});}catch(error){reportError(error);}});
   $("project-new").addEventListener("click", () => {
     const name = $("project-name").value.trim();

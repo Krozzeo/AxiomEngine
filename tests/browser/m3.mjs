@@ -84,6 +84,7 @@ try {
   }
   await (await control(page,"#play-stop")).click();await page.waitForFunction(()=>document.querySelector("#play-stop").disabled);
   assert.deepEqual((await state()).project,saved);report.criteria.push("Play without changing authoring state");
+  await (await control(page,"#game-tab")).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   // M3: update a source image shared by a sprite and a mesh, leaving a third source unchanged.
   async function command(type,data={}) {
     const response=await fetch(daemon.origin+"/v1/commands",{method:"POST",headers:{Origin:daemon.origin,Authorization:`Bearer ${daemon.token}`,"Content-Type":"application/json"},body:JSON.stringify(envelope("command",{type,data}))});
@@ -132,7 +133,7 @@ try {
   await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.renderer==="null"&&k.meshes===2&&k.frame>=15;}catch{return false;}});
   assert.match(await page.locator("#gpu-state").textContent(),/Null Renderer/);
   assert.deepEqual(errors,[]);
-  report.pixelEvidence=colors(savedImage);report.nullParity=true;report.passed=report.criteria.length===11;
+  report.pixelEvidence=colors(savedImage);report.nullParity=true;report.passed=report.criteria.length===12;
   await writeFile(join(evidence,"report.json"),JSON.stringify(report,null,2));
   console.log(JSON.stringify(report,null,2));
 } catch(error) {

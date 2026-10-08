@@ -2,13 +2,13 @@ import {projectFiles} from '../../../engine/scene/project-files.mjs';
 import {scriptMetadata} from '../../../engine/scripting/fields.mjs';
 
 // One compiler flight shared by toolbar, Play, project opening and automatic saves.
-export function mountCompileController({document,getState,dirty,compile,saveAuto,reportError}) {
- const q=id=>document.querySelector('#'+id); let flight=null,failed=null,timer=null,pendingAuto=null;
+export function mountCompileController({document,getState,dirty,compile,saveAuto,reportError,onCompiled=()=>{}}) {
+ const q=id=>document.querySelector('#'+id); let flight=null,failed=null,timer=null,pendingAuto=null,lastKind=null;
  const signature=()=>JSON.stringify([getState().project?.id,projectFiles(getState().project?.scene??{}).filter(f=>f.kind==='script').map(f=>[f.path,f.text]),q('script-mode')?.value??'development']);
  let cached=null,hash=null,ticket=0;
  function draw(){const state=getState(),key=signature();if(key!==cached){cached=key;hash=null;const next=++ticket;const files=JSON.parse(key)[1];void crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(files))).then(bytes=>{if(next!==ticket)return;hash=[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');paint();});}paint();}
  function paint(){const state=getState(),files=projectFiles(state.project?.scene??{}).filter(f=>f.kind==='script'),changed=dirty()||files.length>0&&(hash===null||hash!==state.project?.scene.script?.build.sourceHash||state.project?.scene.script?.build.sdkVersion!==2||state.project.scene.script.build.mode!==(q('script-mode')?.value??'development'));
-  const error=failed===cached&&!dirty(),kind=flight?'compiling':error?'error':changed?'pending':'compiled';const button=q('toolbar-compile');if(!button)return;
+  const error=failed===cached&&!dirty(),kind=flight?'compiling':error?'error':changed?'pending':'compiled';if(kind==='compiled'&&lastKind!=='compiled')onCompiled();lastKind=kind;const button=q('toolbar-compile');if(!button)return;
   button.dataset.state=kind;button.disabled=!state.project||!!state.workspaceId||!!flight||hash===null||!changed||error;button.classList?.toggle?.('dirty-compile',kind==='pending');q('compile-label').textContent={compiling:'Compiling',error:'Error',pending:'Compile*',compiled:'Compiled'}[kind];q('compile-icon').src='/icons/'+{compiling:'compiling',error:'compile-error',pending:'compile',compiled:'compile-ok'}[kind]+'.svg';button.title=kind==='error'?'Compilation failed. Edit the source and retry; diagnostics are in IDE':'Compile Project scripts · Ctrl+D';q('compile-auto').checked=pendingAuto??!!state.project?.editor?.autoCompile;q('compile-auto').disabled=!state.project||!!state.workspaceId||pendingAuto!==null;
  }
  async function request({flush=true,force=false,legacy=false,onlyChanged=false}={}){if(flight)return flight;const state=getState();if(!state.project||state.workspaceId)return false;if(!force&&failed===signature()&&(!dirty()||!flush))return false;

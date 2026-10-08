@@ -182,7 +182,7 @@ export class SceneWorkspace {
       return {assetId:data.assetId, asset:await this.pipeline.resource(data.id,this.project.scene,data.assetId)};
     }
     if(this.activeJob && ["project.create","project.open","project.close","project.save","scene.save"].includes(type))fail("AX_ASSET_0001","Wait for or cancel the active asset job first");
-    if (this.playing && !["scene.get", "play.stop", "project.list", "project.editor.update"].includes(type)) fail("AX_SCENE_0005", "Stop Play before editing or switching projects");
+    if (this.playing && !(type==='project.files.edit'&&data.action==='write') && !["scene.get", "scene.save", "play.stop", "project.list", "project.editor.update"].includes(type)) fail("AX_SCENE_0005", "Stop Play before editing or switching projects");
     if (type === "project.list") return this.store.run(type, data);
     if (["project.create", "project.open"].includes(type)) {
       if (this.dirty && (data.discardChanges !== true || data.expectedSceneRevision !== this.revision)) fail("AX_SCENE_0003", "Save or explicitly discard unsaved scene changes first");

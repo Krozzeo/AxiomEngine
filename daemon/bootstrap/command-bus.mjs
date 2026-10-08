@@ -51,7 +51,7 @@ export class CommandBus {
       trace.steps.push({ stage: "event.emitted", atMs: performance.now() - started, event: eventType });
       return event;
     } catch (error) {
-      const known = ["AX_TEST_0001","AX_TEST_0002","AX_REPLAY_0001","AX_REPLAY_0002","AX_WORKSPACE_0001","AX_AGENT_0001","AX_AGENT_0002","AX_AGENT_0003","AX_AGENT_0004","AX_SCRIPT_0001","AX_ASSET_0001", "AX_SCENE_0005", "AX_SCENE_0006", "AX_SCENE_0001", "AX_SCENE_0002", "AX_SCENE_0003", "AX_SCENE_0004", "AX_FS_0001", "AX_PROJECT_0001", "AX_PROJECT_0002", "AX_PROJECT_0003", "AX_PROJECT_0004", "AX_COMMAND_0002"];
+      const known = ["AX_AUTONOMY_0001","AX_AUTONOMY_0002","AX_TEST_0001","AX_TEST_0002","AX_REPLAY_0001","AX_REPLAY_0002","AX_WORKSPACE_0001","AX_AGENT_0001","AX_AGENT_0002","AX_AGENT_0003","AX_AGENT_0004","AX_SCRIPT_0001","AX_ASSET_0001", "AX_SCENE_0005", "AX_SCENE_0006", "AX_SCENE_0001", "AX_SCENE_0002", "AX_SCENE_0003", "AX_SCENE_0004", "AX_FS_0001", "AX_PROJECT_0001", "AX_PROJECT_0002", "AX_PROJECT_0003", "AX_PROJECT_0004", "AX_COMMAND_0002"];
       const code = known.includes(error.code) ? error.code : error.code === "ENOENT" ? "AX_PROJECT_0001" : "AX_PROJECT_0005";
       const detail = error.axiomDiagnostic ?? diagnostic(code, "project-store",
         known.includes(error.code) ? error.message : code === "AX_PROJECT_0001" ? "Project does not exist" : "Project storage operation failed",

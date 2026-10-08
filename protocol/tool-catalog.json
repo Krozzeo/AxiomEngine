@@ -1273,6 +1273,10 @@
                         "type": "string",
                         "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
                       },
+                      "sdkVersion": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
                       "sourceHash": {
                         "type": "string",
                         "pattern": "^[0-9a-f]{64}$"
@@ -3038,6 +3042,9 @@
           "expectedWorkspaceRevision": {
             "type": "integer",
             "minimum": 0
+          },
+          "playing": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -7453,6 +7460,46 @@
             ]
           },
           "values": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    {
+      "name": "autonomy.control",
+      "description": "Run, query or cancel a bounded objective/acceptance loop in an isolated proposal; never accepts or saves MAIN.",
+      "mutates": true,
+      "route": "agent",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "run",
+              "query",
+              "cancel"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sessionId": {
+            "type": "string",
+            "pattern": "^autonomy://[0-9a-f-]{36}$"
+          },
+          "plan": {
             "type": "object",
             "additionalProperties": true
           }

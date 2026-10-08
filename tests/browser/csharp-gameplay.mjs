@@ -34,8 +34,10 @@ try {
    const base={generation:1,entities:[entity],keys:[],attachments:[entity.id]};
    const start=await send({request:{...base,action:'start'}});
    const step=await send({request:{...base,action:'step',delta:.25,keys:['ArrowRight']}});
+   const changed=await send({request:{...base,action:'fields',edits:[{entityId:entity.id,path:'Scripts/InspectorProbe.cs',values:{Offset:[2,4,6],Cell:[8,12]}}]}});
+   const after=await send({request:{...base,action:'step',delta:.1}});
    const stop=await send({request:{...base,action:'stop'}});
-   return {start,step,stop};
+   return {start,step,changed,after,stop};
   }finally{worker.terminate();}
  });
  for(const r of Object.values(results))assert.equal(r.error,undefined,JSON.stringify(r));
@@ -43,5 +45,6 @@ try {
  assert.deepEqual(results.step.operations.find(o=>o.kind==='move').position,[.5,0,0]);assert.ok(results.stop.operations.some(o=>o.message==='C# stopped'));
  assert.ok(results.start.operations.some(o=>o.message==='Hydrated=7,9'));
  const fields=results.step.scriptValues.find(c=>c.path==='Scripts/InspectorProbe.cs').values;assert.equal(fields.Frames,1);assert.deepEqual(fields.Offset,[7,2,3]);assert.deepEqual(fields.Cell,[4,9]);assert.deepEqual(fields.Tint,[.2,.7,1,1]);
+ const live=results.after.scriptValues.find(c=>c.path==='Scripts/InspectorProbe.cs').values;assert.deepEqual(live.Offset,[2,4,6]);assert.deepEqual(live.Cell,[8,12]);assert.equal(live.Frames,2);
  console.log('CSHARP_GAMEPLAY='+JSON.stringify({passed:true,mode,build,results}));
 }finally{await browser?.close();if(server)await new Promise(r=>server.close(r));await rm(root,{recursive:true,force:true});}

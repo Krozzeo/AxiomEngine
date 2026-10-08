@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -27,7 +27,7 @@
     "mcp": "node daemon/mcp/stdio.mjs",
     "test:browser:m5": "node tests/browser/m5.mjs",
     "test:browser:m6": "node tests/browser/m6.mjs",
-    "demo": "node demos/create-m17-projects.mjs",
+    "demo": "node demos/create-m18-projects.mjs",
     "test:browser:m7": "node tests/browser/m7.mjs",
     "demo:m7": "node demos/create-projects.mjs",
     "test:browser:m8": "node tests/browser/m8.mjs",
@@ -55,7 +55,9 @@
     "test:browser:m16-1": "node tests/browser/m16-1.mjs",
     "demo:m16-1": "node demos/create-m16-1-projects.mjs",
     "demo:m17": "node demos/create-m17-projects.mjs",
-    "test:browser:m17": "node tests/browser/m17.mjs"
+    "test:browser:m17": "node tests/browser/m17.mjs",
+    "demo:m18": "node demos/create-m18-projects.mjs",
+    "test:browser:m18": "node tests/browser/m18.mjs"
   },
   "dependencies": {
     "occt-import-js": "0.0.23",

@@ -1,3 +1,6 @@
+import {runtimeEditableTypes} from '../../../engine/scene/runtime-edit.mjs';
+import {mountCompileController} from './compile-controller.mjs';
+import {mountInspectorUX} from './inspector-ux.mjs';
 import {projectFiles} from '../../../engine/scene/project-files.mjs';
 import {mountScriptEditor} from './script-editor.mjs';
 import {mountCodeEditor} from './code-editor.mjs';
@@ -19,18 +22,21 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let scriptEnabled=false,currentScriptJob=null,scriptProject=null,scriptBuild=null;
   let busy = false, assetRefreshing=false;
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
-  let filePaths=[],ideDirty=false;
+  let filePaths=[],ideDirty=false,pendingOpenCompile=false;
   let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
   let hierarchyScrolling=false,hierarchyPaint=null;
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
-  const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
+  const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
   function draw(updateFields = true) {
     $("editor-workspace").setAttribute("aria-busy",String(busy));
     const project = state.project;if(!busy)panels.set(project?.editor);
-    const entity = selection.size===1?project?.scene.entities.find(item => item.id === selected):null;
+    const scene=state.playing?getRenderer()?.interaction?.().scene??project?.scene:project?.scene;
+    const entity = selection.size===1?scene?.entities.find(item => item.id === selected):null;
     const file=browser.files().find(f=>filePaths.length===1&&f.path===filePaths[0]);
     if($('file-inspector')){$('file-inspector').hidden=!file;$('file-inspector-name').textContent=file?file.path.split('/').at(-1):'';$('file-inspector-path').textContent=file?.path??'';$('file-inspector-kind').textContent=file?.kind??'';$('file-inspector-open').hidden=file?.kind!=='script';}
-    if($('entity-form'))$('entity-form').hidden=!!file;
+    if($('entity-form'))$('entity-form').hidden=!!file||!selection.size;
+    if($('add-component'))$('add-component').hidden=!entity;
+    if($('selection-status'))$('selection-status').hidden=!file&&!selection.size;
     const attached=project?.scene.script?.attachments.includes(entity?.id);
     if($('selection-status')){
       $('selection-status').textContent=selection.size>1?`${selection.size} entities selected · transform editing enabled`:file?file.path.split('/').at(-1):entity?.name??'Select an entity';
@@ -40,7 +46,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       $('physics-freeze').checked=entity?.rigidBody?.freezeRotation??false;
       $('rigidbody-remove').hidden=!entity?.rigidBody;
     }
-    const editing=enabled&&!busy&&!state.playing;
+    const editing=enabled&&!busy&&!state.playing,valuesEditing=enabled&&!busy&&!state.workspaceId;
     $("script-source").disabled=!scriptEnabled||!project||!entity||busy;
     $("script-mode").disabled=!scriptEnabled||!project||busy;
     $("script-compile").disabled=!scriptEnabled||!project||busy;
@@ -58,11 +64,11 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("scene-undo").disabled = !editing || !state.canUndo;
     $("scene-redo").disabled = !editing || !state.canRedo;
     $("scene-delete").disabled = !editing || !selection.size;
-    $("entity-fields").disabled = !editing || !selection.size;
+    $("entity-fields").disabled = !valuesEditing || !selection.size;
     $("entity-name").disabled=selection.size!==1;
-    for(const key of ['material','light','lod','render'])$(key+'-fields').disabled=!editing||!(key==='render'?project:entity);
-    $("physics-fields").disabled = !editing || !entity;
-    if($("rigidbody-fields"))$("rigidbody-fields").disabled=!editing||!entity;
+    for(const key of ['material','light','lod','render'])$(key+'-fields').disabled=!(key==='render'?editing:valuesEditing)||!(key==='render'?project:entity);
+    $("physics-fields").disabled = !valuesEditing || !entity;
+    if($("rigidbody-fields"))$("rigidbody-fields").disabled=!valuesEditing||!entity;
     $("project-close").disabled=!editing||!project;
     const chosen=project?.scene.assets?.find(a=>a.id===$("asset-list").value);
     $("asset-replace").disabled=!editing||!pipelineEnabled||!chosen;
@@ -72,7 +78,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("asset-file").disabled=!editing||!project;
     $("asset-import").disabled=!editing||!project;
     $("asset-place").disabled=!editing||!project||!$("asset-list").value;
-    $("camera-fields").disabled=!editing||!entity?.camera;
+    $("camera-fields").disabled=!valuesEditing||!entity?.camera;
     $("play-start").disabled=!editing||!project;
     $("play-stop").disabled=busy||!state.playing;
     $("scene-tab").disabled=busy||!project;
@@ -145,7 +151,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       $("toolbar-save").setAttribute("aria-label",state.dirty?"Save project (unsaved changes)":"Save project");
     }
     if($("save-dirty"))$("save-dirty").hidden=!state.dirty;
-    twoDEditor.draw();animationEditor.draw();scriptEditor.draw();if(document.defaultView){const previous=$('component-choice').value;$('component-search').dispatchEvent(new Event('input'));if([...$('component-choice').options].some(o=>o.value===previous))$('component-choice').value=previous;}audioEditor.draw();actions.draw();
+    twoDEditor.draw();animationEditor.draw();scriptEditor.draw();if(document.defaultView){const previous=$('component-choice').value;$('component-search').dispatchEvent(new Event('input'));if([...$('component-choice').options].some(o=>o.value===previous))$('component-choice').value=previous;}audioEditor.draw();actions.draw();inspectorUX.draw();compiler.draw();
     ide.draw();
     $("scene-save").textContent=state.dirty?"Save*":"Save";$("scene-save").classList?.toggle?.("dirty-save",state.dirty);
     paintDirty();
@@ -168,11 +174,13 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     let succeeded = false;
     try { await operation(); succeeded = true; }
     catch (error) { $("project-error").textContent = error.message; reportError(error); }
-    finally { busy = false; draw(succeeded); }
+    finally { busy = false; draw(succeeded);if(pendingOpenCompile){pendingOpenCompile=false;setTimeout(()=>{if(compiler.needsCompile())void compiler.request({flush:false});},0);} }
     return succeeded;
   }
   async function run(type, data = {}) {
+    if(state.playing&&runtimeEditableTypes.includes(type)){await getRenderer().editRuntime({type,data});return {runtimeOnly:true};}
     const event = await send(type, data);
+    if(type==='project.open'||type==='project.create')pendingOpenCompile=true;
     adopt(event.payload.data);
     if(['project.create','project.open','project.close','scene.asset.place','scene.primitive.create','scene.example.create','scene.camera.update','scene.save','scene.undo','scene.redo','scene.rendering.update','asset.import','asset.job.start'].includes(type)){if($('file-menu'))$('file-menu').open=false;if($('settings-menu'))$('settings-menu').open=false;}
     if(type==='scene.example.create'||type==='scene.primitive.create'||type==='scene.entity.create'){for(const id of ['create-menu','file-menu'])if($(id))$(id).open=false;}
@@ -192,15 +200,18 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if (projects.some(project => project.id === previous)) $("project-list").value = previous;
   }
   const mutation = extra => ({ id: state.project?.id, expectedSceneRevision: state.sceneRevision, ...extra });
-  const audioEditor=mountAudioEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null,getRenderer});
-  const animationEditor=mountAnimationEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null,getRenderer});
-  const twoDEditor=mountTwoDEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null});
+  const componentState=()=>state.playing?{...state,project:{...state.project,scene:getRenderer()?.interaction?.().scene??state.project.scene}}:state;
+  const audioEditor=mountAudioEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null,getRenderer});
+  const animationEditor=mountAnimationEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null,getRenderer});
+  const twoDEditor=mountTwoDEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null});
   function fileSelection(paths){filePaths=paths;selected=null;selection.clear();draw();}
-  function paintDirty(){const pending=state.dirty||ideDirty;if($('project-title')){$('project-title').textContent=state.project?(state.project.name+(pending?'*':'')):'';$('project-title').classList?.toggle?.('dirty-title',pending);}if($('scene-save')){$('scene-save').textContent=pending?'Save*':'Save';$('scene-save').classList?.toggle?.('dirty-save',pending);$('scene-save').disabled=!state.project||state.playing||busy||!pending;}if($('toolbar-save'))$('toolbar-save').disabled=$('scene-save').disabled;if($('save-dirty'))$('save-dirty').hidden=!pending;onDirty(pending&&!state.workspaceId);}
-  const ide=mountCodeEditor({document,getState:()=>state,write:async data=>{const projectId=state.project?.id;let attempts=0;while(busy&&attempts++<600)await new Promise(resolve=>setTimeout(resolve,50));if(state.project?.id!==projectId)throw Error('The project changed before this script could be saved');return act(()=>run('project.files.edit',mutation(data)));},show:id=>panels.openPanel(id,{centerIfClosed:true}),persist:async()=>{if(state.dirty)await act(()=>run('scene.save',mutation()));},onOpen:file=>{$('script-source').value=file.text;},onDirty:value=>{ideDirty=value;paintDirty();},reportError});
+  function paintDirty(){const pending=state.dirty||ideDirty;if($('project-title')){$('project-title').textContent=state.project?('● '+state.project.name+(pending?'*':'')):'';$('project-title').classList?.toggle?.('dirty-title',pending);}if($('scene-save')){$('scene-save').textContent=pending?'Save*':'Save';$('scene-save').classList?.toggle?.('dirty-save',pending);$('scene-save').disabled=!state.project||state.playing||busy||!pending;}if($('toolbar-save'))$('toolbar-save').disabled=$('scene-save').disabled;if($('save-dirty'))$('save-dirty').hidden=!pending;onDirty(pending&&!state.workspaceId);}
+  const ide=mountCodeEditor({document,getState:()=>state,write:async data=>{const projectId=state.project?.id;let attempts=0;while(busy&&attempts++<600)await new Promise(resolve=>setTimeout(resolve,50));if(state.project?.id!==projectId)throw Error('The project changed before this script could be saved');return act(()=>run('project.files.edit',mutation(data)));},show:id=>panels.openPanel(id,{centerIfClosed:true}),persist:async()=>{if(state.dirty)await act(()=>run('scene.save',mutation()));},onOpen:file=>{$('script-source').value=file.text;},onDirty:value=>{ideDirty=value;paintDirty();compiler?.draw();},onSaved:()=>compiler.sourceSaved(),reportError});
   const browser=mountProjectBrowser({document,getState:()=>state,mutate:data=>act(async()=>{await run('project.files.edit',mutation(data));ide.filesChanged(data);}),selectAsset:id=>{$('asset-list').value=id;},selectScript:file=>void ide.open(file),onSelection:fileSelection,beforeEdit:()=>ide.flush(),onFilesChanged:()=>{filePaths=browser.selection();},reportError});
   $('file-inspector-open')?.addEventListener('click',()=>browser.open(filePaths[0]));
-  const scriptEditor=mountScriptEditor({document,getState:()=>state,getSelection:()=>selection.size===1?selected:null,act,run,mutation,open:path=>browser.open(path),reveal:path=>{panels.openPanel('project');browser.reveal(path);},getRenderer,reportError});
+  const scriptEditor=mountScriptEditor({document,getState:componentState,getSelection:()=>selection.size===1?selected:null,act,run,mutation,open:path=>browser.open(path),reveal:path=>{panels.openPanel('project');browser.reveal(path);},getRenderer,reportError});
+  const compiler=mountCompileController({document,getState:()=>state,dirty:()=>ideDirty,compile:compileProject,saveAuto:value=>act(()=>run('project.editor.update',mutation({value:{...state.project.editor,autoCompile:value}}))),reportError});
+  const inspectorUX=mountInspectorUX({document,getSelection:()=>selected});
   const actions=mountEditorActions({document,getState:()=>state,getSelection:()=>[...selection],select,act,run,mutation,browser,reportError,locate:onLocate,scriptEditor});
   const number=id=>Number($(id).value),vector=(id,n)=>Array.from({length:n},(_,i)=>number(id+'-'+i));
   for(const key of ['material','light','lod','render']){
@@ -219,7 +230,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     await run(type, { ...data, discardChanges: state.dirty, expectedSceneRevision: state.sceneRevision });
     await list();
   }
-  async function compileProject(path=ide.current?.()){await ide.flush();return act(async()=>{
+  async function compileProject(path=ide.current?.(),{flush=true}={}){if(flush)await ide.flush();return act(async()=>{
     const source=$("script-source").value,mode=$("script-mode").value;
     $("script-diagnostics").textContent="";
     currentScriptJob=(await run("script.compile",mutation({...(path?{path}:{source}),mode,attachments:path?[]:selected?[selected]:[]}))).job;draw(false);
@@ -237,7 +248,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       await run("scene.get");
     }finally{currentScriptJob=null;}
   });}
-  $("script-compile").addEventListener("click",()=>void compileProject().catch(reportError));
+  $("script-compile").addEventListener("click",()=>void compiler.request({legacy:!ide.current?.()}));
   $("script-cancel").addEventListener("click",async()=>{try{if(currentScriptJob)await send("script.job.cancel",{id:state.project.id,jobId:currentScriptJob.id});}catch(error){reportError(error);}});
   $("project-new").addEventListener("click", () => {
     const name = $("project-name").value.trim();
@@ -280,8 +291,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("camera-form").addEventListener("submit",event=>{event.preventDefault();return act(()=>run('scene.camera.set',mutation({entityId:selected,value:{active:$("camera-active").checked,projection:$("camera-projection").value,fov:number('camera-fov'),orthoHeight:number('camera-ortho')}})));});
   $("camera-remove").addEventListener('click',()=>act(()=>run('scene.component.remove',mutation({entityId:selected,component:'Camera'}))));
   $("project-close").addEventListener("click",()=>act(async()=>{if((state.dirty||ideDirty)&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
-  $("play-start").addEventListener("click",()=>void (async()=>{await ide.flush();const scene=state.project.scene,component=scene.entities.flatMap(e=>e.scriptComponents??[])[0];if(component){const files=projectFiles(scene).filter(f=>f.kind==='script'),hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(files.map(f=>[f.path,f.text])))))].map(b=>b.toString(16).padStart(2,'0')).join('');if(scene.script?.build.sourceHash!==hash){if(!await compileProject(component.path))return;}}return act(async()=>{await run("play.start",mutation());if(!getRenderer()?.parallelViewport?.()){view='game';panels.activateView('game');}});})().catch(reportError));
-  $("play-stop").addEventListener("click",()=>act(()=>run("play.stop",mutation())));
+  $("play-start").addEventListener("click",()=>void (async()=>{await ide.flush();if(compiler.needsCompile()&&!await compiler.request({flush:false}))return;return act(async()=>{await run("play.start",mutation());view='game';panels.activateView('game');});})().catch(reportError));
+  $("play-stop").addEventListener("click",()=>act(async()=>{await run("play.stop",mutation());view="scene";panels.activateView("scene");}));
   for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;panels.activateView(name);draw(false);});
   $("project-list").addEventListener("change", draw);
   $("project-refresh").addEventListener("click", () => act(list));
@@ -294,7 +305,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("physics-form").addEventListener("submit",event=>{event.preventDefault();const shape=$("physics-shape").value;return act(()=>shape==='none'?run('scene.component.remove',mutation({entityId:selected,component:'Collider'})):run('scene.collider.set',mutation({entityId:selected,value:{shape,dimension:Number($("physics-dimension").value),halfExtents:[0,1,2].map(i=>Number($("physics-half-"+i).value)),trigger:$("physics-trigger").checked,layer:Number($("physics-layer").value),mask:Number($("physics-mask").value)}})));});
   $('rigidbody-form')?.addEventListener('submit',event=>{event.preventDefault();return act(()=>{if($('physics-motion').value==='static')return run('scene.component.remove',mutation({entityId:selected,component:'RigidBody'}));const old=state.project.scene.entities.find(e=>e.id===selected).rigidBody;return run('scene.rigidBody.set',mutation({entityId:selected,value:{...old,mass:Number($('physics-mass').value),friction:Number($('physics-friction').value),restitution:Number($('physics-restitution').value),gravityScale:Number($('physics-gravity').value),freezeRotation:$('physics-freeze').checked}}));});});
   $("entity-form").addEventListener("submit", event => {
-    event.preventDefault();const updates=state.project.scene.entities.filter(e=>selection.has(e.id)).map(e=>{const t=structuredClone(e.transform);const rotation=eulerFromQuaternion(t.rotation);for(const group of ['position','rotation','scale'])for(let i=0;i<3;i++){const raw=$(group+'-'+i).value.trim();if(raw!==''){const value=Number(raw);if(!Number.isFinite(value))throw Error('Transform values must be finite');if(group==='rotation')rotation[i]=value;else t[group][i]=value;}}t.rotation=quaternionFromEuler(rotation);return {entityId:e.id,transform:t};});
+    event.preventDefault();const updates=(state.playing?getRenderer().interaction().scene:state.project.scene).entities.filter(e=>selection.has(e.id)).map(e=>{const t=structuredClone(e.transform);const rotation=eulerFromQuaternion(t.rotation);for(const group of ['position','rotation','scale'])for(let i=0;i<3;i++){const raw=$(group+'-'+i).value.trim();if(raw!==''){const value=Number(raw);if(!Number.isFinite(value))throw Error('Transform values must be finite');if(group==='rotation')rotation[i]=value;else t[group][i]=value;}}t.rotation=quaternionFromEuler(rotation);return {entityId:e.id,transform:t};});
     return act(()=>updates.length===1?run('scene.entity.update',mutation({...updates[0],name:$('entity-name').value})):run('scene.entities.update',mutation({updates,space:'local'})));
   });
   function select(id,options=false){if(busy)return;filePaths=[];browser.clear(false);const o=typeof options==='boolean'?{toggle:options}:options;const valid=state.project?.scene.entities.some(e=>e.id===id);if(o.range&&valid){selection=new Set(rangeSelection(hierarchyRows(state.project.scene.entities,collapsed),anchor,id));}else{if(!o.toggle)selection.clear();if(valid){if(o.toggle&&selection.has(id))selection.delete(id);else selection.add(id);}anchor=id;}selected=selection.has(id)?id:[...selection].at(-1)??null;draw();}

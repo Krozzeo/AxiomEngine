@@ -2482,6 +2482,17 @@
               "assistantInstructions": {
                 "type": "string",
                 "maxLength": 4000
+              },
+              "autoCompile": {
+                "type": "boolean"
+              },
+              "autonomyPlans": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
               }
             }
           }

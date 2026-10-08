@@ -307,3 +307,5 @@ input[type="file"] { font-size: 11px; }
 #project-files .tree-toggle{font-size:18px;width:20px;flex-basis:20px}
 
 .vector-inputs>.inspector-row{grid-template-columns:16px minmax(0,1fr);gap:3px}.inspector-row>label{margin:0}#ai-proposals>.submenu{max-height:calc(100vh - 100px);overflow:auto}#autonomy-panel textarea{width:100%;box-sizing:border-box}#autonomy-result{max-height:240px;overflow:auto}
+
+.inspector-vector-row{display:grid;grid-template-columns:minmax(65px,28%) minmax(0,1fr);gap:5px;align-items:center;margin:6px 0}.inspector-vector-row>p{margin:0;font-size:12px}.inspector-vector-row .vector-inputs{min-width:0;margin:0}

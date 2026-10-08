@@ -152,7 +152,11 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     } finally {runtimeEditing=false;}
   }
   async function setSnapshot(snapshot,internalTest=false) {
-    if(!internalTest&&!testing&&snapshot.playing&&playing&&snapshot.project?.id===currentProject&&(snapshot.workspaceId??null)===workspaceId&&snapshot.project.scene.script?.build.id===runtimeScene.script?.build.id){currentSnapshot=structuredClone(snapshot);sceneRevision=snapshot.sceneRevision;return;}
+    if(!internalTest&&!testing&&snapshot.playing&&playing&&snapshot.project?.id===currentProject&&(snapshot.workspaceId??null)===workspaceId&&snapshot.project.scene.script?.build.id===runtimeScene.script?.build.id){
+      const ticket=generation;snapshotLoading=true;
+      try{while(frameInProgress)await new Promise(resolve=>setTimeout(resolve,1));if(ticket!==generation||disposed)return;currentSnapshot=structuredClone(snapshot);if(sceneRevision!==snapshot.sceneRevision){sceneRevision=snapshot.sceneRevision;profiler.reset({projectId:currentProject,sceneRevision,workspaceId,generation});}if(captureRequest){captureRequest.reject(new Error('Scene revision changed before capture'));captureRequest=null;}}
+      finally{if(ticket===generation)snapshotLoading=false;}return;
+    }
 
     if(!internalTest){currentSnapshot=structuredClone(snapshot);if(testing){testing=false;testSession.control({action:'cancel'});replaySession.control({action:'cancel'});}}
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}

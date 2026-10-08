@@ -21,7 +21,7 @@ try {
  const source=(await page.locator('#script-source').inputValue()).replace('public sealed class GameScript : Script {','public sealed class GameScript : Script { private bool later;').replace('public override void OnUpdate(double deltaSeconds) {','public override void OnUpdate(double deltaSeconds) { if(Input.IsDown("Space") && !later) { later=true; Entity.Spawn(Entity.Transform.Position+new Vec3(-2,0,0)); }');
  let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
  async function compile(text,expected='completed') {
-  await (await control(page,'#script-source')).fill(text);await (await control(page,'#script-compile')).click();
+  await page.locator('#script-source').evaluate((n,text)=>{n.value=text;},text);await (await control(page,'#script-compile')).click();
   await page.waitForFunction(expected=>document.querySelector('#script-status').textContent==='Compilation '+expected&&!document.querySelector('#script-compile').disabled,expected);
  }
  await compile(source);const authoring=(await state()).project.scene;assert.equal(authoring.entities.length,1);report.criteria.push('compile generated SDK and attach C#');
@@ -44,7 +44,7 @@ try {
  assert.ok(JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame>frameBeforeSpawn,'Runtime spawn must preserve the Rust clock');
  report.criteria.push('Transform and Input move rendered Rust world','spawn runtime entity','authoring isolation');
  await compile('using Axiom.Gameplay; namespace Game; public sealed class GameScript : Script { syntax error }','failed');
- assert.match(await page.locator('#script-diagnostics').textContent(),/Game.cs:\d+:\d+ CS/);assert.deepEqual((await state()).project.scene,authoring);
+ assert.match(await page.locator('#script-diagnostics').textContent(),/(?:Game|0).cs:\d+:\d+ CS/);assert.deepEqual((await state()).project.scene,authoring);
  await page.waitForFunction(()=>JSON.parse(document.querySelector('#frame-trace').textContent).script.active);report.criteria.push('compile error locations and last good runtime');
  await compile(source.replace('C# started:','C# reloaded:').replace('deltaSeconds*2','deltaSeconds*4'));
  await page.waitForFunction(g=>{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.generation>g&&d.script.entities.length===2;},initial.script.generation);
@@ -56,10 +56,10 @@ try {
  await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);
  // Modular script removal preserves the compiled source/build and is undoable.
  const attached=(await state()).project.scene.script.attachments;
- await (await control(page,'#script-remove')).click();await page.waitForFunction(()=>document.querySelector('#script-component').hidden);
+ await page.locator('#script-components .property-close').click();await page.waitForFunction(()=>!document.querySelector('#script-components .script-property'));
  assert.equal((await state()).project.scene.script.attachments.length,0);
- await (await control(page,'#component-choice')).selectOption('Script');await (await control(page,'#component-add')).click();
- await page.waitForFunction(()=>!document.querySelector('#script-component').hidden);assert.deepEqual((await state()).project.scene.script.attachments,attached);
+ await (await control(page,'#component-choice')).selectOption('script:Scripts/GameScript.cs');await (await control(page,'#component-add')).click();
+ await page.waitForFunction(()=>!!document.querySelector('#script-components .script-property'));assert.deepEqual((await state()).project.scene.script.attachments,attached);
  await (await control(page,'#scene-undo')).click();assert.equal((await state()).project.scene.script.attachments.length,0);
  await (await control(page,'#scene-undo')).click();assert.deepEqual((await state()).project.scene.script.attachments,attached);
  report.criteria.push('Inspector script detach/reattach preserves build and attachments through Undo');

@@ -1,15 +1,16 @@
+import {clusterLod} from '../../engine/assets/advanced.mjs';
 import { Worker } from 'node:worker_threads';
 import { createHash, randomUUID } from 'node:crypto';
 import { lstat, open, rename, rm } from 'node:fs/promises';
 import { projectError } from '../../protocol/src/project-document.mjs';
-export const IMPORTER_VERSION='axiom-png-glb-wav/5';
+export const IMPORTER_VERSION='axiom-assets-cad/6';
 const hash=data=>createHash('sha256').update(data).digest('hex');
 const fail=message=>projectError('AX_ASSET_0001',message);
 // Fixed internal worker module: clients cannot choose executables or modules.
-export function importInWorker(bytes,signal) {
+export function importInWorker(bytes,signal,settings) {
   return new Promise((resolve,reject)=>{
     if(signal?.aborted)return reject(fail('Import cancelled'));
-    const worker=new Worker(new URL('../../engine/assets/import-worker.mjs',import.meta.url),{workerData:bytes,resourceLimits:{maxOldGenerationSizeMb:128}});
+    const worker=new Worker(new URL('../../engine/assets/import-worker.mjs',import.meta.url),{workerData:{bytes,settings},resourceLimits:{maxOldGenerationSizeMb:128}});
     let done=false;
     const finish=(error,asset)=>{if(done)return;done=true;clearTimeout(timer);signal?.removeEventListener('abort',abort);void worker.terminate();error?reject(error):resolve(asset);};
     const abort=()=>finish(fail('Import cancelled'));
@@ -23,7 +24,7 @@ export function importInWorker(bytes,signal) {
 export class AssetPipeline {
   constructor(store){this.store=store;}
   source(record){return record.sourceId??record.id;}
-  dependencies(record){return record.textureId?[record.textureId]:[];}
+  dependencies(record){return [...(record.textureId?[record.textureId]:[]),...(record.variant?[record.variant.assetId]:[])];}
   keys(scene) {
     const records=new Map((scene.assets??[]).map(a=>[a.id,a])),keys=new Map(),visiting=new Set();
     const visit=id=>{
@@ -31,7 +32,7 @@ export class AssetPipeline {
       const item=records.get(id);if(!item||visiting.has(id))throw fail('Missing or cyclic asset dependency');
       visiting.add(id);
       const dependencies=this.dependencies(item).map(dep=>[dep,visit(dep)]);
-      const key=hash(JSON.stringify({version:IMPORTER_VERSION,source:this.source(item),dependencies}));
+      const key=hash(JSON.stringify({version:IMPORTER_VERSION,source:this.source(item),processing:item.processing??null,variant:item.variant??null,dependencies}));
       keys.set(id,key);visiting.delete(id);return key;
     };
     for(const id of records.keys())visit(id);
@@ -62,7 +63,7 @@ export class AssetPipeline {
     const key=keys.get(id),cached=await this.cached(projectId,key);
     if(signal?.aborted)throw fail('Import cancelled');
     if(cached){if(stats)stats.cacheHits.push(id);return cached;}
-    const asset=await importInWorker(bytes,signal);
+    const asset=record.variant?clusterLod(await this.resource(projectId,scene,record.variant.assetId,signal,null,keys),record.variant.ratio):await importInWorker(bytes,signal,record.processing);
     if(asset.kind!==record.kind)throw fail('Replacement source changes asset kind');
     if(record.textureId) {
       if(asset.kind!=='mesh')throw fail('Only meshes accept texture dependencies');

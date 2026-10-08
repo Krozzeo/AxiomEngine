@@ -1,5 +1,8 @@
+import {reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
+import {meshSettings} from '../../engine/assets/advanced.mjs';
+import {createHash} from 'node:crypto';
 import {revealProjectFiles} from './project-explorer.mjs';
-import {editProjectFiles,syncImportedFiles} from '../../engine/scene/project-files.mjs';
+import {editProjectFiles,syncImportedFiles,projectFiles} from '../../engine/scene/project-files.mjs';
 import {primitiveSprite} from '../../engine/scene/primitive-sprites.mjs';
 import {PNG} from 'pngjs';
 import {twoDDefaults,component2DDefaults} from '../../engine/renderer/two-d-plan.mjs';
@@ -83,7 +86,7 @@ export class SceneWorkspace {
   }
   startJob(data,context) {
     if(this.activeJob)fail("AX_ASSET_0001","An asset job is already running");
-    if(!["import","replace","bindTexture"].includes(data.operation))fail("AX_ASSET_0001","Unknown asset job operation");
+    if(!["import","replace","bindTexture","process"].includes(data.operation))fail("AX_ASSET_0001","Unknown asset job operation");
     const scene=copy(this.project.scene),previous=copy(scene.assets??[]),projectId=this.project.id,revision=this.revision;
     const job={id:randomUUID(),projectId,assetId:data.assetId??null,operation:data.operation,status:"queued",traceId:context?.traceId??null};
     this.jobs.set(job.id,job);if(this.jobs.size>64)this.jobs.delete(this.jobs.keys().next().value);
@@ -96,19 +99,26 @@ export class SceneWorkspace {
         scene.assets??=[];
         let record=scene.assets.find(a=>a.id===data.assetId);
         if(data.operation!=="import"&&!record)fail("AX_ASSET_0001","Asset is not in this project");
-        if(data.operation==="bindTexture") {record.textureId=data.textureId;validateProject({...this.project,scene});}
+        if(data.operation==='process'){if(record.kind!=='mesh'||record.variant)fail('AX_ASSET_0001','Select an original static mesh');record.processing=meshSettings(data.settings??{});}else if(data.operation==="bindTexture") {record.textureId=data.textureId;validateProject({...this.project,scene});}
         else {
-          const imported=await this.assets.put(projectId,data.name??record?.name,data.base64,bytes=>importInWorker(bytes,controller.signal));
+          const imported=await this.assets.put(projectId,data.name??record?.name,data.base64,bytes=>importInWorker(bytes,controller.signal,data.settings));
           if(data.operation==="replace") {if(imported.kind!==record.kind)fail("AX_ASSET_0001","Replacement source changes asset kind");record.sourceId=imported.id;}
           else {
             if(scene.assets.length>=128)fail("AX_ASSET_0001","Project asset limit is 128");
             record=scene.assets.find(a=>a.id===imported.id);
-            if(!record){record=imported;scene.assets.push(record);}
+            if(!record){record={...imported,...(data.settings&&imported.kind==='mesh'?{processing:meshSettings(data.settings)}:{})};scene.assets.push(record);}
             job.assetId=record.id;
           }
         }
         validateProject({...this.project,scene});
         job.build=await this.pipeline.build(projectId,scene,previous,controller.signal);
+        if(data.operation==='process'){
+          const entity=scene.entities.find(e=>e.id===data.entityId&&e.renderable?.assetId===record.id);if(!entity)fail('AX_SCENE_0001','Select an entity using this mesh');
+          const base=await this.pipeline.resource(projectId,scene,record.id,controller.signal);if(base.animation)fail('AX_ASSET_0001','Generated LOD/collision supports static meshes');
+          if(data.generateLod){const levels=[];for(const [ratio,distance]of [[.6,10],[.25,25]]){const id='asset://'+createHash('sha256').update(JSON.stringify({base:record.id,ratio,version:1})).digest('hex');if(!scene.assets.some(a=>a.id===id))scene.assets.push({id,sourceId:record.sourceId??record.id,name:record.name+' LOD '+ratio,kind:'mesh',variant:{assetId:record.id,ratio}});levels.push({assetId:id,distance});}entity.lod={levels};}
+          if(data.generateCollider){const minimum=base.bounds.minimum,maximum=base.bounds.maximum,center=minimum.map((v,i)=>(v+maximum[i])/2);if(center.some(v=>Math.abs(v)>1e-6))fail('AX_ASSET_0001','Enable Center geometry before generating a centered box Collider');entity.collider={dimension:3,shape:'box',halfExtents:minimum.map((v,i)=>Math.max(.001,(maximum[i]-v)/2)),trigger:false,layer:1,mask:4294967295};}
+          job.build=await this.pipeline.build(projectId,scene,previous,controller.signal);
+        }
         if(this.project?.id!==projectId||this.revision!==revision||this.playing)fail("AX_SCENE_0002","Scene changed during import; retry on the current revision");
         await this.validateResources(scene);
         if(controller.signal.aborted)fail("AX_ASSET_0001","Import cancelled");
@@ -121,7 +131,7 @@ export class SceneWorkspace {
   }
   startScript(data,context) {
     if(this.activeScriptJob)fail("AX_SCRIPT_0001","A script compilation is already running");
-    if(typeof data.source!=="string"||Buffer.byteLength(data.source)>65536)fail("AX_SCRIPT_0001","C# source exceeds 64 KiB");
+    if(!data.path&&(typeof data.source!=="string"||Buffer.byteLength(data.source)>65536))fail("AX_SCRIPT_0001","C# source exceeds 64 KiB");
     if(!["development","aot"].includes(data.mode??"development"))fail("AX_SCRIPT_0001","Invalid compiler mode");
     if(!Array.isArray(data.attachments)||data.attachments.length>32||new Set(data.attachments).size!==data.attachments.length||data.attachments.some(id=>!this.project.scene.entities.some(e=>e.id===id)))fail("AX_SCRIPT_0001","Select up to 32 existing entities");
     const projectId=this.project.id,revision=this.revision,scene=copy(this.project.scene),controller=new AbortController();
@@ -131,10 +141,15 @@ export class SceneWorkspace {
     setImmediate(async()=>{
       try {
         job.status="running";
-        const build=await this.compiler.build(projectId,data.source,data.mode??"development",controller.signal);
+    const {entries,selected:sourceFile}=compileSources(scene,data.path,data.source);scene.projectFiles=entries.map(({path,kind,text})=>({path,kind,text})).concat(projectFiles(scene).filter(f=>f.kind!=='script'));
+    reconcileScriptComponents(scene);
+    for(const entityId of scene.script?.attachments??[]){const entity=scene.entities.find(e=>e.id===entityId);if(entity&&!entity.scriptComponents?.length)setScriptComponent(scene,entityId,sourceFile.path,'attach');}
+    for(const entityId of data.attachments){const e=scene.entities.find(e=>e.id===entityId);if(!e.scriptComponents?.some(c=>c.path===sourceFile.path))setScriptComponent(scene,entityId,sourceFile.path,'attach');}
+
+        const build=await this.compiler.build(projectId,sourceFile.text,data.mode??"development",controller.signal,entries);
         if(controller.signal.aborted)fail("AX_SCRIPT_0001","Compilation cancelled");
         if(this.project?.id!==projectId||this.revision!==revision)fail("AX_SCENE_0002","Scene changed during compilation; retry");
-        scene.script={source:data.source,attachments:[...new Set([...(scene.script?.attachments??[]),...data.attachments])],build};this.commitScene(scene);
+        scene.script={source:sourceFile.text,entryPath:sourceFile.path,sources:entries.filter(f=>f.metadata).map(f=>({path:f.path,typeName:f.metadata.typeName})),attachments:[...new Set([...(scene.script?.attachments??[]),...scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id)])],build};this.commitScene(scene);
         job.status="completed";job.build=build;job.sceneRevision=this.revision;
       }catch(error){job.status=controller.signal.aborted?"cancelled":"failed";job.error={code:error.code??"AX_SCRIPT_0001",message:error.message,diagnostics:error.diagnostics??[]};}
       finally{this.activeScriptJob=null;this.onScriptEvent?.(copy(job),context);}
@@ -208,7 +223,7 @@ export class SceneWorkspace {
     if(type==='project.files.reveal'){if(data.workspaceId)fail('AX_WORKSPACE_0001','Explorer export is only available for MAIN');try{return await revealProjectFiles(this,data.path??'',data.open===false?null:undefined);}catch(e){fail('AX_FS_0001',e.message);}}
     if(type==="asset.job.start")return this.startJob(data,context);
     if(type==="play.start" || type==="play.stop") {
-      if(type==="play.start")await this.validateResources(this.project.scene);
+      if(type==="play.start"){const scene=this.project.scene;if(scene.entities.some(e=>e.scriptComponents?.length)){const hash=createHash('sha256').update(JSON.stringify(projectFiles(scene).filter(f=>f.kind==='script').map(f=>[f.path,f.text]))).digest('hex');if(scene.script?.build.sourceHash!==hash)fail('AX_SCRIPT_0001','Compile the current Project scripts before Play');}await this.validateResources(scene);}
       this.playing=type==="play.start";
       this.revision++;
       return this.snapshot();
@@ -236,9 +251,10 @@ export class SceneWorkspace {
     }
     const scene = copy(this.project.scene);
     const index = scene.entities.findIndex(entity => entity.id === data.entityId);
-    if(type==="asset.import") {
+    if(type==='scene.script.edit'){setScriptComponent(scene,data.entityId,data.path,data.action,data.values);if(scene.script)scene.script.attachments=[...new Set([...scene.script.attachments.filter(id=>scene.entities.find(e=>e.id===id)?.scriptComponents?.length),...scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id)])];
+    }else if(type==="asset.import") {
       if((scene.assets?.length??0)>=128) fail("AX_ASSET_0001","Project asset limit is 128");
-      const asset=await this.assets.put(this.project.id,data.name,data.base64,importInWorker);
+      const asset=await this.assets.put(this.project.id,data.name,data.base64,bytes=>importInWorker(bytes,undefined,data.settings));if(data.settings&&asset.kind==='mesh')asset.processing=meshSettings(data.settings);
       scene.assets??=[];
       if(!scene.assets.some(item=>item.id===asset.id)) scene.assets.push(asset);
     } else if(type==="scene.asset.place") {
@@ -303,7 +319,7 @@ export class SceneWorkspace {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
       if(scene.cameraMode==='entities'){const e=scene.entities.find(e=>e.camera?.active);if(!e)fail('AX_SCENE_0001','No active Camera entity');for(const key of ['projection','fov','orthoHeight'])if(data.camera[key]!==undefined)e.camera[key]=data.camera[key];if(data.camera.position)e.transform.position=copy(data.camera.position);if(data.camera.target)e.transform.rotation=cameraRotation(e.transform.position,data.camera.target);}else scene.camera={projection:'perspective',position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
     } else if(type==='project.files.edit'){
-      try{scene.projectFiles=editProjectFiles(scene,data);}catch(error){fail('AX_FS_0001',error.message);}
+      try{scene.projectFiles=editProjectFiles(scene,data);reconcileScriptComponents(scene);}catch(error){fail('AX_FS_0001',error.message);}
     } else if(type==='scene.entities.paste'){
       if(!Array.isArray(data.entities)||!data.entities.length||data.entities.length>256)fail('AX_SCENE_0001','Copy up to 256 entities');
       const ids=new Map(data.entities.map(e=>[e.id,'entity://'+randomUUID()]));if(ids.size!==data.entities.length)fail('AX_SCENE_0001','Duplicate clipboard entity IDs');

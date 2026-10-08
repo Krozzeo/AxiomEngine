@@ -36,5 +36,5 @@ export function mountProjectBrowser({document,getState,mutate,selectAsset,select
  function open(path){const f=files().find(f=>f.path===path);if(f?.kind==='script')selectScript?.(f);else if(f?.kind==='folder'){folder=path;signature='';draw();}}
  q('project-back').addEventListener('click',back);
  for(const view of [tree,icons])view.addEventListener('click',e=>{if(!e.target.closest('[data-project-path],button,input'))clear();});
- return {draw,clear,back,deleteSelected,open,folder:()=>folder,selection:()=>[...selected],select:choose,rename,create,edit,files,refresh:()=>{signature='';draw();}};
+ return {draw,clear,back,deleteSelected,open,reveal:path=>{folder=parentPath(path);signature='';draw();choose(path);},folder:()=>folder,selection:()=>[...selected],select:choose,rename,create,edit,files,refresh:()=>{signature='';draw();}};
 }

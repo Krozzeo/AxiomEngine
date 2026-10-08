@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {scriptMetadata,setScriptComponent,validateScriptComponents,compileSources} from '../engine/scripting/fields.mjs';
+const source=`using Axiom.Gameplay; namespace Game;
+public enum Mode {Idle, Running=4}
+public sealed class Mover : MonoBehaviour {
+ [Title("Movement")][Range(0,20)][Tooltip("World units per second")] public double Speed=3;
+ [Space(12)][SerializeField] private Vector3 Offset=new Vector3(1,2,3);
+ [ReadOnly] public int Frames=0;
+ [HideInInspector] public bool Hidden;
+ public bool Enabled=true;public string Label="Player";public Mode State=Mode.Running;
+ public Vector2Int Cell=new Vector2Int(1,2);
+}`;
+const scene=()=>({entities:[{id:'entity://first',name:'First'},{id:'entity://second',name:'Second'}],projectFiles:[{path:'Assets',kind:'folder'},{path:'Scenes',kind:'folder'},{path:'Scripts',kind:'folder'},{path:'Scripts/Mover.cs',kind:'script',text:source}]});
+test('Inspector metadata supports visibility, title, spacing, range and typed defaults',()=>{const m=scriptMetadata({path:'Scripts/Mover.cs',kind:'script',text:source});assert.equal(m.typeName,'Game.Mover');assert.deepEqual(m.fields.map(f=>f.name),['Speed','Offset','Frames','Enabled','Label','State','Cell']);assert.equal(m.fields[0].title,'Movement');assert.equal(m.fields[0].maximum,20);assert.deepEqual(m.fields[1].default,[1,2,3]);assert.equal(m.fields[1].space,12);assert.equal(m.fields[2].readOnly,true);assert.equal(m.fields[5].default,4);});
+test('Script components have independent values, validate types and protect readonly fields',()=>{const s=scene();for(const e of s.entities)setScriptComponent(s,e.id,'Scripts/Mover.cs','attach');setScriptComponent(s,'entity://first','Scripts/Mover.cs','values',{Speed:7,Cell:[3,4]});assert.equal(s.entities[1].scriptComponents[0].values.Speed,3);assert.throws(()=>setScriptComponent(s,'entity://first','Scripts/Mover.cs','values',{Frames:99}),/read-only/);assert.throws(()=>setScriptComponent(s,'entity://first','Scripts/Mover.cs','values',{Speed:99}),/range/);assert.throws(()=>setScriptComponent(s,'entity://first','Scripts/Mover.cs','values',{Cell:[1.5,2]}),/Vector2Int/);assert.throws(()=>setScriptComponent(s,'entity://first','Scripts/Mover.cs','attach'),/already/);validateScriptComponents(s);setScriptComponent(s,'entity://first','Scripts/Mover.cs','remove');assert.equal(s.entities[0].scriptComponents,undefined);});
+test('C# Project compilation snapshots separate source files and chooses the requested component',()=>{const s=scene(),c=compileSources(s,'Scripts/Mover.cs');assert.equal(c.entries[0].metadata.className,'Mover');assert.equal(c.selected.text,source);assert.throws(()=>compileSources(s,'Scripts/Missing.cs'),/missing/);});

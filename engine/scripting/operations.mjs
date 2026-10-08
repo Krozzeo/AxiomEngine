@@ -1,3 +1,4 @@
+import {scriptFields,scriptValue} from './fields.mjs';
 import {SCRIPT_CONTRACT as LIMIT} from './contract.mjs';
 const fail=message=>{throw new Error('AX_SCRIPT_0003: '+message);};
 const entityId=/^entity:\/\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -25,6 +26,7 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
    entity.transform.position=[...op.position];positions.set(op.id,[...op.position]);
   }else fail('unknown operation');
  }
+ if(packet.scriptValues!==undefined){if(!Array.isArray(packet.scriptValues)||packet.scriptValues.length>32)fail('Invalid script field snapshots');const seen=new Set();for(const snapshot of packet.scriptValues){const key=snapshot.entityId+'|'+snapshot.path,component=entities.get(snapshot.entityId)?.scriptComponents?.find(c=>c.path===snapshot.path);if(!component||seen.has(key)||!snapshot.values||typeof snapshot.values!=='object'||Array.isArray(snapshot.values))fail('Invalid script component snapshot');seen.add(key);const meta=scriptFields(candidate,snapshot.path);for(const[name,value]of Object.entries(snapshot.values)){const f=meta.fields.find(f=>f.name===name);if(!f)fail('Unknown runtime field');component.values[name]=scriptValue({...f,minimum:undefined,maximum:undefined},value);}}}
  if(candidate.entities.filter(e=>e.collider).length>256)fail("physics body capacity exceeded");
  if(candidate.entities.filter(e=>e.audioSource).length>32)fail('audio voice capacity exceeded');
  return {scene:candidate,logs,audio,animations,positions,velocities,spawned,changedTopology};

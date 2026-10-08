@@ -1,3 +1,4 @@
+import {mountCodeEditor} from './code-editor.mjs';
 import {mountProjectBrowser} from './project-browser.mjs';
 import {mountEditorActions} from './editor-actions.mjs';
 import {cameraDefaults} from '../../../engine/scene/camera.mjs';
@@ -14,8 +15,9 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   const supported = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"];
   let enabled = false, pipelineEnabled=false, currentJob=null;
   let scriptEnabled=false,currentScriptJob=null,scriptProject=null,scriptBuild=null;
-  let busy = false;
+  let busy = false, assetRefreshing=false;
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
+  let filePaths=[],ideDirty=false;
   let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
   let hierarchyScrolling=false,hierarchyPaint=null;
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
@@ -24,9 +26,12 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("editor-workspace").setAttribute("aria-busy",String(busy));
     const project = state.project;if(!busy)panels.set(project?.editor);
     const entity = selection.size===1?project?.scene.entities.find(item => item.id === selected):null;
+    const file=browser.files().find(f=>filePaths.length===1&&f.path===filePaths[0]);
+    if($('file-inspector')){$('file-inspector').hidden=!file;$('file-inspector-name').textContent=file?file.path.split('/').at(-1):'';$('file-inspector-path').textContent=file?.path??'';$('file-inspector-kind').textContent=file?.kind??'';$('file-inspector-open').hidden=file?.kind!=='script';}
+    if($('entity-form'))$('entity-form').hidden=!!file;
     const attached=project?.scene.script?.attachments.includes(entity?.id);
     if($('selection-status')){
-      $('selection-status').textContent=selection.size>1?`${selection.size} entities selected · transform editing enabled`:entity?.name??'Select an entity';
+      $('selection-status').textContent=selection.size>1?`${selection.size} entities selected · transform editing enabled`:file?file.path.split('/').at(-1):entity?.name??'Select an entity';
       for(const [id,visible]of [['camera',!!entity?.camera],['material',!!entity?.material],['light',!!entity?.light],['lod',!!entity?.lod],['physics',!!entity?.collider],['rigidbody',!!entity?.rigidBody],['renderable',!!entity?.renderable],['script',!!entity&&(attached||scriptDraft.has(entity.id))]])$(id+'-component').hidden=!visible;
       $('component-add').disabled=!enabled||busy||state.playing||!entity;
       $('renderable-status').textContent=entity?.renderable?`${entity.renderable.kind} · ${project.scene.assets?.find(a=>a.id===entity.renderable.assetId)?.name??''}`:'';
@@ -92,7 +97,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       const parentId=item.parentId??null,gap=document.createElement('div');gap.className='tree-gap';gap.dataset.beforeId=item.id;gap.dataset.parentId=parentId??'';gap.setAttribute('aria-label','Insert before '+item.name);drop(gap,parentId,item.id);$('entities').append(gap);
       const row=document.createElement('div');row.className='tree-row';row.style.paddingLeft=((depth+1)*12)+'px';row.setAttribute('role','treeitem');row.setAttribute('aria-selected',String(selection.has(item.id)));row.dataset.entityId=item.id;
       const children=childrenByParent.has(item.id),toggle=document.createElement('button');toggle.className='tree-toggle';toggle.textContent=collapsed.has(item.id)?'▸':'▾';toggle.disabled=!children;toggle.setAttribute('aria-label','Expand or collapse '+item.name);if(children)row.setAttribute('aria-expanded',String(!collapsed.has(item.id)));toggle.addEventListener('click',()=>{if(collapsed.has(item.id))collapsed.delete(item.id);else collapsed.add(item.id);draw(false);});
-      const button=document.createElement('button');button.textContent=item.name;button.className=selection.has(item.id)?'entity selected':'entity';button.setAttribute('aria-pressed',String(selection.has(item.id)));button.disabled=busy;button.draggable=!busy&&!state.playing;button.addEventListener('click',event=>select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey}));
+      const button=document.createElement('button');button.textContent=item.name;button.className=selection.has(item.id)?'entity selected':'entity';button.setAttribute('aria-pressed',String(selection.has(item.id)));button.disabled=busy;button.draggable=!busy&&!state.playing;button.addEventListener('click',event=>select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey}));row.addEventListener('click',event=>{if(event.target.closest('.entity,.tree-toggle,input'))return;select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey});});
       button.addEventListener('dragstart',event=>{if(!selection.has(item.id)){selection=new Set([item.id]);selected=item.id;anchor=item.id;}event.dataTransfer.setData('application/axiom-entities',JSON.stringify([...selection]));});drop(row,item.id);row.append(toggle,button);$('entities').append(row);
     }
     if(end<rows.length)spacer((rows.length-end)*rowHeight);const endGap=document.createElement('div');endGap.className='tree-gap';endGap.setAttribute('aria-label','Append to Scene root');drop(endGap,null);$('entities').append(endGap);if(virtual)$('entities').scrollTop=hierarchyScrollTop;
@@ -117,7 +122,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     putVector('light-color',l.color);putVector('light-direction',l.direction);putVector('render-environment',r.environment);
     for(const [id,value]of [['material-unlit',m.unlit],['material-shadow',m.castShadow],['light-shadow',l.shadow],['render-shadows',r.shadows],['render-fxaa',r.fxaa]])$(id).checked=value;
     for(let i=0;i<3;i++){const select=$('lod-asset-'+i);select.replaceChildren();const none=document.createElement('option');none.value='';none.textContent='None';select.append(none);for(const a of project?.scene.assets??[])if(a.kind==='mesh'){const o=document.createElement('option');o.value=a.id;o.textContent=a.name;select.append(o);}select.value=entity?.lod?.levels[i]?.assetId??'';$('lod-distance-'+i).value=String(entity?.lod?.levels[i]?.distance??(i+1)*10);}
-    $('render-remove').disabled=true;
+    $('render-remove').disabled=true;if($('ambient-fields')){$('ambient-fields').disabled=!editing||!project;(project?.scene.twoD?.ambient??r.environment).forEach((v,i)=>$('ambient-'+i).value=String(v));}
 
     $("physics-shape").value=entity?.collider?.shape??"none";
     $("physics-dimension").value=String(entity?.collider?.dimension??2);
@@ -139,19 +144,19 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     }
     if($("save-dirty"))$("save-dirty").hidden=!state.dirty;
     twoDEditor.draw();animationEditor.draw();audioEditor.draw();actions.draw();
-    if($("project-title"))$("project-title").textContent=project?.name??"";
+    ide.draw();
     $("scene-save").textContent=state.dirty?"Save*":"Save";$("scene-save").classList?.toggle?.("dirty-save",state.dirty);
-    onDirty(state.dirty&&!state.workspaceId);
+    paintDirty();
     onSelection([...selection]);onView(view);
   }
   function adopt(data) {
     if (!("project" in data)) return;
     const oldIds = new Set(state.project?.scene.entities.map(entity => entity.id));
     state = data;
-    if (!state.project?.scene.entities.some(entity => entity.id === selected)) selected = state.project?.scene.entities[0]?.id ?? null;
+    if (!state.project?.scene.entities.some(entity => entity.id === selected)) selected = null;
     const added = state.project?.scene.entities.find(entity => !oldIds.has(entity.id));
-    if (added) {selected = added.id;selection=new Set([selected]);}
-    else {selection=new Set([...selection].filter(id=>state.project?.scene.entities.some(e=>e.id===id)));if(!selection.size&&selected)selection.add(selected);selected=[...selection].at(-1)??null;}
+    if (added) {filePaths=[];browser.clear(false);selected = added.id;selection=new Set([selected]);}
+    else {selection=new Set([...selection].filter(id=>state.project?.scene.entities.some(e=>e.id===id)));selected=[...selection].at(-1)??null;}
   }
   async function act(operation) {
     if (!enabled || busy) return;
@@ -188,7 +193,11 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   const audioEditor=mountAudioEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null,getRenderer});
   const animationEditor=mountAnimationEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null,getRenderer});
   const twoDEditor=mountTwoDEditor({document,act,run,mutation,getState:()=>state,getSelection:()=>selection.size===1?selected:null});
-  const browser=mountProjectBrowser({document,getState:()=>state,mutate:data=>act(()=>run('project.files.edit',mutation(data))),selectAsset:id=>{$('asset-list').value=id;},selectScript:file=>{if(selected)scriptDraft.add(selected);$('script-source').value=file.text;$('script-component').hidden=false;$('script-component').open=true;},reportError});
+  function fileSelection(paths){filePaths=paths;selected=null;selection.clear();draw();}
+  function paintDirty(){const pending=state.dirty||ideDirty;if($('project-title')){$('project-title').textContent=state.project?(state.project.name+(pending?'*':'')):'';$('project-title').classList?.toggle?.('dirty-title',pending);}if($('scene-save')){$('scene-save').textContent=pending?'Save*':'Save';$('scene-save').classList?.toggle?.('dirty-save',pending);$('scene-save').disabled=!state.project||state.playing||busy||!pending;}if($('toolbar-save'))$('toolbar-save').disabled=$('scene-save').disabled;if($('save-dirty'))$('save-dirty').hidden=!pending;onDirty(pending&&!state.workspaceId);}
+  const ide=mountCodeEditor({document,getState:()=>state,write:data=>act(()=>run('project.files.edit',mutation(data))),show:panels.openPanel,onOpen:file=>{$('script-source').value=file.text;},onDirty:value=>{ideDirty=value;paintDirty();},reportError});
+  const browser=mountProjectBrowser({document,getState:()=>state,mutate:data=>act(async()=>{await run('project.files.edit',mutation(data));ide.filesChanged(data);}),selectAsset:id=>{$('asset-list').value=id;},selectScript:file=>void ide.open(file),onSelection:fileSelection,beforeEdit:()=>ide.flush(),onFilesChanged:()=>{filePaths=browser.selection();},reportError});
+  $('file-inspector-open')?.addEventListener('click',()=>browser.open(filePaths[0]));
   const actions=mountEditorActions({document,getState:()=>state,getSelection:()=>[...selection],select,act,run,mutation,browser,reportError,locate:onLocate});
   const number=id=>Number($(id).value),vector=(id,n)=>Array.from({length:n},(_,i)=>number(id+'-'+i));
   for(const key of ['material','light','lod','render']){
@@ -203,7 +212,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     if(key!=='render')$(key+'-remove').addEventListener('click',()=>act(()=>run('scene.component.remove',mutation({entityId:selected,component:({material:'Material',light:'Light',lod:'LOD'})[key]}))));
   }
   async function switchProject(type, data) {
-    if (state.dirty && !confirmDiscard()) return;
+    if ((state.dirty||ideDirty) && !confirmDiscard()) return;
     await run(type, { ...data, discardChanges: state.dirty, expectedSceneRevision: state.sceneRevision });
     await list();
   }
@@ -264,7 +273,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("asset-place").addEventListener("click",()=>act(()=>run("scene.asset.place",mutation({assetId:$("asset-list").value}))));
   $("camera-form").addEventListener("submit",event=>{event.preventDefault();return act(()=>run('scene.camera.set',mutation({entityId:selected,value:{active:$("camera-active").checked,projection:$("camera-projection").value,fov:number('camera-fov'),orthoHeight:number('camera-ortho')}})));});
   $("camera-remove").addEventListener('click',()=>act(()=>run('scene.component.remove',mutation({entityId:selected,component:'Camera'}))));
-  $("project-close").addEventListener("click",()=>act(async()=>{if(state.dirty&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
+  $("project-close").addEventListener("click",()=>act(async()=>{if((state.dirty||ideDirty)&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
   $("play-start").addEventListener("click",()=>act(async()=>{await run("play.start",mutation());if(!getRenderer()?.parallelViewport?.()){view='game';panels.activateView('game');}}));
   $("play-stop").addEventListener("click",()=>act(()=>run("play.stop",mutation())));
   for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=name;panels.activateView(name);draw(false);});
@@ -273,14 +282,16 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("workspace-refresh").addEventListener("click", () => act(async () => {await run("scene.get");if($("file-menu"))$("file-menu").open=false;if($("settings-menu"))$("settings-menu").open=false;}));
   $("scene-add").addEventListener("click", () => act(() => run("scene.entity.create", mutation({ name: "Entity" }))));
   $("scene-delete").addEventListener("click",deleteSelected);
-  for (const action of ["save", "undo", "redo"]) $("scene-" + action).addEventListener("click", () => act(() => run("scene." + action, mutation())));
+  async function saveProject(){try{await ide.flush();if(state.dirty)return act(()=>run('scene.save',mutation()));}catch(e){reportError(e);}}
+  for(const action of ['save','undo','redo'])$('scene-'+action).addEventListener('click',()=>action==='save'?saveProject():act(()=>run('scene.'+action,mutation())));
+  $('ambient-form')?.addEventListener('submit',event=>{event.preventDefault();return act(()=>{const value=[0,1,2].map(i=>number('ambient-'+i));return state.project.scene.twoD?run('scene.twoD.update',mutation({value:{...state.project.scene.twoD,ambient:value}})):run('scene.rendering.update',mutation({value:{...renderingDefaults,...state.project.scene.rendering,environment:value}}));});});
   $("physics-form").addEventListener("submit",event=>{event.preventDefault();const shape=$("physics-shape").value;return act(()=>shape==='none'?run('scene.component.remove',mutation({entityId:selected,component:'Collider'})):run('scene.collider.set',mutation({entityId:selected,value:{shape,dimension:Number($("physics-dimension").value),halfExtents:[0,1,2].map(i=>Number($("physics-half-"+i).value)),trigger:$("physics-trigger").checked,layer:Number($("physics-layer").value),mask:Number($("physics-mask").value)}})));});
   $('rigidbody-form')?.addEventListener('submit',event=>{event.preventDefault();return act(()=>{if($('physics-motion').value==='static')return run('scene.component.remove',mutation({entityId:selected,component:'RigidBody'}));const old=state.project.scene.entities.find(e=>e.id===selected).rigidBody;return run('scene.rigidBody.set',mutation({entityId:selected,value:{...old,mass:Number($('physics-mass').value),friction:Number($('physics-friction').value),restitution:Number($('physics-restitution').value),gravityScale:Number($('physics-gravity').value),freezeRotation:$('physics-freeze').checked}}));});});
   $("entity-form").addEventListener("submit", event => {
     event.preventDefault();const updates=state.project.scene.entities.filter(e=>selection.has(e.id)).map(e=>{const t=structuredClone(e.transform);const rotation=eulerFromQuaternion(t.rotation);for(const group of ['position','rotation','scale'])for(let i=0;i<3;i++){const raw=$(group+'-'+i).value.trim();if(raw!==''){const value=Number(raw);if(!Number.isFinite(value))throw Error('Transform values must be finite');if(group==='rotation')rotation[i]=value;else t[group][i]=value;}}t.rotation=quaternionFromEuler(rotation);return {entityId:e.id,transform:t};});
     return act(()=>updates.length===1?run('scene.entity.update',mutation({...updates[0],name:$('entity-name').value})):run('scene.entities.update',mutation({updates,space:'local'})));
   });
-  function select(id,options=false){if(busy)return;const o=typeof options==='boolean'?{toggle:options}:options;const valid=state.project?.scene.entities.some(e=>e.id===id);if(o.range&&valid){selection=new Set(rangeSelection(hierarchyRows(state.project.scene.entities,collapsed),anchor,id));}else{if(!o.toggle)selection.clear();if(valid){if(o.toggle&&selection.has(id))selection.delete(id);else selection.add(id);}anchor=id;}selected=selection.has(id)?id:[...selection].at(-1)??null;draw();}
+  function select(id,options=false){if(busy)return;filePaths=[];browser.clear(false);const o=typeof options==='boolean'?{toggle:options}:options;const valid=state.project?.scene.entities.some(e=>e.id===id);if(o.range&&valid){selection=new Set(rangeSelection(hierarchyRows(state.project.scene.entities,collapsed),anchor,id));}else{if(!o.toggle)selection.clear();if(valid){if(o.toggle&&selection.has(id))selection.delete(id);else selection.add(id);}anchor=id;}selected=selection.has(id)?id:[...selection].at(-1)??null;draw();}
   function deleteSelected(){if(!selection.size||state.playing||busy)return;return act(()=>run('scene.entities.delete',mutation({entityIds:[...selection]})));}
   if($('component-add')){
     $('component-add').addEventListener('click',()=>act(async()=>{const component=$('component-choice').value,entity=state.project.scene.entities.find(e=>e.id===selected);if(selection.size!==1)throw Error('Select one entity');
@@ -298,14 +309,14 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     for(const button of document.querySelectorAll?.('.create-example')??[])button.addEventListener('click',()=>act(()=>run('scene.example.create',mutation({example:button.dataset.example}))));
     for(const button of document.querySelectorAll?.('.create-primitive')??[])button.addEventListener('click',()=>act(()=>run('scene.primitive.create',mutation({dimension:Number(button.dataset.dimension),shape:button.dataset.shape}))));
     $('component-search')?.addEventListener('input',()=>{const query=$('component-search').value.trim().toLowerCase();const choice=$('component-choice'),names=['Camera','Renderable','Material','Light','LOD','Collider','RigidBody','Script','Animator',...audioEditor.names,...twoDEditor.names].filter(name=>name.toLowerCase().startsWith(query));choice.replaceChildren();for(const name of names){const option=document.createElement('option');option.textContent=option.value=name;choice.append(option);}$('component-add').disabled=!names.length||selection.size!==1||busy||state.playing;});
-    for(const detail of document.querySelectorAll?.('.menubar details')??[]){detail.addEventListener('toggle',()=>{if(!detail.open)return;const popup=detail.querySelector(':scope > .submenu');if(!popup?.getBoundingClientRect)return;popup.style.left='100%';popup.style.right='auto';if(popup.getBoundingClientRect().right>globalThis.innerWidth){popup.style.left='auto';popup.style.right='100%';}});detail.querySelector('summary')?.addEventListener('click',()=>{for(const sibling of detail.parentElement.children)if(sibling!==detail&&sibling.tagName==='DETAILS')sibling.open=false;});}
     $('toolbar-save')?.addEventListener('click',()=>{if(!$("scene-save").disabled)$("scene-save").click();});
-    globalThis.addEventListener?.('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.code==='KeyS'){event.preventDefault();if(!state.playing&&!state.workspaceId&&!busy&&enabled&&state.project&&state.dirty)void act(()=>run('scene.save',mutation()));return;}if(/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??'')||event.target?.isContentEditable)return;
-      if(event.code==='Escape')for(const detail of document.querySelectorAll?.('.menubar details')??[])detail.open=false;
+    globalThis.addEventListener?.('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.code==='KeyS'){event.preventDefault();if(!state.playing&&!state.workspaceId&&!busy&&enabled&&state.project&&(state.dirty||ideDirty))void saveProject();return;}if(/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??'')||event.target?.isContentEditable)return;
+      if(event.code==='Escape'){select(null);browser.clear();}if(event.code==='Escape')for(const detail of document.querySelectorAll?.('.menubar details')??[])detail.open=false;
       if(event.code==='Delete'&&!event.target.closest?.('#project-content')){event.preventDefault();void deleteSelected();}
       if((event.ctrlKey||event.metaKey)&&['KeyZ','KeyY'].includes(event.code)){event.preventDefault();if(!state.playing&&!busy&&enabled){const redo=event.code==='KeyY'||event.shiftKey;if(redo?state.canRedo:state.canUndo)void act(()=>run(redo?'scene.redo':'scene.undo',mutation()));}}
     });
   }
+  if(document.defaultView)document.querySelector('.hierarchy').addEventListener('click',event=>{if(!event.target.closest('[data-entity-id],.tree-toggle,.scene-root-button,button,input,select,.dock-panel-controls'))select(null);});
   $('entities').addEventListener('scroll',()=>{if(!document.defaultView||hierarchyPaint!==null)return;hierarchyPaint=requestAnimationFrame(()=>{hierarchyPaint=null;hierarchyScrolling=true;draw(false);hierarchyScrolling=false;});});
   draw();
   return {
@@ -320,7 +331,13 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
-    async refreshAssets() {if(!enabled||busy)return false;return act(()=>run("scene.get"));},
+    async refreshAssets() {
+      if(!enabled||busy||assetRefreshing)return false;assetRefreshing=true;
+      try {const event=await send('scene.get'),data=event.payload.data;
+        if(busy||data.project?.id!==state.project?.id||(data.workspaceId??null)!==(state.workspaceId??null)||data.sceneRevision<state.sceneRevision||(data.project?.revision??0)<(state.project?.revision??0))return false;
+        adopt(data);await onState({...data,commandLineage:{messageId:event.causationId,correlationId:event.correlationId,traceId:event.traceId}});draw();return true;
+      }catch(error){reportError(error);return false;}finally{assetRefreshing=false;}
+    },
     async connect(capabilities) {
       scriptEnabled=["script.compile","script.job.get","script.job.cancel"].every(c=>capabilities.includes(`command.${c}`));
       pipelineEnabled=["asset.job.start","asset.job.get","asset.job.cancel","asset.explain"].every(c=>capabilities.includes(`command.${c}`));

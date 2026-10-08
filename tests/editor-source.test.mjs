@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mountCodeEditor} from '../apps/editor/src/code-editor.mjs';
+import {editProjectFiles,scriptTemplate} from '../engine/scene/project-files.mjs';
+function fixture(){
+ const nodes=new Map();const document={defaultView:{},querySelector(selector){if(!nodes.has(selector))nodes.set(selector,{value:'',textContent:'',scrollTop:0,listeners:new Map(),addEventListener(type,handler){this.listeners.set(type,handler);},focus(){},setSelectionRange(){}});return nodes.get(selector);}};
+ const state={project:{id:'project://source',scene:{entities:[]}},playing:false};state.project.scene.projectFiles=editProjectFiles(state.project.scene,{action:'create',kind:'script',path:'Scripts/Editor.cs'});
+ return {document,state,q:id=>document.querySelector('#'+id),file:()=>state.project.scene.projectFiles.find(f=>f.kind==='script')};
+}
+test('IDE preserves pending source when the editor is busy or the transaction fails',async()=>{
+ const f=fixture();let accepted=false,source=null;const editor=mountCodeEditor({document:f.document,getState:()=>f.state,write:async data=>{if(accepted)f.state.project.scene.projectFiles=editProjectFiles(f.state.project.scene,data);return accepted;},show(){},onOpen:file=>{source=file.text;},reportError:assert.fail});editor.draw();await editor.open(f.file());f.q('ide-code').value+='// pending\n';f.q('ide-code').listeners.get('input')();await assert.rejects(editor.flush(),/not saved/);assert.equal(editor.dirty(),true);assert.match(f.q('ide-code').value,/pending/);accepted=true;await editor.flush();assert.equal(editor.dirty(),false);assert.match(source,/pending/);
+});
+test('IDE rename remaps the open buffer before redraw, preserving canonical class text',async()=>{
+ const f=fixture();const editor=mountCodeEditor({document:f.document,getState:()=>f.state,write:async()=>true,show(){},reportError:assert.fail});editor.draw();await editor.open(f.file());const data={action:'move',path:'Scripts/Editor.cs',to:'Scripts/Renamed.cs'};f.state.project.scene.projectFiles=editProjectFiles(f.state.project.scene,data);editor.filesChanged(data);editor.draw();assert.equal(f.q('ide-status').textContent,'Scripts/Renamed.cs');assert.match(f.q('ide-code').value,/class Renamed : Script/);
+});
+test('IDE clean buffers follow canonical Undo and clear on project replacement',async()=>{
+ const f=fixture();const editor=mountCodeEditor({document:f.document,getState:()=>f.state,write:async()=>true,show(){},reportError:assert.fail});editor.draw();await editor.open(f.file());f.file().text=scriptTemplate('Editor.cs')+'// redo\n';editor.draw();assert.match(f.q('ide-code').value,/redo/);f.file().text=scriptTemplate('Editor.cs');editor.draw();assert.doesNotMatch(f.q('ide-code').value,/redo/);f.state.project=null;editor.draw();assert.equal(f.q('ide-code').value,'');assert.equal(editor.dirty(),false);
+});
+test('Readonly Play/proposal previews cannot flush pending source into MAIN',async()=>{
+ const f=fixture();let writes=0;const editor=mountCodeEditor({document:f.document,getState:()=>f.state,write:async()=>{writes++;return true;},show(){},reportError(){}});editor.draw();await editor.open(f.file());f.q('ide-code').value+='// pending MAIN source\n';f.q('ide-code').listeners.get('input')();for(const mode of ['playing','workspaceId']){f.state[mode]=mode==='playing'?true:'workspace://preview';editor.draw();await assert.rejects(editor.flush(),/Stop Play or leave/);await editor.open(f.file());assert.equal(writes,0);assert.equal(editor.dirty(),true);assert.match(f.q('ide-code').value,/pending MAIN source/);f.state[mode]=false;}
+});

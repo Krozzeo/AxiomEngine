@@ -178,7 +178,7 @@ export class SceneWorkspace {
         const mutate=(type,value)=>this.run(type,{id:this.project.id,expectedSceneRevision:this.revision,...value});
         if(data.dimension===3)await mutate('scene.primitive.create',{dimension:3,shape:'cube'});
         else {
-          await mutate('scene.twoD.update',{value:{...structuredClone(twoDDefaults),ambient:[0,0,0]}});
+          await mutate('scene.twoD.update',{value:{...structuredClone(twoDDefaults),ambient:[0.12,0.16,0.24]}});
           const png=new PNG({width:32,height:32});png.data.fill(255);
           await mutate('asset.import',{name:'Square.png',base64:PNG.sync.write(png).toString('base64')});
           await mutate('scene.asset.place',{assetId:this.project.scene.assets[0].id});
@@ -188,7 +188,7 @@ export class SceneWorkspace {
         }
         await mutate('scene.example.create',{example:'Camera'});
         await mutate('scene.example.create',{example:data.dimension===3?'Directional Light':'2D Light'});
-        if(data.dimension===3){this.project.scene.rendering.environment=[0,0,0];this.project.scene.entities.find(e=>e.light).transform.rotation=cameraRotation([0,6,4],[0,0,0]);}
+        if(data.dimension===3){this.project.scene.rendering.environment=[0.12,0.16,0.24];this.project.scene.entities.find(e=>e.light).transform.rotation=cameraRotation([0,6,4],[0,0,0]);}
         await mutate('scene.save',{});this.past=[];this.future=[];return this.snapshot();
       }
       return snapshot;
@@ -205,7 +205,7 @@ export class SceneWorkspace {
       this.project.editor=result.project.editor;this.project.revision=result.project.revision;return this.snapshot();
     }
     this.check(data);
-    if(type==='project.files.reveal'){if(data.workspaceId)fail('AX_WORKSPACE_0001','Explorer export is only available for MAIN');try{return await revealProjectFiles(this,data.path??'');}catch(e){fail('AX_FS_0001',e.message);}}
+    if(type==='project.files.reveal'){if(data.workspaceId)fail('AX_WORKSPACE_0001','Explorer export is only available for MAIN');try{return await revealProjectFiles(this,data.path??'',data.open===false?null:undefined);}catch(e){fail('AX_FS_0001',e.message);}}
     if(type==="asset.job.start")return this.startJob(data,context);
     if(type==="play.start" || type==="play.stop") {
       if(type==="play.start")await this.validateResources(this.project.scene);

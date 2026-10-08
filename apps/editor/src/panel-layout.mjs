@@ -14,5 +14,5 @@ export function mountPanelLayout({document,save,isBusy,onView,onParallel}){
   node.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.code)||isBusy())return;event.preventDefault();layout[key]=clamp(key,layout[key]+(['ArrowRight','ArrowDown'].includes(event.code)?10:-10)*sign);paint();void save({...layout});});
  }
  globalThis.addEventListener?.('resize',()=>{if(workspace.style?.setProperty)paint();});
- return {activateView:docking.activateView??(()=>{}),set(value){if(drag)return;layout={leftWidth:220,rightWidth:290,bottomHeight:190,...value};docking.set(layout.docks);if(workspace.style?.setProperty)paint();}};
+ return {openPanel:docking.openPanel??(()=>{}),activateView:docking.activateView??(()=>{}),set(value){if(drag)return;layout={leftWidth:220,rightWidth:290,bottomHeight:190,...value};docking.set(layout.docks);if(workspace.style?.setProperty)paint();}};
 }

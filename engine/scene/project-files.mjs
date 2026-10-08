@@ -12,16 +12,27 @@ export function scriptTemplate(name){
 }
 function safeAssetName(asset){let name=leafName(asset.name).replace(/[<>:"|?*\\\u0000-\u001f]/g,'_').replace(/[. ]+$/,'');if(!name||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\.|$)/i.test(name))name='_'+(name||asset.id.slice(-8));return name;}
 export function projectFiles(scene){
- if(scene.projectFiles)return structuredClone(scene.projectFiles);
+ if(scene.projectFiles){
+  const files=structuredClone(scene.projectFiles),used=new Set();
+  // Older folder copies reused class names. Normalize the authoring view only;
+  // a subsequent explicit file transaction persists this portable repair.
+  for(const f of files)if(f.kind==='script'){
+   const old=leafName(f.path).replace(/\.cs$/i,''),key=leafName(f.path).toLowerCase();
+   if(used.has(key)){let n=1,name;do{name=old+'_Copy'+n++;}while(files.some(other=>other!==f&&other.kind==='script'&&leafName(other.path).toLowerCase()===(name+'.cs').toLowerCase()));f.path=parentPath(f.path)+'/'+name+'.cs';f.text=f.text.replace(new RegExp('\\b'+old+'\\b','g'),name);}
+   used.add(leafName(f.path).toLowerCase());
+  }
+  return files;
+ }
  const files=fileRoots.map(path=>({path,kind:'folder'}));
  for(const a of scene.assets??[]){const name=safeAssetName(a);let path='Assets/'+name,n=1;while(files.some(f=>f.path.toLowerCase()===path.toLowerCase()))path='Assets/'+n+++'_'+name;files.push({path,kind:'asset',assetId:a.id});}
  if(scene.script)files.push({path:'Scripts/Game.cs',kind:'script',text:scene.script.source});return files;
 }
-export function validateFiles(scene){
+export function validateFiles(scene,{uniqueScripts=false}={}){
  const files=scene.projectFiles;if(!files)return;
  if(!Array.isArray(files)||files.length>512)throw Error('Project file budget is 512 entries');
- const paths=new Set();let bytes=0;
+ const paths=new Set(),scripts=new Set();let bytes=0;
  for(const f of files){projectPath(f.path);const key=f.path.toLowerCase();if(paths.has(key))throw Error('Duplicate project path');paths.add(key);
+  if(uniqueScripts&&f.kind==='script'){const name=leafName(f.path).toLowerCase();if(scripts.has(name))throw Error('C# script names must be unique throughout the project');scripts.add(name);}
   if(!['folder','asset','script','json'].includes(f.kind))throw Error('Invalid project file kind');
   if(f.kind==='asset'&&!scene.assets?.some(a=>a.id===f.assetId))throw Error('Project file references a missing asset');
   if(['script','json'].includes(f.kind)){if(typeof f.text!=='string')throw Error('Project text file needs content');bytes+=new TextEncoder().encode(f.text).length;if(bytes>65536)throw Error('Project text files exceed 64 KiB');}
@@ -33,7 +44,9 @@ export function editProjectFiles(scene,data){
  const files=projectFiles(scene),lookup=path=>files.find(f=>f.path===path),exists=path=>files.some(f=>f.path.toLowerCase()===path.toLowerCase());
  const destination=path=>{projectPath(path);const parent=parentPath(path);if(parent&&lookup(parent)?.kind!=='folder')throw Error('Destination folder does not exist');};
  const roots=paths=>paths.filter(p=>!paths.some(other=>other!==p&&p.startsWith(other+'/')));
- if(data.action==='create'){
+ if(data.action==='write'){
+  const file=lookup(data.path);if(!file||!['script','json'].includes(file.kind)||typeof data.text!=='string')throw Error('Select an editable text file');file.text=data.text;
+ }else if(data.action==='create'){
   destination(data.path);if(exists(data.path))throw Error('A file with that name already exists');
   const kind=data.kind;if(!['folder','script','json'].includes(kind))throw Error('Create folder, C# script or JSON file');
   files.push({path:data.path,kind,...(kind==='script'?{text:scriptTemplate(leafName(data.path))}:kind==='json'?{text:'{}\n'}:{})});
@@ -46,7 +59,7 @@ export function editProjectFiles(scene,data){
  }else if(data.action==='copy'){
   const selected=roots(data.paths??[]);if(!selected.length)throw Error('Select project files to copy');destination(data.to?data.to+'/copy': 'copy');
   for(const path of selected){const source=lookup(path);if(!source)throw Error('Copied file no longer exists');let target=(data.to?data.to+'/':'')+leafName(path),n=1;const ext=source.kind==='folder'?'':(leafName(path).match(/\.[^.]+$/)?.[0]??'');const stem=leafName(path).slice(0,ext? -ext.length:undefined);while(exists(target))target=(data.to?data.to+'/':'')+stem+'_Copy'+n+++ext;if(target===path||target.startsWith(path+'/'))throw Error('Cannot copy a folder inside itself');
-   const entries=files.filter(f=>f.path===path||f.path.startsWith(path+'/')).map(f=>({...structuredClone(f),path:target+f.path.slice(path.length)}));for(const f of entries){if(f.kind==='script'&&parentPath(f.path)===data.to){const old=leafName(path).replace(/\.cs$/i,''),name=leafName(f.path).replace(/\.cs$/i,'');scriptTemplate(name);f.text=f.text.replace(new RegExp('\\b'+old+'\\b','g'),name);}}files.push(...entries);
+   const entries=files.filter(f=>f.path===path||f.path.startsWith(path+'/')).map(f=>({...structuredClone(f),originalName:leafName(f.path),path:target+f.path.slice(path.length)}));for(const f of entries){if(f.kind==='script'){const old=f.originalName.replace(/\.cs$/i,''),prefix=parentPath(f.path),candidate=leafName(f.path).replace(/\.cs$/i,''),stem=old.replace(/_Copy\d+$/,'');let name=candidate,i=1;while(files.some(other=>other.kind==='script'&&leafName(other.path).toLowerCase()===(name+'.cs').toLowerCase()))name=stem+'_Copy'+i++;f.path=(prefix?prefix+'/':'')+name+'.cs';scriptTemplate(name);f.text=f.text.replace(new RegExp('\\b'+old+'\\b','g'),name);}delete f.originalName;files.push(f);}
   }
  }else if(data.action==='delete'){
   const paths=roots(data.paths??[]);if(!paths.length||paths.some(p=>fileRoots.includes(p)||!lookup(p)))throw Error('Select removable files');
@@ -57,7 +70,7 @@ export function editProjectFiles(scene,data){
   if(removedAssets.size)scene.assets=scene.assets.filter(a=>!removedAssets.has(a.id));
   files.splice(0,files.length,...remaining);
  }else throw Error('Unknown project file operation');
- validateFiles({...scene,projectFiles:files});return files;
+ validateFiles({...scene,projectFiles:files},{uniqueScripts:true});return files;
 }
 
 export function syncImportedFiles(scene,previous){

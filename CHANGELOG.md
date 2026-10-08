@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.30 — M16.1 — source IDE, editor corrections and ambient light
+
+- Dockable C# IDE, line numbers/search/indentation, source transactions and Ctrl+S.
+- Consistent menu alignment, long AI labels, viewport-safe cascading menus and dirty project title.
+- Project parent navigation, drag highlighting, global C# name validation and absolute export paths.
+- Exclusive file/entity selection, empty-folder deletion, corrected rename behavior and no deletion fallback.
+- Matching icons, smaller property Close and aligned round Game Debug.
+- Explicit 2D/3D starter ambient fill and Config Ambient light; two editable labs.
+- Nonblocking asset refresh rejects stale responses; export snapshots remain consistent across project switches.
+- All 27 CI jobs, 199 Node/39 Rust tests and 16 M16.1 browser criteria pass. M16.1 100%; project approximately 88%.
+
 ## 0.0.29 — M16 — editor authoring and low-end pass
 
 - Portable authoring files, folders, named C# templates, rename/move/copy/delete and bounded Explorer exports.

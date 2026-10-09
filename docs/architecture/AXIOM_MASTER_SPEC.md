@@ -4109,3 +4109,7 @@ Una vez establecida esta base, ampliar Axiom de forma incremental hasta alcanzar
 ---
 
 # FIN DEL DOCUMENTO MAESTRO
+
+## Approved roadmap extension — 2026-10-09
+
+M18.1 OpenAI connection and multistep assistant; M18.2 integrated chat and editable preview; M18.3 assisted modular PMD; M18.4 GitHub integration; then original M19 hardening. See M18_EXTENSIONS_ROADMAP.md for acceptance boundaries, replacement-based Apply and revised 126-point reporting. AI Master remains disabled and planned beyond MVP.

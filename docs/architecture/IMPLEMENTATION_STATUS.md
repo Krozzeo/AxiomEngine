@@ -1,5 +1,9 @@
 # Implementation status
 
+M18.1 is now in progress on `codex/m18-1-openai`. The approved order is M18.1 OpenAI connection/multistep assistant → M18.2 editable preview/chat → M18.3 assisted PMD → M18.4 GitHub → M19 hardening. See [M18 extension roadmap](M18_EXTENSIONS_ROADMAP.md) and `docs/architecture/M18_1_PLAN.md`. Apply will replace MAIN rather than merge branches in M18.2; this is not yet implemented. AI Master is future/planned. Expanded scope rebases progress to approximately 79% (99/126); the historical 95% below used 99/104. No new acceptance group is claimed complete yet.
+
+Historical M18 closure:
+
 M18 (0.0.32) is complete: 12/12 required acceptance groups, 100%. Weighted
 project progress is approximately 95% (99/104). PR #22 is ready/open/unmerged,
 stacked on #21; current development branch is codex/m18-autonomy. All 29 jobs in

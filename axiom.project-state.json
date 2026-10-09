@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-08",
-  "engineVersion": "0.0.32",
-  "activeMilestone": 18,
-  "milestoneStatus": "complete",
+  "updatedAt": "2026-10-09",
+  "engineVersion": "0.0.33",
+  "activeMilestone": 18.1,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
-    "wholeProjectPercent": 95,
+    "activeMilestonePercent": 0,
+    "wholeProjectPercent": 79,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -94,6 +94,22 @@
     "13.1": {
       "status": "complete",
       "percent": 100
+    },
+    "18.1": {
+      "status": "in_progress",
+      "percent": 0
+    },
+    "18.2": {
+      "status": "not_started",
+      "percent": 0
+    },
+    "18.3": {
+      "status": "not_started",
+      "percent": 0
+    },
+    "18.4": {
+      "status": "not_started",
+      "percent": 0
     }
   },
   "implementation": {
@@ -766,7 +782,9 @@
     "docs/architecture/ADR-018-BOUNDED-AUTONOMY-AND-RUNTIME-EDITING.md",
     "docs/reports/m18-browser-evidence.json",
     "docs/reports/m18-position-repair-evidence.json",
-    "docs/reports/m18-compiler-repair-evidence.json"
+    "docs/reports/m18-compiler-repair-evidence.json",
+    "docs/architecture/M18_EXTENSIONS_ROADMAP.md",
+    "docs/architecture/M18_1_PLAN.md"
   ],
-  "nextTask": "Start M19 MVP Hardening from clean onboarding, project-health and recovery inventory; read M19_PLAN.md and master sections 138\u2013139. PR #22 ready/open/unmerged, stacked on #21; use codex/m18-autonomy."
+  "nextTask": "Implement M18.1 on codex/m18-1-openai. Read M18_1_PLAN.md and M18_EXTENSIONS_ROADMAP.md. Then M18.2, M18.3, M18.4, M19. Do not merge PR #22 automatically."
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.33 — M18.1 — OpenAI assistant (in progress)
+
+- Daemon-held connection/model test and bounded sequential Responses/tool orchestration; project writes stay in human-reviewed proposals.
+- Dockable AI Assistant, real connection/working indicators, usage/cancellation and explicit future AI Master.
+- Multistep Workshop demo and transport/authority/UI acceptance; approved M18.1–18.4 roadmap before M19.
+- Editable replacement preview, assisted PMD and GitHub remain later milestones; no live API account verification is claimed yet.
+
 ## 0.0.32 — M18 — bounded autonomy and live editor workflow
 
 Complete: all 29 jobs in CI 198, 228 Node/39 Rust tests, 18 schemas, 88 tools and eight browser criteria pass. M18 100%; project approximately 95%.

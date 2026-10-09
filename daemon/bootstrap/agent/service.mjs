@@ -7,7 +7,7 @@ export class AgentService {
  has(type){return toolMap.get(type)?.route==='agent';}
  async run(type,data,context){
   const tool=toolMap.get(type);validate(tool.inputSchema,data);
-  if(type==='autonomy.control'){this.autonomy??=new AutonomyController({bus:this.bus,workspace:this.workspace,proposals:this.proposals,bridge:this.bridge});return this.autonomy.control(data,context);}
+  if(type==='autonomy.control'){if(data.action==='run'&&this.assistant?.active)throw agentError('AX_AUTONOMY_0001','Finish or cancel the connected assistant task first');this.autonomy??=new AutonomyController({bus:this.bus,workspace:this.workspace,proposals:this.proposals,bridge:this.bridge});return this.autonomy.control(data,context);}
   if(type.startsWith('workspace.'))return this.proposals.run(type,data,context);
   const w=data.workspaceId?this.proposals.get(data.workspaceId).child:this.workspace,project=w.project,summary={project:project?{id:project.id,name:project.name,revision:project.revision}:null,sceneRevision:w.revision,dirty:w.dirty,playing:w.playing};
   if(['replay.control','gameTest.control','profiler.query','profiler.explainFrameSpike','audio.query','audio.control','animation.query','animation.control','scene.query','entity.query','asset.query','renderer.capture','diagnostics.explain'].includes(type)&&(!project||data.id!==project.id))throw agentError('AX_SCENE_0001','Open this project first');

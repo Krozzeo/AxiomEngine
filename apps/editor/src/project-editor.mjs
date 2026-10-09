@@ -341,6 +341,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   return {
     dispose(){clearInterval(runtimeInspectorTimer);},
     isBusy:()=>busy,
+    openPanel:(id,options)=>panels.openPanel(id,options),
     selectedEntity:()=>selected,
     snapshot:()=>structuredClone(state),
     selectedEntities:()=>[...selection],

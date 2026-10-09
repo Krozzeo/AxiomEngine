@@ -80,8 +80,12 @@ Report both values:
 | M16 Performance & Low-End Pass | 4 points |
 | M17 Advanced Assets / CAD | 3 points |
 | M18 Agent Autonomy Loop | 5 points |
+| M18.1 OpenAI connection and multistep assistant | 6 points |
+| M18.2 Integrated chat and editable preview | 6 points |
+| M18.3 Assisted PMD | 7 points |
+| M18.4 GitHub integration | 3 points |
 | M19 MVP Hardening | 5 points |
-| **Total** | **104 points** |
+| **Total** | **126 points** |
 
 Partial milestone credit is allowed only for acceptance points with executable
 evidence. Documentation-only scaffolding does not count as functional credit.
@@ -128,3 +132,7 @@ The existing milestone weights sum to 104 points, not the previously printed 100
 Normalize completion as completed weight / 104; M0–M13 total 79 points, giving
 75.96%, reported approximately 76%. Scope and relative weights are unchanged.
 Earlier closure reports preserve their historical nominal estimates.
+
+## 2026-10-09 approved scope extension
+
+M18_EXTENSIONS_ROADMAP.md adds 22 points for M18.1–18.4 before M19. Completed baseline remains 99 points: 99/126 ≈ 79%. The prior 104-point table and 95% M18 estimate are historical; do not reuse them for expanded scope.

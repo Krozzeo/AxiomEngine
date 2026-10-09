@@ -1,6 +1,6 @@
 # M19 — MVP Hardening
 
-Status: not started. Master specification sections 138–139. This document is a
+Status: not started; scheduled after M18.1–M18.4 (see M18_EXTENSIONS_ROADMAP.md). Master specification sections 138–139. This document is a
 plan, not an implementation or an acceptance claim.
 
 Turn the completed subsystems into a coherent product: stability, performance,

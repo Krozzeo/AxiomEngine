@@ -48,8 +48,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     }
     const editing=enabled&&!busy&&!state.playing,valuesEditing=enabled&&!busy&&!state.workspaceId;
     $("script-source").disabled=!scriptEnabled||!project||!entity||busy;
-    $("script-mode").disabled=!scriptEnabled||!project||busy;
-    $("script-compile").disabled=!scriptEnabled||!project||busy;
+    $("script-mode").disabled=!scriptEnabled||!project||busy||state.playing;
+    $("script-compile").disabled=!scriptEnabled||!project||busy||state.playing;
     $("script-cancel").disabled=!currentScriptJob;
     if(project?.id!==scriptProject||project?.scene.script?.build.id!==scriptBuild) {
       $("script-source").value=project?.scene.script?.source??defaultScript;scriptProject=project?.id;scriptBuild=project?.scene.script?.build.id;
@@ -336,8 +336,10 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   }
   if(document.defaultView)document.querySelector('.hierarchy').addEventListener('click',event=>{if(!event.target.closest('[data-entity-id],.tree-toggle,.scene-root-button,button,input,select,.dock-panel-controls'))select(null);});
   $('entities').addEventListener('scroll',()=>{if(!document.defaultView||hierarchyPaint!==null)return;hierarchyPaint=requestAnimationFrame(()=>{hierarchyPaint=null;hierarchyScrolling=true;draw(false);hierarchyScrolling=false;});});
+  const runtimeInspectorTimer=document.defaultView?setInterval(()=>{if(!enabled||busy||!state.playing||selection.size!==1)return;const entity=getRenderer()?.interaction?.().scene?.entities.find(e=>e.id===selected);if(!entity)return;for(const [group,values]of [['position',entity.transform.position],['rotation',eulerFromQuaternion(entity.transform.rotation)],['scale',entity.transform.scale]]){const inputs=values.map((_,i)=>$(group+'-'+i));if(inputs.some(input=>input.ownerDocument.activeElement===input))continue;inputs.forEach((input,i)=>{if(input.value!==String(values[i]))input.value=String(values[i]);});}},100):null;runtimeInspectorTimer?.unref?.();
   draw();
   return {
+    dispose(){clearInterval(runtimeInspectorTimer);},
     isBusy:()=>busy,
     selectedEntity:()=>selected,
     snapshot:()=>structuredClone(state),

@@ -32,3 +32,5 @@ test('cancelled or stale compilation cannot overwrite current authoring',async t
  const cancelled=await send('script.compile',mutation(workspace));await new Promise(r=>setImmediate(r));await send('script.job.cancel',{id:workspace.project.id,jobId:cancelled.payload.data.job.id});release();await settled(workspace);assert.deepEqual(workspace.snapshot(),current);
  assert.equal(workspace.scriptJobs.get(cancelled.payload.data.job.id).status,'cancelled');
 });
+
+test('script compilation is rejected during Play before invoking the compiler capability',async t=>{const {workspace,send}=await fixture(t);let calls=0;workspace.compiler.build=async()=>{calls++;return {id:randomUUID(),mode:'development',sourceHash:'a'.repeat(64)};};await send('play.start',mutation(workspace));const before=workspace.snapshot();const result=await send('script.compile',mutation(workspace));assert.equal(result.kind,'error');assert.equal(result.payload.code,'AX_SCENE_0005');assert.equal(calls,0);assert.deepEqual(workspace.snapshot(),before);await send('play.stop',mutation(workspace));await send('script.compile',mutation(workspace));await settled(workspace);assert.equal(calls,1);});

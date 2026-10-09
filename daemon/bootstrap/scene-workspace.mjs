@@ -164,7 +164,7 @@ export class SceneWorkspace {
       if(type==="script.job.cancel"&&this.activeScriptJob?.id===job.id)this.activeScriptJob.controller.abort();
       return {job:copy(job)};
     }
-    if(type==="script.compile") {this.check(data);return this.startScript(data,context);}
+    if(type==="script.compile") {this.check(data);if(this.playing)fail("AX_SCENE_0005","Stop Play before compiling scripts");return this.startScript(data,context);}
     if(this.activeScriptJob&&["project.create","project.open","project.close","project.save","scene.save"].includes(type))fail("AX_SCRIPT_0001","Wait for or cancel compilation first");
     if(["asset.job.get","asset.job.cancel","asset.explain"].includes(type)) {
       if(!this.project||data.id!==this.project.id)fail("AX_SCENE_0001","Open this project first");

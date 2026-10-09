@@ -43,12 +43,14 @@ try {
  await page.keyboard.down('Space');await page.waitForFunction(()=>JSON.parse(document.querySelector('#frame-trace').textContent).script.entities.length===3);await page.keyboard.up('Space');
  assert.ok(JSON.parse(await page.locator('#frame-trace').textContent()).kernel.frame>frameBeforeSpawn,'Runtime spawn must preserve the Rust clock');
  report.criteria.push('Transform and Input move rendered Rust world','spawn runtime entity','authoring isolation');
+ assert.equal(await page.locator('#script-compile').isDisabled(),true);await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);
  await compile('using Axiom.Gameplay; namespace Game; public sealed class GameScript : Script { syntax error }','failed');
  assert.match(await page.locator('#script-diagnostics').textContent(),/(?:Game(?:Script)?|0).cs:\d+:\d+ CS/);assert.deepEqual((await state()).project.scene,authoring);
- await page.waitForFunction(()=>JSON.parse(document.querySelector('#frame-trace').textContent).script.active);report.criteria.push('compile error locations and last good runtime');
+ await (await control(page,'#play-start')).click();await page.waitForFunction(()=>JSON.parse(document.querySelector('#frame-trace').textContent).script.active);report.criteria.push('compile error locations and last good build after Stop/Play');
+ await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);
  await compile(source.replace('C# started:','C# reloaded:').replace('deltaSeconds*2','deltaSeconds*4'));
- await page.waitForFunction(g=>{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.generation>g&&d.script.entities.length===2;},initial.script.generation);
- assert.equal(navigations,0);await page.waitForFunction(()=>document.querySelector('#logs').textContent.includes('C# reloaded:'));report.criteria.push('edit compile reload without page navigation','causal lifecycle logs');
+ await (await control(page,'#play-start')).click();await page.waitForFunction(g=>{const d=JSON.parse(document.querySelector('#frame-trace').textContent);return d.script.active&&d.script.generation>g&&d.script.entities.length===2;},initial.script.generation);
+ assert.equal(navigations,0);await page.waitForFunction(()=>document.querySelector('#logs').textContent.includes('C# reloaded:'));report.criteria.push('Stop edit compile Play without page navigation','causal lifecycle logs');
  await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);assert.equal((await state()).project.scene.entities.length,1);
  await (await control(page,'#scene-save')).click();await page.waitForFunction(()=>document.querySelector('#project-status').textContent.includes('Saved'));
  await (await control(page,'#project-close')).click();await (await control(page,'#project-open')).click();await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.active;}catch{return false;}});

@@ -1,0 +1,241 @@
+{
+  "id": "autonomy://0de86aa3-f234-465c-baaf-bb5e11a94fab",
+  "objective": "Place the target at X = 2 and verify it in a fresh runtime",
+  "status": "completed",
+  "phase": "ready-for-review",
+  "workspaceId": "workspace://f4e25da2-e71a-45d9-a795-b5381f2c7f39",
+  "iteration": 2,
+  "criteria": {
+    "name": "Target placement",
+    "steps": [
+      {
+        "frames": 0,
+        "assertions": [
+          {
+            "kind": "position",
+            "entityId": "entity://b84d67ff-c20f-45aa-8567-1972ba475fb7",
+            "value": [
+              2,
+              0,
+              0
+            ],
+            "tolerance": 0.001
+          }
+        ]
+      }
+    ]
+  },
+  "planHash": "d72ab5c9e51845b37d80bcbb52b964d6e2d2078d1d3bd72b38ac9470bc423fea",
+  "limits": {
+    "iterations": 3,
+    "seconds": 300,
+    "commands": 64
+  },
+  "evidence": [
+    {
+      "sequence": 1,
+      "kind": "acceptance",
+      "iteration": 1,
+      "workspaceId": "workspace://f4e25da2-e71a-45d9-a795-b5381f2c7f39",
+      "passed": false,
+      "sceneRevision": 2,
+      "jobId": "3bb3ddab-250a-4425-bf36-bd7ce872bf58",
+      "status": "failed",
+      "frames": 0,
+      "durationMs": 1158.2687240000087,
+      "results": [
+        {
+          "kind": "position",
+          "passed": false,
+          "actual": [
+            0,
+            0,
+            0
+          ],
+          "expected": [
+            2,
+            0,
+            0
+          ],
+          "frame": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "sequence": 2,
+      "kind": "diagnosis",
+      "iteration": 1,
+      "workspaceId": "workspace://f4e25da2-e71a-45d9-a795-b5381f2c7f39",
+      "cause": "acceptance-failure",
+      "failedAssertions": [
+        {
+          "kind": "position",
+          "passed": false,
+          "actual": [
+            0,
+            0,
+            0
+          ],
+          "expected": [
+            2,
+            0,
+            0
+          ],
+          "frame": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "sequence": 3,
+      "kind": "acceptance",
+      "iteration": 2,
+      "workspaceId": "workspace://f4e25da2-e71a-45d9-a795-b5381f2c7f39",
+      "passed": true,
+      "sceneRevision": 3,
+      "jobId": "fd2807a2-def7-47e5-a392-eaadf8de013b",
+      "status": "completed",
+      "frames": 0,
+      "durationMs": 1124.8755280000041,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            2,
+            0,
+            0
+          ],
+          "expected": [
+            2,
+            0,
+            0
+          ],
+          "frame": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "sequence": 4,
+      "kind": "benchmark",
+      "iteration": 2,
+      "workspaceId": "workspace://f4e25da2-e71a-45d9-a795-b5381f2c7f39",
+      "passed": true,
+      "sceneRevision": 3,
+      "jobId": "7a90d855-3d54-4ef4-a43e-e9a52b3bd735",
+      "status": "completed",
+      "frames": 0,
+      "durationMs": 1220.5157140000083,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            2,
+            0,
+            0
+          ],
+          "expected": [
+            2,
+            0,
+            0
+          ],
+          "frame": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "sequence": 5,
+      "kind": "benchmark",
+      "iteration": 2,
+      "workspaceId": "workspace://f4e25da2-e71a-45d9-a795-b5381f2c7f39",
+      "passed": true,
+      "sceneRevision": 3,
+      "jobId": "0ac84c52-6440-4c62-837a-a05c328d9b26",
+      "status": "completed",
+      "frames": 0,
+      "durationMs": 1222.5432430000074,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            2,
+            0,
+            0
+          ],
+          "expected": [
+            2,
+            0,
+            0
+          ],
+          "frame": 0
+        }
+      ],
+      "error": null
+    }
+  ],
+  "repairs": [
+    {
+      "iteration": 1,
+      "kind": "position-error-delta",
+      "updates": [
+        {
+          "entityId": "entity://b84d67ff-c20f-45aa-8567-1972ba475fb7",
+          "transform": {
+            "position": [
+              2,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0,
+              1
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "benchmark": {
+    "samples": 2,
+    "wallMs": [
+      1220.5157140000083,
+      1222.5432430000074
+    ],
+    "meanWallMs": 1221.5294785000078,
+    "framesPerSample": 0,
+    "meaning": "Measured bridge + fixed-step execution + presentation wall time; not physical GPU performance"
+  },
+  "changeSet": {
+    "workspaceId": "workspace://f4e25da2-e71a-45d9-a795-b5381f2c7f39",
+    "revision": 4,
+    "reviewHash": "4169c901e8bdf5e49ad74ca5992dab9c51c1e6fc213097cdfdc197933f8f3772",
+    "changes": 1,
+    "acceptance": "Human Review differences and Accept reviewed changes; Save remains explicit"
+  },
+  "commands": 8,
+  "provenance": {
+    "runId": 37956240973,
+    "commit": "20a01be196ec2ae69a895e0665479b801d9307a6",
+    "tree": "7d78cfcf02f420d7cf0c58010bef6db9e591a45d",
+    "artifactId": 11627933641,
+    "artifactDigest": "sha256:9114ecf0e79b0b37aa3e606f668cd2aed8d1f5bc597e73a0335a869058223ef9",
+    "visualReview": [
+      "script-component-lab.png",
+      "position-repair.png",
+      "compiler-repair.png"
+    ],
+    "renderer": "Chromium, Xvfb, software Vulkan/WebGPU; no physical GPU benchmark"
+  }
+}

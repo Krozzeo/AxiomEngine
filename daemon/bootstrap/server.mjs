@@ -218,7 +218,7 @@ export async function startServer(options = {}) {
     token,
     origin,
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
-    close: async () => {bridge.close();await proposals.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
+    close: async () => {await bus.agentService.autonomy?.close();bridge.close();await proposals.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
   };
 }
 

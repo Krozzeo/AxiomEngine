@@ -26,7 +26,8 @@ for (const rule of rules) {
     for (const file of files) {
       const source = await readFile(file, "utf8");
       for (const forbidden of rule.forbidden) {
-        if (source.includes(forbidden)) failures.push(`${rule.id}: ${relative(root, file)} contains ${forbidden}`);
+        // A canonical schema filename is data, not a DOM dependency.
+        if (source.replaceAll("project-document.schema.json", "project-schema-json").includes(forbidden)) failures.push(`${rule.id}: ${relative(root, file)} contains ${forbidden}`);
       }
     }
   }

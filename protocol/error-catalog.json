@@ -570,6 +570,24 @@
         "replay.control",
         "runtime.status"
       ]
+    },
+    {
+      "code": "AX_AUTONOMY_0001",
+      "meaning": "Invalid or unsuccessful bounded autonomy operation",
+      "inspect": [
+        "autonomy.control",
+        "workspace.diff",
+        "runtime.status"
+      ]
+    },
+    {
+      "code": "AX_AUTONOMY_0002",
+      "meaning": "Autonomy cancelled or exceeded time budget",
+      "inspect": [
+        "autonomy.control",
+        "workspace.diff",
+        "runtime.status"
+      ]
     }
   ]
 }

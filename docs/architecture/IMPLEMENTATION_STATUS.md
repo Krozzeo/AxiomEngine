@@ -1,5 +1,33 @@
 # Implementation status
 
+M18 (0.0.32) is complete: 12/12 required acceptance groups, 100%. Weighted
+project progress is approximately 95% (99/104). PR #22 is ready/open/unmerged,
+stacked on #21; current development branch is codex/m18-autonomy. All 29 jobs in
+CI 198 pass at executable commit 20a01be196ec2ae69a895e0665479b801d9307a6
+(tree 7d78cfcf02f420d7cf0c58010bef6db9e591a45d). This validates 228 Node tests, 39 Rust tests,
+18 schemas, 88 semantic tools, eight M18 browser criteria and all prior gates,
+including real C# Linux development/AOT and Windows development.
+
+Bounded structured autonomy retains failure/repair/retest/measurement evidence and
+returns an isolated revision/hash-reviewed proposal. Human publication and Save
+remain explicit. The Inspector supports folding, inline values, scrubbing and
+transient attached-component/Transform/C# edits during Play, also when detached.
+The IDE saves physical sources during Play while the old worker continues; compilation is blocked during Play and Auto compiles saved sources after Stop.
+Live Transform and typed fields refresh without overwriting focused controls. The shared toolbar owns Ctrl+D, Auto after save,
+project-open and Play builds; Stop returns to Scene. Script Component Lab and two
+repair demos pass with reviewed screenshots. No user-exclusive manual gate remains.
+
+Read docs/reports/M18_CURRENT_REPORT.md, docs/architecture/M18_AUTONOMY.md,
+docs/architecture/ADR-018-BOUNDED-AUTONOMY-AND-RUNTIME-EDITING.md and
+demos/M18_GUIDE.md. Next is M19 MVP Hardening, planned and not started;
+read docs/architecture/M19_PLAN.md and master specification sections 138–139.
+Included repair policies are narrow; general free-form planning needs an external
+AI client providing a structured plan. No model is connected or billed implicitly.
+Sessions cannot resume after daemon restart; exported evidence and proposals persist.
+Measurements do not establish physical GPU performance or state-preserving hot reload.
+
+Historical M17 closure:
+
 M17 (0.0.31) is complete: 12/12 required acceptance groups, 100%. Weighted
 project progress is approximately 90% (94/104). Bounded OBJ/STL/STEP/IGES import,
 tessellation, cleanup/normals, dependent LODs and generated box Colliders use the

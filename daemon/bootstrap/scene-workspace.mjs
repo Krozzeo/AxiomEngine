@@ -164,7 +164,7 @@ export class SceneWorkspace {
       if(type==="script.job.cancel"&&this.activeScriptJob?.id===job.id)this.activeScriptJob.controller.abort();
       return {job:copy(job)};
     }
-    if(type==="script.compile") {this.check(data);return this.startScript(data,context);}
+    if(type==="script.compile") {this.check(data);if(this.playing)fail("AX_SCENE_0005","Stop Play before compiling scripts");return this.startScript(data,context);}
     if(this.activeScriptJob&&["project.create","project.open","project.close","project.save","scene.save"].includes(type))fail("AX_SCRIPT_0001","Wait for or cancel compilation first");
     if(["asset.job.get","asset.job.cancel","asset.explain"].includes(type)) {
       if(!this.project||data.id!==this.project.id)fail("AX_SCENE_0001","Open this project first");
@@ -182,7 +182,7 @@ export class SceneWorkspace {
       return {assetId:data.assetId, asset:await this.pipeline.resource(data.id,this.project.scene,data.assetId)};
     }
     if(this.activeJob && ["project.create","project.open","project.close","project.save","scene.save"].includes(type))fail("AX_ASSET_0001","Wait for or cancel the active asset job first");
-    if (this.playing && !["scene.get", "play.stop", "project.list", "project.editor.update"].includes(type)) fail("AX_SCENE_0005", "Stop Play before editing or switching projects");
+    if (this.playing && !(type==='project.files.edit'&&data.action==='write') && !["scene.get", "scene.save", "play.stop", "project.list", "project.editor.update"].includes(type)) fail("AX_SCENE_0005", "Stop Play before editing or switching projects");
     if (type === "project.list") return this.store.run(type, data);
     if (["project.create", "project.open"].includes(type)) {
       if (this.dirty && (data.discardChanges !== true || data.expectedSceneRevision !== this.revision)) fail("AX_SCENE_0003", "Save or explicitly discard unsaved scene changes first");

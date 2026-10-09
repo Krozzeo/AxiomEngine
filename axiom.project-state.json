@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-08",
-  "engineVersion": "0.0.31",
-  "activeMilestone": 17,
+  "engineVersion": "0.0.32",
+  "activeMilestone": 18,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 90,
+    "wholeProjectPercent": 95,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -84,8 +84,8 @@
       "percent": 100
     },
     "18": {
-      "status": "not_started",
-      "percent": 0
+      "status": "complete",
+      "percent": 100
     },
     "19": {
       "status": "not_started",
@@ -113,7 +113,7 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_two_m17_labs_and_all_prior_demos",
+    "editableDemos": "verified_three_m18_labs_and_all_prior_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
@@ -131,11 +131,14 @@
     "editorCorrections": "verified_dockable_source_ide_exclusive_selection_project_validation_menus_ambient_fill",
     "advancedAssets": "verified_cad_tessellation_cleanup_normals_dependent_lods_generated_box_collision",
     "scriptInspector": "verified_typed_per_instance_attributes_readonly_runtime_snapshots_authoring_isolation",
-    "sourceIDE": "verified_multiple_buffers_scoped_save_save_all_find_replace_reopen_center"
+    "sourceIDE": "verified_multiple_buffers_scoped_save_save_all_find_replace_reopen_center_and_play_save",
+    "agentAutonomy": "verified_bounded_structured_isolated_failure_repair_retest_measured_human_review",
+    "runtimeInspector": "verified_transient_attached_components_transform_typed_csharp_scrub_and_detached_focus",
+    "scriptCompilation": "verified_stopped_only_shared_explicit_auto_after_stop_open_play_source_hash_sdk_identity_and_cached_valid_recovery"
   },
   "verified": {
     "nodeTests": {
-      "passed": 214,
+      "passed": 228,
       "failed": 0
     },
     "schemaDocuments": 18,
@@ -166,7 +169,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI 185; Rust 1.90.0; M17 0.0.31"
+      "evidenceEnvironment": "GitHub CI 198; Rust 1.90.0; M18 0.0.32"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -184,14 +187,40 @@
       "provider": "GitHub Actions",
       "repository": "Krozzeo/AxiomEngine",
       "workflow": "CI",
-      "run": 3,
-      "runId": 35726990421,
-      "commit": "0ecbc4bb4c8576d0b716dd68740257f5df256f40",
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/35726990421",
+      "run": 198,
+      "runId": 37956240973,
+      "commit": "20a01be196ec2ae69a895e0665479b801d9307a6",
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37956240973",
       "jobs": [
-        "bootstrap",
+        "csharp-wasm-spike (windows-latest, development)",
+        "bootstrap (ubuntu-latest)",
+        "script-boundaries (windows-latest)",
+        "browser-milestones (m16)",
+        "browser-milestones (m16-1)",
+        "bootstrap (windows-latest)",
+        "browser-milestones (m14)",
+        "browser-milestones (m15)",
+        "browser-milestones (m5)",
+        "browser-milestones (m13-1)",
+        "script-boundaries (ubuntu-latest)",
         "rust",
-        "csharp-wasm-spike"
+        "browser-milestones (m2)",
+        "browser-milestones (m18)",
+        "csharp-wasm-spike (ubuntu-latest, aot)",
+        "browser-milestones (m13)",
+        "browser-milestones (corrections)",
+        "browser-milestones (m12)",
+        "browser-milestones (m17)",
+        "browser-milestones (m9)",
+        "script-boundaries (macos-latest)",
+        "browser-milestones (m11)",
+        "browser-milestones (m6)",
+        "browser-milestones (m4)",
+        "browser-milestones (m3)",
+        "browser-milestones (m10)",
+        "csharp-wasm-spike (ubuntu-latest, development)",
+        "browser-milestones (m8)",
+        "browser-milestones (m7)"
       ]
     },
     "browserWasmIntegration": {
@@ -584,6 +613,23 @@
       "passed": 208,
       "failed": 0,
       "scope": "excludes six clean-build server tests; existing kernel module build"
+    },
+    "m18Acceptance": {
+      "passed": true,
+      "requiredGroupsPassed": 12,
+      "requiredGroupsTotal": 12,
+      "browserCriteriaPassed": 8,
+      "runId": 37956240973,
+      "commit": "20a01be196ec2ae69a895e0665479b801d9307a6",
+      "tree": "7d78cfcf02f420d7cf0c58010bef6db9e591a45d",
+      "evidence": "docs/reports/m18-browser-evidence.json",
+      "manualTestsRequired": false,
+      "physicalGpuBenchmark": false
+    },
+    "m18LocalNodeTests": {
+      "passed": 222,
+      "failed": 0,
+      "scope": "excludes six clean-build server tests; real existing Wasm kernel"
     }
   },
   "blockedChecks": [],
@@ -712,7 +758,15 @@
     "docs/architecture/ADR-017-CAD-AND-SCRIPT-COMPONENTS.md",
     "demos/M17_GUIDE.md",
     "THIRD_PARTY_NOTICES.md",
-    "docs/architecture/M18_PLAN.md"
+    "docs/architecture/M18_PLAN.md",
+    "docs/architecture/M18_AUTONOMY.md",
+    "docs/reports/M18_CURRENT_REPORT.md",
+    "demos/M18_GUIDE.md",
+    "docs/architecture/M19_PLAN.md",
+    "docs/architecture/ADR-018-BOUNDED-AUTONOMY-AND-RUNTIME-EDITING.md",
+    "docs/reports/m18-browser-evidence.json",
+    "docs/reports/m18-position-repair-evidence.json",
+    "docs/reports/m18-compiler-repair-evidence.json"
   ],
-  "nextTask": "Begin M18 Agent Autonomy Loop per M18_PLAN.md and master section 137; M17 is complete and PR #21 stays ready/open/unmerged."
+  "nextTask": "Start M19 MVP Hardening from clean onboarding, project-health and recovery inventory; read M19_PLAN.md and master sections 138\u2013139. PR #22 ready/open/unmerged, stacked on #21; use codex/m18-autonomy."
 }

@@ -71,7 +71,9 @@ try {
   await page.locator("#entities .entity").filter({hasText:"cube.glb"}).click();
   assert.equal(await page.locator("#position-0").isEnabled(),true);
   await (await control(page,"#play-start")).click();await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.mode==="play"&&k.frame>=15&&k.meshes===2;}catch{return false;}});
-  for(const field of await page.locator("#entity-fields input, #entity-fields button").all()) assert.equal(await field.isDisabled(),true);
+  for(const field of await page.locator("#entity-fields input, #entity-fields button").all()) assert.equal(await field.isDisabled(),false);
+  const authoredBefore=(await state()).project.scene;const target=authoredBefore.entities.find(e=>e.name.includes('cube.glb')),nextX=target.transform.position[0]+1;
+  await page.locator('#position-0').fill(String(nextX));await page.locator('#position-0').press('Tab');await page.waitForFunction(({id,x})=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.entities.find(e=>e.id===id)?.position[0]===x;}catch{return false;}},{id:target.id,x:nextX});assert.deepEqual((await state()).project.scene,authoredBefore);report.criteria.push('Live Transform changes the running world while preserving authored transforms');
   assert.equal(await page.locator("#asset-import").isDisabled(),true);
   const editorImage=await page.screenshot({path:join(evidence,"play-editor.png")});
   if(process.env.CI && process.env.AXIOM_LOG_PREVIEW==="true") {
@@ -85,7 +87,7 @@ try {
   await page.waitForFunction(()=>{try{const k=JSON.parse(document.querySelector("#frame-trace").textContent).kernel;return k.renderer==="null"&&k.meshes===2&&k.frame>=15;}catch{return false;}});
   assert.match(await page.locator("#gpu-state").textContent(),/Null Renderer/);
   assert.deepEqual(errors,[]);
-  report.pixelEvidence=colors(savedImage);report.nullParity=true;report.passed=report.criteria.length===11;
+  report.pixelEvidence=colors(savedImage);report.nullParity=true;report.passed=report.criteria.length===12;
   await writeFile(join(evidence,"report.json"),JSON.stringify(report,null,2));
   console.log(JSON.stringify(report,null,2));
 } catch(error) {

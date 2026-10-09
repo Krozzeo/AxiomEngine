@@ -1,6 +1,7 @@
 # M18 — Agent Autonomy Loop
 
-Status: planned, not started. Master specification section 137. M17 is complete.
+Status: complete; 12/12 required acceptance groups. Master specification section 137.
+Read M18_AUTONOMY.md and ../reports/M18_CURRENT_REPORT.md for current evidence.
 
 Demonstrate an agent receiving an objective, defining measurable acceptance criteria,
 editing an isolated workspace, compiling, running, inspecting evidence, diagnosing
@@ -20,4 +21,4 @@ M8_DIAGNOSTICS_AND_EDITOR.md, M13_PROFILER.md, M14_GAME_TESTING.md, M15_REPLAY.m
 ../reports/M17_CURRENT_REPORT.md and canonical tools/workspace schemas before editing.
 Close with editable demos, all prior gates, synchronized documentation/state,
 milestone/project percentages and only genuinely user-exclusive manual checks.
-M19 MVP Hardening follows; do not silently include it in M18.
+M19 MVP Hardening follows and is not started; read M19_PLAN.md.

@@ -1,6 +1,6 @@
 # M18.1 — OpenAI connection and multistep assistant
 
-Status: in progress; version remains development until acceptance. Read M18_EXTENSIONS_ROADMAP.md, M6_WORKSPACES.md and M18_AUTONOMY.md first.
+Status: implementation ready for account verification; 7/8 groups passed (87.5%), group 2 live endpoint check blocked without a configured API account. Read M18_EXTENSIONS_ROADMAP.md, M6_WORKSPACES.md and M18_AUTONOMY.md first.
 
 Required acceptance groups:
 1. Authenticated local configuration, explicit connection test, available-model selection and disconnect; secrets held in daemon memory or its environment, never persisted/exported/logged.

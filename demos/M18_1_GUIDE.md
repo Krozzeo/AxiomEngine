@@ -14,7 +14,7 @@ The command adds **Demo · M18.1 AI Assistant Workshop** without deleting existi
 
 ## Connect your own account
 
-AI → Config AI assistant: enter your OpenAI API key locally, Load available models, choose a text/function-calling model available to your account, then Connect and test. Model listing does not prove function-call compatibility; the explicit test does. The test makes one small billable Responses request. Task requests are billed by your OpenAI API account, not your ChatGPT subscription. Never send the API key in chat or add it to project files.
+AI → Config AI assistant: enter your OpenAI API key locally, Load available models, choose a text/function-calling model available to your account, then Connect and test. Model listing does not prove workflow compatibility. The explicit test checks a completed text response with the tool definitions accepted; the Workshop task additionally verifies actual function calls. The test makes one small billable Responses request. Task requests are billed by your OpenAI API account, not your ChatGPT subscription. Never send the API key in chat or add it to project files.
 
 The key stays only in daemon memory. Browser refresh preserves the daemon connection; daemon restart requires reconnection. Alternatively set OPENAI_API_KEY in the daemon's environment before starting it. No key is written by Axiom to project files, exports or browser storage. Disconnect cancels the active task and clears the daemon credential. There is no persistent encrypted credential vault in this release.
 
@@ -36,7 +36,7 @@ Before accepting, keep Continue pending proposal checked and ask:
 
 > In the same pending proposal, move Workshop Cube to X=5 and verify its position.
 
-It should adjust the existing proposal rather than creating another. The result depends on your model; verify the actual differences before accepting. Use Cancel task to stop work; cancellation does not accept or save anything. Chat/task histories survive browser reload only while the same daemon is running; pending proposals are already persisted separately.
+It should adjust the existing proposal rather than creating another. The result depends on your model; verify the actual differences before accepting. Use Cancel task to stop work; cancellation does not accept or save anything. Browser reload restores the latest task and preserves model conversation context while the same daemon is running; it does not yet restore the complete visible chat transcript. Pending proposals are already persisted separately.
 
 ## Verification boundary
 

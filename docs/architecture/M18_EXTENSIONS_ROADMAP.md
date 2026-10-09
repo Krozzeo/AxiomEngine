@@ -4,7 +4,7 @@ Scope decision: 2026-10-09. M18 0.0.32 remains complete; its two repair demos ar
 
 | Milestone | State | Deliverable | Weight |
 | --- | --- | --- | ---: |
-| M18.1 OpenAI connection and multistep assistant | In progress | Daemon-held credential, tested model selection, bounded sequential tool loop, project-context chat, isolated existing proposals, cancellation and usage/error visibility | 6 |
+| M18.1 OpenAI connection and multistep assistant | 7/8 groups passed; live-account check pending | Daemon-held credential, tested model selection, bounded sequential tool loop, project-context chat, isolated existing proposals, cancellation and usage/error visibility | 6 |
 | M18.2 Integrated chat and editable preview | Not started | Chat review card, automatic preview after agent work, preview-only toolbar, branch toggle, manual proposal edits, Apply/Discard and recovery | 6 |
 | M18.3 Assisted PMD | Not started | Iterative definition, approved milestone/stage planning, optional critique, indexed linked section documents, manual/assisted edits, import/export and history | 7 |
 | M18.4 GitHub integration | Not started | Account/repository/branch configuration, connection indicator, explicit or configured milestone publication of applied/saved projects | 3 |
@@ -27,3 +27,5 @@ GitHub credentials never enter project documents or model context. Publish only 
 ## Reporting rebaseline
 
 The prior 104-point roadmap has 99 completed points. Added scope contributes 22 points; total is now 126. Current completed weight remains 99/126, approximately 79%, without removing or undoing completed functionality. M18.1–18.4 gain partial credit only from executed acceptance evidence; documentation or scaffolding earns none. Historical 95% reports retain their original scope denominator.
+
+Current evidence credits 7/8 of M18.1’s six points: 99 + 6×7/8 = 104.25; 104.25/126 ≈ 83%. The final live-account group remains blocked, not silently waived. Individual follow-on plans: M18_2_PLAN.md, M18_3_PLAN.md and M18_4_PLAN.md.

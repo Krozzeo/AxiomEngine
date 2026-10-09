@@ -1,6 +1,10 @@
 # Implementation status
 
-M18.1 is now in progress on `codex/m18-1-openai`. The approved order is M18.1 OpenAI connection/multistep assistant → M18.2 editable preview/chat → M18.3 assisted PMD → M18.4 GitHub → M19 hardening. See [M18 extension roadmap](M18_EXTENSIONS_ROADMAP.md) and `docs/architecture/M18_1_PLAN.md`. Apply will replace MAIN rather than merge branches in M18.2; this is not yet implemented. AI Master is future/planned. Expanded scope rebases progress to approximately 79% (99/126); the historical 95% below used 99/104. No new acceptance group is claimed complete yet.
+M18.1 (0.0.33) is implemented and awaits account-specific live verification: 7/8 acceptance groups passed, 87.5%; expanded project progress approximately 83% (104.25/126). The eighth open group is the live Responses adapter check with the user's account, not missing implementation. Controlled automated responses do not establish live model access, quota or compatibility. PR #23 remains draft/open/unmerged on `codex/m18-1-openai`, stacked on #22. Read `docs/reports/M18_1_CURRENT_REPORT.md`, `docs/architecture/M18_1_OPENAI_ASSISTANT.md` and `demos/M18_1_GUIDE.md`.
+
+Daemon-held OpenAI connection, model discovery/test and a bounded multistep tool loop now drive a dockable AI Assistant with project context, usage, cancellation and isolated proposals. Keys are memory-only. The original remains unchanged until existing explicit human acceptance; Save remains separate. Follow-ups can continue the same proposal. AI Master remains disabled/planned. CI 203 has 29/30 successful jobs; M15 remains installing browser dependencies and passed CI 202 on the same application code. See the report for exact provenance; no complete CI 203 claim. No live-account success is claimed.
+
+The approved order remains M18.1 → M18.2 editable preview/chat → M18.3 assisted modular PMD → M18.4 GitHub → M19 hardening. M18.2 Apply will replace complete MAIN authored state instead of merging; this is not yet implemented. First next action: obtain the local Workshop live-account result (never a key in chat); resolve any actual adapter failure and then begin M18.2 from its plan. Historical 95% below uses the old 104-point scope; the expanded baseline was 79% before M18.1 evidence.
 
 Historical M18 closure:
 

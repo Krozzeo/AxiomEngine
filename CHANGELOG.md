@@ -1,11 +1,13 @@
 # Changelog
 
-## 0.0.33 — M18.1 — OpenAI assistant (in progress)
+## 0.0.33 — M18.1 — OpenAI assistant (live-account check pending)
 
 - Daemon-held connection/model test and bounded sequential Responses/tool orchestration; project writes stay in human-reviewed proposals.
 - Dockable AI Assistant, real connection/working indicators, usage/cancellation and explicit future AI Master.
 - Multistep Workshop demo and transport/authority/UI acceptance; approved M18.1–18.4 roadmap before M19.
 - Editable replacement preview, assisted PMD and GitHub remain later milestones; no live API account verification is claimed yet.
+- 7/8 acceptance groups, 87.5%; expanded project approximately 83%. Current CI and controlled browser evidence are recorded in the M18.1 report.
+- Queued Auto preference saves survive a busy editor; the default dock test counts only visible tabs and verifies AI Assistant starts closed.
 
 ## 0.0.32 — M18 — bounded autonomy and live editor workflow
 

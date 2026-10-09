@@ -77,3 +77,19 @@ and Clippy pass. No new hardware rendering behavior is introduced by this slice.
 See M16_AUTHORING_AND_PERFORMANCE.md and ADR-0031 for portable scene.projectFiles,
 canonical file edits/history/save, typed contextual copies, isolated Explorer exports,
 and one-source C# authoring limits. M16_CURRENT_REPORT.md records executable evidence.
+
+## M18 transient runtime editing
+
+During ordinary Play, attached component values, Transform and writable serialized
+C# fields edit the renderer's running scene rather than the authored document or
+Undo history. The same closed schema/type/range rules apply. Readonly fields and
+component/entity structure remain protected. Stop discards these live changes and
+returns to Scene; Game can remain visible independently in a separate window.
+
+The source IDE stays editable during Play. Saving persists authored physical files;
+the existing worker continues until Stop. Compilation is blocked during Play by
+all UI paths and the daemon API. Auto compiles saved changes immediately after
+Stop; the next Play uses the new build. Failed builds retain the last good build.
+Transform and typed script fields refresh from the live world every 100 ms without
+overwriting the focused edit control. See M18_AUTONOMY.md and ../../demos/M18_GUIDE.md for compilation,
+Inspector, scope and acceptance details.

@@ -1,0 +1,207 @@
+{
+  "id": "autonomy://473c89b0-4362-4d03-8122-94f0df277ca3",
+  "objective": "Repair the controller compilation and prove movement after 30 frames",
+  "status": "completed",
+  "phase": "ready-for-review",
+  "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+  "iteration": 2,
+  "criteria": {
+    "name": "Controller movement",
+    "steps": [
+      {
+        "frames": 30,
+        "assertions": [
+          {
+            "kind": "position",
+            "entityId": "entity://c3c59671-d8a7-40c0-a681-ed2b3b865a76",
+            "value": [
+              0.5,
+              0,
+              0
+            ],
+            "tolerance": 0.001
+          }
+        ]
+      }
+    ]
+  },
+  "planHash": "12af6871ae16e71d28414d52369251961ed802c93fe827cafae6b7a0aac6b6ed",
+  "limits": {
+    "iterations": 3,
+    "seconds": 600,
+    "commands": 64
+  },
+  "evidence": [
+    {
+      "sequence": 1,
+      "kind": "compile",
+      "iteration": 1,
+      "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+      "passed": false,
+      "jobId": "15c18ac4-3ef4-4bd4-a252-9d26700bbb79",
+      "sourceHash": null,
+      "durationMs": null,
+      "diagnostics": [
+        {
+          "file": "Scripts/RepairMover.cs",
+          "line": 1,
+          "column": 189,
+          "severity": "error",
+          "code": "CS1002",
+          "message": "; expected"
+        }
+      ],
+      "error": "; expected"
+    },
+    {
+      "sequence": 2,
+      "kind": "diagnosis",
+      "iteration": 1,
+      "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+      "cause": "compiler-failure",
+      "code": "AX_SCRIPT_0001"
+    },
+    {
+      "sequence": 3,
+      "kind": "compile",
+      "iteration": 2,
+      "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+      "passed": true,
+      "jobId": "3a610718-8b13-4bb7-898e-a77e79d0678a",
+      "sourceHash": "e1b6ca4d3a754210be0c4527a559896b33b037dad4a82ae4144bbd6e0b27370c",
+      "durationMs": 20695.211305000004,
+      "diagnostics": [],
+      "error": null
+    },
+    {
+      "sequence": 4,
+      "kind": "acceptance",
+      "iteration": 2,
+      "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+      "passed": true,
+      "sceneRevision": 4,
+      "jobId": "1670f2e7-4a7f-4639-908d-e05963360db1",
+      "status": "completed",
+      "frames": 30,
+      "durationMs": 1147.5465869999898,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            0.49999999999999994,
+            0,
+            0
+          ],
+          "expected": [
+            0.5,
+            0,
+            0
+          ],
+          "frame": 30
+        }
+      ],
+      "error": null
+    },
+    {
+      "sequence": 5,
+      "kind": "benchmark",
+      "iteration": 2,
+      "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+      "passed": true,
+      "sceneRevision": 4,
+      "jobId": "0d78f795-92c5-4b13-905e-3ac4105c1e18",
+      "status": "completed",
+      "frames": 30,
+      "durationMs": 1220.276429999998,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            0.49999999999999994,
+            0,
+            0
+          ],
+          "expected": [
+            0.5,
+            0,
+            0
+          ],
+          "frame": 30
+        }
+      ],
+      "error": null
+    },
+    {
+      "sequence": 6,
+      "kind": "benchmark",
+      "iteration": 2,
+      "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+      "passed": true,
+      "sceneRevision": 4,
+      "jobId": "be1b97f5-37db-4fe0-9c5e-5ab05bde636d",
+      "status": "completed",
+      "frames": 30,
+      "durationMs": 1213.1809990000038,
+      "results": [
+        {
+          "kind": "position",
+          "passed": true,
+          "actual": [
+            0.49999999999999994,
+            0,
+            0
+          ],
+          "expected": [
+            0.5,
+            0,
+            0
+          ],
+          "frame": 30
+        }
+      ],
+      "error": null
+    }
+  ],
+  "repairs": [
+    {
+      "iteration": 1,
+      "kind": "compiler-exact-patch",
+      "path": "Scripts/RepairMover.cs",
+      "beforeHash": "d17208dbc4f67645a0f675bd7268f6f21b140d1bd8f9309be7ffe4d4f79e49c9",
+      "afterHash": "8bb3149eccc714a69de9027071f1899889bfcd8ce96b9c52aa30c4d44223f7a9"
+    }
+  ],
+  "benchmark": {
+    "samples": 2,
+    "wallMs": [
+      1220.276429999998,
+      1213.1809990000038
+    ],
+    "meanWallMs": 1216.728714500001,
+    "framesPerSample": 30,
+    "meaning": "Measured bridge + fixed-step execution + presentation wall time; not physical GPU performance"
+  },
+  "changeSet": {
+    "workspaceId": "workspace://43b6642b-3e00-4d9f-b25a-6295fb60d4ff",
+    "revision": 5,
+    "reviewHash": "712b3c8dd7b0471d7984f2e584d049814201391b8839f824776ebfc517f97011",
+    "changes": 2,
+    "acceptance": "Human Review differences and Accept reviewed changes; Save remains explicit"
+  },
+  "commands": 9,
+  "provenance": {
+    "runId": 37956240973,
+    "commit": "20a01be196ec2ae69a895e0665479b801d9307a6",
+    "tree": "7d78cfcf02f420d7cf0c58010bef6db9e591a45d",
+    "artifactId": 11627933641,
+    "artifactDigest": "sha256:9114ecf0e79b0b37aa3e606f668cd2aed8d1f5bc597e73a0335a869058223ef9",
+    "visualReview": [
+      "script-component-lab.png",
+      "position-repair.png",
+      "compiler-repair.png"
+    ],
+    "renderer": "Chromium, Xvfb, software Vulkan/WebGPU; no physical GPU benchmark"
+  }
+}

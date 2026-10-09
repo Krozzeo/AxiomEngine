@@ -1,6 +1,6 @@
 # M18 — bounded autonomy and live editor workflow
 
-Implementation under acceptance validation. Version 0.0.32. M19 not started.
+Accepted; 12/12 required groups, eight browser criteria. Version 0.0.32. M19 not started.
 
 `autonomy.control` run/query/cancel owns one active loop, up to eight retained
 sessions, 24 initial semantic actions, 1–4 attempts, 10–600 seconds, 64 commands
@@ -24,7 +24,10 @@ components and Transform may change during ordinary Play. Script fields are chec
 against typed metadata and readonly/range rules before hydrating the running C#
 instance. Structural edits are stopped-only. Stop discards runtime edits. C# source
 writes/saves during Play persist authored files but preserve the current worker
-until a successful new build; build replacement restarts the script world.
+until Stop. Compilation is rejected during Play by UI, Ctrl+D, legacy IDE and
+daemon API; Auto defers saved changes until immediately after Stop. The next
+Play starts the new build. Inspector Transform and typed script fields sample
+the live world every 100 ms without overwriting the focused edit control.
 
 A shared compiler controller handles toolbar, Ctrl+D, legacy IDE Compile, Play,
 project opening and Auto-after-save. Source hash, build mode and SDK ABI version
@@ -34,4 +37,4 @@ shell command or AI-generated code is executed outside existing capabilities.
 
 Acceptance: tests/autonomy.test.mjs, tests/game-test-runtime.test.mjs,
 tests/scene-workspace.test.mjs, tests/browser/m18.mjs and development/AOT/Windows
-C# gameplay gates. See demos/M18_GUIDE.md. Completion awaits full CI evidence.
+C# gameplay gates. See demos/M18_GUIDE.md. Full acceptance evidence is retained in ../reports/m18-browser-evidence.json.

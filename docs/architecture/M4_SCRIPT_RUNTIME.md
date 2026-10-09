@@ -26,7 +26,9 @@ using directives and file-scoped namespaces. Play compiles changed sources; stal
 daemon starts require compilation. Typed hydration and readonly snapshots are
 verified in Linux development/AOT and Windows development. Snapshots affect runtime
 only; Stop restores authored values. IDE buffers retain edits across tabs and saving
-is explicit. Historical explicit-source compile and Play hot reload still work.
+is explicit. M18 blocks compilation during Play; Auto compiles saved changes after
+Stop. The next Play starts the new build. Explicit-source compilation remains
+compatible while stopped.
 Local scripts are user code, not a hardened boundary for hostile downloaded code.
 
 The sections below preserve the historical M4 single-source contract.
@@ -41,10 +43,9 @@ logs lifecycle messages and moves the original with Left/Right arrow keys.
 Keyboard input is ignored while typing in editor fields. Stop discards runtime
 positions and spawned entities. Save persists source, attachments and build ID.
 
-Compilation during Play is supported. A successful build creates a new worker
-and resets Play from the authoring scene; it does not preserve script fields or
-runtime entities. Compilation failure leaves the previous source/build and
-running worker intact. Runtime exceptions and two-second call timeouts stop the
+The historical M4 supported compilation during Play. M18 supersedes that policy:
+compilation is stopped-only, including the daemon API. Auto defers saved changes
+until Stop; compilation failure retains the previous good build. Runtime exceptions and two-second call timeouts stop the
 worker, preserve authoring data and leave the editor responsive. Accepted source
 edits remain undoable after Stop; runtime failure does not silently erase them.
 

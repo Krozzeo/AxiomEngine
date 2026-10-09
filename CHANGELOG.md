@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.0.32 — M18 — bounded autonomy and live editor workflow
+
+Complete: all 29 jobs in CI 198, 228 Node/39 Rust tests, 18 schemas, 88 tools and eight browser criteria pass. M18 100%; project approximately 95%.
+
+- One budgeted semantic autonomy loop: isolated proposal, real failure evidence, compiler/position repair, fresh-world retesting, measured verification and revision/hash-bound human review.
+- Cancellation, command/time/iteration/evidence budgets; no implicit model billing, shell access or automatic MAIN publication.
+- Runtime-only edits of attached components, Transform and writable typed C# fields; readonly and validation rules remain enforced.
+- IDE source editing/saving during Play preserves the old worker; compilation is blocked until Stop and Auto compiles saved changes immediately after Stop.
+- Shared Compile*/Compiling/Compiled/Error toolbar, Ctrl+D, compile-on-open/Play and saved-source Auto; cached valid sources clear stale diagnostics.
+- Empty/non-entity Inspector, inline values, folding and numeric label scrubbing, including detached Inspector; larger Project arrows and project marker.
+- Stop returns to Scene while detached Game can remain visible independently. Live Transform and script fields refresh without replacing edit controls; disabled compile states retain color outside Play and place the icon after the label.
+- Updated Script Component Lab and two autonomous repair demos, with retained failures and explicit human publication.
+
 ## 0.0.31 — M17 — advanced assets, reusable scripts and multi-tab IDE
 
 - Bounded worker import of OBJ/STL/STEP/IGES; CAD tessellation, units, axis, centering, cleanup and normals.

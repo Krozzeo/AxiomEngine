@@ -1,39 +1,57 @@
-# M18 current report — acceptance pending
+# M18 closure report — complete
 
-Version 0.0.32. M18 implemented, full CI acceptance in progress. Whole-project
-accepted baseline remains approximately 90% (94/104) until M18 closes. PR #22 is
-draft/open/unmerged, stacked on #21. No M19 implementation started.
+M18 (0.0.32) is complete: 12/12 required acceptance groups, 100%. Weighted
+project progress is approximately 95% (99/104). PR #22 is ready/open/unmerged,
+stacked on #21; current development branch is codex/m18-autonomy. All 29 jobs in
+CI 198 pass at executable commit 20a01be196ec2ae69a895e0665479b801d9307a6
+(tree 7d78cfcf02f420d7cf0c58010bef6db9e591a45d). This validates 228 Node tests, 39 Rust tests,
+18 schemas, 88 semantic tools, eight M18 browser criteria and all prior gates,
+including real C# Linux development/AOT and Windows development.
 
-Implemented: bounded semantic autonomy with isolated proposals, compiler/position
-repair, observed failed receipts, fresh-world tests, two measured verification
-samples and human revision/hash-reviewed publication. No arbitrary natural-language
-interpreter, unconfigured paid-model call, shell or automatic MAIN publication.
-Editor improvements: empty/non-entity Inspector, inline scalar labels, folding,
-numeric scrubbing, runtime-only attached-component/Transform edits, editable and
-savable IDE during Play, shared compile button/states/Auto/Ctrl+D, compile on open,
-Play compilation and Stop → Scene. Script Component Lab plus two repair demos.
+Bounded structured autonomy retains failure/repair/retest/measurement evidence and
+returns an isolated revision/hash-reviewed proposal. Human publication and Save
+remain explicit. The Inspector supports folding, inline values, scrubbing and
+transient attached-component/Transform/C# edits during Play, also when detached.
+The IDE saves physical sources during Play while the old worker continues; compilation is blocked during Play and Auto compiles saved sources after Stop.
+Live Transform and typed fields refresh without overwriting focused controls. The shared toolbar owns Ctrl+D, Auto after save,
+project-open and Play builds; Stop returns to Scene. Script Component Lab and two
+repair demos pass with reviewed screenshots. No user-exclusive manual gate remains.
 
-Local 214 non-server tests passed before two new compiler-controller tests and two
-runtime-validation tests; both additional suites pass separately. Real Wasm tests
-prove runtime edits/reset. Eighteen schemas, 88 generated tools, script bindings,
-architecture boundaries and daemon adapter parity pass. Local server clean-build
-checks require unavailable Cargo; real .NET development/AOT/Windows and browser
-acceptance run in CI. No completion or screenshot-review claim yet.
+Read docs/reports/M18_CURRENT_REPORT.md, docs/architecture/M18_AUTONOMY.md,
+docs/architecture/ADR-018-BOUNDED-AUTONOMY-AND-RUNTIME-EDITING.md and
+demos/M18_GUIDE.md. Next is M19 MVP Hardening, planned and not started;
+read docs/architecture/M19_PLAN.md and master specification sections 138–139.
+Included repair policies are narrow; general free-form planning needs an external
+AI client providing a structured plan. No model is connected or billed implicitly.
+Sessions cannot resume after daemon restart; exported evidence and proposals persist.
+Measurements do not establish physical GPU performance or state-preserving hot reload.
 
-Required closure groups:
-1. Isolated authority and explicit validated plan budgets.
-2. Canonical semantic edit/compile/inspect/test operations.
-3. Observed position failure, bounded repair and successful retest.
-4. Observed C# compile failure, exact patch and successful runtime assertion.
-5. Fresh-world repeatability and two measured verification runs.
-6. Single flight, cancellation, exhausted budgets and retained failure receipts.
-7. Immutable evidence and revision/hash-bound human publication.
-8. Empty/non-entity Inspector, inline labels, folding and numeric scrub.
-9. Live attached-component and typed C# editing with authored-state isolation.
-10. Compiler states, Auto, Ctrl+D, open/Play/save/replacement semantics.
-11. All earlier Node/Rust/schema/bindings/browser/C# gates.
-12. Three editable demos, synchronized docs/state and reviewed screenshots.
+## Accepted groups
 
-Next: finish M18 acceptance and deliver its immutable source archive. M19 is the
-remaining MVP Hardening milestone after this closure. See M18_AUTONOMY.md and
-M18_GUIDE.md for boundaries and interaction instructions.
+| Group | Evidence |
+| --- | --- |
+| Isolated authority and explicit plan budgets | autonomy tests; real proposal scopes |
+| Canonical semantic edit/compile/inspect/test | 88 tools; exact live editor bridge |
+| Position failure → repair → retest | position-repair evidence; iteration 2 passes |
+| C# compile failure → exact patch → runtime assertion | compiler-repair evidence; real .NET/Wasm |
+| Fresh-world repeatability and measured verification | two passing measurements per objective |
+| Single flight, cancellation and exhausted budgets | autonomy tests; retained receipts |
+| Immutable evidence and human revision/hash publication | exported JSON; existing workspace acceptance tests |
+| Empty/non-entity Inspector, inline labels, folding/scrub | browser acceptance and detached Inspector |
+| Live typed component/Transform/C# authoring isolation | browser C# plus real Wasm lifecycle/schema tests |
+| Compiler states, Auto after Stop, blocked Play compilation, Ctrl+D and open/Play/save | browser acceptance; compiler/source tests |
+| Earlier Node/Rust/schema/bindings/browser/C# gates | 29 successful jobs on the executable commit |
+| Demos, synchronized docs/state and visual review | three screenshots and demo guide |
+
+## Validation limits
+
+Local Cargo, .NET and Chromium were unavailable; local execution used the existing
+real Wasm kernel and 222 non-server tests. Clean builds, all 228 Node tests, 39 Rust
+tests, software WebGPU browser interactions, C# Linux development/AOT and Windows
+development are verified in the linked GitHub run. Captures were inspected before
+closure. No physical GPU or hardware-performance claim is made. Required manual
+checks: none; equivalent functional acceptance is automated.
+
+The final closure commit changes only documentation, machine-readable state and
+retained JSON evidence; executable files remain identical to the tested commit.
+M19 is the one remaining MVP milestone and has not been implemented.

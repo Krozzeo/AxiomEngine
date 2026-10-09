@@ -1153,7 +1153,10 @@
                   "type": "string",
                   "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
                 },
-                "sdkVersion": {"type":"integer","minimum":1},
+                "sdkVersion": {
+                  "type": "integer",
+                  "minimum": 1
+                },
                 "sourceHash": {
                   "type": "string",
                   "pattern": "^[0-9a-f]{64}$"
@@ -1523,7 +1526,7 @@
             },
             "order": {
               "type": "array",
-              "maxItems": 9,
+              "maxItems": 10,
               "uniqueItems": true,
               "items": {
                 "enum": [
@@ -1535,13 +1538,14 @@
                   "profiler",
                   "scene",
                   "game",
-                  "ide"
+                  "ide",
+                  "assistant"
                 ]
               }
             },
             "closed": {
               "type": "array",
-              "maxItems": 9,
+              "maxItems": 10,
               "uniqueItems": true,
               "items": {
                 "enum": [
@@ -1553,11 +1557,22 @@
                   "profiler",
                   "scene",
                   "game",
-                  "ide"
+                  "ide",
+                  "assistant"
                 ]
               }
             },
             "ide": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "top",
+                "bottom",
+                "center"
+              ]
+            },
+            "assistant": {
               "type": "string",
               "enum": [
                 "left",

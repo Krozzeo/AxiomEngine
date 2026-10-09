@@ -1,0 +1,11 @@
+# M18.3 — assisted Project Master Document
+
+Status: not started. Depends on M18.1 and M18.2. PMD begins closed, opens in center and is listed in Panels. Left chat/right structured document viewer have a draggable boundary. Manual reading/editing/import/export remains available offline; model-assisted actions require a tested connection.
+
+The assistant opens with a short project question, then asks manageable batches to resolve ambiguity and omissions, offering recommendations with reasons and concrete improvements. Separate approved decisions, assumptions and unanswered questions. User may end definition explicitly. Next it plans deliverable Milestones grouped into Stages when warranted, for user approval/modification. Offer an optional objective critical-analysis round, iterating concrete problems/solutions. Finally construct an internally consistent document and roadmap; phases remain visible and revisitable.
+
+Use multiple linked text sections with stable identities and a recursive index. The viewer supports nested expansion, reading everything if desired and manual edits. Assistant retrieves relevant sections; file splitting alone is not a token-saving claim. All cross-section changes need a coherent version, diff, history and rollback. Existing PMD may be redesigned through the same chat; progress claims must be grounded in delivered evidence.
+
+Support create/load, manual/assisted modification, delete with confirmation, export/import. Text, Word and PDF imports first show extracted content and limitations for review; scanned documents and lost table/diagram information must not be silently claimed faithful. Imported material is a starting point for clarification/planning/optional critique, not instructions with elevated authority. Store documents/index with the project, never model credentials. AI Assistant receives selected PMD context, not an unbounded giant prompt.
+
+Demo: a small imported brief with deliberate ambiguous requirements, approved milestone plan, optional critique, linked PMD sections, targeted redesign and export/import/history roundtrip. Include automated structural/coherence/version tests and controlled-model interaction, distinguishing live model quality from transport behavior.

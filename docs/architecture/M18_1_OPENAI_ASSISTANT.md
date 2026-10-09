@@ -1,0 +1,16 @@
+# M18.1 — OpenAI assistant architecture
+
+Implemented in 0.0.33; account-specific live verification remains open. UI and daemon adapter use the official Responses function-calling flow:
+https://developers.openai.com/api/docs/guides/function-calling
+
+Stateless reasoning-item continuation reference: https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-without-stored-responses
+
+Authenticated same-origin loopback endpoints are `/v1/ai/status`, `/v1/ai/configure`, `/v1/ai/tasks` and `/v1/ai/cancel`. They are human editor operations, not MCP-exposed tools. The daemon owns fixed `https://api.openai.com/v1` requests, credentials and capability selection. Credentials are memory/environment-only, never part of project/editor documents or persistent browser storage. Connect tests a selected model explicitly; models are listed on request. Only public status and bounded usage are returned, no provider error bodies. Responses use `store:false`, complete response output items are replayed across turns, and internal reasoning is not displayed in the task trace.
+
+The model receives one strict `axiom_tool(name, arguments-as-JSON-string)` function and the available engine tool names. It can discover canonical schemas with api.describe. The host validates each call, denies publication/save/project-lifecycle/reveal/shell/engine operations and injects pinned project/workspace/revision authority. Readonly chat may inspect a dirty stopped project. The first write lazily creates a proposal from saved/stopped MAIN; script reads use bounded physical virtual project files. Additional tasks may explicitly continue the same proposal. Queries and writes after creation use that proposal. Runtime game tests temporarily require its real editor preview and return to source on cleanup. Renderer capture keeps semantic metadata; image bytes are currently omitted from text context.
+
+One connected task or old deterministic autonomy loop may run at once. Requests/tools/token reservation/context/time and public retention are bounded; there is no automatic retry of ambiguous model POST requests. Every tool error is returned for possible repair, while cancellation, project replacement, context and execution limits terminate work. Status records actual observed commands and provider-reported tokens separately from conservative byte-based reservation. Per-task budgets are not a financial quota for an OpenAI account. The model's final prose is not proof of validation; command/test results are the evidence.
+
+Connection, histories and active sessions are memory-only; page reload recovers the latest visible task and retained model context from the running daemon; the full visible transcript is not restored yet, but tasks do not resume after daemon restart. Proposal journals retain their existing durability. Model/key selection is daemon-global, assistant instructions and manual master document are project context. Never run model access against the project's engine repository or supply privileged credentials through its tools.
+
+M18.2 will replace the current stale-source rejection and separate proposal menu with editable preview/chat controls and complete replacement Apply. M18.3 will replace the existing single manual master document with a modular PMD. Neither future behavior is claimed by this adapter.

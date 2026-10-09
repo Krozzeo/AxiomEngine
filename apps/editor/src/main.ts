@@ -1,3 +1,4 @@
+import {mountAiAssistant} from './ai-assistant.mjs';
 import {mountAutonomyEditor} from './autonomy-editor.mjs';
 import {mountEditorMenu} from './editor-menu.mjs';
 import {mountReplayEditor} from './replay-editor.mjs';
@@ -151,6 +152,7 @@ async function boot() {
     await initializeWebGpu();
     const stopReplay=mountReplayEditor({document,getRenderer:()=>renderer,getSnapshot:()=>projectEditor.snapshot(),reportError});addEventListener('pagehide',stopReplay,{once:true});
     const stopAi=mountAiMenu({document,getSnapshot:()=>projectEditor.snapshot(),save:value=>projectEditor.saveAiSettings(value),reportError});addEventListener('pagehide',stopAi,{once:true});
+    const stopAssistant=mountAiAssistant({document,api,getSnapshot:()=>projectEditor.snapshot(),openPanel:(id,options)=>projectEditor.openPanel(id,options),reportError});addEventListener('pagehide',stopAssistant,{once:true});
     const stopAutonomy=mountAutonomyEditor({document,getSnapshot:()=>projectEditor.snapshot(),send:sendCommand,reportError});addEventListener('pagehide',stopAutonomy,{once:true});
     const stopTests=mountGameTestEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,save:values=>projectEditor.saveTestSuites(values),reportError});addEventListener('pagehide',stopTests,{once:true});
     const stopProfiler=mountProfilerEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,reportError});addEventListener("pagehide",stopProfiler,{once:true});

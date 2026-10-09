@@ -1,13 +1,13 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-08",
-  "engineVersion": "0.0.32",
-  "activeMilestone": 18,
-  "milestoneStatus": "complete",
+  "updatedAt": "2026-10-09",
+  "engineVersion": "0.0.33",
+  "activeMilestone": 18.1,
+  "milestoneStatus": "blocked",
   "completion": {
-    "activeMilestonePercent": 100,
-    "wholeProjectPercent": 95,
+    "activeMilestonePercent": 87.5,
+    "wholeProjectPercent": 83,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -94,6 +94,22 @@
     "13.1": {
       "status": "complete",
       "percent": 100
+    },
+    "18.1": {
+      "status": "blocked",
+      "percent": 87.5
+    },
+    "18.2": {
+      "status": "not_started",
+      "percent": 0
+    },
+    "18.3": {
+      "status": "not_started",
+      "percent": 0
+    },
+    "18.4": {
+      "status": "not_started",
+      "percent": 0
     }
   },
   "implementation": {
@@ -113,7 +129,7 @@
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
     "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_three_m18_labs_and_all_prior_demos",
+    "editableDemos": "verified_m18_1_workshop_controlled_assistant_and_prior_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
@@ -124,7 +140,7 @@
     "parallelViews": "verified_same_runtime_independent_cameras_scene_game_popup_input",
     "replay": "verified_bounded_input_plans_seeded_csharp_prefix_checkpoint_ranges_diagnostics",
     "entityCameras": "verified_inspector_transform_gizmos_parallel_game_and_explicit_starters",
-    "aiProjectContext": "verified_six_menu_options_plain_master_documents_external_mcp_context",
+    "aiProjectContext": "verified_manual_master_document_context_external_mcp_and_daemon_assistant; modular_pmd_planned",
     "projectFileAuthoring": "verified_portable_virtual_tree_templates_moves_copies_history_save_explorer_exports",
     "editorContextActions": "verified_scoped_clipboard_parenting_autocommit_menus_fps_and_redraw_focus",
     "lowEndPass": "verified_indexed_virtual_ui_fresh_cached_wasm_reused_gpu_storage_scale_bounded_submission",
@@ -134,11 +150,12 @@
     "sourceIDE": "verified_multiple_buffers_scoped_save_save_all_find_replace_reopen_center_and_play_save",
     "agentAutonomy": "verified_bounded_structured_isolated_failure_repair_retest_measured_human_review",
     "runtimeInspector": "verified_transient_attached_components_transform_typed_csharp_scrub_and_detached_focus",
-    "scriptCompilation": "verified_stopped_only_shared_explicit_auto_after_stop_open_play_source_hash_sdk_identity_and_cached_valid_recovery"
+    "scriptCompilation": "verified_stopped_only_shared_explicit_auto_after_stop_open_play_source_hash_sdk_identity_and_cached_valid_recovery",
+    "openAiAssistant": "implemented_bounded_sequential_daemon_connection_tools_proposals_chat_controlled_tests; live_account_check_pending"
   },
   "verified": {
     "nodeTests": {
-      "passed": 228,
+      "passed": 241,
       "failed": 0
     },
     "schemaDocuments": 18,
@@ -169,7 +186,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI 198; Rust 1.90.0; M18 0.0.32"
+      "evidenceEnvironment": "GitHub CI 203; Rust 1.90.0; M18.1 0.0.33"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -183,45 +200,26 @@
       ]
     },
     "remoteCi": {
-      "passed": true,
-      "provider": "GitHub Actions",
-      "repository": "Krozzeo/AxiomEngine",
-      "workflow": "CI",
-      "run": 198,
-      "runId": 37956240973,
-      "commit": "20a01be196ec2ae69a895e0665479b801d9307a6",
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37956240973",
-      "jobs": [
-        "csharp-wasm-spike (windows-latest, development)",
-        "bootstrap (ubuntu-latest)",
-        "script-boundaries (windows-latest)",
-        "browser-milestones (m16)",
-        "browser-milestones (m16-1)",
-        "bootstrap (windows-latest)",
-        "browser-milestones (m14)",
-        "browser-milestones (m15)",
-        "browser-milestones (m5)",
-        "browser-milestones (m13-1)",
-        "script-boundaries (ubuntu-latest)",
-        "rust",
-        "browser-milestones (m2)",
-        "browser-milestones (m18)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
-        "browser-milestones (m13)",
-        "browser-milestones (corrections)",
-        "browser-milestones (m12)",
-        "browser-milestones (m17)",
-        "browser-milestones (m9)",
-        "script-boundaries (macos-latest)",
-        "browser-milestones (m11)",
-        "browser-milestones (m6)",
-        "browser-milestones (m4)",
-        "browser-milestones (m3)",
-        "browser-milestones (m10)",
-        "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (m8)",
-        "browser-milestones (m7)"
-      ]
+      "passed": false,
+      "status": "in_progress",
+      "version": "0.0.33",
+      "commit": "9e592cddb8714eec8cb7e1ef7cb1599d48708728",
+      "tree": "820631a4453c0b9e649bed6c51771af918e45bb1",
+      "run": 203,
+      "runId": 37984522155,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37984522155",
+      "jobCount": 30,
+      "jobsPassed": 29,
+      "pendingJobs": [
+        "browser-milestones (m15)"
+      ],
+      "equivalentPriorRegression": {
+        "job": "browser-milestones (m15)",
+        "run": 202,
+        "runId": 37983803439,
+        "passed": true,
+        "note": "Current successor changes only M16.1 test assertion; UI/daemon code unchanged."
+      }
     },
     "browserWasmIntegration": {
       "passed": true,
@@ -279,44 +277,26 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
-      "passed": true,
-      "status": "completed",
-      "version": "0.0.31",
-      "commit": "f3ca567d179b348210ac2495c7530025fdd08618",
-      "tree": "0cbd8bf9665722c4e27b7b612e725fe1b0d8e0a8",
-      "runId": 37825538456,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37825538456",
-      "jobCount": 28,
-      "jobs": [
-        "rust",
-        "csharp-wasm-spike (ubuntu-latest, development)",
-        "browser-milestones (m2)",
-        "csharp-wasm-spike (ubuntu-latest, aot)",
-        "bootstrap (windows-latest)",
-        "script-boundaries (windows-latest)",
-        "script-boundaries (macos-latest)",
-        "browser-milestones (m6)",
-        "browser-milestones (m16)",
-        "bootstrap (ubuntu-latest)",
-        "browser-milestones (m9)",
-        "script-boundaries (ubuntu-latest)",
-        "csharp-wasm-spike (windows-latest, development)",
-        "browser-milestones (m15)",
-        "browser-milestones (corrections)",
-        "browser-milestones (m3)",
-        "browser-milestones (m14)",
-        "browser-milestones (m13)",
-        "browser-milestones (m12)",
-        "browser-milestones (m11)",
-        "browser-milestones (m7)",
-        "browser-milestones (m17)",
-        "browser-milestones (m13-1)",
-        "browser-milestones (m16-1)",
-        "browser-milestones (m5)",
-        "browser-milestones (m10)",
-        "browser-milestones (m4)",
-        "browser-milestones (m8)"
-      ]
+      "passed": false,
+      "status": "in_progress",
+      "version": "0.0.33",
+      "commit": "9e592cddb8714eec8cb7e1ef7cb1599d48708728",
+      "tree": "820631a4453c0b9e649bed6c51771af918e45bb1",
+      "run": 203,
+      "runId": 37984522155,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/37984522155",
+      "jobCount": 30,
+      "jobsPassed": 29,
+      "pendingJobs": [
+        "browser-milestones (m15)"
+      ],
+      "equivalentPriorRegression": {
+        "job": "browser-milestones (m15)",
+        "run": 202,
+        "runId": 37983803439,
+        "passed": true,
+        "note": "Current successor changes only M16.1 test assertion; UI/daemon code unchanged."
+      }
     },
     "m2PersistenceRemoteCi": {
       "passed": true,
@@ -482,7 +462,7 @@
       "manualTestsRequired": false,
       "physicalGpuBenchmark": false
     },
-    "semanticToolCount": 87,
+    "semanticToolCount": 88,
     "m10Acceptance": {
       "passed": true,
       "criteriaPassed": 8,
@@ -630,9 +610,26 @@
       "passed": 222,
       "failed": 0,
       "scope": "excludes six clean-build server tests; real existing Wasm kernel"
+    },
+    "m18_1Acceptance": {
+      "passed": false,
+      "requiredGroupsPassed": 7,
+      "requiredGroupsTotal": 8,
+      "browserCriteriaPassed": 8,
+      "browserCriteriaTotal": 8,
+      "pageErrors": 0,
+      "nodeTestsAdded": 13,
+      "browserEvidenceRun": 202,
+      "browserExecutableCommit": "83a37c6a192318fad5356811717e0434cde68822",
+      "evidence": "docs/reports/m18-1-browser-evidence.json",
+      "liveAccountVerified": false,
+      "manualTestsRequired": true,
+      "transport": "Controlled Responses adapter with actual UI/daemon/proposals"
     }
   },
-  "blockedChecks": [],
+  "blockedChecks": [
+    "M18.1 live account: connect and test a locally configured available OpenAI model, run Workshop multistep request and inspect actual proposal; no credential available in agent environment."
+  ],
   "protocolVersions": {
     "command": 1,
     "event": 1,
@@ -766,7 +763,16 @@
     "docs/architecture/ADR-018-BOUNDED-AUTONOMY-AND-RUNTIME-EDITING.md",
     "docs/reports/m18-browser-evidence.json",
     "docs/reports/m18-position-repair-evidence.json",
-    "docs/reports/m18-compiler-repair-evidence.json"
+    "docs/reports/m18-compiler-repair-evidence.json",
+    "docs/architecture/M18_EXTENSIONS_ROADMAP.md",
+    "docs/architecture/M18_1_PLAN.md",
+    "docs/architecture/M18_1_OPENAI_ASSISTANT.md",
+    "docs/reports/M18_1_CURRENT_REPORT.md",
+    "demos/M18_1_GUIDE.md",
+    "docs/architecture/M18_2_PLAN.md",
+    "docs/architecture/M18_3_PLAN.md",
+    "docs/architecture/M18_4_PLAN.md",
+    "docs/reports/m18-1-browser-evidence.json"
   ],
-  "nextTask": "Start M19 MVP Hardening from clean onboarding, project-health and recovery inventory; read M19_PLAN.md and master sections 138\u2013139. PR #22 ready/open/unmerged, stacked on #21; use codex/m18-autonomy."
+  "nextTask": "Collect the user-local OpenAI Workshop verification without collecting their API key; resolve any live adapter failure and close M18.1 only after the result. Then M18.2, M18.3, M18.4 and M19 in that order. Read current report, assistant architecture and extension roadmap. PR #23 is draft/open/unmerged stacked on #22; do not merge automatically."
 }

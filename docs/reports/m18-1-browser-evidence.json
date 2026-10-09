@@ -1,0 +1,175 @@
+{
+  "criteria": [
+    "AI routes enforce existing token/origin boundaries before any model request",
+    "Assistant starts closed and disconnected; old Connect option is removed and AI Master is disabled/planned",
+    "Available model discovery and explicit connection test auto-open the real dockable Assistant with a blue connection indicator",
+    "One chat request performs query, isolated mutation, verification and summary across four model calls; MAIN remains unchanged",
+    "Follow-up chat edits the same pending proposal and reports actual token/tool usage without accepting it",
+    "Chat opens existing revision-bound human review; explicit Accept changes the draft and explicit Save persists it",
+    "Same-daemon reload restores connection/task results without persisting the API key in browser storage",
+    "Working indicator, cancellation and disconnect update controls; cancellation never publishes project changes"
+  ],
+  "errors": [],
+  "transport": "Controlled Responses adapter; no account credential or billable calls",
+  "requests": [
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": "none"
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "model-fixture",
+      "toolChoice": null
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ai-task://5baa59b3-3f4d-4a3b-aac1-df92ba5433f0",
+      "projectId": "project://a4f2eff9-4500-4cf1-9443-cacedf221e67",
+      "workspaceId": "workspace://f7701d1d-da61-4943-9101-7d8339008dcc",
+      "status": "completed",
+      "phase": "ready-for-review",
+      "objective": "Move Workshop Cube to X=2 and verify it.",
+      "requests": 4,
+      "toolCalls": 3,
+      "usage": {
+        "inputTokens": 200,
+        "outputTokens": 120,
+        "totalTokens": 320
+      },
+      "budgetTokens": 39716,
+      "messages": [
+        "Moved Workshop Cube to X=2 in an isolated proposal. Verified its authored position with entity.query. MAIN was not changed."
+      ],
+      "steps": [
+        {
+          "sequence": 1,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 2,
+          "tool": "scene.entity.update",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 3,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "limits": {
+        "maxRequests": 12,
+        "maxTools": 48,
+        "maxTokens": 100000,
+        "maxOutputTokens": 4096,
+        "maxSeconds": 300
+      },
+      "error": null,
+      "proposal": {
+        "id": "workspace://f7701d1d-da61-4943-9101-7d8339008dcc",
+        "revision": 2
+      },
+      "proposalAvailable": true
+    },
+    {
+      "id": "ai-task://1c960b52-2b3b-43db-8b34-b24c91ea3d00",
+      "projectId": "project://a4f2eff9-4500-4cf1-9443-cacedf221e67",
+      "workspaceId": "workspace://f7701d1d-da61-4943-9101-7d8339008dcc",
+      "status": "completed",
+      "phase": "ready-for-review",
+      "objective": "Improve the pending proposal to X=5 and verify.",
+      "requests": 3,
+      "toolCalls": 2,
+      "usage": {
+        "inputTokens": 150,
+        "outputTokens": 90,
+        "totalTokens": 240
+      },
+      "budgetTokens": 29659,
+      "messages": [
+        "Updated the same pending proposal to X=5 and verified its position."
+      ],
+      "steps": [
+        {
+          "sequence": 1,
+          "tool": "scene.entity.update",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 2,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "limits": {
+        "maxRequests": 12,
+        "maxTools": 48,
+        "maxTokens": 100000,
+        "maxOutputTokens": 4096,
+        "maxSeconds": 300
+      },
+      "error": null,
+      "proposal": {
+        "id": "workspace://f7701d1d-da61-4943-9101-7d8339008dcc",
+        "revision": 3
+      },
+      "proposalAvailable": true
+    }
+  ],
+  "passed": true,
+  "provenance": {
+    "run": 202,
+    "runId": 37983803439,
+    "executableCommit": "83a37c6a192318fad5356811717e0434cde68822",
+    "executableTree": "f71e7f5a11b80fb5d2c28c96374aaa8555065085",
+    "artifactId": 11641842836,
+    "artifactSha256": "1f5ade2e360d6c0dbc39fb18facb35d5a3ad68a2020c69c00d9c69ef0ac7175f",
+    "visualReview": "Configuration, chat and proposal-review screenshots inspected; no page errors. Final successor changes only a prior browser test assertion, not UI/daemon behavior."
+  }
+}

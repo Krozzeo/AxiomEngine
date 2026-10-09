@@ -4118,7 +4118,7 @@
                   },
                   "order": {
                     "type": "array",
-                    "maxItems": 9,
+                    "maxItems": 10,
                     "uniqueItems": true,
                     "items": {
                       "enum": [
@@ -4130,13 +4130,14 @@
                         "profiler",
                         "scene",
                         "game",
-                        "ide"
+                        "ide",
+                        "assistant"
                       ]
                     }
                   },
                   "closed": {
                     "type": "array",
-                    "maxItems": 9,
+                    "maxItems": 10,
                     "uniqueItems": true,
                     "items": {
                       "enum": [
@@ -4148,11 +4149,22 @@
                         "profiler",
                         "scene",
                         "game",
-                        "ide"
+                        "ide",
+                        "assistant"
                       ]
                     }
                   },
                   "ide": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "assistant": {
                     "type": "string",
                     "enum": [
                       "left",

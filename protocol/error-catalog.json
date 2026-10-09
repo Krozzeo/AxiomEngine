@@ -588,6 +588,14 @@
         "workspace.diff",
         "runtime.status"
       ]
+    },
+    {
+      "code": "AX_AI_0001",
+      "subsystem": "ai-assistant",
+      "meaning": "Invalid AI configuration, rejected model/transport, exhausted task budget or unavailable assistant capability",
+      "severity": "error",
+      "retryable": true,
+      "relatedTools": []
     }
   ]
 }

@@ -1,3 +1,4 @@
+import {OpenAiAssistant} from './agent/openai-assistant.mjs';
 import {openEditor} from './open-editor.mjs';
 import {ProposalManager} from './workspaces/manager.mjs';
 import {tools,toolMap,validate,bounded} from './agent/contracts.mjs';
@@ -81,6 +82,7 @@ export async function startServer(options = {}) {
   const view={get project(){return proposals.active.project;},get revision(){return proposals.active.revision;},get workspaceId(){return proposals.previewId;},snapshot:()=>proposals.view()};
   const bridge=new EditorBridge(view,error=>bus.recordError(error));
   bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;
+  const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,...(options.assistantOptions??{})});bus.agentService.assistant=assistant;
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();
@@ -125,7 +127,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.23" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.33" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -135,12 +137,17 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.23" },
-          capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge"],
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.33" },
+          capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge","ai.assistant"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
       }
 
+      if(request.method==='GET'&&url.pathname==='/v1/ai/status')return json(response,200,assistant.status());
+      if(request.method==='POST'&&url.pathname==='/v1/ai/configure')return json(response,200,await assistant.configure(await readJson(request)));
+      if(request.method==='POST'&&url.pathname==='/v1/ai/tasks')return json(response,200,assistant.start(await readJson(request)));
+      if(request.method==='GET'&&url.pathname==='/v1/ai/tasks')return json(response,200,assistant.task(url.searchParams.get('id')));
+      if(request.method==='POST'&&url.pathname==='/v1/ai/cancel'){const data=await readJson(request);return json(response,200,assistant.cancel(data.id));}
       if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
       if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,{...bridge.sync(await readJson(request)),proposals:proposals.list()});
       if(request.method==='POST'&&url.pathname==='/v1/editor/disconnect')return json(response,200,{released:bridge.release((await readJson(request)).clientId)});
@@ -200,7 +207,7 @@ export async function startServer(options = {}) {
 
       return json(response, 404, { code: "AX_HTTP_0002", cause: "Route not found" });
     } catch (error) {
-      const known=typeof error.code==='string'&&/^(AX_AGENT_|AX_SCENE_|AX_WORKSPACE_)/.test(error.code);
+      const known=typeof error.code==='string'&&/^(AX_AI_|AX_AGENT_|AX_SCENE_|AX_WORKSPACE_)/.test(error.code);
       if(known)bus.recordError({code:error.code,cause:error.message});
       return json(response, error.status ?? (known?422:500), { code: known?error.code:error.status === 413 ? "AX_HTTP_0003" : "AX_SYSTEM_0002", cause: error.message });
     }
@@ -218,7 +225,7 @@ export async function startServer(options = {}) {
     token,
     origin,
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
-    close: async () => {await bus.agentService.autonomy?.close();bridge.close();await proposals.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
+    close: async () => {await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await proposals.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
   };
 }
 

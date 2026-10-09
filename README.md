@@ -1,5 +1,13 @@
 # Axiom Engine
 
+M18.1 (0.0.33) is implemented and awaits account-specific live verification: 7/8 acceptance groups passed, 87.5%; expanded project progress approximately 83% (104.25/126). The eighth open group is the live Responses adapter check with the user's account, not missing implementation. Controlled automated responses do not establish live model access, quota or compatibility. PR #23 remains draft/open/unmerged on `codex/m18-1-openai`, stacked on #22. Read `docs/reports/M18_1_CURRENT_REPORT.md`, `docs/architecture/M18_1_OPENAI_ASSISTANT.md` and `demos/M18_1_GUIDE.md`.
+
+Daemon-held OpenAI connection, model discovery/test and a bounded multistep tool loop now drive a dockable AI Assistant with project context, usage, cancellation and isolated proposals. Keys are memory-only. The original remains unchanged until existing explicit human acceptance; Save remains separate. Follow-ups can continue the same proposal. AI Master remains disabled/planned. CI 203 has 29/30 successful jobs; M15 remains installing browser dependencies and passed CI 202 on the same application code. See the report for exact provenance; no complete CI 203 claim. No live-account success is claimed.
+
+The approved order remains M18.1 → M18.2 editable preview/chat → M18.3 assisted modular PMD → M18.4 GitHub → M19 hardening. M18.2 Apply will replace complete MAIN authored state instead of merging; this is not yet implemented. First next action: obtain the local Workshop live-account result (never a key in chat); resolve any actual adapter failure and then begin M18.2 from its plan. Historical 95% below uses the old 104-point scope; the expanded baseline was 79% before M18.1 evidence.
+
+Historical M18 closure:
+
 M18 (0.0.32) is complete: 12/12 required acceptance groups, 100%. Weighted
 project progress is approximately 95% (99/104). PR #22 is ready/open/unmerged,
 stacked on #21; current development branch is codex/m18-autonomy. All 29 jobs in
@@ -69,8 +77,9 @@ See docs/reports/M13_1_CURRENT_REPORT.md and demos/M13_1_GUIDE.md.
 PR #16 is ready for review, stacked on unmerged #15; do not merge automatically.
 Historical next step at M13 closure: M14 automated game testing.
 
-`npm.cmd run demo` creates CAD & Mesh Workshop and Script Component Lab. Preserve
-the complete `.axiom` folder. See [M17 demo guide](demos/M17_GUIDE.md);
+`npm.cmd run demo` creates AI Assistant Workshop. Preserve
+the complete `.axiom` folder. See [M18.1 demo guide](demos/M18_1_GUIDE.md);
+`demo:m17` retains CAD & Mesh Workshop and Script Component Lab;
 `demo:m16-1`, `demo:m16` and other versioned commands retain earlier demos.
 
 ## Run the verified bootstrap

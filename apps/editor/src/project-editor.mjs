@@ -22,14 +22,14 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let scriptEnabled=false,currentScriptJob=null,scriptProject=null,scriptBuild=null;
   let busy = false, assetRefreshing=false;
   let state = { project: null, dirty: false, sceneRevision: 0, canUndo: false, canRedo: false };
-  let filePaths=[],ideDirty=false,pendingOpenCompile=false;
+  let filePaths=[],ideDirty=false,pendingOpenCompile=false;let ambientDraft=null,ambientScope=null;
   let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
   let hierarchyScrolling=false,hierarchyPaint=null;
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
   const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project});
   function draw(updateFields = true) {
     $("editor-workspace").setAttribute("aria-busy",String(busy));
-    const project = state.project;if(!busy)panels.set(project?.editor);
+    const project = state.project;const nextAmbientScope=JSON.stringify([project?.id,state.workspaceId??null]);if(nextAmbientScope!==ambientScope){ambientScope=nextAmbientScope;ambientDraft=null;}if(!busy)panels.set(project?.editor);
     const scene=state.playing?getRenderer()?.interaction?.().scene??project?.scene:project?.scene;
     const entity = selection.size===1?scene?.entities.find(item => item.id === selected):null;
     const file=browser.files().find(f=>filePaths.length===1&&f.path===filePaths[0]);
@@ -130,7 +130,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     putVector('light-color',l.color);putVector('light-direction',l.direction);putVector('render-environment',r.environment);
     for(const [id,value]of [['material-unlit',m.unlit],['material-shadow',m.castShadow],['light-shadow',l.shadow],['render-shadows',r.shadows],['render-fxaa',r.fxaa]])$(id).checked=value;
     for(let i=0;i<3;i++){const select=$('lod-asset-'+i);select.replaceChildren();const none=document.createElement('option');none.value='';none.textContent='None';select.append(none);for(const a of project?.scene.assets??[])if(a.kind==='mesh'){const o=document.createElement('option');o.value=a.id;o.textContent=a.name;select.append(o);}select.value=entity?.lod?.levels[i]?.assetId??'';$('lod-distance-'+i).value=String(entity?.lod?.levels[i]?.distance??(i+1)*10);}
-    $('render-remove').disabled=true;if($('ambient-fields')){$('ambient-fields').disabled=!editing||!project;(project?.scene.twoD?.ambient??r.environment).forEach((v,i)=>$('ambient-'+i).value=String(v));}
+    $('render-remove').disabled=true;if($('ambient-fields')){$('ambient-fields').disabled=!editing||!project;(ambientDraft??project?.scene.twoD?.ambient??r.environment).forEach((v,i)=>$('ambient-'+i).value=String(v));}
 
     $("physics-shape").value=entity?.collider?.shape??"none";
     $("physics-dimension").value=String(entity?.collider?.dimension??2);
@@ -301,7 +301,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("scene-delete").addEventListener("click",deleteSelected);
   async function saveProject(){if(state.workspaceId){reportError(Error('Apply the preview before saving'));return;}try{await ide.flush();if(state.dirty)return act(()=>run('scene.save',mutation()));}catch(e){reportError(e);}}
   for(const action of ['save','undo','redo'])$('scene-'+action).addEventListener('click',()=>action==='save'?saveProject():act(()=>run('scene.'+action,mutation())));
-  $('ambient-form')?.addEventListener('submit',event=>{event.preventDefault();return act(()=>{const value=[0,1,2].map(i=>number('ambient-'+i));return state.project.scene.twoD?run('scene.twoD.update',mutation({value:{...state.project.scene.twoD,ambient:value}})):run('scene.rendering.update',mutation({value:{...renderingDefaults,...state.project.scene.rendering,environment:value}}));});});
+  for(let i=0;i<3;i++)$('ambient-'+i)?.addEventListener('input',()=>{ambientDraft=[0,1,2].map(j=>$('ambient-'+j).value);});
+  $('ambient-form')?.addEventListener('submit',event=>{event.preventDefault();const value=[0,1,2].map(i=>number('ambient-'+i)),scope=ambientScope;return act(async()=>{await (state.project.scene.twoD?run('scene.twoD.update',mutation({value:{...state.project.scene.twoD,ambient:value}})):run('scene.rendering.update',mutation({value:{...renderingDefaults,...state.project.scene.rendering,environment:value}})));if(ambientScope===scope)ambientDraft=null;});});
   $("physics-form").addEventListener("submit",event=>{event.preventDefault();const shape=$("physics-shape").value;return act(()=>shape==='none'?run('scene.component.remove',mutation({entityId:selected,component:'Collider'})):run('scene.collider.set',mutation({entityId:selected,value:{shape,dimension:Number($("physics-dimension").value),halfExtents:[0,1,2].map(i=>Number($("physics-half-"+i).value)),trigger:$("physics-trigger").checked,layer:Number($("physics-layer").value),mask:Number($("physics-mask").value)}})));});
   $('rigidbody-form')?.addEventListener('submit',event=>{event.preventDefault();return act(()=>{if($('physics-motion').value==='static')return run('scene.component.remove',mutation({entityId:selected,component:'RigidBody'}));const old=componentState().project.scene.entities.find(e=>e.id===selected).rigidBody;return run('scene.rigidBody.set',mutation({entityId:selected,value:{...old,mass:Number($('physics-mass').value),friction:Number($('physics-friction').value),restitution:Number($('physics-restitution').value),gravityScale:Number($('physics-gravity').value),freezeRotation:$('physics-freeze').checked}}));});});
   $("entity-form").addEventListener("submit", event => {

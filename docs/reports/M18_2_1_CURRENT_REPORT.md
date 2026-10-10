@@ -15,3 +15,5 @@ Preview remains accessible outside preview for a pending branch; Exit preview id
 Local acceptance covers SDK source lookup, repeated-read termination, unbuilt-source rejection, host compilation wait/failure gating, unlimited persistence/provider request construction, existing budget/resume/branch contracts and all previous non-server tests. Full CI includes a new real .NET compilation and browser runtime test of physical CubeSineMotion, attachment, range/travel measurements and the exact CS1061 failure gate.
 
 Controlled response counts and serialized bytes are not live model tokens/cost. No live reduction is claimed until the same-model comparison. See demos/M18_2_1_GUIDE.md. Next milestone remains M18.3 Assisted PMD.
+
+An inherited M14 cancellation check raced a 600-frame run against a later cancel request. CI 218 exposed completion winning that race. The acceptance now begins an interactive test, confirms pause after 120 real C# frames, then cancels and verifies cleanup/authoring isolation; it no longer assumes a run lasts longer than a transport round trip.

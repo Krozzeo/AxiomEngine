@@ -1,6 +1,6 @@
 # M18.2 — integrated chat and editable preview
 
-Status: implemented; automated acceptance in progress. M18.1 live Workshop was confirmed by the user. Human replacement Apply is separate from the legacy guarded workspace.accept API. No three-way merge or conflict-resolution UI is required for this MVP.
+Status: complete; all eight acceptance groups verified. M18.1 live Workshop was confirmed by the user. Human replacement Apply is separate from the legacy guarded workspace.accept API. No three-way merge or conflict-resolution UI is required for this MVP.
 
 - Absorb AI proposal into AI Assistant chat: task summary and Review changes / Preview / Apply / Discard card. Preserve detailed diff and version-bound evidence.
 - Automatically show proposal preview after the agent finishes a modifying task. User can leave chat, edit through the engine and run Play to verify. Preview button toggles between original/proposal without accepting or discarding.

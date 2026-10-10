@@ -1,6 +1,6 @@
 # M18.1.1 — discovery repair and assistant interface
 
-Version 0.0.34; verification in progress. The user confirmed live connection succeeds, but the real agent made five failed api.describe calls. That invalidates a successful live tool-loop claim; M18.1 remains 7/8 (87.5%) and the expanded project remains approximately 83% until a corrected live task is verified.
+Version 0.0.34; implementation and automated verification complete; CI 207 passes all 30 jobs. The user confirmed live connection succeeds, but the real agent made five failed api.describe calls. That invalidates a successful live tool-loop claim; M18.1 remains 7/8 (87.5%) and the expanded project remains approximately 83% until a corrected live task is verified.
 
 The bootstrap only advertised tool names and told the model to discover schemas without supplying api.describe's own required kind/name contract. The fix supplies discovery schemas and an exact example up front; a supported tool name defaults unambiguously to kind=tool when omitted. Invalid tool arguments return the precise schema and a scope hint for recovery. This does not accept wrong authority or publish changes. Controlled regressions now run discovery before inspect/edit/verify, instead of skipping it.
 
@@ -8,8 +8,10 @@ Configuration is a native modal window with keyboard dismissal/Close. Opening lo
 
 Chat: Enter submits except during IME composition; Shift+Enter inserts a line. Accessible name remains without a visible input label. The composer starts at one line, grows to ten and then scrolls. Animated waiting dots show active tasks, with reduced-motion support. Task steps/usage sits at the upper right and opens a bounded popover inside the panel, remaining open until toggled.
 
-16 backend tests pass, including discovery recovery and zero-generation model filtering. Browser acceptance and full regression CI are pending. Documentation/evidence will be finalized after verification; no current browser success claim yet.
+16 backend tests pass, including discovery recovery and zero-generation model filtering. CI 207 bootstrap passes 244 Node tests, 18 schemas, 88 tools, three architecture rules and adapter parity. Nine M18.1 browser criteria pass with zero page errors, including the bootstrap, unknown-model italic markup, modal auto-load, composer keyboard/sizing, task popover, pending proposal continuation, waiting dots and reload. Current M13.1/M15/M16/M16.1 regressions pass as well. The earlier UI teardown error was corrected by clearing a captured credential field and suppressing late polling/configuration results after disposal. Full CI 207 completed successfully: 30/30 jobs, including native Rust and C# development/AOT browser checks on the configured platforms.
 
-Only necessary user check after delivery: repeat the failed Workshop request with the connected account and inspect actual successful discovery, edits and proposal differences while MAIN remains unchanged. No need to repeat previously confirmed connection. Never share the key. Editable replacement preview still belongs to M18.2.
+Evidence: m18-1-1-browser-evidence.json, executable commit 093145ed7429f6d0dac39b95ded34b1c50473535, tree 825e1b3636ea5be534a8ace55597d7da881a83f6, run 38064657247. Artifact 11674586057 SHA-256 was verified as 43fdbf556ef2a73a7c636876036e4ed0567670d8af577c11eb2ca1f0a97836a0. Captures were visually reviewed. All model responses in automation are controlled, not live account calls. PR #24 remains draft/open/unmerged stacked on #23.
+
+Only necessary user check after delivery: repeat the failed Workshop request with the connected account and inspect actual successful discovery, edits and proposal differences while MAIN remains unchanged. No separate connection acceptance check is needed; restarting the upgraded daemon still requires restoring its memory-only credential. Never share the key. Editable replacement preview still belongs to M18.2.
 
 References: https://developers.openai.com/api/reference/resources/models/methods/list and https://developers.openai.com/api/docs/models (reviewed 2026-10-10).

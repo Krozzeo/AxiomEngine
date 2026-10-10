@@ -14,3 +14,7 @@ One connected task or old deterministic autonomy loop may run at once. Requests/
 Connection, histories and active sessions are memory-only; page reload recovers the latest visible task and retained model context from the running daemon; the full visible transcript is not restored yet, but tasks do not resume after daemon restart. Proposal journals retain their existing durability. Model/key selection is daemon-global, assistant instructions and manual master document are project context. Never run model access against the project's engine repository or supply privileged credentials through its tools.
 
 M18.2 will replace the current stale-source rejection and separate proposal menu with editable preview/chat controls and complete replacement Apply. M18.3 will replace the existing single manual master document with a modular PMD. Neither future behavior is claimed by this adapter.
+
+## M18.1.1 correction
+
+The model receives the exact api.describe/api.search schemas before any discovery call. An omitted kind defaults to tool only for an unambiguous supported tool name; failed validation returns its input schema for recovery without relaxing authority. Configuration is a native modal; the no-generation model list omits known incompatible families but retains unknown models labelled untested in italic. Refer to M18_1_1_CURRENT_REPORT.md and the current browser evidence for tested behavior. Late configuration/poll results are ignored after disposal; credential clearing uses the original field reference even after the modal has been removed.

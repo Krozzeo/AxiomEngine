@@ -1,0 +1,206 @@
+{
+  "criteria": [
+    "AI routes enforce existing token/origin boundaries before any model request",
+    "Assistant starts closed and disconnected; old Connect option is removed and AI Master is disabled/planned",
+    "Available model discovery and explicit connection test auto-open the real dockable Assistant with a blue connection indicator",
+    "Modal auto-load filters models without generation; Enter sends, Shift+Enter adds a line, composer caps at ten lines and task popover persists until toggled",
+    "One chat request performs query, isolated mutation, verification and summary including schema discovery across six model calls; MAIN remains unchanged",
+    "Follow-up chat edits the same pending proposal and reports actual token/tool usage without accepting it",
+    "Chat opens existing revision-bound human review; explicit Accept changes the draft and explicit Save persists it",
+    "Same-daemon reload restores connection/task results without persisting the API key in browser storage",
+    "Working indicator, cancellation and disconnect update controls; cancellation never publishes project changes"
+  ],
+  "errors": [],
+  "transport": "Controlled Responses adapter; no account credential or billable calls",
+  "requests": [
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": "none"
+    },
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ai-task://884be254-4533-48ff-9a35-8c58ed0bcb92",
+      "projectId": "project://1eff0a52-60fc-4821-84ca-dc92fe6d8fde",
+      "workspaceId": "workspace://836d3c97-2164-4abd-ac48-eb1d3534c797",
+      "status": "completed",
+      "phase": "ready-for-review",
+      "objective": "Move Workshop Cube to X=2 and verify it.",
+      "requests": 6,
+      "toolCalls": 5,
+      "usage": {
+        "inputTokens": 300,
+        "outputTokens": 180,
+        "totalTokens": 480
+      },
+      "budgetTokens": 74620,
+      "messages": [
+        "Moved Workshop Cube to X=2 in an isolated proposal. Verified its authored position with entity.query. MAIN was not changed."
+      ],
+      "steps": [
+        {
+          "sequence": 1,
+          "tool": "api.describe",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 2,
+          "tool": "api.describe",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 3,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 4,
+          "tool": "scene.entity.update",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 5,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "limits": {
+        "maxRequests": 12,
+        "maxTools": 48,
+        "maxTokens": 100000,
+        "maxOutputTokens": 4096,
+        "maxSeconds": 300
+      },
+      "error": null,
+      "proposal": {
+        "id": "workspace://836d3c97-2164-4abd-ac48-eb1d3534c797",
+        "revision": 2
+      },
+      "proposalAvailable": true
+    },
+    {
+      "id": "ai-task://13ecddfc-4c04-4010-92dd-fe7a80495ab7",
+      "projectId": "project://1eff0a52-60fc-4821-84ca-dc92fe6d8fde",
+      "workspaceId": "workspace://836d3c97-2164-4abd-ac48-eb1d3534c797",
+      "status": "completed",
+      "phase": "ready-for-review",
+      "objective": "Improve the pending proposal to X=5 and verify.",
+      "requests": 3,
+      "toolCalls": 2,
+      "usage": {
+        "inputTokens": 150,
+        "outputTokens": 90,
+        "totalTokens": 240
+      },
+      "budgetTokens": 31696,
+      "messages": [
+        "Updated the same pending proposal to X=5 and verified its position."
+      ],
+      "steps": [
+        {
+          "sequence": 1,
+          "tool": "scene.entity.update",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 2,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "limits": {
+        "maxRequests": 12,
+        "maxTools": 48,
+        "maxTokens": 100000,
+        "maxOutputTokens": 4096,
+        "maxSeconds": 300
+      },
+      "error": null,
+      "proposal": {
+        "id": "workspace://836d3c97-2164-4abd-ac48-eb1d3534c797",
+        "revision": 3
+      },
+      "proposalAvailable": true
+    }
+  ],
+  "passed": true,
+  "provenance": {
+    "run": 207,
+    "runId": 38064657247,
+    "executableCommit": "093145ed7429f6d0dac39b95ded34b1c50473535",
+    "executableTree": "825e1b3636ea5be534a8ace55597d7da881a83f6",
+    "artifactId": 11674586057,
+    "artifactSha256": "43fdbf556ef2a73a7c636876036e4ed0567670d8af577c11eb2ca1f0a97836a0",
+    "visualReview": "Modal configuration, compact chat and working-dot captures inspected; final chat rechecked after reload cleanup correction."
+  }
+}

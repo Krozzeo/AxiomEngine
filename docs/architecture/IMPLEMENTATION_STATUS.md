@@ -1,6 +1,6 @@
 # Implementation status
 
-Current correction: M18.1.1 (0.0.34), verification in progress on codex/m18-1-1-fixes. Live connection was confirmed; live schema discovery failed and is being repaired. See docs/reports/M18_1_1_CURRENT_REPORT.md for the corrected bootstrap and requested configuration/chat changes. The following M18.1 report is historical evidence, not proof that the user’s task succeeded.
+Current correction: M18.1.1 (0.0.34), automated verification complete: CI 207 passes all 30 jobs on codex/m18-1-1-fixes. Live connection was confirmed; discovery is repaired in controlled tests, with the corrected live task still pending. See docs/reports/M18_1_1_CURRENT_REPORT.md for the corrected bootstrap and requested configuration/chat changes. The following M18.1 report is historical evidence, not proof that the user’s task succeeded.
 
 M18.1 (0.0.33) is implemented and awaits account-specific live verification: 7/8 acceptance groups passed, 87.5%; expanded project progress approximately 83% (104.25/126). The eighth open group is the live Responses adapter check with the user's account, not missing implementation. Controlled automated responses do not establish live model access, quota or compatibility. PR #23 remains draft/open/unmerged on `codex/m18-1-openai`, stacked on #22. Read `docs/reports/M18_1_CURRENT_REPORT.md`, `docs/architecture/M18_1_OPENAI_ASSISTANT.md` and `demos/M18_1_GUIDE.md`.
 

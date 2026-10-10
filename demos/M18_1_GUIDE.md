@@ -1,6 +1,6 @@
 # M18.1 — OpenAI Assistant Workshop
 
-Version 0.0.34 (development; see current report for executed acceptance).
+Version 0.0.35 (development; see current report for executed acceptance).
 
 Preserve the complete `.axiom` folder when upgrading. Run:
 
@@ -18,7 +18,7 @@ AI → Config AI assistant: enter your OpenAI API key locally, models load autom
 
 The key stays only in daemon memory. Browser refresh preserves the daemon connection; daemon restart requires reconnection. Alternatively set OPENAI_API_KEY in the daemon's environment before starting it. No key is written by Axiom to project files, exports or browser storage. Disconnect cancels the active task and clears the daemon credential. There is no persistent encrypted credential vault in this release.
 
-Configure requests, tool calls, token budget, output tokens and seconds per task. Token reservation conservatively counts input bytes plus maximum output; actual reported usage is shown separately. These application limits are not an account-wide monetary spending cap. Configure account-level spending separately. No fixed model price is embedded or promised.
+Configure requests/tool calls/seconds per task and output tokens per request. Token budget is now the persistent session total of provider-reported tokens, including connection tests. The blue header meter and configuration display used/limit/remaining. Update limits preserves consumption: 11,000 used with a new 20,000 limit leaves 9,000. One response can overshoot because input usage is known afterward. Disconnect, reload and daemon restart retain totals/limits in the preserved .axiom data; old-version usage cannot be reconstructed. Unreported requests are flagged separately. This local counter is not an account-wide monetary spending cap; provider billing remains authoritative.
 
 ## What to ask and see
 
@@ -45,3 +45,7 @@ Automated acceptance uses controlled Responses payloads with the real daemon, co
 ## M18.1.1 corrections
 
 Configuration opens in a window. The reload icon refreshes only the model list excluding only known incompatible models using GET /models, without generation tokens; Unknown models remain selectable in italic with an untested label; known incompatible models are omitted. Enter sends, Shift+Enter adds a line; the input grows through ten lines then scrolls. Waiting dots indicate active work. Task steps/usage opens at the upper right and stays open until clicked again. Repeat the formerly failed request and inspect successful api.describe before real changes. Connection alone is not proof of a successful tool loop.
+
+## M18.1.2 — interruption recovery
+
+When a task stops at a session/request/tool/time limit, increase the appropriate limit and send Continue with Continue pending proposal checked. The host retains the original objective, completed tool results and queued calls, reuses its proposal and executes only uncompleted calls. It does not restart completed mutations. This checkpoint remains in daemon memory: page refresh and disconnect retain it, daemon restart does not. If MAIN/proposal was manually changed, use a new task with current context instead of replaying stale calls. Usage/limits persist through restart independently of these checkpoints. Reuse the existing Workshop; do not run the demo creator again unless it is missing.

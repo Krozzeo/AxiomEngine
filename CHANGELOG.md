@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.35 — M18.1.2
+
+- Persist provider-reported session token usage and limits; accept one-million budgets without byte reservations.
+- Resume interrupted tasks with their original objective, completed tool results and pending calls.
+- Show used/remaining session totals in configuration and a blue chat-header percentage meter.
+
+
 ## 0.0.34 — M18.1.1 — assistant discovery and chat corrections
 
 - Bootstrap discovery schemas, exact arguments and actionable schema-error feedback repair the failed api.describe path.

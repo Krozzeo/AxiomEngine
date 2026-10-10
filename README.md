@@ -1,5 +1,7 @@
 # Axiom Engine
 
+M18.2.1 (0.0.37) corrects physical C# grounding, compiler polling loops, completion validation, preview controls and persistent Limitless configuration. Full CI acceptance is pending; see docs/reports/M18_2_1_CURRENT_REPORT.md and demos/M18_2_1_GUIDE.md. Expanded MVP remains approximately 88%; next is M18.3. The older M18.2 controlled benchmark below is not proof of live scripting efficiency.
+
 M18.2 (0.0.36) is complete: 8/8 acceptance groups, 100%; expanded MVP progress approximately 88% (111/126 roadmap points). CI 215 passes all 31 jobs at executable commit `4435c3790cac78caef692a2db755f5af14c22827` (tree `3568c51bdf9b3d4fe1caf525dffc402188ac49ae`): 262 Node tests, 39 Rust tests and 14 new browser criteria, with no page errors. M18.1's live Workshop gate is closed by the user's confirmed successful task.
 
 Editable stopped preview opens automatically after modifying AI work. Chat and preview toolbar expose Review changes / Preview / Apply / Discard; manual preview edits and further AI tasks stay in the isolated branch. Apply replaces the entire authored MAIN state, confirms divergence, retains pre-Apply recovery and leaves an unsaved draft. Save is blocked in preview. Script/IDE/compiler/editor settings are branch-scoped; Play edits remain transient.

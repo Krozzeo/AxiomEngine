@@ -19,7 +19,6 @@ const token = readSessionToken(location, globalThis.sessionStorage, history);
 
 const connection = document.querySelector("#connection");
 const logs = document.querySelector("#logs");
-const counter = document.querySelector("#counter");
 const traceOutput = document.querySelector("#trace");
 const capabilities = document.querySelector("#capabilities");
 const frameTraceOutput = document.querySelector("#frame-trace");
@@ -80,7 +79,6 @@ async function sendCommand(type, data = {}) {
   if(pendingSnapshot?.workspaceId&&/^(scene|asset|script|play)\.|^project\.(files\.edit|editor\.update)$/.test(type))data={...data,workspaceId:data.workspaceId??pendingSnapshot.workspaceId};
   const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
   log("info", result.payload.reasonCode ?? "AX_EVENT_0001", result.payload.type);
-  if ("current" in result.payload.data) counter.value = String(result.payload.data.current);
   try {
     const trace = await api(`/v1/traces/${encodeURIComponent(result.traceId)}`);
     traceOutput.textContent = JSON.stringify(trace, null, 2);
@@ -163,9 +161,6 @@ async function boot() {
   }
 }
 
-document.querySelector("#ping").addEventListener("click", () => execute("system.ping", { echo: "editor" }));
-document.querySelector("#increment").addEventListener("click", () => execute("demo.increment", { amount: 1 }));
-document.querySelector("#undo").addEventListener("click", () => execute("editor.undo"));
 document.querySelector("#clear").addEventListener("click", () => logs.replaceChildren());
 document.querySelector('#deep-trace').addEventListener('change',event=>renderer?.setDeepTrace(event.target.checked));
 document.querySelector('#diagnostic-explain').addEventListener('click',()=>{

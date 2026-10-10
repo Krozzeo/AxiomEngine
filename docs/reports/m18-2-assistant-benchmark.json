@@ -1,0 +1,42 @@
+{
+  "scope": "Controlled tool schedules with identical objective and current host/model configuration; no provider contacted. Payload bytes and requests are measured, not real tokens or monetary cost. Live models choose their own schedules.",
+  "prompt": "Inspect Workshop Cube, move it to X=2, change its material to blue, create a floor and verify the authored result. Keep MAIN unchanged and summarize actual checks.",
+  "baseline": {
+    "strategy": "discovery + one operation per model response",
+    "requests": 12,
+    "requestBytes": 178169,
+    "toolCalls": 11,
+    "compactions": 0,
+    "checks": {
+      "mainUnchanged": true,
+      "cubeX": 2,
+      "cubeBlue": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "floor": true
+    }
+  },
+  "optimized": {
+    "strategy": "grouped + supplied contracts",
+    "requests": 3,
+    "requestBytes": 35150,
+    "toolCalls": 7,
+    "compactions": 0,
+    "checks": {
+      "mainUnchanged": true,
+      "cubeX": 2,
+      "cubeBlue": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "floor": true
+    }
+  },
+  "requestReductionPercent": 75,
+  "payloadReductionPercent": 80.27153994241422
+}

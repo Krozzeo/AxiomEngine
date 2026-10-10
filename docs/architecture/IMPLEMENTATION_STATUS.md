@@ -1,5 +1,7 @@
 # Implementation status
 
+Current milestone: **M18.2 (0.0.36)** implemented, automated acceptance in progress. M18.1 live Workshop was confirmed by the user. Editable preview and assistant efficiency: [report](docs/reports/M18_2_CURRENT_REPORT.md), [demo guide](demos/M18_2_GUIDE.md). Earlier reports below are historical.
+
 Current correction: M18.1.2 (0.0.35), persistent reported session usage and interrupted task recovery verified: CI 208 passes all 30 jobs, 249 Node tests, 39 Rust tests and 11 assistant browser criteria; corrected live task remains pending. See docs/reports/M18_1_2_CURRENT_REPORT.md. Earlier correction reports below are historical evidence.
 
 Current correction: M18.1.1 (0.0.34), automated verification complete: CI 207 passes all 30 jobs on codex/m18-1-1-fixes. Live connection was confirmed; discovery is repaired in controlled tests, with the corrected live task still pending. See docs/reports/M18_1_1_CURRENT_REPORT.md for the corrected bootstrap and requested configuration/chat changes. The following M18.1 report is historical evidence, not proof that the user’s task succeeded.

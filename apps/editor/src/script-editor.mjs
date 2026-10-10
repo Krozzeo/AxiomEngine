@@ -3,7 +3,7 @@ import {scriptMetadata,scriptComponents} from '../../../engine/scripting/fields.
 export function mountScriptEditor({document,getState,getSelection,act,run,mutation,open,reveal,getRenderer,reportError}){
  if(!document.defaultView)return {draw(){},choices:()=>[]};
  const q=id=>document.querySelector('#'+id),host=q('script-components');let signature='';
- const editable=()=>!getState().workspaceId;
+ const editable=()=>!!getState().project;
  const structural=()=>editable()&&!getState().playing;
  const choices=()=>getState().project?projectFiles(getState().project.scene).flatMap(f=>{try{const meta=f.kind==='script'&&scriptMetadata(f);return meta?[{path:f.path,name:meta.className}]:[];}catch{return [];}}):[];
  const edit=(path,action,values)=>act(()=>run('scene.script.edit',mutation({entityId:getSelection(),path,action,...(values?{values}:{})})));

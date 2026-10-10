@@ -127,7 +127,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.35" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.36" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -137,7 +137,7 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.35" },
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.36" },
           capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge","ai.assistant"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
@@ -146,7 +146,12 @@ export async function startServer(options = {}) {
       if(request.method==='GET'&&url.pathname==='/v1/ai/status')return json(response,200,assistant.status());
       if(request.method==='POST'&&url.pathname==='/v1/ai/configure')return json(response,200,await assistant.configure(await readJson(request)));
       if(request.method==='POST'&&url.pathname==='/v1/ai/tasks')return json(response,200,assistant.start(await readJson(request)));
-      if(request.method==='GET'&&url.pathname==='/v1/ai/tasks')return json(response,200,assistant.task(url.searchParams.get('id')));
+      if(request.method==='GET'&&url.pathname==='/v1/ai/tasks')return json(response,200,url.searchParams.has('id')?assistant.task(url.searchParams.get('id')):{items:assistant.tasks()});
+      if(request.method==='GET'&&url.pathname==='/v1/ai/proposals')return json(response,200,url.searchParams.has('id')?proposals.review(url.searchParams.get('id')):{items:proposals.list()});
+      if(request.method==='POST'&&url.pathname==='/v1/ai/preview'){const data=await readJson(request);if(!['preview','continue','reject'].includes(data.action))throw Error('Invalid preview action');return json(response,200,await bus.transaction(async()=>{await proposals.run('workspace.'+data.action,data,{actor:{kind:'human',id:'editor'}});return {snapshot:proposals.view()};}));}
+      if(request.method==='GET'&&url.pathname==='/v1/ai/recoveries')return json(response,200,{items:await proposals.recoveries()});
+      if(request.method==='POST'&&url.pathname==='/v1/ai/apply'){const data=await readJson(request);return json(response,200,await bus.transaction(()=>proposals.apply(data,{actor:{kind:'human',id:'editor'}})));}
+      if(request.method==='POST'&&url.pathname==='/v1/ai/recover'){const data=await readJson(request);return json(response,200,await bus.transaction(()=>proposals.recover(data,{actor:{kind:'human',id:'editor'}})));}
       if(request.method==='POST'&&url.pathname==='/v1/ai/cancel'){const data=await readJson(request);return json(response,200,assistant.cancel(data.id));}
       if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
       if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,{...bridge.sync(await readJson(request)),proposals:proposals.list()});

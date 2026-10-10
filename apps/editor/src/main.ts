@@ -77,7 +77,7 @@ function reportError(error) {
   log("error", error.data?.payload?.code ?? error.data?.code ?? error.code ?? error.message?.match(/^AX_[A-Z]+_\d{4}/)?.[0] ?? "AX_EDITOR_0001", error.message);
 }
 async function sendCommand(type, data = {}) {
-  if(pendingSnapshot?.workspaceId&&/^(scene|asset|script|play)\./.test(type))data={...data,workspaceId:data.workspaceId??pendingSnapshot.workspaceId};
+  if(pendingSnapshot?.workspaceId&&/^(scene|asset|script|play)\.|^project\.(files\.edit|editor\.update)$/.test(type))data={...data,workspaceId:data.workspaceId??pendingSnapshot.workspaceId};
   const result = await api("/v1/commands", { method: "POST", body: JSON.stringify(command(type, data)) });
   log("info", result.payload.reasonCode ?? "AX_EVENT_0001", result.payload.type);
   if ("current" in result.payload.data) counter.value = String(result.payload.data.current);
@@ -152,7 +152,7 @@ async function boot() {
     await initializeWebGpu();
     const stopReplay=mountReplayEditor({document,getRenderer:()=>renderer,getSnapshot:()=>projectEditor.snapshot(),reportError});addEventListener('pagehide',stopReplay,{once:true});
     const stopAi=mountAiMenu({document,getSnapshot:()=>projectEditor.snapshot(),save:value=>projectEditor.saveAiSettings(value),reportError});addEventListener('pagehide',stopAi,{once:true});
-    const stopAssistant=mountAiAssistant({document,api,getSnapshot:()=>projectEditor.snapshot(),openPanel:(id,options)=>projectEditor.openPanel(id,options),reportError});addEventListener('pagehide',stopAssistant,{once:true});
+    const stopAssistant=mountAiAssistant({document,api,send:sendCommand,prepareSwitch:()=>projectEditor.flushDraftSources(),synchronize:(snapshot,options)=>projectEditor.synchronize(snapshot,options),getSnapshot:()=>projectEditor.snapshot(),openPanel:(id,options)=>projectEditor.openPanel(id,options),reportError});addEventListener('pagehide',stopAssistant,{once:true});
     const stopAutonomy=mountAutonomyEditor({document,getSnapshot:()=>projectEditor.snapshot(),send:sendCommand,reportError});addEventListener('pagehide',stopAutonomy,{once:true});
     const stopTests=mountGameTestEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,save:values=>projectEditor.saveTestSuites(values),reportError});addEventListener('pagehide',stopTests,{once:true});
     const stopProfiler=mountProfilerEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,reportError});addEventListener("pagehide",stopProfiler,{once:true});

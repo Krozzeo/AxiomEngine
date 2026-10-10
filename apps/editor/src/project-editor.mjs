@@ -26,7 +26,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let selected = null, selection=new Set(), collapsed=new Set(),scriptDraft=new Set();
   let hierarchyScrolling=false,hierarchyPaint=null;
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
-  const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project||!!state.workspaceId});
+  const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project});
   function draw(updateFields = true) {
     $("editor-workspace").setAttribute("aria-busy",String(busy));
     const project = state.project;if(!busy)panels.set(project?.editor);
@@ -46,7 +46,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       $('physics-freeze').checked=entity?.rigidBody?.freezeRotation??false;
       $('rigidbody-remove').hidden=!entity?.rigidBody;
     }
-    const editing=enabled&&!busy&&!state.playing,valuesEditing=enabled&&!busy&&!state.workspaceId;
+    const editing=enabled&&!busy&&!state.playing,valuesEditing=enabled&&!busy;
     $("script-source").disabled=!scriptEnabled||!project||!entity||busy;
     $("script-mode").disabled=!scriptEnabled||!project||busy||state.playing;
     $("script-compile").disabled=!scriptEnabled||!project||busy||state.playing;
@@ -205,8 +205,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   const animationEditor=mountAnimationEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null,getRenderer});
   const twoDEditor=mountTwoDEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null});
   function fileSelection(paths){filePaths=paths;selected=null;selection.clear();draw();}
-  function paintDirty(){const pending=state.dirty||ideDirty;if($('project-title')){$('project-title').textContent=state.project?('● '+state.project.name+(pending?'*':'')):'';$('project-title').classList?.toggle?.('dirty-title',pending);}if($('scene-save')){$('scene-save').textContent=pending?'Save*':'Save';$('scene-save').classList?.toggle?.('dirty-save',pending);$('scene-save').disabled=!state.project||state.playing||busy||!pending;}if($('toolbar-save'))$('toolbar-save').disabled=$('scene-save').disabled;if($('save-dirty'))$('save-dirty').hidden=!pending;onDirty(pending&&!state.workspaceId);}
-  const ide=mountCodeEditor({document,getState:()=>state,write:async data=>{const projectId=state.project?.id;const deadline=performance.now()+610000;while(busy&&performance.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));if(busy)throw Error('Wait for or cancel the current compilation before saving this source');if(state.project?.id!==projectId)throw Error('The project changed before this script could be saved');return act(()=>run('project.files.edit',mutation(data)));},show:id=>panels.openPanel(id,{centerIfClosed:true}),persist:async()=>{if(state.dirty)await act(()=>run('scene.save',mutation()));},onOpen:file=>{$('script-source').value=file.text;},onDirty:value=>{ideDirty=value;paintDirty();compiler?.draw();},onSaved:()=>compiler.sourceSaved(),reportError});
+  function paintDirty(){const pending=state.dirty||ideDirty;if($('project-title')){$('project-title').textContent=state.project?('● '+state.project.name+(pending?'*':'')):'';$('project-title').classList?.toggle?.('dirty-title',pending);}if($('scene-save')){$('scene-save').textContent=pending?'Save*':'Save';$('scene-save').classList?.toggle?.('dirty-save',pending);$('scene-save').disabled=!state.project||state.playing||busy||!pending||!!state.workspaceId;}if($('toolbar-save'))$('toolbar-save').disabled=$('scene-save').disabled;if($('save-dirty'))$('save-dirty').hidden=!pending;onDirty(pending&&!state.workspaceId);}
+  const ide=mountCodeEditor({document,getState:()=>state,write:async data=>{const projectId=state.project?.id;const deadline=performance.now()+610000;while(busy&&performance.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));if(busy)throw Error('Wait for or cancel the current compilation before saving this source');if(state.project?.id!==projectId)throw Error('The project changed before this script could be saved');return act(()=>run('project.files.edit',mutation(data)));},show:id=>panels.openPanel(id,{centerIfClosed:true}),persist:async()=>{if(!state.workspaceId&&state.dirty)await act(()=>run('scene.save',mutation()));},onOpen:file=>{$('script-source').value=file.text;},onDirty:value=>{ideDirty=value;paintDirty();compiler?.draw();},onSaved:()=>compiler.sourceSaved(),reportError});
   const browser=mountProjectBrowser({document,getState:()=>state,mutate:data=>act(async()=>{await run('project.files.edit',mutation(data));ide.filesChanged(data);}),selectAsset:id=>{$('asset-list').value=id;},selectScript:file=>void ide.open(file),onSelection:fileSelection,beforeEdit:()=>ide.flush(),onFilesChanged:()=>{filePaths=browser.selection();},reportError});
   $('file-inspector-open')?.addEventListener('click',()=>browser.open(filePaths[0]));
   const scriptEditor=mountScriptEditor({document,getState:componentState,getSelection:()=>selection.size===1?selected:null,act,run,mutation,open:path=>browser.open(path),reveal:path=>{panels.openPanel('project');browser.reveal(path);},getRenderer,reportError});
@@ -299,7 +299,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   $("workspace-refresh").addEventListener("click", () => act(async () => {await run("scene.get");if($("file-menu"))$("file-menu").open=false;if($("settings-menu"))$("settings-menu").open=false;}));
   $("scene-add").addEventListener("click", () => act(() => run("scene.entity.create", mutation({ name: "Entity" }))));
   $("scene-delete").addEventListener("click",deleteSelected);
-  async function saveProject(){try{await ide.flush();if(state.dirty)return act(()=>run('scene.save',mutation()));}catch(e){reportError(e);}}
+  async function saveProject(){if(state.workspaceId){reportError(Error('Apply the preview before saving'));return;}try{await ide.flush();if(state.dirty)return act(()=>run('scene.save',mutation()));}catch(e){reportError(e);}}
   for(const action of ['save','undo','redo'])$('scene-'+action).addEventListener('click',()=>action==='save'?saveProject():act(()=>run('scene.'+action,mutation())));
   $('ambient-form')?.addEventListener('submit',event=>{event.preventDefault();return act(()=>{const value=[0,1,2].map(i=>number('ambient-'+i));return state.project.scene.twoD?run('scene.twoD.update',mutation({value:{...state.project.scene.twoD,ambient:value}})):run('scene.rendering.update',mutation({value:{...renderingDefaults,...state.project.scene.rendering,environment:value}}));});});
   $("physics-form").addEventListener("submit",event=>{event.preventDefault();const shape=$("physics-shape").value;return act(()=>shape==='none'?run('scene.component.remove',mutation({entityId:selected,component:'Collider'})):run('scene.collider.set',mutation({entityId:selected,value:{shape,dimension:Number($("physics-dimension").value),halfExtents:[0,1,2].map(i=>Number($("physics-half-"+i).value)),trigger:$("physics-trigger").checked,layer:Number($("physics-layer").value),mask:Number($("physics-mask").value)}})));});
@@ -350,7 +350,8 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform:localTransform(state.project.scene.entities,entityId,transform)})));},
     async saveAiSettings(value){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,...value}})));},
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
-    async synchronize(snapshot){if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
+    flushDraftSources:()=>ide.flush(),
+    async synchronize(snapshot,options={}){if(options.replace)ide.reset();if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
     async refreshAssets() {
       if(!enabled||busy||assetRefreshing)return false;assetRefreshing=true;

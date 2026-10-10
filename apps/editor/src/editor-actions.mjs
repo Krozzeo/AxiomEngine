@@ -3,7 +3,7 @@ const componentKeys={Transform:'transform',Script:'script',Camera:'camera',Rende
 export function mountEditorActions({document,getState,getSelection,select,act,run,mutation,browser,reportError,locate,scriptEditor}){
  if(!document.defaultView)return {draw(){}};
  let clipboard=null,renameTimer=null,context=null,lastClickedEntity=null,lastScope=null;
- const q=id=>document.querySelector('#'+id),editable=()=>!!getState().project&&!getState().playing&&!getState().workspaceId;
+ const q=id=>document.querySelector('#'+id),editable=()=>!!getState().project&&!getState().playing;
  const close=()=>{context?.remove();context=null;};
  async function copy(value){clipboard=value;try{await navigator.clipboard.writeText(JSON.stringify({axiomClipboard:1,...value}));}catch{/* Internal clipboard remains available. */}}
  async function readClipboard(){if(clipboard)return clipboard;try{const text=await navigator.clipboard.readText();if(text.length>196000)return null;const v=JSON.parse(text);if(v.axiomClipboard===1&&['files','entities','component'].includes(v.kind))return v;return null;}catch{return clipboard;}}

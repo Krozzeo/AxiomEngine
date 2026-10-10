@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-10",
-  "engineVersion": "0.0.35",
-  "activeMilestone": 18.1,
-  "milestoneStatus": "blocked",
+  "engineVersion": "0.0.36",
+  "activeMilestone": 18.2,
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 87.5,
+    "activeMilestonePercent": 0,
     "wholeProjectPercent": 83,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
@@ -96,11 +96,11 @@
       "percent": 100
     },
     "18.1": {
-      "status": "blocked",
-      "percent": 87.5
+      "status": "complete",
+      "percent": 100
     },
     "18.2": {
-      "status": "not_started",
+      "status": "in_progress",
       "percent": 0
     },
     "18.3": {
@@ -151,7 +151,7 @@
     "agentAutonomy": "verified_bounded_structured_isolated_failure_repair_retest_measured_human_review",
     "runtimeInspector": "verified_transient_attached_components_transform_typed_csharp_scrub_and_detached_focus",
     "scriptCompilation": "verified_stopped_only_shared_explicit_auto_after_stop_open_play_source_hash_sdk_identity_and_cached_valid_recovery",
-    "openAiAssistant": "verified_controlled_discovery_modal_known_incompatible_filter_unknown_models_chat; reported_session_tokens_persisted; interrupted_task_checkpoint_resume; blue_usage_meter; corrected_live_task_pending"
+    "openAiAssistant": "live_workshop_confirmed; grouped_tools_compact_checkpoints; per_request_cache_reasoning_usage; task_history_requests_xy"
   },
   "verified": {
     "nodeTests": {
@@ -896,7 +896,7 @@
     }
   },
   "blockedChecks": [
-    "M18.1 real-account end-to-end Workshop: user confirms connection and successful discovery/query calls in 0.0.34, but the task was interrupted by the old budget and continuation lost its objective. Version 0.0.35 fixes accounting and checkpoint recovery under controlled tests. Recheck the real task locally without sharing the key."
+    "M18.2 fresh CI/browser acceptance pending. Same-model live token saving is not measured by controlled response schedules."
   ],
   "protocolVersions": {
     "command": 1,
@@ -1044,7 +1044,10 @@
     "docs/reports/M18_1_1_CURRENT_REPORT.md",
     "docs/reports/m18-1-1-browser-evidence.json",
     "docs/reports/M18_1_2_CURRENT_REPORT.md",
-    "docs/reports/m18-1-2-browser-evidence.json"
+    "docs/reports/m18-1-2-browser-evidence.json",
+    "docs/architecture/M18_2_PREVIEW.md",
+    "docs/reports/M18_2_CURRENT_REPORT.md",
+    "demos/M18_2_GUIDE.md"
   ],
-  "nextTask": "Collect the user-local corrected Workshop result without collecting the key. Read M18_1_2_CURRENT_REPORT.md and assistant architecture. Usage and limits persist; interrupted task checkpoints remain daemon memory. Only after live verification close M18.1 and proceed to M18.2, M18.3, M18.4, M19. PR #25 is draft/open/unmerged stacked on #24; do not merge automatically."
+  "nextTask": "Finish M18.2 CI and inspect browser evidence before delivering. Then M18.3 assisted modular PMD, M18.4 GitHub and M19 hardening. Do not merge automatically."
 }

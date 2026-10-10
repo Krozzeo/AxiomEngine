@@ -4,8 +4,8 @@ Scope decision: 2026-10-09. M18 0.0.32 remains complete; its two repair demos ar
 
 | Milestone | State | Deliverable | Weight |
 | --- | --- | --- | ---: |
-| M18.1 OpenAI connection and multistep assistant | 7/8 groups passed; live-account check pending | Daemon-held credential, tested model selection, bounded sequential tool loop, project-context chat, isolated existing proposals, cancellation and usage/error visibility | 6 |
-| M18.2 Integrated chat and editable preview | Not started | Chat review card, automatic preview after agent work, preview-only toolbar, branch toggle, manual proposal edits, Apply/Discard and recovery | 6 |
+| M18.1 OpenAI connection and multistep assistant | Complete; user confirmed live Workshop | Daemon-held credential, tested model selection, bounded sequential tool loop, project-context chat, isolated existing proposals, cancellation and usage/error visibility | 6 |
+| M18.2 Integrated chat and editable preview | Implemented; acceptance in progress | Chat review card, automatic preview after agent work, preview-only toolbar, branch toggle, manual proposal edits, Apply/Discard and recovery | 6 |
 | M18.3 Assisted PMD | Not started | Iterative definition, approved milestone/stage planning, optional critique, indexed linked section documents, manual/assisted edits, import/export and history | 7 |
 | M18.4 GitHub integration | Not started | Account/repository/branch configuration, connection indicator, explicit or configured milestone publication of applied/saved projects | 3 |
 | M19 MVP Hardening | Not started | Original end-to-end acceptance, onboarding, recovery, compatibility and measured stability | 5 (existing) |

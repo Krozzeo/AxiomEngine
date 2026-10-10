@@ -3,11 +3,11 @@
 export function mountAiAssistant({document,api,getSnapshot,openPanel,reportError}){
  if(!document.defaultView)return ()=>{};
  const q=id=>document.querySelector('#'+id),limitNames=['maxRequests','maxTools','maxTokens','maxOutputTokens','maxSeconds'];
- let stopped=false,configBusy=false,status=null,task=null,configKey=null,wasConnected=false,renderKey=null,projectKey=null;const turns=new Map();
+ let stopped=false,configBusy=false,status=null,task=null,configKey=null,wasConnected=false,renderKey=null,projectKey=null;const turns=new Map(),credentialField=q('ai-api-key');
  const post=(path,data)=>api('/v1/ai/'+path,{method:'POST',body:JSON.stringify(data)});
  const modelConfig=()=>({model:q('ai-model').value,limits:Object.fromEntries(limitNames.map(n=>[n,Number(q('ai-'+n).value)]))});
  function configureMenu(){q('ai-menu').open=false;const dialog=q('ai-config-dialog');if(!dialog.open)dialog.showModal();if(status?.hasCredential||q('ai-api-key').value)void configAction('models');else q('ai-config-status').textContent='Enter an API key to load compatible models automatically.';}
- q('ai-assistant-config').addEventListener('click',configureMenu);q('ai-config-close').addEventListener('click',()=>q('ai-config-dialog').close());q('ai-config-dialog').addEventListener('close',()=>{q('ai-api-key').value='';});q('ai-api-key').addEventListener('change',()=>{if(q('ai-config-dialog').open&&q('ai-api-key').value)void configAction('models');});
+ q('ai-assistant-config').addEventListener('click',configureMenu);q('ai-config-close').addEventListener('click',()=>q('ai-config-dialog').close());q('ai-config-dialog').addEventListener('close',()=>{credentialField.value='';});q('ai-api-key').addEventListener('change',()=>{if(q('ai-config-dialog').open&&q('ai-api-key').value)void configAction('models');});
  function showChat(){if(q('ai-config-dialog').open)q('ai-config-dialog').close();openPanel('assistant',{centerIfClosed:true});q('ai-menu').open=false;}
  function paint(){const s=getSnapshot(),connected=!!status?.connected,working=!!status?.working;
   q('ai-indicator-label').textContent=working?'AI Working':'AI Agent';q('ai-indicator-icon').src=working?'/icons/compiling.svg':connected?'/icons/ai.svg':'/icons/ai-off.svg';q('ai-indicator').classList.toggle('disconnected',!connected&&!working);q('ai-indicator').title=connected?'Open AI Assistant · '+status.model:'Configure AI Assistant';
@@ -20,9 +20,9 @@ export function mountAiAssistant({document,api,getSnapshot,openPanel,reportError
  }
  async function configAction(action){if(configBusy)return;configBusy=true;paint();q('ai-config-status').textContent=action==='connect'?'Testing model connection…':action==='models'?'Loading models…':'Updating configuration…';
   try{const key=q('ai-api-key').value;const value=await post('configure',{action,...(['connect','models'].includes(action)&&key?{apiKey:key}:{}),...(action==='connect'?modelConfig():action==='update'?{limits:modelConfig().limits}:{})});
-   if(action==='models'){const previous=q('ai-model').value||status?.model;q('ai-model').replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Select a compatible model';q('ai-model').append(placeholder);for(const model of value.models){const option=document.createElement('option');option.value=model;const untested=value.untestedModels?.includes(model);option.textContent=model+(untested?' (untested)':'');option.classList.toggle('untested',!!untested);option.style.fontStyle=untested?'italic':'normal';q('ai-model').append(option);}if(value.models.includes(previous))q('ai-model').value=previous;paintModel();q('ai-config-status').textContent='Loaded '+value.models.length+' models; known incompatible models excluded, unknown models italic/untested. Listing uses no generation tokens.';}
-   else{status=value;q('ai-config-status').textContent=action==='connect'?'Connected · '+value.model:action==='disconnect'?'Disconnected; daemon credential cleared.':'Task limits updated.';if(action==='connect')q('ai-api-key').value='';}
-  }catch(error){q('ai-config-status').textContent=error.message;reportError(error);}finally{configBusy=false;paint();}
+   if(stopped)return;if(action==='models'){const previous=q('ai-model').value||status?.model;q('ai-model').replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Select a compatible model';q('ai-model').append(placeholder);for(const model of value.models){const option=document.createElement('option');option.value=model;const untested=value.untestedModels?.includes(model);option.textContent=model+(untested?' (untested)':'');option.classList.toggle('untested',!!untested);option.style.fontStyle=untested?'italic':'normal';q('ai-model').append(option);}if(value.models.includes(previous))q('ai-model').value=previous;paintModel();q('ai-config-status').textContent='Loaded '+value.models.length+' models; known incompatible models excluded, unknown models italic/untested. Listing uses no generation tokens.';}
+   else{status=value;q('ai-config-status').textContent=action==='connect'?'Connected · '+value.model:action==='disconnect'?'Disconnected; daemon credential cleared.':'Task limits updated.';if(action==='connect')credentialField.value='';}
+  }catch(error){q('ai-config-status').textContent=error.message;reportError(error);}finally{configBusy=false;if(!stopped)paint();}
  }
  function paintModel(){q('ai-model').style.fontStyle=q('ai-model').selectedOptions[0]?.classList.contains('untested')?'italic':'normal';}q('ai-model').addEventListener('change',paintModel);
  q('ai-config-form').addEventListener('submit',e=>{e.preventDefault();void configAction('connect');});q('ai-models').addEventListener('click',()=>void configAction('models'));q('ai-limits-save').addEventListener('click',()=>void configAction('update'));q('ai-disconnect').addEventListener('click',()=>void configAction('disconnect'));
@@ -36,10 +36,10 @@ export function mountAiAssistant({document,api,getSnapshot,openPanel,reportError
   if(nearEnd)output.scrollTop=output.scrollHeight;if(!task){q('ai-task-status').textContent='Connect a model and send a task.';q('ai-task-steps').replaceChildren();return;}
   q('ai-task-status').textContent=task.status+' · '+task.phase+' · '+task.requests+' requests · '+task.toolCalls+' tool calls · '+task.usage.totalTokens+' reported tokens'+(task.workspaceId?' · isolated proposal':'');q('ai-task-steps').replaceChildren();for(const step of task.steps){const item=document.createElement('li');item.textContent=step.tool+' · '+step.status+(step.error?' · '+step.error:'');q('ai-task-steps').append(item);}
  }
- async function poll(){try{status=await api('/v1/ai/status');const projectId=getSnapshot()?.project?.id;if(projectKey!==projectId){projectKey=projectId;task=null;renderKey=null;renderTask();}
+ async function poll(){try{status=await api('/v1/ai/status');if(stopped)return;const projectId=getSnapshot()?.project?.id;if(projectKey!==projectId){projectKey=projectId;task=null;renderKey=null;renderTask();}
    const nextKey=JSON.stringify([status.model,status.limits]);if(nextKey!==configKey){configKey=nextKey;if(!q('ai-model').value)q('ai-model').value=status.model;for(const name of limitNames)if(q('ai-'+name).ownerDocument.activeElement!==q('ai-'+name))q('ai-'+name).value=String(status.limits[name]);}
-   const id=status.activeTaskId??status.lastTaskId;if(id){const next=await api('/v1/ai/tasks?id='+encodeURIComponent(id));if(next.projectId===projectId){task=next;renderTask();}}
+   const id=status.activeTaskId??status.lastTaskId;if(id){const next=await api('/v1/ai/tasks?id='+encodeURIComponent(id));if(stopped)return;if(next.projectId===projectId){task=next;renderTask();}}
    paint();
   }catch(error){if(!stopped){q('ai-chat-error').textContent=error.message;status={...status,connected:false};paint();}}finally{if(!stopped)setTimeout(poll,500);}}
- void poll();return ()=>{stopped=true;q('ai-api-key').value='';};
+ void poll();return ()=>{stopped=true;credentialField.value='';};
 }

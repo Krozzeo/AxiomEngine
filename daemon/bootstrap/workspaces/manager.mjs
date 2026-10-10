@@ -33,7 +33,7 @@ export class ProposalManager {
  get active(){return this.previewId?this.get(this.previewId).child:this.main;}
  view(){return {...this.active.snapshot(),workspaceId:this.previewId};}
 
- async execute(type,data,context){const item=this.get(data.workspaceId);if(!editable.has(type))throw fail('Operation is not available inside a proposal');if(item.failure)throw fail('Proposal journal failed; reject this proposal');let result;try{if(type==='project.editor.update'){item.child.check(data);validateProject({...item.child.project,editor:data.value});if(Buffer.byteLength(JSON.stringify({...item.child.project,editor:data.value},null,2)+'\n')>192*1024)throw fail('Project size exceeds limit');item.child.project.editor=structuredClone(data.value);item.child.pendingEditor=true;item.child.revision++;result=item.child.snapshot();}else result=await item.child.run(type,data,context);}catch(error){this.log(item,type,context,'failed');item.log.at(-1).error={code:error.code??'AX_WORKSPACE_0001',message:error.message.slice(0,1024)};await this.persist(item);throw error;}if(type==='asset.audio.read')return result;if(type==='play.start')this.previewId=item.id;this.log(item,type,context);await this.persist(item);return result&&Object.hasOwn(result,'project')?{...result,workspaceId:item.id}:result;}
+ async execute(type,data,context){const item=this.get(data.workspaceId);if(!editable.has(type))throw fail('Operation is not available inside a proposal');if(item.failure)throw fail('Proposal journal failed; reject this proposal');let result;try{if(type==='project.editor.update'){item.child.check(data);validateProject({...item.child.project,editor:data.value});if(digest(item.child.project.editor??null)===digest(data.value))return {...item.child.snapshot(),workspaceId:item.id};if(Buffer.byteLength(JSON.stringify({...item.child.project,editor:data.value},null,2)+'\n')>192*1024)throw fail('Project size exceeds limit');item.child.project.editor=structuredClone(data.value);item.child.pendingEditor=true;item.child.revision++;result=item.child.snapshot();}else result=await item.child.run(type,data,context);}catch(error){this.log(item,type,context,'failed');item.log.at(-1).error={code:error.code??'AX_WORKSPACE_0001',message:error.message.slice(0,1024)};await this.persist(item);throw error;}if(type==='asset.audio.read')return result;if(type==='play.start')this.previewId=item.id;this.log(item,type,context);await this.persist(item);return result&&Object.hasOwn(result,'project')?{...result,workspaceId:item.id}:result;}
  async run(type,data,context){
   if(type==='workspace.list')return {items:this.list()};
   if(type==='workspace.begin'){
@@ -67,12 +67,12 @@ export class ProposalManager {
   }
   throw fail('Unknown proposal command');
  }
- review(id){const item=this.get(id);return {workspace:this.summary(item),reviewHash:digest([item.child.project,item.child.revision]),mainRevision:this.main.revision,mainDiverged:digest(this.main.project)!==digest(item.base),changes:changes({scene:item.base.scene,editor:item.base.editor},{scene:item.child.project.scene,editor:item.child.project.editor})};}
+ review(id){const item=this.get(id);return {workspace:this.summary(item),reviewHash:digest([item.child.project,item.child.revision]),mainRevision:this.main.revision,mainHash:digest(this.main.project),mainDiverged:digest(this.main.project)!==digest(item.base),changes:changes({scene:item.base.scene,editor:item.base.editor},{scene:item.child.project.scene,editor:item.child.project.editor})};}
  async apply(data,context){
   if(context?.actor?.kind!=='human')throw fail('Only human review can apply a proposal');
   const item=this.get(data.workspaceId);this.check(item,data);
   if(item.failure||this.busy(item)||item.child.playing||this.main.playing||this.main.activeJob||this.main.activeScriptJob)throw fail('Stop Play and finish all jobs before applying');
-  if(this.main.project?.id!==item.base.id||data.expectedMainRevision!==this.main.revision||data.reviewHash!==digest([item.child.project,item.child.revision]))throw fail('Review changed; review the current branches again');
+  if(this.main.project?.id!==item.base.id||data.expectedMainRevision!==this.main.revision||data.mainHash!==digest(this.main.project)||data.reviewHash!==digest([item.child.project,item.child.revision]))throw fail('Review changed; review the current branches again');
   if(digest(this.main.project)!==digest(item.base)&&data.replaceMain!==true)throw fail('MAIN changed since the proposal began. Apply replaces all later MAIN changes; explicit replacement confirmation is required');
   await item.journalFlight;validateProject(item.child.project);await item.child.validateResources(item.child.project.scene);
   const persisted=await this.main.store.run('project.open',{id:item.base.id});if(persisted.project.revision!==this.main.project.revision)throw fail('Saved MAIN changed in another daemon');
@@ -83,7 +83,7 @@ export class ProposalManager {
   try{
    const assets=join(item.root,stem+'.assets');try{await lstat(assets);await promote(assets,join(root,stem+'.assets'),created,undefined,(item.child.project.scene.assets??[]).map(a=>(a.sourceId??a.id).slice(8)+'.bin'),directories);}catch(e){if(e.code!=='ENOENT')throw e;}
    const build=item.child.project.scene.script?.build;if(build&&build.id!==item.base.scene.script?.build.id){await destinationFolder(join(root,stem+'.scripts'),directories);await promote(join(item.root,stem+'.scripts',build.id),join(root,stem+'.scripts',build.id),created,undefined,['manifest.json','publish'],directories);}
-   if(this.main.revision!==data.expectedMainRevision||item.child.revision!==data.expectedWorkspaceRevision||this.busy(item)||this.main.activeJob||this.main.activeScriptJob)throw fail('Branches changed during publication');
+   if(this.main.revision!==data.expectedMainRevision||digest(this.main.project)!==data.mainHash||item.child.revision!==data.expectedWorkspaceRevision||this.busy(item)||this.main.activeJob||this.main.activeScriptJob)throw fail('Branches changed during publication');
    const next=structuredClone(item.child.project);next.revision=this.main.project.revision;
    this.main.past.push(structuredClone(this.main.project.scene));this.main.future=[];this.main.project=next;this.main.pendingEditor=true;this.main.revision++;
   }catch(error){await Promise.all(created.map(p=>rm(p,{force:true})));for(const path of directories.reverse())await rmdir(path).catch(()=>{});throw error;}

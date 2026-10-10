@@ -4,7 +4,7 @@
   "baseline": {
     "strategy": "discovery + one operation per model response",
     "requests": 12,
-    "requestBytes": 178169,
+    "requestBytes": 180017,
     "toolCalls": 11,
     "compactions": 0,
     "checks": {
@@ -22,7 +22,7 @@
   "optimized": {
     "strategy": "grouped + supplied contracts",
     "requests": 3,
-    "requestBytes": 35150,
+    "requestBytes": 35612,
     "toolCalls": 7,
     "compactions": 0,
     "checks": {
@@ -38,5 +38,5 @@
     }
   },
   "requestReductionPercent": 75,
-  "payloadReductionPercent": 80.27153994241422
+  "payloadReductionPercent": 80.21742390996405
 }

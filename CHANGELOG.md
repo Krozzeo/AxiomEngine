@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.36 — M18.2
+
+Editable isolated preview, full-state human Apply with recovery, branch-aware authoring and Save lock; chat review controls and task history Requests X/Y. Assistant supplied contracts, grouped operations/references, compact checkpoints and per-request cache/reasoning usage reduce avoidable requests and payloads. Controlled benchmark: 12→3 requests, 80.22% fewer bytes; live token savings require the same-model comparison.
+
 ## 0.0.35 — M18.1.2
 
 - Persist provider-reported session token usage and limits; accept one-million budgets without byte reservations.

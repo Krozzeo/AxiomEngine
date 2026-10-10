@@ -29,6 +29,7 @@ export class CommandBus {
     return result;
   }
 
+  transaction(operation){const result=this.#pending.then(operation);this.#pending=result.catch(()=>{});return result;}
   async #dispatch(command) {
     if ((typeof command?.payload?.type !== "string" || !(command.payload.type.startsWith("project.") || command.payload.type.startsWith("scene.") || command.payload.type.startsWith("asset.") || command.payload.type.startsWith("play.") || command.payload.type.startsWith("script.") || this.agentService?.has(command.payload.type))) || !this.#projects) return this.execute(command);
     const started = performance.now();
@@ -44,6 +45,7 @@ export class CommandBus {
         throw this.#error("AX_COMMAND_0003", "Expected command revision does not match", []);
       }
       const type=command.payload.type,args=command.payload.data;
+      if(this.agentService?.proposals?.previewId&&['scene.save','project.save'].includes(type))throw Object.assign(Error('Apply the preview before saving; return to MAIN to save MAIN instead'),{code:'AX_WORKSPACE_0001'});
       if(context.actor?.kind==='agent'&&toolMap.get(type)?.route==='workspace'&&toolMap.get(type)?.mutates&&!args?.workspaceId&&!['project.create','project.open'].includes(type))throw Object.assign(new Error('Agent edits require an explicit proposal workspace'),{code:'AX_WORKSPACE_0001'});
       const data = this.agentService?.has(type) ? await this.agentService.run(type,args,context) : args?.workspaceId ? await this.agentService.proposals.execute(type,args,context) : await this.#projects.run(type,args,context);
       const event = envelope("event", { type: eventType, data, sequence: ++this.#sequence }, context);

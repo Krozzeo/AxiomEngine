@@ -1,0 +1,296 @@
+{
+  "criteria": [
+    "AI routes enforce existing token/origin boundaries before any model request",
+    "Assistant starts closed and disconnected; old Connect option is removed and AI Master is disabled/planned",
+    "Available model discovery and explicit connection test auto-open the real dockable Assistant with a blue connection indicator",
+    "Modal auto-load filters models without generation; Enter sends, Shift+Enter adds a line, composer caps at ten lines and task popover persists until toggled",
+    "One chat request performs query, isolated mutation, verification and summary with batched blue material/floor creation and verification across three model calls; MAIN remains unchanged",
+    "Follow-up chat edits the same pending proposal and reports actual token/tool usage without accepting it",
+    "Task history arrows retain independent usage cards and Requests X/Y follows configuration",
+    "Automatic preview supports branch toggles, isolated manual Inspector edits and Play/Stop; Save remains blocked",
+    "Integrated chat review shows actual diff; human Apply changes the draft and explicit Save persists it",
+    "Human UI restores the durable pre-Apply draft and discards only a separate proposal",
+    "Same-daemon reload restores connection/task results without persisting the API key in browser storage",
+    "Reported session totals stop at exhaustion; updating to one million preserves usage, updates the meter and resumes queued edits/objective without touching MAIN",
+    "Session meter and saved limit survive page reload; daemon recreation persistence is covered by backend acceptance",
+    "Working indicator, cancellation and disconnect update controls; cancellation never publishes project changes"
+  ],
+  "errors": [],
+  "transport": "Controlled Responses adapter; no account credential or billable calls",
+  "requests": [
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": "none"
+    },
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/responses",
+      "model": "gpt-4.1",
+      "toolChoice": null
+    },
+    {
+      "url": "https://api.openai.com/v1/models",
+      "toolChoice": null
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ai-task://9f2623fd-1cb9-4e8d-98f9-aa0b1c7ef9bc",
+      "projectId": "project://fcf1b8ce-2126-4018-9b42-0fdd67de3f27",
+      "workspaceId": "workspace://9ee19a97-d7e6-4773-872f-841bf214a5b7",
+      "status": "completed",
+      "phase": "ready-for-review",
+      "objective": "Move Workshop Cube to X=2 and verify it.",
+      "requests": 3,
+      "toolCalls": 7,
+      "usage": {
+        "inputTokens": 150,
+        "cachedInputTokens": 0,
+        "outputTokens": 90,
+        "reasoningTokens": 0,
+        "totalTokens": 240
+      },
+      "compactions": 0,
+      "resumedFrom": null,
+      "originalObjective": "Move Workshop Cube to X=2 and verify it.",
+      "messages": [
+        "Moved Workshop Cube to X=2, blue material and a floor in an isolated proposal. Verified authored position and floor dimensions. MAIN was not changed."
+      ],
+      "steps": [
+        {
+          "sequence": 1,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 2,
+          "tool": "scene.entity.update",
+          "status": "completed",
+          "batch": "grouped-authoring"
+        },
+        {
+          "sequence": 3,
+          "tool": "scene.material.set",
+          "status": "completed",
+          "batch": "grouped-authoring"
+        },
+        {
+          "sequence": 4,
+          "tool": "scene.primitive.create",
+          "status": "completed",
+          "batch": "grouped-authoring"
+        },
+        {
+          "sequence": 5,
+          "tool": "scene.entity.update",
+          "status": "completed",
+          "batch": "grouped-authoring"
+        },
+        {
+          "sequence": 6,
+          "tool": "entity.query",
+          "status": "completed",
+          "batch": "grouped-authoring"
+        },
+        {
+          "sequence": 7,
+          "tool": "entity.query",
+          "status": "completed",
+          "batch": "grouped-authoring"
+        }
+      ],
+      "requestUsage": [
+        {
+          "request": 1,
+          "inputTokens": 50,
+          "cachedInputTokens": 0,
+          "outputTokens": 30,
+          "reasoningTokens": 0,
+          "totalTokens": 80,
+          "requestBytes": 9684,
+          "elapsedMs": 2
+        },
+        {
+          "request": 2,
+          "inputTokens": 50,
+          "cachedInputTokens": 0,
+          "outputTokens": 30,
+          "reasoningTokens": 0,
+          "totalTokens": 80,
+          "requestBytes": 10257,
+          "elapsedMs": 3
+        },
+        {
+          "request": 3,
+          "inputTokens": 50,
+          "cachedInputTokens": 0,
+          "outputTokens": 30,
+          "reasoningTokens": 0,
+          "totalTokens": 80,
+          "requestBytes": 13790,
+          "elapsedMs": 0
+        }
+      ],
+      "limits": {
+        "maxRequests": 12,
+        "maxTools": 48,
+        "maxTokens": 100000,
+        "maxOutputTokens": 4096,
+        "maxSeconds": 300
+      },
+      "error": null,
+      "proposal": {
+        "id": "workspace://9ee19a97-d7e6-4773-872f-841bf214a5b7",
+        "revision": 6
+      },
+      "proposalAvailable": true,
+      "canResume": false
+    },
+    {
+      "id": "ai-task://aa2468b5-3ae8-49fc-9e6f-67d588ca3b39",
+      "projectId": "project://fcf1b8ce-2126-4018-9b42-0fdd67de3f27",
+      "workspaceId": "workspace://9ee19a97-d7e6-4773-872f-841bf214a5b7",
+      "status": "completed",
+      "phase": "ready-for-review",
+      "objective": "Improve the pending proposal to X=5 and verify.",
+      "requests": 3,
+      "toolCalls": 2,
+      "usage": {
+        "inputTokens": 150,
+        "cachedInputTokens": 0,
+        "outputTokens": 90,
+        "reasoningTokens": 0,
+        "totalTokens": 240
+      },
+      "compactions": 0,
+      "resumedFrom": null,
+      "originalObjective": "Improve the pending proposal to X=5 and verify.",
+      "messages": [
+        "Updated the same pending proposal to X=5 and verified its position."
+      ],
+      "steps": [
+        {
+          "sequence": 1,
+          "tool": "scene.entity.update",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "sequence": 2,
+          "tool": "entity.query",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "requestUsage": [
+        {
+          "request": 1,
+          "inputTokens": 50,
+          "cachedInputTokens": 0,
+          "outputTokens": 30,
+          "reasoningTokens": 0,
+          "totalTokens": 80,
+          "requestBytes": 10068,
+          "elapsedMs": 0
+        },
+        {
+          "request": 2,
+          "inputTokens": 50,
+          "cachedInputTokens": 0,
+          "outputTokens": 30,
+          "reasoningTokens": 0,
+          "totalTokens": 80,
+          "requestBytes": 10698,
+          "elapsedMs": 0
+        },
+        {
+          "request": 3,
+          "inputTokens": 50,
+          "cachedInputTokens": 0,
+          "outputTokens": 30,
+          "reasoningTokens": 0,
+          "totalTokens": 80,
+          "requestBytes": 11509,
+          "elapsedMs": 0
+        }
+      ],
+      "limits": {
+        "maxRequests": 12,
+        "maxTools": 48,
+        "maxTokens": 100000,
+        "maxOutputTokens": 4096,
+        "maxSeconds": 300
+      },
+      "error": null,
+      "proposal": {
+        "id": "workspace://9ee19a97-d7e6-4773-872f-841bf214a5b7",
+        "revision": 9
+      },
+      "proposalAvailable": true,
+      "canResume": false
+    }
+  ],
+  "passed": true
+}

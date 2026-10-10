@@ -2,12 +2,12 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-10",
-  "engineVersion": "0.0.35",
-  "activeMilestone": 18.1,
-  "milestoneStatus": "blocked",
+  "engineVersion": "0.0.36",
+  "activeMilestone": 18.2,
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 87.5,
-    "wholeProjectPercent": 83,
+    "activeMilestonePercent": 100,
+    "wholeProjectPercent": 88,
     "method": "docs/architecture/MILESTONE_REPORTING.md"
   },
   "milestones": {
@@ -96,12 +96,12 @@
       "percent": 100
     },
     "18.1": {
-      "status": "blocked",
-      "percent": 87.5
+      "status": "complete",
+      "percent": 100
     },
     "18.2": {
-      "status": "not_started",
-      "percent": 0
+      "status": "complete",
+      "percent": 100
     },
     "18.3": {
       "status": "not_started",
@@ -127,9 +127,9 @@
     "assetPipeline": "verified_incremental_cache_background_jobs_hot_reload",
     "csharpGameplay": "verified_physical_multiple_components_typed_fields_linux_dev_aot_windows_dev",
     "aiControl": "verified_mcp_stdio_bounded_queries_real_renderer_capture",
-    "transactionalWorkspaces": "verified_cow_human_review_preview_accept_reject_restart",
+    "transactionalWorkspaces": "verified_editable_preview_full_state_replacement_durable_recovery_save_lock_restart",
     "physics": "verified_cpu_wasm_oriented_angular_contacts_2d_3d",
-    "editableDemos": "verified_m18_1_workshop_controlled_assistant_and_prior_demos",
+    "editableDemos": "verified_m18_2_editable_preview_workshop_and_prior_demos",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
@@ -151,13 +151,13 @@
     "agentAutonomy": "verified_bounded_structured_isolated_failure_repair_retest_measured_human_review",
     "runtimeInspector": "verified_transient_attached_components_transform_typed_csharp_scrub_and_detached_focus",
     "scriptCompilation": "verified_stopped_only_shared_explicit_auto_after_stop_open_play_source_hash_sdk_identity_and_cached_valid_recovery",
-    "openAiAssistant": "verified_controlled_discovery_modal_known_incompatible_filter_unknown_models_chat; reported_session_tokens_persisted; interrupted_task_checkpoint_resume; blue_usage_meter; corrected_live_task_pending"
+    "openAiAssistant": "live_workshop_confirmed; grouped_tools_compact_checkpoints; per_request_cache_reasoning_usage; task_history_requests_xy"
   },
   "verified": {
     "nodeTests": {
-      "passed": 249,
+      "passed": 262,
       "failed": 0,
-      "evidenceEnvironment": "GitHub CI 208 bootstrap on Linux and Windows"
+      "evidenceEnvironment": "GitHub CI 215 bootstrap on Linux and Windows"
     },
     "schemaDocuments": 18,
     "architectureRules": 3,
@@ -187,7 +187,7 @@
       "testsPassed": 39,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI 208; Rust 1.90.0; M18.1.2 0.0.35"
+      "evidenceEnvironment": "GitHub CI 215; Rust 1.90.0; M18.2 0.0.36"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -203,38 +203,50 @@
     "remoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.35",
-      "commit": "80c32ef42516e44aec7b5b6256ee1f989582cfe3",
-      "tree": "2d9b8c0ca12fab25ff40d856789c91c60c2204aa",
-      "run": 208,
-      "runId": 38075528360,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/38075528360",
-      "jobCount": 30,
-      "jobsPassed": 30,
+      "version": "0.0.36",
+      "commit": "4435c3790cac78caef692a2db755f5af14c22827",
+      "tree": "3568c51bdf9b3d4fe1caf525dffc402188ac49ae",
+      "run": 215,
+      "runId": 38082922756,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/38082922756",
+      "jobCount": 31,
+      "jobsPassed": 31,
       "pendingJobs": [],
       "jobs": [
         {
-          "name": "bootstrap (ubuntu-latest)",
+          "name": "rust",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m18-1)",
+          "name": "browser-milestones (m9)",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m14)",
+          "name": "browser-milestones (m4)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (corrections)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m12)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m15)",
+          "conclusion": "success"
+        },
+        {
+          "name": "csharp-wasm-spike (windows-latest, development)",
+          "conclusion": "success"
+        },
+        {
+          "name": "bootstrap (windows-latest)",
           "conclusion": "success"
         },
         {
           "name": "csharp-wasm-spike (ubuntu-latest, aot)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m10)",
-          "conclusion": "success"
-        },
-        {
-          "name": "rust",
           "conclusion": "success"
         },
         {
@@ -246,11 +258,47 @@
           "conclusion": "success"
         },
         {
+          "name": "script-boundaries (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m10)",
+          "conclusion": "success"
+        },
+        {
+          "name": "bootstrap (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "csharp-wasm-spike (ubuntu-latest, development)",
+          "conclusion": "success"
+        },
+        {
+          "name": "script-boundaries (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "script-boundaries (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-2)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18)",
+          "conclusion": "success"
+        },
+        {
           "name": "browser-milestones (m16-1)",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m12)",
+          "name": "browser-milestones (m14)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-1)",
           "conclusion": "success"
         },
         {
@@ -258,31 +306,19 @@
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (corrections)",
+          "name": "browser-milestones (m16)",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m15)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m9)",
-          "conclusion": "success"
-        },
-        {
-          "name": "csharp-wasm-spike (windows-latest, development)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m11)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m4)",
+          "name": "browser-milestones (m17)",
           "conclusion": "success"
         },
         {
           "name": "browser-milestones (m2)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m11)",
           "conclusion": "success"
         },
         {
@@ -294,54 +330,14 @@
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m8)",
-          "conclusion": "success"
-        },
-        {
           "name": "browser-milestones (m7)",
           "conclusion": "success"
         },
         {
-          "name": "csharp-wasm-spike (ubuntu-latest, development)",
-          "conclusion": "success"
-        },
-        {
-          "name": "script-boundaries (ubuntu-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m17)",
-          "conclusion": "success"
-        },
-        {
-          "name": "script-boundaries (windows-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "bootstrap (windows-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18)",
-          "conclusion": "success"
-        },
-        {
-          "name": "script-boundaries (macos-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m16)",
+          "name": "browser-milestones (m8)",
           "conclusion": "success"
         }
-      ],
-      "retry": {
-        "job": "browser-milestones (m3)",
-        "initialJobId": 114281585238,
-        "initialConclusion": "cancelled at 15-minute timeout",
-        "retryJobId": 114285501908,
-        "conclusion": "success",
-        "codeChanges": false
-      }
+      ]
     },
     "browserWasmIntegration": {
       "passed": true,
@@ -855,8 +851,8 @@
       "scope": "excludes six clean-build server tests; real existing Wasm kernel"
     },
     "m18_1Acceptance": {
-      "passed": false,
-      "requiredGroupsPassed": 7,
+      "passed": true,
+      "requiredGroupsPassed": 8,
       "requiredGroupsTotal": 8,
       "browserCriteriaPassed": 8,
       "browserCriteriaTotal": 8,
@@ -865,9 +861,10 @@
       "browserEvidenceRun": 202,
       "browserExecutableCommit": "83a37c6a192318fad5356811717e0434cde68822",
       "evidence": "docs/reports/m18-1-browser-evidence.json",
-      "liveAccountVerified": false,
-      "manualTestsRequired": true,
-      "transport": "Controlled Responses adapter with actual UI/daemon/proposals"
+      "liveAccountVerified": true,
+      "manualTestsRequired": false,
+      "transport": "Controlled Responses adapter with actual UI/daemon/proposals",
+      "liveEvidence": "User confirmed the real Workshop task succeeds"
     },
     "m18_1_1Acceptance": {
       "browserPassed": true,
@@ -879,12 +876,12 @@
       "runId": 38064657247,
       "executableCommit": "093145ed7429f6d0dac39b95ded34b1c50473535",
       "liveConnectionConfirmedByUser": true,
-      "correctedLiveToolLoopVerified": false
+      "correctedLiveToolLoopVerified": true
     },
     "m18_1_2Acceptance": {
       "backendTestsPassed": 21,
       "browserPending": false,
-      "correctedLiveToolLoopVerified": false,
+      "correctedLiveToolLoopVerified": true,
       "report": "docs/reports/M18_1_2_CURRENT_REPORT.md",
       "browserPassed": true,
       "browserCriteriaPassed": 11,
@@ -893,10 +890,25 @@
       "evidence": "docs/reports/m18-1-2-browser-evidence.json",
       "runId": 38075528360,
       "executableCommit": "80c32ef42516e44aec7b5b6256ee1f989582cfe3"
+    },
+    "m18_2Acceptance": {
+      "passed": true,
+      "requiredGroupsPassed": 8,
+      "requiredGroupsTotal": 8,
+      "browserCriteriaPassed": 14,
+      "pageErrors": 0,
+      "nodeTestsTotal": 262,
+      "runId": 38082922756,
+      "executableCommit": "4435c3790cac78caef692a2db755f5af14c22827",
+      "evidence": "docs/reports/m18-2-browser-evidence.json",
+      "controlledBenchmark": "docs/reports/m18-2-assistant-benchmark.json",
+      "liveTokenSavingsMeasured": false,
+      "functionalManualTestsRequired": false,
+      "liveComparisonRequired": true
     }
   },
   "blockedChecks": [
-    "M18.1 real-account end-to-end Workshop: user confirms connection and successful discovery/query calls in 0.0.34, but the task was interrupted by the old budget and continuation lost its objective. Version 0.0.35 fixes accounting and checkpoint recovery under controlled tests. Recheck the real task locally without sharing the key."
+    "Same-model live token/cost savings require account-specific comparison; controlled schedules establish requests and bytes only."
   ],
   "protocolVersions": {
     "command": 1,
@@ -1044,7 +1056,12 @@
     "docs/reports/M18_1_1_CURRENT_REPORT.md",
     "docs/reports/m18-1-1-browser-evidence.json",
     "docs/reports/M18_1_2_CURRENT_REPORT.md",
-    "docs/reports/m18-1-2-browser-evidence.json"
+    "docs/reports/m18-1-2-browser-evidence.json",
+    "docs/architecture/M18_2_PREVIEW.md",
+    "docs/reports/M18_2_CURRENT_REPORT.md",
+    "demos/M18_2_GUIDE.md",
+    "docs/reports/m18-2-browser-evidence.json",
+    "docs/reports/m18-2-assistant-benchmark.json"
   ],
-  "nextTask": "Collect the user-local corrected Workshop result without collecting the key. Read M18_1_2_CURRENT_REPORT.md and assistant architecture. Usage and limits persist; interrupted task checkpoints remain daemon memory. Only after live verification close M18.1 and proceed to M18.2, M18.3, M18.4, M19. PR #25 is draft/open/unmerged stacked on #24; do not merge automatically."
+  "nextTask": "Begin M18.3 assisted modular PMD from docs/architecture/M18_3_PLAN.md; then M18.4 GitHub and M19 hardening. Preserve preview full-state replacement and branch-scoped edits. Do not merge automatically."
 }

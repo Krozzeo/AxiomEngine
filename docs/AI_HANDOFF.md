@@ -1,14 +1,14 @@
 # Axiom Engine — context-free AI handoff
 
-Current correction: M18.1.2 (0.0.35), persistent reported session usage and interrupted task recovery verified: CI 208 passes all 30 jobs, 249 Node tests, 39 Rust tests and 11 assistant browser criteria; corrected live task remains pending. See docs/reports/M18_1_2_CURRENT_REPORT.md. Earlier correction reports below are historical evidence.
+M18.2 (0.0.36) is complete: 8/8 acceptance groups, 100%; expanded MVP progress approximately 88% (111/126 roadmap points). CI 215 passes all 31 jobs at executable commit `4435c3790cac78caef692a2db755f5af14c22827` (tree `3568c51bdf9b3d4fe1caf525dffc402188ac49ae`): 262 Node tests, 39 Rust tests and 14 new browser criteria, with no page errors. M18.1's live Workshop gate is closed by the user's confirmed successful task.
 
-Current correction: M18.1.1 (0.0.34), automated verification complete: CI 207 passes all 30 jobs on codex/m18-1-1-fixes. Live connection was confirmed; discovery is repaired in controlled tests, with the corrected live task still pending. See docs/reports/M18_1_1_CURRENT_REPORT.md for the corrected bootstrap and requested configuration/chat changes. The following M18.1 report is historical evidence, not proof that the user’s task succeeded.
+Editable stopped preview opens automatically after modifying AI work. Chat and preview toolbar expose Review changes / Preview / Apply / Discard; manual preview edits and further AI tasks stay in the isolated branch. Apply replaces the entire authored MAIN state, confirms divergence, retains pre-Apply recovery and leaves an unsaved draft. Save is blocked in preview. Script/IDE/compiler/editor settings are branch-scoped; Play edits remain transient.
 
-M18.1 (0.0.33) is implemented and awaits account-specific live verification: 7/8 acceptance groups passed, 87.5%; expanded project progress approximately 83% (104.25/126). The eighth open group is the live Responses adapter check with the user's account, not missing implementation. Controlled automated responses do not establish live model access, quota or compatibility. PR #23 remains draft/open/unmerged on `codex/m18-1-openai`, stacked on #22. Read `docs/reports/M18_1_CURRENT_REPORT.md`, `docs/architecture/M18_1_OPENAI_ASSISTANT.md` and `demos/M18_1_GUIDE.md`.
+Grouped validated tools, common host-free contracts, compact context/results and complete-turn checkpoint compaction reduce request overhead. The controlled benchmark measures 12 → 3 requests (75% fewer) and 180,017 → 35,612 serialized request bytes (80.22% fewer). This is not a live token/cost measurement. Per-request input/cache/output/reasoning totals and Requests X/Y task-history arrows expose actual usage. Only the same-model/account prompt comparison requires the user; no UI-only manual acceptance remains.
 
-Daemon-held OpenAI connection, model discovery/test and a bounded multistep tool loop now drive a dockable AI Assistant with project context, usage, cancellation and isolated proposals. Keys are memory-only. The original remains unchanged until existing explicit human acceptance; Save remains separate. Follow-ups can continue the same proposal. AI Master remains disabled/planned. CI 203 has 29/30 successful jobs; M15 remains installing browser dependencies and passed CI 202 on the same application code. See the report for exact provenance; no complete CI 203 claim. No live-account success is claimed.
+PR #26 remains draft/open/unmerged, stacked on #25. Next is M18.3 assisted modular PMD, then M18.4 GitHub integration and M19 hardening. Begin with M18_3_PLAN.md; do not merge automatically. Task history/checkpoints survive browser reload, but remain bounded daemon memory; proposal/recovery state is durable. Credentials remain daemon memory only. AI Master remains disabled/planned.
 
-The approved order remains M18.1 → M18.2 editable preview/chat → M18.3 assisted modular PMD → M18.4 GitHub → M19 hardening. M18.2 Apply will replace complete MAIN authored state instead of merging; this is not yet implemented. First next action: obtain the local Workshop live-account result (never a key in chat); resolve any actual adapter failure and then begin M18.2 from its plan. Historical 95% below uses the old 104-point scope; the expanded baseline was 79% before M18.1 evidence.
+Read docs/reports/M18_2_CURRENT_REPORT.md, docs/architecture/M18_2_PREVIEW.md and demos/M18_2_GUIDE.md. Historical reports below retain their original dates and scope; their pending-live and pre-M18.2 statements are superseded by this closure.
 
 Historical M18 closure:
 
@@ -193,7 +193,7 @@ M7 adds an owned CPU/Wasm translational solver, Physics Inspector, generated
 RigidBody velocity bindings and editable demos. Tests cover fixed steps, contacts,
 triggers, layer masks, raycasts and repeatable golden scenes. M9.1 adds angular dynamics and rotated contacts; CCD and GPU physics remain
 outside scope. See ADR-0020 for historical M7 limits and M9_1_CORRECTIONS.md for
-the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the three M14 tests; demo:m13-1 retains the workspace pair and demo:m12 retains audio samples.
+the current contract. Use demo:m7, demo:m8, demo:m9 and demo:corrections for historical samples; demo creates the M18.2 Editable Preview Workshop; demo:m13-1 retains the workspace pair and demo:m12 retains audio samples.
 M8 adds independent stopped Game preview, an editor-only Scene camera, triangle
 picking, two-way selection, move/rotate/scale gizmos with one-command Undo and
 Escape cancellation, orbit/pan/zoom/fly/framing and an absolute XYZ widget.

@@ -2,10 +2,10 @@ import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {SceneWorkspace} from '../daemon/bootstrap/scene-workspace.mjs';
 import {ProjectStore} from '../daemon/bootstrap/project-store.mjs';
-export async function createM181Projects(root=resolve('.axiom/projects')){
+export async function createM181Projects(root=resolve('.axiom/projects'),name='Demo · M18.1 AI Assistant Workshop'){
  const w=new SceneWorkspace(new ProjectStore(root)),result=[];
  const args=value=>({id:w.project.id,expectedSceneRevision:w.revision,...value});
- await w.run('project.create',{name:'Demo · M18.1 AI Assistant Workshop',dimension:3});
+ await w.run('project.create',{name,dimension:3});
  const cube=w.project.scene.entities.find(e=>e.renderable);await w.run('scene.entity.update',args({entityId:cube.id,name:'Workshop Cube'}));
  await w.run('project.files.edit',args({action:'create',kind:'folder',path:'Notes'}));
  await w.run('project.files.edit',args({action:'create',kind:'json',path:'Notes/Workshop.json'}));

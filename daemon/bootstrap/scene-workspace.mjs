@@ -60,14 +60,14 @@ export class SceneWorkspace {
       if(vertices>300000||draws>1024)fail("AX_SCENE_0006","Scene exceeds 300000 vertices or 1024 draw items");
     }
   }
-  get dirty() { return this.project !== null && JSON.stringify(this.project.scene) !== this.savedScene; }
+  get dirty() { return this.project !== null && (JSON.stringify(this.project.scene) !== this.savedScene || !!this.pendingEditor); }
   snapshot() {
     return { project: copy(this.project), sceneRevision: this.revision, dirty: this.dirty, canUndo: this.past.length > 0, canRedo: this.future.length > 0, playing: this.playing };
   }
   activate(project) {
     this.project = copy(project);
     this.playing = false;
-    this.savedScene = JSON.stringify(project.scene);
+    this.savedScene = JSON.stringify(project.scene);this.pendingEditor=false;
     this.past = [];
     this.future = [];
     this.revision++;
@@ -234,9 +234,9 @@ export class SceneWorkspace {
       return this.snapshot();
     }
     if (type === "scene.save") {
-      const result = await this.store.run("project.save", { id: this.project.id, expectedRevision: this.project.revision, scene: this.project.scene });
+      const result = await this.store.run("project.save", { id: this.project.id, expectedRevision: this.project.revision, scene: this.project.scene,editor:this.project.editor });
       this.project = result.project;
-      this.savedScene = JSON.stringify(this.project.scene);
+      this.savedScene = JSON.stringify(this.project.scene);this.pendingEditor=false;
       this.revision++;
       return this.snapshot();
     }

@@ -45,6 +45,6 @@ export class AgentService {
 export function compactResult(event){
  if(event.kind==='error')return event;
  const d=event.payload.data;
- if(d&&Object.hasOwn(d,'project'))return {...event,payload:{...event.payload,data:{project:d.project?{id:d.project.id,name:d.project.name,revision:d.project.revision}:null,sceneRevision:d.sceneRevision,dirty:d.dirty,playing:d.playing,entityCount:d.project?.scene?.entities.length??0}}};
+ if(d&&Object.hasOwn(d,'project'))return {...event,payload:{...event.payload,data:{...d,project:d.project?{id:d.project.id,name:d.project.name,revision:d.project.revision}:null,sceneRevision:d.sceneRevision,dirty:d.dirty,playing:d.playing,entityCount:d.project?.scene?.entities.length??d.entityCount??0}}};
  return event;
 }

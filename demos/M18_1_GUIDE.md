@@ -1,6 +1,6 @@
 # M18.1 — OpenAI Assistant Workshop
 
-Version 0.0.33 (development; see current report for executed acceptance).
+Version 0.0.34 (development; see current report for executed acceptance).
 
 Preserve the complete `.axiom` folder when upgrading. Run:
 
@@ -14,7 +14,7 @@ The command adds **Demo · M18.1 AI Assistant Workshop** without deleting existi
 
 ## Connect your own account
 
-AI → Config AI assistant: enter your OpenAI API key locally, Load available models, choose a text/function-calling model available to your account, then Connect and test. Model listing does not prove workflow compatibility. The explicit test checks a completed text response with the tool definitions accepted; the Workshop task additionally verifies actual function calls. The test makes one small billable Responses request. Task requests are billed by your OpenAI API account, not your ChatGPT subscription. Never send the API key in chat or add it to project files.
+AI → Config AI assistant: enter your OpenAI API key locally, models load automatically (after entering a key if needed), choose a text/function-calling model available to your account, then Connect and test. Model listing does not prove workflow compatibility. The explicit test checks a completed text response with the tool definitions accepted; the Workshop task additionally verifies actual function calls. The test makes one small billable Responses request. Task requests are billed by your OpenAI API account, not your ChatGPT subscription. Never send the API key in chat or add it to project files.
 
 The key stays only in daemon memory. Browser refresh preserves the daemon connection; daemon restart requires reconnection. Alternatively set OPENAI_API_KEY in the daemon's environment before starting it. No key is written by Axiom to project files, exports or browser storage. Disconnect cancels the active task and clears the daemon credential. There is no persistent encrypted credential vault in this release.
 
@@ -41,3 +41,7 @@ It should adjust the existing proposal rather than creating another. The result 
 ## Verification boundary
 
 Automated acceptance uses controlled Responses payloads with the real daemon, command bus, proposal journal and browser UI. It verifies multistep orchestration and isolation without API charges. It does not establish availability, credentials, quotas, live API compatibility or natural-language task quality for your account. The account-specific check is to connect locally and run the workshop request once; report the visible error if it fails, never the key.
+
+## M18.1.1 corrections
+
+Configuration opens in a window. The reload icon refreshes only the model list excluding only known incompatible models using GET /models, without generation tokens; Unknown models remain selectable in italic with an untested label; known incompatible models are omitted. Enter sends, Shift+Enter adds a line; the input grows through ten lines then scrolls. Waiting dots indicate active work. Task steps/usage opens at the upper right and stays open until clicked again. Repeat the formerly failed request and inspect successful api.describe before real changes. Connection alone is not proof of a successful tool loop.

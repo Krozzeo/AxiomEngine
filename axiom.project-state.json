@@ -1,8 +1,8 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-09",
-  "engineVersion": "0.0.33",
+  "updatedAt": "2026-10-10",
+  "engineVersion": "0.0.34",
   "activeMilestone": 18.1,
   "milestoneStatus": "blocked",
   "completion": {
@@ -628,7 +628,7 @@
     }
   },
   "blockedChecks": [
-    "M18.1 live account: connect and test a locally configured available OpenAI model, run Workshop multistep request and inspect actual proposal; no credential available in agent environment."
+    "M18.1 live tool loop: user connected successfully, but discovery failed. Adapter fix and UI changes are implemented in 0.0.34; corrected live request must be rechecked locally without sharing the API key."
   ],
   "protocolVersions": {
     "command": 1,

@@ -183,6 +183,7 @@ jobs:
             .axiom/browser-m7-evidence
             .axiom/browser-corrections-evidence
             .axiom/assistant-benchmark.json
+            .axiom/browser-m18-2-1-evidence
             .axiom/browser-m18-2-evidence
             .axiom/browser-m18-1-evidence
             .axiom/browser-m18-evidence

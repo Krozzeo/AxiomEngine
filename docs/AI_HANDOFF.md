@@ -1,6 +1,13 @@
 # Axiom Engine — context-free AI handoff
 
-M18.2.1 (0.0.37) corrects physical C# grounding, compiler polling loops, completion validation, preview controls and persistent Limitless configuration. Full CI acceptance is pending; see docs/reports/M18_2_1_CURRENT_REPORT.md and demos/M18_2_1_GUIDE.md. Expanded MVP remains approximately 88%; next is M18.3. The older M18.2 controlled benchmark below is not proof of live scripting efficiency.
+M18.2.1 (0.0.37) is complete: 6/6 acceptance groups, 100%; expanded MVP remains approximately 88% (111/126). CI 219 passes all 32 jobs at executable commit `300d47405ee9bc0ec1c99e9dc131dd4733686831` (tree `761052eef1d16c1ea821b271a74a0c3f0c9a30eb`): 268 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and six new browser criteria with zero page errors.
+
+The assistant receives the real physical-source/C# SDK contract, waits for compilation in the host, omits bundle manifests, stops repeated discovery/results, and requires current modified sources to compile before completion. False final build-success messages are withheld. Scene-only requests omit full C# instructions and a duplicate tool roster. Pending Preview stays visible in MAIN, active preview says Exit preview, Apply preserves panel focus, More info contains review/recovery/history, and all five configured limits support persistent Limitless. Obsolete Walking skeleton UI is removed. The inherited M14 cancellation test now cancels at a confirmed active frame boundary instead of racing a full run.
+
+The Script Efficiency Workshop reproduces physical C# creation/attachment and sinusoidal Y=1…2 motion. Three controlled responses compiled and inspected the script; 70 real browser .NET samples stayed within the range. This does not measure live model tokens/cost. The same controlled scene schedule sends 29,837 bytes versus M18.2's 35,612 (16.2% less). Only the same-account/model prompt comparison needs the user; no UI-only manual gate remains.
+
+Read docs/reports/M18_2_1_CURRENT_REPORT.md and demos/M18_2_1_GUIDE.md. PR #27 remains draft/open/unmerged, stacked on #26. Next is M18.3 Assisted PMD, then M18.4 GitHub and M19 hardening. Credentials remain daemon memory; usage/limits persist. AI Master remains disabled/planned. Historical statements below retain their original scope and are superseded by this closure.
+
 
 M18.2 (0.0.36) is complete: 8/8 acceptance groups, 100%; expanded MVP progress approximately 88% (111/126 roadmap points). CI 215 passes all 31 jobs at executable commit `4435c3790cac78caef692a2db755f5af14c22827` (tree `3568c51bdf9b3d4fe1caf525dffc402188ac49ae`): 262 Node tests, 39 Rust tests and 14 new browser criteria, with no page errors. M18.1's live Workshop gate is closed by the user's confirmed successful task.
 

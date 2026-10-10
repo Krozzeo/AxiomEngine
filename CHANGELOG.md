@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.34 — M18.1.1 — assistant discovery and chat corrections
+
+- Bootstrap discovery schemas, exact arguments and actionable schema-error feedback repair the failed api.describe path.
+- Modal model configuration, automatic zero-generation listing, known-incompatible filtering and italic untested models and adjacent reload icon.
+- Enter/Shift+Enter, animated waiting dots, one-to-ten-line composer and persistent upper-right task popover.
+- Live connection was confirmed; corrected free-form task remains a user-account verification gate.
+
 ## 0.0.33 — M18.1 — OpenAI assistant (live-account check pending)
 
 - Daemon-held connection/model test and bounded sequential Responses/tool orchestration; project writes stay in human-reviewed proposals.

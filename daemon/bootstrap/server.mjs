@@ -127,7 +127,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.33" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.34" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -137,7 +137,7 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.33" },
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.34" },
           capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge","ai.assistant"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });

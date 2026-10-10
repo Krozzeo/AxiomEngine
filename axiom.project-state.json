@@ -863,6 +863,12 @@
       "executableCommit": "093145ed7429f6d0dac39b95ded34b1c50473535",
       "liveConnectionConfirmedByUser": true,
       "correctedLiveToolLoopVerified": false
+    },
+    "m18_1_2Acceptance": {
+      "backendTestsPassed": 21,
+      "browserPending": true,
+      "correctedLiveToolLoopVerified": false,
+      "report": "docs/reports/M18_1_2_CURRENT_REPORT.md"
     }
   },
   "blockedChecks": [
@@ -1014,5 +1020,7 @@
     "docs/reports/M18_1_1_CURRENT_REPORT.md",
     "docs/reports/m18-1-1-browser-evidence.json"
   ],
-  "nextTask": "Collect the user-local corrected Workshop tool-loop result without collecting the key. Read M18_1_1_CURRENT_REPORT.md and assistant architecture. Only after live verification close M18.1 and proceed to M18.2, M18.3, M18.4, M19. PR #24 is draft/open/unmerged stacked on #23; do not merge automatically."
+  "nextTask": "Collect the user-local corrected Workshop tool-loop result without collecting the key. Read M18_1_1_CURRENT_REPORT.md and assistant architecture. Only after live verification close M18.1 and proceed to M18.2, M18.3, M18.4, M19. PR #24 is draft/open/unmerged stacked on #23; do not merge automatically.",
+  "version": "0.0.35",
+  "milestone": "M18.1.2"
 }

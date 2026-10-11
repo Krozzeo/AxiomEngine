@@ -4372,6 +4372,15 @@
                   "type": "object",
                   "additionalProperties": true
                 }
+              },
+              "pmd": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "pmdSplit": {
+                "type": "number",
+                "minimum": 20,
+                "maximum": 80
               }
             },
             "additionalProperties": false

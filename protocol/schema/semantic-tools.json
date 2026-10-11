@@ -408,7 +408,7 @@
             "properties": {
               "unitScale": {
                 "type": "number",
-                "minimum": 1e-06,
+                "minimum": 0.000001,
                 "maximum": 1000
               },
               "upAxis": {
@@ -906,7 +906,7 @@
             "properties": {
               "unitScale": {
                 "type": "number",
-                "minimum": 1e-06,
+                "minimum": 0.000001,
                 "maximum": 1000
               },
               "upAxis": {
@@ -2362,6 +2362,12 @@
                   "type": "object",
                   "additionalProperties": true
                 }
+              },
+              "pmd": {
+                "$ref": "project-document.schema.json#/properties/editor/properties/pmd"
+              },
+              "pmdSplit": {
+                "$ref": "project-document.schema.json#/properties/editor/properties/pmdSplit"
               }
             }
           }
@@ -2760,8 +2766,8 @@
           },
           "value": {
             "type": "number",
-            "minimum": -1000000.0,
-            "maximum": 1000000.0
+            "minimum": -1000000,
+            "maximum": 1000000
           },
           "duration": {
             "type": "number",

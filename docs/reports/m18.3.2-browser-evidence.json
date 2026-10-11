@@ -1,0 +1,159 @@
+{
+  "criteria": [
+    "PMD begins closed, opens in center and loads recursive section documents",
+    "Controlled model proposes linked documents in two requests; source PMD and gameplay remain unchanged",
+    "Human-only definition and milestone approvals, explicit optional critique and finalization work inside editable preview",
+    "Apply preserves PMD focus, split persists, ZIP round-trip preserves linked text identities and approvals",
+    "More info copy icon copies selected task requests, usage and actual tool outcomes",
+    "Actual Create creates an editable empty-root Player; Freeze rotation toggles, Audio Source controls stay inside the card and Scene direction arrows are visible",
+    "Camera and directional-light direction guides update during Move and Rotate before commit; PMD user prompt appears immediately and assistant Markdown renders without duplicate messages",
+    "Hierarchy-to-Project prefab capture, Project-to-Hierarchy instantiation, blue linked names, locked children and Desassemble",
+    "REAL .NET compilation and browser execution of all four physical Player controllers: WASD, grounded Space jump, normalized RPG movement and mouse-driven 3D rotation/orbit",
+    "Actual editor Play settles Player on the physical floor, native keyboard moves and jumps via grounded ray, native canvas click captures pointer and Escape releases it; Stop restores Scene"
+  ],
+  "errors": [],
+  "transport": "Controlled Responses adapter; no billable calls. Compiler/runtime checks use real .NET when available.",
+  "guideCheck": {
+    "guideId": "entity://01334656-5b79-4d05-987d-252df007f643",
+    "toolName": "rotate"
+  },
+  "controllers": [
+    {
+      "name": "3D First Person Player",
+      "velocity": [
+        3.885729807284854,
+        6,
+        -3.146601955249187
+      ],
+      "rotation": [
+        0,
+        -0.052335956242943835,
+        0,
+        0.9986295347545739
+      ],
+      "camera": {
+        "position": [
+          0.036584962143678706,
+          1.65,
+          -0.34808266337889565
+        ],
+        "rotation": [
+          0.02614107370998589,
+          -0.05231802201785904,
+          0.0013699956212146517,
+          0.9982873293543426
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "halfTurnCamera": {
+        "position": [
+          4.286263797015736e-17,
+          1.65,
+          0.35
+        ],
+        "rotation": [
+          0,
+          -1,
+          0,
+          6.123233995736766e-17
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "halfTurnPlayer": {
+        "position": [
+          0,
+          1,
+          0
+        ],
+        "rotation": [
+          0,
+          -1,
+          0,
+          6.123233995736766e-17
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "3D Third Person Player",
+      "velocity": [
+        3.885729807284854,
+        6,
+        -3.146601955249187
+      ],
+      "rotation": [
+        0,
+        -0.052335956242943835,
+        0,
+        0.9986295347545739
+      ],
+      "camera": {
+        "position": [
+          -0.40897706221458785,
+          2.5316467632710373,
+          3.891156823326854
+        ],
+        "rotation": [
+          -0.10438521064158734,
+          -0.05204925439864352,
+          -0.005470597079718073,
+          0.9931589376748559
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "2D Platform Player",
+      "velocity": [
+        5,
+        6,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "2D RPG Player",
+      "velocity": [
+        2.82842712474619,
+        2.82842712474619,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "passed": true,
+  "provenance": {
+    "run": 38178310964,
+    "ci": "CI241",
+    "commit": "b203852fb1832b3a84d0934604ee4d1902c00d21",
+    "tree": "36fb15cd16eff02fe18eb298af8226e7b4126d21",
+    "artifactId": 11717071811,
+    "artifactSha256": "5ccd648630d1c743d1c58edcffa2851470561866beea0e0ad25d665166742665"
+  }
+}

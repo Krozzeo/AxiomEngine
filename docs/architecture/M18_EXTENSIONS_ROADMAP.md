@@ -1,6 +1,6 @@
 ## M18.3.2 correction before GitHub integration
 
-Repair PMD repeated-question behavior: use authoritative current document/chat and complete decision context; record firm answers once, keep only unresolved questions, separate settled answers from one human phase approval. Optimistic PMD prompt display, shared safe Markdown and composer styling, live camera/light direction guides and shadow-enabled new lights. No scope weight added. M18.4 remains next, not started.
+Complete, 100%; CI241 passed 33/33 jobs, ten current browser criteria. PMD and AI Assistant share the session-token meter. Repaired PMD repeated-question behavior: use authoritative current document/chat and complete decision context; record firm answers once, keep only unresolved questions, separate settled answers from one human phase approval. Optimistic PMD prompt display, shared safe Markdown and composer styling, live camera/light direction guides and shadow-enabled new lights. No scope weight added. M18.4 remains next, not started.
 
 # M18 extensions — approved MVP roadmap
 

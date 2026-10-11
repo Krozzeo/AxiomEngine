@@ -1,6 +1,6 @@
 # M18.3.2 — PMD conversation and live feedback
 
-Version 0.0.40. Correction progress: implementation complete, CI validation pending. Expanded MVP estimate remains 94%; M18.4 has not started.
+Version 0.0.40. Correction progress: complete, 100%; CI241 passed all 33 jobs. Expanded MVP estimate remains 94%; M18.4 has not started.
 
 PMD previously mixed old in-memory conversational history with the current document. Its compact context omitted decisions after the first 16 and questions after eight. Instructions allowed approval in chat while the host only accepted overall human workflow approval. The assistant is now explicitly told to record firm answers as settled proposed decisions, remove answered questions, ask at most three genuinely new essential questions, avoid repeated confirmations, and conclude definition with one Approve definition action. The host still prevents invented approvals. PMD requests take history from the current branch document and include every decision/question plus current phase approvals. Other assistant context retains compact limits.
 
@@ -9,3 +9,11 @@ PMD and Assistant share the same session-token meter, including accumulated usag
 Renderer interaction exposes the same provisional world transforms used for drawing. Camera and directional-light guides therefore follow movement, rotation, multi-selection and parent-child transforms before mouse release. New Point/Directional lights and Light components request shadows by default; existing authored false values stay false. 2D lighting has no Request Shadows property and is unchanged.
 
 Automated regressions cover safe formatting, complete settled-answer context, document phase/history changes and public light defaults. Browser acceptance adds immediate PMD messages, Markdown and camera/light Move/Rotate guides before commit. No billable provider requests are made. Local browser runtime is unavailable; CI supplies actual browser and .NET checks. Live model question quality must be checked using the user account; instruction/context fixes cannot guarantee a particular external model response.
+
+Local validation: 302/302 non-server tests passed, including formatting/usage and PMD continuity. Cached-Wasm build, 88-tool catalog, bindings, 18 schemas, architecture rules and daemon parity passed. Seven local server rebuild tests cannot run without Cargo; the complete Node, Rust, real .NET and browser suites run in CI241.
+
+The no-project startup regression found during acceptance is corrected: an empty project ID no longer matches a null optimistic prompt. A pure regression verifies empty startup, project isolation, immediate display, permanent reconciliation and returning to MAIN. Browser M13.1/M16.1 additionally exercise initial panel mounting. CI241 core passes 309 Node tests on Linux/Windows, 39 Rust tests and ten current browser criteria with zero page errors. All 33 CI241 jobs passed, including real .NET Windows development and Linux development/AOT.
+
+Acceptance artifact: `milestone-browser-evidence-m18-3`, ID 11717071811, SHA-256 `5ccd648630d1c743d1c58edcffa2851470561866beea0e0ad25d665166742665`. [Structured browser evidence](m18.3.2-browser-evidence.json) records the ten checks and actual controller results. Executable commit `b203852fb1832b3a84d0934604ee4d1902c00d21`, tree `36fb15cd16eff02fe18eb298af8226e7b4126d21`; [CI241](https://github.com/Krozzeo/AxiomEngine/actions/runs/38178310964). Final closure only changes documentation/evidence, not tested implementation.
+
+Closure: M18.3.2 / 0.0.40 is complete. PR #30 remains draft/open/unmerged, stacked on M18.3.1. Only live-account model question quality and billed usage require user checking. Continue the existing PMD, answer once, and use Approve definition once the definition is concluded. Expanded MVP remains 94% (122/130); next M18.4 GitHub integration, then M19 hardening.

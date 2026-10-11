@@ -1,3 +1,7 @@
+## M18.3.2 correction before GitHub integration
+
+Complete, 100%; CI241 passed 33/33 jobs, ten current browser criteria. PMD and AI Assistant share the session-token meter. Repaired PMD repeated-question behavior: use authoritative current document/chat and complete decision context; record firm answers once, keep only unresolved questions, separate settled answers from one human phase approval. Optimistic PMD prompt display, shared safe Markdown and composer styling, live camera/light direction guides and shadow-enabled new lights. No scope weight added. M18.4 remains next, not started.
+
 # M18 extensions — approved MVP roadmap
 
 Scope decision: 2026-10-09. M18 0.0.32 remains complete; its two repair demos are deterministic policies, not a connected model. The following ordered milestones precede M19 MVP Hardening. AI Master remains visible, disabled, labelled `(planned)` and outside MVP implementation.

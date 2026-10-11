@@ -5,8 +5,6 @@ public sealed class AxiomFirstPersonPlayer : MonoBehaviour {
  [Title("Movement")] [Range(0.1,30)] public double Speed = 5;
  [Range(0,20)] public double JumpSpeed = 6;
  [Title("Look")] [Range(0.01,2)] public double MouseSensitivity = 0.15;
- [Range(1,12)] public double CameraDistance = 4;
- [Range(0,3)] public double CameraHeight = 0.7;
  [ReadOnly] public bool Grounded;
  private Entity camera;
  private double yaw, pitch;

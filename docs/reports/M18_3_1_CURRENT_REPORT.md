@@ -1,6 +1,6 @@
 # M18.3.1 — Create, Players and task-chain repair
 
-Release 0.0.39. Validation in progress; this report is closed only after the executable CI checks pass. This correction adds no roadmap weight: expanded MVP remains approximately 94% (122/130). Next milestones remain M18.4 GitHub integration and M19 hardening.
+M18.3.1 (0.0.39) is complete: 9/9 browser acceptance groups, 100%; expanded MVP approximately 94% (122/130 acceptance-weight points). CI234 passes all 33 jobs at executable commit `5eb3924f9b0d716dc29c052eb583db3a2189ec65` (tree `fd7837a7009bcc16c30dffec58b659aedbcf3149`): 303 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and nine browser criteria with zero page errors. This correction adds no roadmap weight. Next milestones remain M18.4 GitHub integration and M19 hardening.
 
 The public command bus omitted scene.example.create even though the workspace implemented it. The route is now registered and regression tests call the real public bus for all four Players and nine implemented component presets. Audio Source creates a valid silent replaceable WAV when no audio asset exists; adding a listener disables the prior active listener. Planned Video and 3D Particles remain disabled.
 
@@ -16,4 +16,8 @@ The host supplies exact private schemas, actual movement/physics SDK contracts a
 
 ## Validation
 
-Pending current CI closure. Local cached-Wasm build, schemas, tool catalog, bindings, architecture and daemon parity pass. Browser acceptance exercises real .NET Player workers, actual Create menu, Freeze rotation, prefab capture/order/JSON IDE, PMD layout, keyboard and detached pointer capture. No billable model requests are made by these automated checks.
+All 33 CI234 jobs pass. Local cached-Wasm build, 296 non-server tests, schemas, tool catalog, bindings, architecture and daemon parity pass. Browser acceptance exercises real .NET Player workers, actual Create menu, Freeze rotation, prefab capture/order/JSON IDE, PMD layout, keyboard and detached pointer capture. No billable model requests are made by these automated checks.
+
+The browser test verifies a first-person 180-degree turn, third-person gradual facing, real pointer capture and camera response in detached Game, Escape release and shared Stop. Actual Inspector interaction reproduced the Freeze rotation bug: draw(false) restored the checkbox immediately before submit. Checkbox population now follows the existing updateFields guard; a local Inspector regression and native browser clicks pass. External test mutations synchronize to the rendered editor revision before drag/drop.
+
+Closure evidence: https://github.com/Krozzeo/AxiomEngine/actions/runs/38149587978. Browser artifact SHA256: `76de6cc0b9a0f2938709dd1c638813d23f592858bc93d2035c87efd75e052b56`. PMD and first-person screenshots were visually reviewed; structured evidence is in m18.3.1-browser-evidence.json. PR #29 remains draft/open/unmerged, stacked on #28. Documentation-only closure does not change the tested executable. Local Chromium cannot initialize; actual browser/.NET verification ran in CI. Only live-account model quality and billed token consumption require user measurement; controlled regressions establish bounded recovery and honest runtime checks.

@@ -1,6 +1,6 @@
 # M18.3.1 demo guide
 
-Run `npm.cmd run demo`, then `npm.cmd run dev`. Open the new projects labelled M18.3.1. Existing projects are preserved. .NET 10 SDK and wasm-tools are required for the four physical Player scripts.
+Run `npm.cmd run demo`, then `npm.cmd run dev`. Open the new projects labelled M18.3.1. Existing projects are preserved. Open the newly generated M18.3.1 demos to test the corrected controller sources and root hierarchy; physical scripts in previously saved projects keep their existing content. .NET 10 SDK and wasm-tools are required for the four physical Player scripts.
 
 - **PMD Planning Workshop**: open PMD, read/expand linked brief sections and drag the divider. Document contains import/export, history and editing operations. The chat composer expands to ten lines. Assisted requests require your configured OpenAI account; demo creation makes no paid requests.
 - **3D First Person**: Play, click Game to capture mouse; WASD/arrows move, mouse looks, Space jumps, Escape releases capture. Turn 180 degrees: view follows the body, without looking back at its neck. Repeat with Game detached while Scene stays visible. Stop releases capture.

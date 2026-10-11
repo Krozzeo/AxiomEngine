@@ -1,0 +1,152 @@
+{
+  "criteria": [
+    "PMD begins closed, opens in center and loads recursive section documents",
+    "Controlled model proposes linked documents in two requests; source PMD and gameplay remain unchanged",
+    "Human-only definition and milestone approvals, explicit optional critique and finalization work inside editable preview",
+    "Apply preserves PMD focus, split persists, ZIP round-trip preserves linked text identities and approvals",
+    "More info copy icon copies selected task requests, usage and actual tool outcomes",
+    "Actual Create creates an editable empty-root Player; Freeze rotation toggles, Audio Source controls stay inside the card and Scene direction arrows are visible",
+    "Hierarchy-to-Project prefab capture, Project-to-Hierarchy instantiation, blue linked names, locked children and Desassemble",
+    "REAL .NET compilation and browser execution of all four physical Player controllers: WASD, grounded Space jump, normalized RPG movement and mouse-driven 3D rotation/orbit",
+    "Actual editor Play settles Player on the physical floor, native keyboard moves and jumps via grounded ray, native canvas click captures pointer and Escape releases it; Stop restores Scene"
+  ],
+  "errors": [],
+  "transport": "Controlled Responses adapter; no billable calls. Compiler/runtime checks use real .NET when available.",
+  "controllers": [
+    {
+      "name": "3D First Person Player",
+      "velocity": [
+        3.885729807284854,
+        6,
+        -3.146601955249187
+      ],
+      "rotation": [
+        0,
+        -0.052335956242943835,
+        0,
+        0.9986295347545739
+      ],
+      "camera": {
+        "position": [
+          0.036584962143678706,
+          1.65,
+          -0.34808266337889565
+        ],
+        "rotation": [
+          0.02614107370998589,
+          -0.05231802201785904,
+          0.0013699956212146517,
+          0.9982873293543426
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "halfTurnCamera": {
+        "position": [
+          4.286263797015736e-17,
+          1.65,
+          0.35
+        ],
+        "rotation": [
+          0,
+          -1,
+          0,
+          6.123233995736766e-17
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "halfTurnPlayer": {
+        "position": [
+          0,
+          1,
+          0
+        ],
+        "rotation": [
+          0,
+          -1,
+          0,
+          6.123233995736766e-17
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "3D Third Person Player",
+      "velocity": [
+        3.885729807284854,
+        6,
+        -3.146601955249187
+      ],
+      "rotation": [
+        0,
+        -0.052335956242943835,
+        0,
+        0.9986295347545739
+      ],
+      "camera": {
+        "position": [
+          -0.40897706221458785,
+          2.5316467632710373,
+          3.891156823326854
+        ],
+        "rotation": [
+          -0.10438521064158734,
+          -0.05204925439864352,
+          -0.005470597079718073,
+          0.9931589376748559
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "2D Platform Player",
+      "velocity": [
+        5,
+        6,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "2D RPG Player",
+      "velocity": [
+        2.82842712474619,
+        2.82842712474619,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "passed": true,
+  "release": "M18.3.1 / 0.0.39",
+  "testedCommit": "5eb3924f9b0d716dc29c052eb583db3a2189ec65",
+  "testedTree": "fd7837a7009bcc16c30dffec58b659aedbcf3149",
+  "ciRun": "https://github.com/Krozzeo/AxiomEngine/actions/runs/38149587978",
+  "artifactSha256": "76de6cc0b9a0f2938709dd1c638813d23f592858bc93d2035c87efd75e052b56",
+  "detachedPointer": "Integrated browser test additionally captures native pointer lock in the detached Game canvas, observes camera target change after mouse motion, releases with Escape and Stops the shared runtime."
+}

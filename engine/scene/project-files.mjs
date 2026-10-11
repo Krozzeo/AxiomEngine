@@ -49,13 +49,13 @@ export function editProjectFiles(scene,data){
  }else if(data.action==='create'){
   destination(data.path);if(exists(data.path))throw Error('A file with that name already exists');
   const kind=data.kind;if(!['folder','script','json'].includes(kind))throw Error('Create folder, C# script or JSON file');
-  files.push({path:data.path,kind,...(kind==='script'?{text:scriptTemplate(leafName(data.path))}:kind==='json'?{text:'{}\n'}:{})});
+  files.push({path:data.path,kind,...(kind==='script'?{text:scriptTemplate(leafName(data.path))}:kind==='json'?{text:typeof data.text==='string'?data.text:'{}\n'}:{})});
  }else if(data.action==='move'){
   const source=lookup(data.path);if(!source||fileRoots.includes(source.path))throw Error('Select a movable file or folder');
   destination(data.to);if(data.to===data.path)return files;if(data.to.startsWith(data.path+'/'))throw Error('Cannot move a folder inside itself');
   const moving=files.filter(f=>f.path===data.path||f.path.startsWith(data.path+'/'));
   for(const f of moving){const next=data.to+f.path.slice(data.path.length);if(files.some(other=>!moving.includes(other)&&other.path.toLowerCase()===next.toLowerCase()))throw Error('Destination already exists');}
-  for(const f of moving){const old=leafName(f.path),oldPath=f.path;f.path=data.to+f.path.slice(data.path.length);for(const e of scene.entities)for(const c of e.scriptComponents??[])if(c.path===oldPath)c.path=f.path;if(scene.script?.entryPath===oldPath)scene.script.entryPath=f.path;if(f.kind==='script'&&old!==leafName(f.path)){const next=leafName(f.path).replace(/\.cs$/i,'');scriptTemplate(next);const previous=old.replace(/\.cs$/i,'');f.text=f.text.replace(new RegExp('\\b'+previous+'\\b','g'),next);}}
+  for(const f of moving){const old=leafName(f.path),oldPath=f.path;f.path=data.to+f.path.slice(data.path.length);for(const e of scene.entities)if(e.prefab?.path===oldPath)e.prefab.path=f.path;for(const definition of files.filter(v=>v.kind==='json'&&v.path.endsWith('.prefab.json'))){const prefab=JSON.parse(definition.text);if(prefab.format!=='axiom-prefab')continue;for(const entity of prefab.entities??[])for(const component of entity.scriptComponents??[])if(component.path===oldPath)component.path=f.path;definition.text=JSON.stringify(prefab,null,2)+'\n';}for(const e of scene.entities)for(const c of e.scriptComponents??[])if(c.path===oldPath)c.path=f.path;if(scene.script?.entryPath===oldPath)scene.script.entryPath=f.path;if(f.kind==='script'&&old!==leafName(f.path)){const next=leafName(f.path).replace(/\.cs$/i,'');scriptTemplate(next);const previous=old.replace(/\.cs$/i,'');f.text=f.text.replace(new RegExp('\\b'+previous+'\\b','g'),next);}}
  }else if(data.action==='copy'){
   const selected=roots(data.paths??[]);if(!selected.length)throw Error('Select project files to copy');destination(data.to?data.to+'/copy': 'copy');
   for(const path of selected){const source=lookup(path);if(!source)throw Error('Copied file no longer exists');let target=(data.to?data.to+'/':'')+leafName(path),n=1;const ext=source.kind==='folder'?'':(leafName(path).match(/\.[^.]+$/)?.[0]??'');const stem=leafName(path).slice(0,ext? -ext.length:undefined);while(exists(target))target=(data.to?data.to+'/':'')+stem+'_Copy'+n+++ext;if(target===path||target.startsWith(path+'/'))throw Error('Cannot copy a folder inside itself');
@@ -66,6 +66,7 @@ export function editProjectFiles(scene,data){
   const deleting=files.filter(f=>paths.some(p=>f.path===p||f.path.startsWith(p+'/'))),remaining=files.filter(f=>!deleting.includes(f));
   const removedAssets=new Set(deleting.filter(f=>f.kind==='asset'&&!remaining.some(r=>r.assetId===f.assetId)).map(f=>f.assetId));
   for(const id of removedAssets){if(scene.entities.some(e=>e.renderable?.assetId===id||e.audioSource?.assetId===id||e.tilemap?.assetId===id||e.lod?.levels.some(l=>l.assetId===id))||scene.assets?.some(a=>!removedAssets.has(a.id)&&(a.textureId===id||a.variant?.assetId===id)))throw Error('Asset is referenced by the scene; remove its components or dependents first');}
+  if(scene.entities.some(e=>e.prefab&&deleting.some(f=>f.path===e.prefab.path)))throw Error('Desassemble or delete prefab instances before deleting their Project prefab');
   if(scene.entities.some(e=>e.scriptComponents?.some(c=>deleting.some(f=>f.path===c.path))))throw Error('Remove Script components before deleting their source files');
   if(scene.script&&deleting.some(f=>f.kind==='script'&&f.text===scene.script.source)&&!remaining.some(f=>f.kind==='script'&&f.text===scene.script.source)){if(scene.script.attachments.length)throw Error('Detach the compiled script before deleting its source');delete scene.script;}
   if(removedAssets.size)scene.assets=scene.assets.filter(a=>!removedAssets.has(a.id));

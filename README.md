@@ -1,6 +1,7 @@
+<!-- Current release: M18.3 / 0.0.38; CI closure pending. -->
 # Axiom Engine
 
-M18.2.1 (0.0.37) is complete: 6/6 acceptance groups, 100%; expanded MVP remains approximately 88% (111/126). CI 219 passes all 32 jobs at executable commit `300d47405ee9bc0ec1c99e9dc131dd4733686831` (tree `761052eef1d16c1ea821b271a74a0c3f0c9a30eb`): 268 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and six new browser criteria with zero page errors.
+Previous release M18.2.1 (0.0.37) is complete: 6/6 acceptance groups, 100%; expanded MVP remains approximately 88% (111/126). CI 219 passes all 32 jobs at executable commit `300d47405ee9bc0ec1c99e9dc131dd4733686831` (tree `761052eef1d16c1ea821b271a74a0c3f0c9a30eb`): 268 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and six new browser criteria with zero page errors.
 
 The assistant receives the real physical-source/C# SDK contract, waits for compilation in the host, omits bundle manifests, stops repeated discovery/results, and requires current modified sources to compile before completion. False final build-success messages are withheld. Scene-only requests omit full C# instructions and a duplicate tool roster. Pending Preview stays visible in MAIN, active preview says Exit preview, Apply preserves panel focus, More info contains review/recovery/history, and all five configured limits support persistent Limitless. Obsolete Walking skeleton UI is removed. The inherited M14 cancellation test now cancels at a confirmed active frame boundary instead of racing a full run.
 
@@ -254,3 +255,7 @@ traces. The read-only `diagnostics.explain` API/MCP tool supports whyNotRendered
 whyNotColliding, whyAssetNotLoaded and whyScriptNotRunning. Deep trace is opt-in,
 bounded to 32 sampled frames and 30 seconds. See
 [contracts and limitations](docs/architecture/M8_DIAGNOSTICS_AND_EDITOR.md).
+
+## M18.3 delivery
+
+Assisted modular PMD and four linked prefab Players are implemented; real C# and browser CI closure is pending. Run `npm.cmd run demo:m18-3`. See [demo guide](demos/M18_3_GUIDE.md) and [current report](docs/reports/M18_3_CURRENT_REPORT.md). Next milestone: M18.4 GitHub integration.

@@ -115,6 +115,9 @@ public readonly record struct Entity(string Id, int Generation) {
  public void SetVelocity(Vec3 velocity) => Context.Velocity(this,velocity);
  public void Move(Vec3 delta) => SetPosition(Transform.Position+(Vector3)delta);
  public void SetPosition(Vec3 position) => Context.Move(this,position);
+ public void SetRotation(Quaternion rotation) => Context.Rotate(this,rotation);
+ public bool IsGrounded => Context.Grounded.Contains(Id);
+ public Entity FindChildWithCamera() => Context.FindCamera(this);
  public string? CurrentAnimation => Context.AnimationState(this,"currentAnimation");
  public string? WhyAnimationNotPlaying => Context.AnimationState(this,"whyAnimationNotPlaying");
  public void SetAnimationParameter(string name,double value) => Context.Animate(this,"parameter",name,value,0);
@@ -140,6 +143,7 @@ public static class ReplayRandom {
  public static double NextDouble() {state=unchecked(state*1664525u+1013904223u);return state/4294967296.0;}
 }
 public static class Input {
+ public static Vector2 MouseDelta => Context.MouseDelta;
  public static bool IsDown(string code) => Context.Keys.Contains(code);
  public static double Axis(string negative, string positive) => (IsDown(positive)?1:0)-(IsDown(negative)?1:0);
 }
@@ -149,7 +153,7 @@ public static class Debug {
  public static void LogError(object? value)=>Axiom.Gameplay.Log.Info("Error: "+value);
 }
 public static class Log {public static void Info(string message) => Context.Log(message);}
-internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0);
+internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0,Quaternion? Rotation=null);
 internal static class Context {
  internal static int Generation;
  internal static bool DeterministicSpawn;
@@ -160,6 +164,10 @@ internal static class Context {
  internal static readonly Dictionary<string,JsonElement> AnimationStates = new();
  internal static readonly HashSet<string> AudioSources = new();
  internal static readonly HashSet<string> Keys = new();
+ internal static readonly HashSet<string> Grounded = new();
+ internal static readonly Dictionary<string,string?> Parents = new();
+ internal static readonly HashSet<string> Cameras = new();
+ internal static Vector2 MouseDelta;
  internal static readonly List<Operation> Operations = new();
  internal static int Spawned,Logs;
  internal static Transform Read(Entity entity) {
@@ -194,6 +202,12 @@ internal static class Context {
  private static void Position(Vec3 value) {
   if(!double.IsFinite(value.X)||!double.IsFinite(value.Y)||!double.IsFinite(value.Z)||Math.Max(Math.Abs(value.X),Math.Max(Math.Abs(value.Y),Math.Abs(value.Z)))>1000000)throw new ArgumentException("AX_SCRIPT_0003: invalid position");
  }
+ internal static Entity FindCamera(Entity entity) {
+  _=Read(entity);foreach(var id in Cameras){var parent=Parents.GetValueOrDefault(id);for(var depth=0;parent!=null&&depth<32;depth++){if(parent==entity.Id)return new Entity(id,Generation);parent=Parents.GetValueOrDefault(parent);}}throw new InvalidOperationException("AX_SCENE_0001: Player needs a child Camera");
+ }
+ internal static void Rotate(Entity entity,Quaternion rotation) {
+  var value=Read(entity);var length=Math.Sqrt(rotation.X*rotation.X+rotation.Y*rotation.Y+rotation.Z*rotation.Z+rotation.W*rotation.W);if(!double.IsFinite(length)||length<1e-9)throw new ArgumentException("AX_SCRIPT_0003: invalid rotation");var normalized=new Quaternion(rotation.X/length,rotation.Y/length,rotation.Z/length,rotation.W/length);Add(new("rotation",entity.Id,null,default,null,Rotation:normalized));Entities[entity.Id]=value with{Rotation=normalized};
+ }
  internal static void Move(Entity entity,Vec3 position) {
   var value=Read(entity);Position(position);Add(new("move",entity.Id,null,position,null));Entities[entity.Id]=value with{Position=position};
  }
@@ -207,15 +221,19 @@ internal static class Context {
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
-  Entities.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Operations.Clear();Logs=0;
+  Entities.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {
    if(Entities.Count>=Limits.Entities)throw new ArgumentException("Entity limit exceeded");
+   if(e.TryGetProperty("grounded",out var grounded)&&grounded.ValueKind==JsonValueKind.True)Grounded.Add(e.GetProperty("id").GetString()!);
+   Parents[e.GetProperty("id").GetString()!]=e.TryGetProperty("parentId",out var parent)?parent.GetString():null;
+   if(e.TryGetProperty("camera",out _))Cameras.Add(e.GetProperty("id").GetString()!);
    if(e.TryGetProperty("audioSource",out _))AudioSources.Add(e.GetProperty("id").GetString()!);
    if(e.TryGetProperty("animator",out var animator))Animators.Add(e.GetProperty("id").GetString()!,animator.Clone());
    if(e.TryGetProperty("animationState",out var animationState))AnimationStates.Add(e.GetProperty("id").GetString()!,animationState.Clone());
    if(e.TryGetProperty("rigidBody",out var body))Bodies.Add(e.GetProperty("id").GetString()!,RigidBody.Read(body));
    Entities.Add(e.GetProperty("id").GetString()!,Transform.Read(e.GetProperty("transform")));
   }
+  if(value.TryGetProperty("mouseDelta",out var mouse)){var x=mouse[0].GetDouble();var y=mouse[1].GetDouble();if(!double.IsFinite(x)||!double.IsFinite(y)||Math.Abs(x)>10000||Math.Abs(y)>10000)throw new ArgumentException("Invalid mouse delta");MouseDelta=new(x,y);}
   foreach(var key in value.GetProperty("keys").EnumerateArray()) {if(Keys.Count>=64)throw new ArgumentException("Input limit exceeded");Keys.Add(key.GetString()!);}
  }
  internal static string Output(string? error=null,Action<Utf8JsonWriter>? fields=null) {
@@ -227,7 +245,8 @@ internal static class Context {
     writer.WriteStartObject();writer.WriteString("kind",op.Kind);writer.WriteString("id",op.Id);
     if(op.Template!=null)writer.WriteString("template",op.Template);
     if(op.Kind=="animation"||op.Kind=="audio"){writer.WriteString("action",op.Action);if(op.Name!=null)writer.WriteString("name",op.Name);writer.WriteNumber("value",op.Value);writer.WriteNumber("duration",op.Duration);}
-    if(op.Kind!="log"&&op.Kind!="animation"&&op.Kind!="audio"){writer.WritePropertyName("position");op.Position.Write(writer);}
+    if(op.Rotation is Quaternion rotation){writer.WritePropertyName("rotation");writer.WriteStartArray();writer.WriteNumberValue(rotation.X);writer.WriteNumberValue(rotation.Y);writer.WriteNumberValue(rotation.Z);writer.WriteNumberValue(rotation.W);writer.WriteEndArray();}
+    if(op.Kind!="rotation"&&op.Kind!="log"&&op.Kind!="animation"&&op.Kind!="audio"){writer.WritePropertyName("position");op.Position.Write(writer);}
     if(op.Message!=null)writer.WriteString("message",op.Message);
     writer.WriteEndObject();
    }

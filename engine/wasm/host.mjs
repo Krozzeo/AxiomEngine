@@ -68,6 +68,11 @@ export async function loadKernel(bytes) {
     stepPhysics(count){return physics.step(count);},
     raycast(args){return physics.raycast(args);},
     setVelocities(values){physics.velocities(values);},
+    setRotations(rotations){
+      if(disposed||!compiled)throw new Error('AX_WASM_0003: missing compiled scene');
+      for(const [entityId,rotation]of rotations){const e=compiled.scene.entities.find(e=>e.id===entityId);if(!e||!Array.isArray(rotation)||rotation.length!==4||rotation.some(v=>!Number.isFinite(v))||Math.abs(Math.hypot(...rotation)-1)>1e-5)throw new Error('AX_WASM_0007: invalid runtime rotation');}
+      for(const [entityId,rotation]of rotations){const e=compiled.scene.entities.find(e=>e.id===entityId);const world={...e.transform,rotation:[...rotation]};compiled.localScene.entities.find(e=>e.id===entityId).transform=localTransform(compiled.localScene.entities,entityId,world);e.transform.rotation=[...rotation];physics.transforms([[entityId,world]]);for(const draw of compiled.draws.filter(d=>d.entityId===entityId))api.axiom_scene_rotation(id,draw.handle,...rotation);}
+    },
     setPositions(positions) {
       if(disposed||!compiled)throw new Error("AX_WASM_0003: missing compiled scene");
       for(const [entityId,position]of positions) {

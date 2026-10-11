@@ -1,3 +1,7 @@
+# Current work — M18.3 / 0.0.38
+
+Implementation of assisted PMD, source-readiness failure gate, More info copy and linked prefab Players is complete; release awaits real C# and browser CI. Read docs/reports/M18_3_CURRENT_REPORT.md and demos/M18_3_GUIDE.md first. Do not claim closure from local unit checks or merge automatically. Previous closure below is historical.
+
 # Axiom Engine — context-free AI handoff
 
 M18.2.1 (0.0.37) is complete: 6/6 acceptance groups, 100%; expanded MVP remains approximately 88% (111/126). CI 219 passes all 32 jobs at executable commit `300d47405ee9bc0ec1c99e9dc131dd4733686831` (tree `761052eef1d16c1ea821b271a74a0c3f0c9a30eb`): 268 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and six new browser criteria with zero page errors.

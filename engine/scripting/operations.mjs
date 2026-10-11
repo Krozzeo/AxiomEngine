@@ -7,12 +7,13 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
  if(!packet||packet.generation!==generation)fail('stale runtime generation');
  if(packet.error)throw new Error('AX_SCRIPT_0004: '+String(packet.error).slice(0,4096));
  if(!Array.isArray(packet.operations)||packet.operations.length>LIMIT.operations)fail('operation limit exceeded');
- const candidate=structuredClone(scene),logs=[],audio=[] ,animations=[],positions=new Map(),velocities=new Map();let changedTopology=false;
+ const candidate=structuredClone(scene),logs=[],audio=[] ,animations=[],positions=new Map(),rotations=new Map(),velocities=new Map();let changedTopology=false;
  const entities=new Map(candidate.entities.map(e=>[e.id,e]));
  for(const op of packet.operations) {
   if(op.kind==='log') {if(typeof op.message!=='string'||op.message.length>2048||logs.length>=LIMIT.logs)fail('invalid log');logs.push(op.message);continue;}
   if(op.kind==='audio'){if(!entities.get(op.id)?.audioSource||!['play','pause','resume','stop','volume'].includes(op.action)||op.action==='volume'&&(!Number.isFinite(op.value)||op.value<0||op.value>1))fail('invalid audio source/action/volume');audio.push({entityId:op.id,action:op.action,value:op.value});continue;}
   if(op.kind==='animation'){const e=entities.get(op.id),a=e?.animator;if(!a||!['pause','resume','state','parameter'].includes(op.action))fail('invalid Animator target/action');if(op.action==='state'&&(!a.states.some(s=>s.name===op.name)||!Number.isFinite(op.duration)||op.duration<0||op.duration>5))fail('invalid animation state/fade');if(op.action==='parameter'&&(!a.parameters.some(p=>p.name===op.name)||!Number.isFinite(op.value)||Math.abs(op.value)>1e6))fail('invalid animation parameter');animations.push({entityId:op.id,action:op.action,name:op.name,value:op.value,duration:op.duration});continue;}
+  if(op.kind==='rotation'){const e=entities.get(op.id),q=op.rotation;if(!e||!Array.isArray(q)||q.length!==4||q.some(v=>!Number.isFinite(v))||Math.abs(Math.hypot(...q)-1)>1e-5)fail('invalid rotation');e.transform.rotation=[...q];rotations.set(op.id,[...q]);continue;}
   if(!Array.isArray(op.position)||op.position.length!==3||op.position.some(v=>!Number.isFinite(v)||Math.abs(v)>1000000))fail('invalid position');
   if(op.kind==='spawn') {
    const template=entities.get(op.template);
@@ -29,5 +30,5 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
  if(packet.scriptValues!==undefined){if(!Array.isArray(packet.scriptValues)||packet.scriptValues.length>32)fail('Invalid script field snapshots');const seen=new Set();for(const snapshot of packet.scriptValues){const key=snapshot.entityId+'|'+snapshot.path,component=entities.get(snapshot.entityId)?.scriptComponents?.find(c=>c.path===snapshot.path);if(!component||seen.has(key)||!snapshot.values||typeof snapshot.values!=='object'||Array.isArray(snapshot.values))fail('Invalid script component snapshot');seen.add(key);const meta=scriptFields(candidate,snapshot.path);for(const[name,value]of Object.entries(snapshot.values)){const f=meta.fields.find(f=>f.name===name);if(!f)fail('Unknown runtime field');component.values[name]=scriptValue({...f,minimum:undefined,maximum:undefined},value);}}}
  if(candidate.entities.filter(e=>e.collider).length>256)fail("physics body capacity exceeded");
  if(candidate.entities.filter(e=>e.audioSource).length>32)fail('audio voice capacity exceeded');
- return {scene:candidate,logs,audio,animations,positions,velocities,spawned,changedTopology};
+ return {scene:candidate,logs,audio,animations,positions,rotations,velocities,spawned,changedTopology};
 }

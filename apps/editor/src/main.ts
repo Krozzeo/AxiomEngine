@@ -1,3 +1,4 @@
+import {mountPmdEditor} from './pmd-editor.mjs';
 import {mountAiAssistant} from './ai-assistant.mjs';
 import {mountAutonomyEditor} from './autonomy-editor.mjs';
 import {mountEditorMenu} from './editor-menu.mjs';
@@ -150,6 +151,7 @@ async function boot() {
     await initializeWebGpu();
     const stopReplay=mountReplayEditor({document,getRenderer:()=>renderer,getSnapshot:()=>projectEditor.snapshot(),reportError});addEventListener('pagehide',stopReplay,{once:true});
     const stopAi=mountAiMenu({document,getSnapshot:()=>projectEditor.snapshot(),save:value=>projectEditor.saveAiSettings(value),reportError});addEventListener('pagehide',stopAi,{once:true});
+    const stopPmd=mountPmdEditor({document,api,getSnapshot:()=>projectEditor.snapshot(),save:(value,options)=>projectEditor.saveAiSettings(value,options),openPanel:(id,options)=>projectEditor.openPanel(id,options),reportError});addEventListener('pagehide',stopPmd,{once:true});
     const stopAssistant=mountAiAssistant({document,api,send:sendCommand,prepareSwitch:()=>projectEditor.flushDraftSources(),synchronize:(snapshot,options)=>projectEditor.synchronize(snapshot,options),getSnapshot:()=>projectEditor.snapshot(),openPanel:(id,options)=>projectEditor.openPanel(id,options),reportError});addEventListener('pagehide',stopAssistant,{once:true});
     const stopAutonomy=mountAutonomyEditor({document,getSnapshot:()=>projectEditor.snapshot(),send:sendCommand,reportError});addEventListener('pagehide',stopAutonomy,{once:true});
     const stopTests=mountGameTestEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,save:values=>projectEditor.saveTestSuites(values),reportError});addEventListener('pagehide',stopTests,{once:true});

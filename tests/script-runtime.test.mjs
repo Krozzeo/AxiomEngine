@@ -22,3 +22,4 @@ test('runtime kills unresponsive workers and rejects late or overlapping request
  const replacement=new ScriptRuntime({WorkerClass:FakeWorker});const next=replacement.request({});
  worker.onmessage({data:{id:worker.sent.id,result:{generation:2,operations:[]}}});assert.equal((await next).generation,2);replacement.dispose();
 });
+test('rotation operations validate normalized quaternions atomically and preserve authored transforms',()=>{const result=applyScriptOperations(scene,{generation:1,operations:[{kind:'rotation',id,rotation:[0,Math.sin(.2),0,Math.cos(.2)]}]},1);assert.equal(result.rotations.size,1);assert.notDeepEqual(result.scene.entities[0].transform.rotation,scene.entities[0].transform.rotation);assert.throws(()=>applyScriptOperations(scene,{generation:1,operations:[{kind:'rotation',id,rotation:[0,0,0,0]}]},1),/invalid rotation/);assert.deepEqual(scene.entities[0].transform.rotation,[0,0,0,1]);});

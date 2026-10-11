@@ -236,6 +236,11 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "prefabAction": {
+            "enum": [
+              "disassemble"
+            ]
           }
         },
         "required": [
@@ -3417,7 +3422,11 @@
               "UI Button",
               "2D Light",
               "Particles 2D",
-              "Camera"
+              "Camera",
+              "3D First Person Player",
+              "3D Third Person Player",
+              "2D Platform Player",
+              "2D RPG Player"
             ]
           },
           "parentId": {
@@ -3791,6 +3800,10 @@
               "type": "string",
               "pattern": "^entity://[0-9a-f-]{36}$"
             }
+          },
+          "prefabPath": {
+            "type": "string",
+            "maxLength": 240
           }
         },
         "required": [

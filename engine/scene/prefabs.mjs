@@ -22,6 +22,8 @@ export function remapEntityReferences(value,ids){if(typeof value==='string')retu
 
 export function assertPrefabMutation(before,after,type){
  if(type==='scene.undo'||type==='scene.redo')return;
+ // Authored prefab siblings remain a stable prefix; additions follow them.
+ for(const parent of before.entities){const originals=before.entities.filter(e=>e.parentId===parent.id&&e.prefab&&e.prefab.rootId===parent.prefab?.rootId).map(e=>e.id);if(!originals.length)continue;const siblings=after.entities.filter(e=>e.parentId===parent.id).map(e=>e.id);if(after.entities.some(e=>e.id===parent.id)&&JSON.stringify(siblings.slice(0,originals.length))!==JSON.stringify(originals))throw Error('Prefab original child order is locked; add children after the last original child or use Desassemble.');}
  for(const old of before.entities.filter(e=>e.prefab)){
   const next=after.entities.find(e=>e.id===old.id),root=before.entities.find(e=>e.id===old.prefab.rootId);
   if(!after.entities.some(e=>e.id===root?.id)){if(after.entities.some(e=>e.prefab?.rootId===old.prefab.rootId))throw Error('Cannot delete part of a prefab instance');continue;}

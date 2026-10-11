@@ -1,3 +1,7 @@
+<!-- Current release: M18.3.1 / 0.0.39. -->
+
+M18.3.1 repairs public Create routing, editable empty-root Players, detached Game input, prefab child order, JSON IDE, Audio Source and PMD layout. The supplied task-chain failure is addressed with concrete SDK contracts, bounded invalid-call recovery and editor-revision synchronization. Current validation is in progress; read [current report](docs/reports/M18_3_1_CURRENT_REPORT.md) and [demo guide](demos/M18_3_1_GUIDE.md). Prior closure notes below are historical. Expanded MVP remains approximately 94%; next M18.4, then M19. Do not merge automatically.
+
 <!-- Current release: M18.3 / 0.0.38. -->
 # Axiom Engine
 

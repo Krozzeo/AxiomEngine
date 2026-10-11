@@ -1,4 +1,4 @@
-import {playerExamples,createPlayerPrefab} from './player-prefabs.mjs';
+import {playerExamples,createPlayer,playerSilence} from './player-prefabs.mjs';
 import {remapEntityReferences,assertPrefabMutation,prefabPayload,capturePrefab} from '../../engine/scene/prefabs.mjs';
 import {materializeLegacyScripts,reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
 import {meshSettings} from '../../engine/assets/advanced.mjs';
@@ -222,7 +222,8 @@ export class SceneWorkspace {
       this.project.editor=result.project.editor;this.project.revision=result.project.revision;return this.snapshot();
     }
     this.check(data);
-    if(type==='scene.example.create'&&playerExamples[data.example])return createPlayerPrefab(this,data.example,data.parentId);
+    if(type==='scene.example.create'&&data.example==='Audio Source'&&!(this.project.scene.assets??[]).some(a=>a.kind==='audio')){const before=copy(this.project),past=copy(this.past),future=copy(this.future);try{await this.run('asset.import',{id:this.project.id,expectedSceneRevision:this.revision,name:'Audio Placeholder.wav',base64:playerSilence().toString('base64')});const result=await this.run(type,{...data,expectedSceneRevision:this.revision});this.past=[...past,before.scene].slice(-64);this.future=[];return result;}catch(error){this.project=before;this.past=past;this.future=future;this.revision++;throw error;}}
+    if(type==='scene.example.create'&&playerExamples[data.example])return createPlayer(this,data.example,data.parentId);
     if(type==='project.files.reveal'){if(data.workspaceId)fail('AX_WORKSPACE_0001','Explorer export is only available for MAIN');try{return await revealProjectFiles(this,data.path??'',data.open===false?null:undefined);}catch(e){fail('AX_FS_0001',e.message);}}
     if(type==="asset.job.start")return this.startJob(data,context);
     if(type==="play.start" || type==="play.stop") {

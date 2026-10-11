@@ -6,8 +6,9 @@ export function assistantSchema(name){
  schema.required=(schema.required??[]).filter(k=>!pinnedFields.has(k));
  return schema;
 }
+export const privateSchemas={'script.sdk.read':{type:'object',additionalProperties:false,properties:{query:{type:'string',minLength:1,maxLength:80}},required:['query']},'project.file.read':{type:'object',additionalProperties:false,properties:{path:{type:'string'},offset:{type:'integer',minimum:0},maxCharacters:{type:'integer',minimum:1,maximum:24000}},required:['path']}};
 const common=['api.describe','api.search','scene.query','entity.query','scene.entity.update','scene.primitive.create','scene.material.set','project.files.edit','script.compile','script.job.get'];
-export const commonSchemas=Object.fromEntries(common.map(n=>[n,assistantSchema(n)]));
+export const commonSchemas={...Object.fromEntries(common.map(n=>[n,assistantSchema(n)])),...privateSchemas};
 // References are data paths into earlier results, never executable expressions.
 export function resolveReferences(value,results,depth=0){
  if(depth>24)throw Error('Batch reference nesting exceeds limit');

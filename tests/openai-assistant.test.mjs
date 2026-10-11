@@ -101,3 +101,16 @@ test('PMD targeted upsert preserves unrelated sections and rejects broken remova
  const {ai,workspace,proposals}=await fixture(t,[[tool('project.master.edit',{sections:[{id:'overview',title:'Overview',parentId:null,links:[],text:'Keep this overview'},{id:'controls',title:'Controls',parentId:'overview',links:['overview'],text:'Old controls'}]},'initial')],[message('Initial proposal')],[tool('project.master.edit',{upsertSections:[{id:'controls',title:'Controls',parentId:'overview',links:['overview'],text:'New controls'}]},'targeted')],[message('Targeted proposal')]]);
  const first=await complete(ai,{text:'Define project',channel:'pmd'});const second=await complete(ai,{text:'Change only controls',channel:'pmd',workspaceId:first.workspaceId});assert.equal(second.status,'completed');const p=proposals.get(first.workspaceId).child.project.editor.pmd;assert.equal(p.sections.find(s=>s.id==='overview').text,'Keep this overview');assert.equal(p.sections.find(s=>s.id==='controls').text,'New controls');assert.equal(workspace.project.editor?.pmd,undefined);
 });
+
+
+test('TasksChain private contract failures return actual schemas and stop across unrelated lookups',async t=>{
+ const {ai,http}=await fixture(t,[[tool('script.sdk.read',{type:'Input'},'bad1')],[tool('entity.query',{},'inspect')],[tool('script.sdk.read',{member:'IsDown'},'bad2')],[tool('entity.query',{},'inspect2')],[tool('script.sdk.read',{query:'Input',offset:0},'bad3')],[message('Must not be called')]]);await ai.configure({action:'update',limits:{maxRequests:null,maxTools:null,maxTokens:null,maxSeconds:null}});const task=await complete(ai,{text:'Repair the movement controller'});assert.equal(task.status,'failed');assert.equal(task.error.code,'AX_AI_NO_PROGRESS');assert.equal(task.requests,5);assert.match(task.error.message,/Three invalid script.sdk.read/);const outputs=http.requests.flatMap(r=>r.body?.input??[]).filter(i=>i.type==='function_call_output');assert.ok(outputs.some(o=>JSON.parse(o.output).inputSchema?.properties?.query?.maxLength===80));assert.ok(http.requests[1].body.instructions.includes('Entity.IsGrounded'));
+});
+
+test('TasksChain unavailable runtime verification stops without further provider turns',async t=>{
+ const {ai}=await fixture(t,[[tool('gameTest.control',{action:'run',frames:3},'test')],[message('Must not claim verification')]]);const task=await complete(ai,{text:'Check controller movement in Play'});assert.equal(task.status,'failed');assert.equal(task.requests,1);assert.equal(task.error.code,'AX_AI_EDITOR_UNAVAILABLE');assert.match(task.error.message,/Authored changes are retained/);
+});
+
+test('SDK qualified member query returns real movement member source',async t=>{
+ const {ai,http}=await fixture(t,[[tool('script.sdk.read',{query:'Entity.IsGrounded'},'sdk')],[message('Read the actual grounded member')]]);const task=await complete(ai,{text:'Inspect movement SDK'});assert.equal(task.status,'completed');const output=http.requests.at(-1).body.input.find(i=>i.type==='function_call_output');assert.ok(JSON.parse(output.output).matches.some(m=>m.source.includes('public bool IsGrounded')));
+});

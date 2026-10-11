@@ -1,3 +1,7 @@
+# Current work — M18.3.1 / 0.0.39
+
+M18.3.1 repairs public Create routing, editable empty-root Players, detached Game input, prefab child order, JSON IDE, Audio Source and PMD layout. The supplied task-chain failure is addressed with concrete SDK contracts, bounded invalid-call recovery and editor-revision synchronization. Current validation is in progress; read [current report](docs/reports/M18_3_1_CURRENT_REPORT.md) and [demo guide](demos/M18_3_1_GUIDE.md). Prior closure notes below are historical. Expanded MVP remains approximately 94%; next M18.4, then M19. Do not merge automatically.
+
 # Current work — M18.3 / 0.0.38
 
 M18.3 (0.0.38) is complete: 8/8 browser acceptance groups, 100%; expanded MVP approximately 94% (122/130 acceptance-weight points, including the added prefab/Player scope). CI 229 passes all 33 jobs at executable commit `b2eb18cf4e4715d213263ccf1eee554d3b1886d5` (tree `e9d9caf3011d17a7e65ce90c86780f83bb9db192`): 287 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and eight new browser criteria with zero page errors.

@@ -1,0 +1,11 @@
+# M18.3.2 — PMD conversation and live feedback
+
+Version 0.0.40. Correction progress: implementation complete, CI validation pending. Expanded MVP estimate remains 94%; M18.4 has not started.
+
+PMD previously mixed old in-memory conversational history with the current document. Its compact context omitted decisions after the first 16 and questions after eight. Instructions allowed approval in chat while the host only accepted overall human workflow approval. The assistant is now explicitly told to record firm answers as settled proposed decisions, remove answered questions, ask at most three genuinely new essential questions, avoid repeated confirmations, and conclude definition with one Approve definition action. The host still prevents invented approvals. PMD requests take history from the current branch document and include every decision/question plus current phase approvals. Other assistant context retains compact limits.
+
+PMD displays a user prompt before waiting for request acknowledgement/model completion, retains it on task failure, and reconciles it with persisted chat without duplication. Both chats share a DOM-only Markdown renderer for bold, italic, code blocks, headings, lists, blockquotes and HTTP(S) links. Raw HTML stays text and unsafe links are not activated. PMD uses the assistant composer palette and one-to-ten-line growth.
+
+Renderer interaction exposes the same provisional world transforms used for drawing. Camera and directional-light guides therefore follow movement, rotation, multi-selection and parent-child transforms before mouse release. New Point/Directional lights and Light components request shadows by default; existing authored false values stay false. 2D lighting has no Request Shadows property and is unchanged.
+
+Automated regressions cover safe formatting, complete settled-answer context, document phase/history changes and public light defaults. Browser acceptance adds immediate PMD messages, Markdown and camera/light Move/Rotate guides before commit. No billable provider requests are made. Local browser runtime is unavailable; CI supplies actual browser and .NET checks. Live model question quality must be checked using the user account; instruction/context fixes cannot guarantee a particular external model response.

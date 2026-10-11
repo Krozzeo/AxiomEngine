@@ -1,3 +1,7 @@
+# M18.3.2 / 0.0.40 — PMD conversation and live editor feedback
+
+This correction precedes M18.4; expanded MVP remains approximately 94% (122/130 weighted points). Current validation and limitations are in [the correction report](docs/reports/M18_3_2_CURRENT_REPORT.md). Previous release notes below are historical.
+
 <!-- Current release: M18.3.1 / 0.0.39. -->
 
 M18.3.1 (0.0.39) is complete: 9/9 browser acceptance groups, 100%; expanded MVP approximately 94% (122/130 acceptance-weight points). CI234 passes all 33 jobs at executable commit `5eb3924f9b0d716dc29c052eb583db3a2189ec65` (tree `fd7837a7009bcc16c30dffec58b659aedbcf3149`): 303 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and nine browser criteria with zero page errors. Public Create is repaired; Players are ordinary empty-root instances, with corrected body/camera motion and detached pointer input. Prefab original ordering, JSON IDE, compact PMD/Audio Source and Scene direction references are verified. The supplied TasksChain failure has concrete SDK/read contracts, bounded invalid retries and live-editor revision synchronization. Read [current report](docs/reports/M18_3_1_CURRENT_REPORT.md) and [demo guide](demos/M18_3_1_GUIDE.md). PR #29 remains draft/open/unmerged, stacked on #28. Next M18.4 GitHub integration, then M19 hardening. Prior closure notes below are historical. Do not merge automatically.

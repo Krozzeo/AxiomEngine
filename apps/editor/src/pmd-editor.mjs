@@ -7,7 +7,7 @@ export function mountPmdEditor({document,api,getSnapshot,save,openPanel,reportEr
  const act=fn=>void Promise.resolve().then(fn).catch(error=>{q('pmd-status').textContent=error.message;reportError(error);});
  const show=()=>{q('ai-menu').open=false;return openPanel('pmd',{centerIfClosed:true});};
  q('ai-master-create').disabled=false;q('ai-master-create').textContent='Project Master Document';q('ai-master-create').addEventListener('click',show);
- q('pmd-indicator').addEventListener('click',show);
+ q('pmd-indicator').disabled=false;q('pmd-indicator').addEventListener('click',show);
  for(const [id,open]of [['pmd-expand',true],['pmd-collapse',false]])q(id).addEventListener('click',()=>{for(const node of q('pmd-tree').querySelectorAll('details'))node.open=open;});
  q('pmd-new').addEventListener('click',()=>act(async()=>{if(pmd()&&!document.defaultView.confirm('Replace the current PMD? Export it first if needed.'))return;await commit({pmd:newPmd()});}));
  q('pmd-delete').addEventListener('click',()=>act(async()=>{if(!pmd()||!document.defaultView.confirm('Delete the Project Master Document and its document history?'))return;const editor={...getSnapshot().project.editor};delete editor.pmd;await save(editor,{replace:true});key='';paint();}));

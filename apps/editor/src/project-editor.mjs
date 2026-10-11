@@ -44,7 +44,6 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       for(const [id,visible]of [['camera',!!entity?.camera],['material',!!entity?.material],['light',!!entity?.light],['lod',!!entity?.lod],['physics',!!entity?.collider],['rigidbody',!!entity?.rigidBody],['renderable',!!entity?.renderable],['script',!!entity&&(attached||scriptDraft.has(entity.id))]])$(id+'-component').hidden=!visible;
       $('component-add').disabled=!enabled||busy||state.playing||!entity;
       $('renderable-status').textContent=entity?.renderable?`${entity.renderable.kind} · ${project.scene.assets?.find(a=>a.id===entity.renderable.assetId)?.name??''}`:'';
-      $('physics-freeze').checked=entity?.rigidBody?.freezeRotation??false;
       $('rigidbody-remove').hidden=!entity?.rigidBody;
     }
     const editing=enabled&&!busy&&!state.playing,valuesEditing=enabled&&!busy;
@@ -139,6 +138,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("physics-motion").value=entity?.rigidBody?"dynamic":"static";
     $("physics-trigger").checked=entity?.collider?.trigger??false;
     for(let i=0;i<3;i++)$("physics-half-"+i).value=String(entity?.collider?.halfExtents[i]??0.5);
+    $('physics-freeze').checked=entity?.rigidBody?.freezeRotation??false;
     $("physics-mass").value=String(entity?.rigidBody?.mass??1);
     for(const [id,key,defaultValue]of [["physics-friction","friction",.5],["physics-restitution","restitution",0],["physics-gravity","gravityScale",1]])if($(id))$(id).value=String(entity?.rigidBody?.[key]??defaultValue);
     $("physics-layer").value=String(entity?.collider?.layer??1);

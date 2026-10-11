@@ -12,7 +12,7 @@ import {createSkinGPU} from '../../../engine/renderer/skin-gpu.mjs';
 import {renderPlan} from '../../../engine/renderer/render-plan.mjs';
 import {createProductionGPU} from '../../../engine/renderer/production-gpu.mjs';
 import {ScriptRuntime} from "./script-runtime.js";
-import {applyScriptOperations} from "./script-operations.mjs";
+import {applyScriptOperations,runtimeScriptEntities} from "./script-operations.mjs";
 import { loadKernel, scenePrimitives } from "./kernel-host.js";
 import {createGpuProfiler} from "./gpu-profiler.mjs";
 import { FrameProfiler } from "./frame-profiler.js";
@@ -149,7 +149,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       while(frameInProgress)await new Promise(resolve=>setTimeout(resolve,1));
       if(ticket!==generation||!playing)throw Error('AX_SCENE_0002: Runtime changed during editing');
       const next=applyRuntimeEdit(runtimeScene,edit);
-      if(edit.type==='scene.script.edit'&&scriptRuntime){const packet=await scriptRuntime.execute({action:'fields',generation:ticket,entities:runtimeScene.entities,keys:[],edits:[{entityId:edit.data.entityId,path:edit.data.path,values:edit.data.values}]});if(packet.error)throw Error(packet.error);}
+      if(edit.type==='scene.script.edit'&&scriptRuntime){const packet=await scriptRuntime.execute({action:'fields',generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities),keys:[],edits:[{entityId:edit.data.entityId,path:edit.data.path,values:edit.data.values}]});if(packet.error)throw Error(packet.error);}
       const previous=runtimeScene;
       try {if(edit.type!=='scene.script.edit'){geometry=kernel.compileScene(next,assets,true);kernel.configurePhysics(next,true);}}catch(error){kernel.compileScene(previous,assets,true);kernel.configurePhysics(previous,true);throw error;}
       runtimeScene=next;audio.reconcile(next);return {scene:structuredClone(next),generation:ticket};
@@ -172,7 +172,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     profiler.reset({projectId:snapshot.project?.id??null,sceneRevision:snapshot.sceneRevision,workspaceId:snapshot.workspaceId??null,generation:ticket});
     scriptRuntime=null;
     if(oldRuntime) {
-      try {await scriptFlight;const result=await oldRuntime.execute({action:"stop",generation:oldGeneration,entities:oldScene.entities,keys:[]});for(const op of result.operations??[])if(op.kind==="log")reportScriptLog(op.message,{generation:oldGeneration,phase:"stop",buildId:oldScene.script?.build.id});}
+      try {await scriptFlight;const result=await oldRuntime.execute({action:"stop",generation:oldGeneration,entities:runtimeScriptEntities(oldScene.entities,authoredHierarchy.entities),keys:[]});for(const op of result.operations??[])if(op.kind==="log")reportScriptLog(op.message,{generation:oldGeneration,phase:"stop",buildId:oldScene.script?.build.id});}
       catch(error){if(!oldRuntime.closed)reportError(error);}finally{oldRuntime.dispose();}
     }
     if(ticket!==generation||disposed)return;
@@ -201,7 +201,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
        try{
         nextRuntime=new ScriptRuntime();
         await nextRuntime.initialize(`/script-runtime/${project.id.slice(10)}/${scene.script.build.id}/dotnet.js`);
-        const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:scene.entities,keys:[],attachments:scene.script.attachments,seed:testing?replaySeed:0,replay:testing});
+        const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:runtimeScriptEntities(scene.entities,authoredHierarchy.entities),keys:[],attachments:scene.script.attachments,seed:testing?replaySeed:0,replay:testing});
         const result=applyScriptOperations(scene,packet,ticket);scene=result.scene;nextSpawned=result.spawned;startAnimationControls=result.animations;startAudioControls=result.audio;
         for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start",buildId:scene.script.build.id});
        }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
@@ -243,7 +243,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         try {
           const scriptStart=performance.now();
           const animationStates=new Map(kernel.animationStatus().map(a=>[a.entityId,a]));
-          scriptFlight=active.execute({action:"step",generation:ticket,entities:runtimeScene.entities.map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),keys:[...keys],mouseDelta:[...mouseDelta],delta});
+          scriptFlight=active.execute({action:"step",generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),keys:[...keys],mouseDelta:[...mouseDelta],delta});
           profiler.scope(diagnostic,'script.prepare',scriptStart,performance.now());
           mouseDelta=[0,0];const packet=await scriptFlight;diagnostic.scriptRoundTripMs=performance.now()-scriptStart;
           if(ticket!==generation||disposed){if(!disposed&&!manual)animationId=requestAnimationFrame(frame);return;}

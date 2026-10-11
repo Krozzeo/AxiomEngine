@@ -23,3 +23,7 @@ test('runtime kills unresponsive workers and rejects late or overlapping request
  worker.onmessage({data:{id:worker.sent.id,result:{generation:2,operations:[]}}});assert.equal((await next).generation,2);replacement.dispose();
 });
 test('rotation operations validate normalized quaternions atomically and preserve authored transforms',()=>{const result=applyScriptOperations(scene,{generation:1,operations:[{kind:'rotation',id,rotation:[0,Math.sin(.2),0,Math.cos(.2)]}]},1);assert.equal(result.rotations.size,1);assert.notDeepEqual(result.scene.entities[0].transform.rotation,scene.entities[0].transform.rotation);assert.throws(()=>applyScriptOperations(scene,{generation:1,operations:[{kind:'rotation',id,rotation:[0,0,0,0]}]},1),/invalid rotation/);assert.deepEqual(scene.entities[0].transform.rotation,[0,0,0,1]);});
+
+test('SDK packets restore parent identities without converting world transforms or mutating the runtime scene',async()=>{
+ const {runtimeScriptEntities}=await import('../engine/scripting/operations.mjs');const entities=[{id:'root',transform:{position:[0,1,0]}},{id:'camera',camera:{active:true},transform:{position:[0,1.65,-.35]}}],hierarchy=[{id:'root'},{id:'camera',parentId:'root'}];const packet=runtimeScriptEntities(entities,hierarchy);assert.equal(packet[1].parentId,'root');assert.deepEqual(packet[1].transform.position,[0,1.65,-.35]);assert.equal(entities[1].parentId,undefined);
+});

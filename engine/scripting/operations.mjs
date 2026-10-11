@@ -32,3 +32,6 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
  if(candidate.entities.filter(e=>e.audioSource).length>32)fail('audio voice capacity exceeded');
  return {scene:candidate,logs,audio,animations,positions,rotations,velocities,spawned,changedTopology};
 }
+
+// Runtime transforms are world-space; SDK child lookup still needs authored parent identities.
+export function runtimeScriptEntities(entities,hierarchy){const parents=new Map(hierarchy.map(e=>[e.id,e.parentId]));return entities.map(entity=>{const {parentId,...value}=entity,parent=parents.get(entity.id);return {...value,...(parent?{parentId:parent}:{})};});}

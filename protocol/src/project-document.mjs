@@ -1,3 +1,4 @@
+import {validatePmd} from '../../engine/project/pmd.mjs';
 import {validateScriptComponents} from '../../engine/scripting/fields.mjs';
 import {validateFiles} from '../../engine/scene/project-files.mjs';
 import {activeGameCamera} from '../../engine/scene/camera.mjs';
@@ -41,6 +42,7 @@ function validate(value, rule, path) {
 }
 
 export function validateProject(document) {
+  if(document.editor?.pmd)try{validatePmd(document.editor.pmd);}catch(error){throw projectError('AX_PROJECT_0002',error.message);}
   try{validateFiles(document.scene??{});}catch(error){throw projectError('AX_PROJECT_0002',error.message);}
   if((document.scene?.entities??[]).filter(e=>e.camera?.active).length>1)throw projectError('AX_PROJECT_0002','Only one Camera can be active');
 
@@ -57,6 +59,7 @@ export function validateProject(document) {
   };
   inspect(document);
   validate(document, schema, "project");
+  for(const e of document.scene.entities.filter(e=>e.prefab)){const root=document.scene.entities.find(r=>r.id===e.prefab.rootId);if(!root?.prefab||root.prefab.rootId!==root.id||root.prefab.path!==e.prefab.path||!document.scene.projectFiles?.some(f=>f.path===e.prefab.path&&f.kind==='json'))throw projectError('AX_PROJECT_0002','Broken prefab root or Project file');let current=e;const seen=new Set();while(current.id!==root.id){if(seen.has(current.id)||!current.parentId)throw projectError('AX_PROJECT_0002','Prefab child must remain under its linked root');seen.add(current.id);current=document.scene.entities.find(r=>r.id===current.parentId);if(!current)throw projectError('AX_PROJECT_0002','Missing prefab parent');}}
   const ids = document.scene.entities.map(entity => entity.id);
   if (new Set(ids).size !== ids.length) throw projectError("AX_PROJECT_0002", "Duplicate entity ID");
   try {worldTransforms(document.scene.entities);}catch(error){throw projectError("AX_PROJECT_0002",error.message);}

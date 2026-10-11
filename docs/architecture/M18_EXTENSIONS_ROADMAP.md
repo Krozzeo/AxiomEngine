@@ -6,7 +6,8 @@ Scope decision: 2026-10-09. M18 0.0.32 remains complete; its two repair demos ar
 | --- | --- | --- | ---: |
 | M18.1 OpenAI connection and multistep assistant | Complete; user confirmed live Workshop | Daemon-held credential, tested model selection, bounded sequential tool loop, project-context chat, isolated existing proposals, cancellation and usage/error visibility | 6 |
 | M18.2 Integrated chat and editable preview | Complete; M18.2.1 correction verified by CI219 | Chat review card, automatic preview after agent work, preview-only toolbar, branch toggle, manual proposal edits, Apply/Discard and recovery | 6 |
-| M18.3 Assisted PMD | Not started | Iterative definition, approved milestone/stage planning, optional critique, indexed linked section documents, manual/assisted edits, import/export and history | 7 |
+| M18.3 Assisted PMD | Complete; CI229, eight browser criteria | Iterative definition, approved milestone/stage planning, optional critique, indexed linked section documents, manual/assisted edits, import/export and history | 7 |
+| M18.3 Added prefabs and Players | Complete; real C# workers and actual editor Play | Physical prefab files, linked locked originals, Desassemble, four adjustable Player controllers | 4 |
 | M18.4 GitHub integration | Not started | Account/repository/branch configuration, connection indicator, explicit or configured milestone publication of applied/saved projects | 3 |
 | M19 MVP Hardening | Not started | Original end-to-end acceptance, onboarding, recovery, compatibility and measured stability | 5 (existing) |
 
@@ -31,3 +32,7 @@ The prior 104-point roadmap has 99 completed points. Added scope contributes 22 
 Current evidence credits all M18.1 and M18.2 weight: 99 + 6 + 6 = 111; 111/126 ≈ 88%. M18.1 live Workshop was confirmed by the user; M18.2 executable/browser acceptance is recorded in M18_2_CURRENT_REPORT.md. Live token savings are a separate account-specific comparison, not assumed from the controlled benchmark. Individual follow-on plans: M18_3_PLAN.md and M18_4_PLAN.md.
 
 M18.2.1 (0.0.37) closes the scripting efficiency and preview UX correction with 6/6 new acceptance groups and all 32 CI219 jobs passing. It adds no milestone weight or scope to the remaining roadmap; expanded completion remains 111/126 (approximately 88%). See docs/reports/M18_2_1_CURRENT_REPORT.md.
+
+M18.3 adds user-requested linked prefabs and four Players (estimated four scope points). Updated scope denominator is 130; M18.3 + prefab credit is contingent on real C# and browser acceptance. Potential closed total is 122/130 (~94%). M18.4 and M19 remain.
+
+M18.3 closure: 122/130 acceptance-weight points (~94%), including four added prefab/Player scope points. Two milestones remain: M18.4 GitHub and M19 hardening. See docs/reports/M18_3_CURRENT_REPORT.md; live PMD quality/cost is not inferred from controlled responses.

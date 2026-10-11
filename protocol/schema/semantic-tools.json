@@ -236,6 +236,11 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "prefabAction": {
+            "enum": [
+              "disassemble"
+            ]
           }
         },
         "required": [
@@ -403,7 +408,7 @@
             "properties": {
               "unitScale": {
                 "type": "number",
-                "minimum": 1e-06,
+                "minimum": 0.000001,
                 "maximum": 1000
               },
               "upAxis": {
@@ -901,7 +906,7 @@
             "properties": {
               "unitScale": {
                 "type": "number",
-                "minimum": 1e-06,
+                "minimum": 0.000001,
                 "maximum": 1000
               },
               "upAxis": {
@@ -2357,6 +2362,12 @@
                   "type": "object",
                   "additionalProperties": true
                 }
+              },
+              "pmd": {
+                "$ref": "project-document.schema.json#/properties/editor/properties/pmd"
+              },
+              "pmdSplit": {
+                "$ref": "project-document.schema.json#/properties/editor/properties/pmdSplit"
               }
             }
           }
@@ -2755,8 +2766,8 @@
           },
           "value": {
             "type": "number",
-            "minimum": -1000000.0,
-            "maximum": 1000000.0
+            "minimum": -1000000,
+            "maximum": 1000000
           },
           "duration": {
             "type": "number",
@@ -3417,7 +3428,11 @@
               "UI Button",
               "2D Light",
               "Particles 2D",
-              "Camera"
+              "Camera",
+              "3D First Person Player",
+              "3D Third Person Player",
+              "2D Platform Player",
+              "2D RPG Player"
             ]
           },
           "parentId": {
@@ -3741,6 +3756,10 @@
           "text": {
             "type": "string",
             "maxLength": 65536
+          },
+          "prefabRootId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -3791,6 +3810,10 @@
               "type": "string",
               "pattern": "^entity://[0-9a-f-]{36}$"
             }
+          },
+          "prefabPath": {
+            "type": "string",
+            "maxLength": 240
           }
         },
         "required": [

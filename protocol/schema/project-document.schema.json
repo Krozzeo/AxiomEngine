@@ -962,6 +962,24 @@
                     }
                   }
                 }
+              },
+              "prefab": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "rootId"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "maxLength": 240
+                  },
+                  "rootId": {
+                    "type": "string",
+                    "pattern": "^entity://[0-9a-f-]{36}$"
+                  }
+                }
               }
             }
           }
@@ -1526,7 +1544,7 @@
             },
             "order": {
               "type": "array",
-              "maxItems": 10,
+              "maxItems": 11,
               "uniqueItems": true,
               "items": {
                 "enum": [
@@ -1539,13 +1557,14 @@
                   "scene",
                   "game",
                   "ide",
-                  "assistant"
+                  "assistant",
+                  "pmd"
                 ]
               }
             },
             "closed": {
               "type": "array",
-              "maxItems": 10,
+              "maxItems": 11,
               "uniqueItems": true,
               "items": {
                 "enum": [
@@ -1558,7 +1577,8 @@
                   "scene",
                   "game",
                   "ide",
-                  "assistant"
+                  "assistant",
+                  "pmd"
                 ]
               }
             },
@@ -1573,6 +1593,16 @@
               ]
             },
             "assistant": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "top",
+                "bottom",
+                "center"
+              ]
+            },
+            "pmd": {
               "type": "string",
               "enum": [
                 "left",
@@ -1744,6 +1774,15 @@
             "type": "object",
             "additionalProperties": true
           }
+        },
+        "pmd": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "pmdSplit": {
+          "type": "number",
+          "minimum": 20,
+          "maximum": 80
         }
       }
     }

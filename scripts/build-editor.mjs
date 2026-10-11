@@ -63,6 +63,9 @@ export async function buildEditor({buildKernel=true}={}) {
   await writeFile(resolve(destination,'camera.mjs'),(await readFile(resolve(root,'engine/scene/camera.mjs'),'utf8')).replaceAll('../renderer/','./'));
   await writeFile(resolve(destination,'test-session.mjs'),(await readFile(resolve(root,'engine/testing/session.mjs'),'utf8')).replace('../../protocol/schema/game-test.schema.json','./game-test.schema.json'));
   await cp(resolve(root,'protocol/schema/game-test.schema.json'),resolve(destination,'game-test.schema.json'));
+  await cp(resolve(root,'engine/project/pmd.mjs'),resolve(destination,'pmd.mjs'));
+  await writeFile(resolve(destination,'pmd-editor.mjs'),(await readFile(resolve(root,'apps/editor/src/pmd-editor.mjs'),'utf8')).replace('../../../engine/project/','./'));
+  await cp(resolve(root,'engine/scene/prefabs.mjs'),resolve(destination,'prefabs.mjs'));
   const source = await readFile(resolve(root, "apps/editor/src/main.ts"), "utf8");
   if (/\binterface\s+|:\s*(string|number|boolean)\b/.test(source)) {
     throw new Error("Bootstrap TypeScript must remain directly executable until the compiler toolchain is installed");

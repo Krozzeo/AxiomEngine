@@ -1079,6 +1079,24 @@
                           }
                         }
                       }
+                    },
+                    "prefab": {
+                      "type": "object",
+                      "required": [
+                        "path",
+                        "rootId"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "maxLength": 240
+                        },
+                        "rootId": {
+                          "type": "string",
+                          "pattern": "^entity://[0-9a-f-]{36}$"
+                        }
+                      }
                     }
                   },
                   "additionalProperties": false
@@ -1680,6 +1698,11 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "prefabAction": {
+            "enum": [
+              "disassemble"
+            ]
           }
         },
         "required": [
@@ -4118,7 +4141,7 @@
                   },
                   "order": {
                     "type": "array",
-                    "maxItems": 10,
+                    "maxItems": 11,
                     "uniqueItems": true,
                     "items": {
                       "enum": [
@@ -4131,13 +4154,14 @@
                         "scene",
                         "game",
                         "ide",
-                        "assistant"
+                        "assistant",
+                        "pmd"
                       ]
                     }
                   },
                   "closed": {
                     "type": "array",
-                    "maxItems": 10,
+                    "maxItems": 11,
                     "uniqueItems": true,
                     "items": {
                       "enum": [
@@ -4150,7 +4174,8 @@
                         "scene",
                         "game",
                         "ide",
-                        "assistant"
+                        "assistant",
+                        "pmd"
                       ]
                     }
                   },
@@ -4165,6 +4190,16 @@
                     ]
                   },
                   "assistant": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "pmd": {
                     "type": "string",
                     "enum": [
                       "left",
@@ -4337,6 +4372,15 @@
                   "type": "object",
                   "additionalProperties": true
                 }
+              },
+              "pmd": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "pmdSplit": {
+                "type": "number",
+                "minimum": 20,
+                "maximum": 80
               }
             },
             "additionalProperties": false
@@ -5993,7 +6037,11 @@
               "UI Button",
               "2D Light",
               "Particles 2D",
-              "Camera"
+              "Camera",
+              "3D First Person Player",
+              "3D Third Person Player",
+              "2D Platform Player",
+              "2D RPG Player"
             ]
           },
           "parentId": {
@@ -6345,6 +6393,10 @@
           "text": {
             "type": "string",
             "maxLength": 65536
+          },
+          "prefabRootId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
           }
         },
         "required": [
@@ -7318,6 +7370,24 @@
                       }
                     }
                   }
+                },
+                "prefab": {
+                  "type": "object",
+                  "required": [
+                    "path",
+                    "rootId"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "maxLength": 240
+                    },
+                    "rootId": {
+                      "type": "string",
+                      "pattern": "^entity://[0-9a-f-]{36}$"
+                    }
+                  }
                 }
               },
               "additionalProperties": false
@@ -7334,6 +7404,10 @@
               "type": "string",
               "pattern": "^entity://[0-9a-f-]{36}$"
             }
+          },
+          "prefabPath": {
+            "type": "string",
+            "maxLength": 240
           }
         },
         "required": [

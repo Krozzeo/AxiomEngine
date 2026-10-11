@@ -1,3 +1,5 @@
+import {playerExamples,createPlayerPrefab} from './player-prefabs.mjs';
+import {remapEntityReferences,assertPrefabMutation,prefabPayload,capturePrefab} from '../../engine/scene/prefabs.mjs';
 import {materializeLegacyScripts,reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
 import {meshSettings} from '../../engine/assets/advanced.mjs';
 import {createHash} from 'node:crypto';
@@ -220,6 +222,7 @@ export class SceneWorkspace {
       this.project.editor=result.project.editor;this.project.revision=result.project.revision;return this.snapshot();
     }
     this.check(data);
+    if(type==='scene.example.create'&&playerExamples[data.example])return createPlayerPrefab(this,data.example,data.parentId);
     if(type==='project.files.reveal'){if(data.workspaceId)fail('AX_WORKSPACE_0001','Explorer export is only available for MAIN');try{return await revealProjectFiles(this,data.path??'',data.open===false?null:undefined);}catch(e){fail('AX_FS_0001',e.message);}}
     if(type==="asset.job.start")return this.startJob(data,context);
     if(type==="play.start" || type==="play.stop") {
@@ -320,11 +323,12 @@ export class SceneWorkspace {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
       if(scene.cameraMode==='entities'){const e=scene.entities.find(e=>e.camera?.active);if(!e)fail('AX_SCENE_0001','No active Camera entity');for(const key of ['projection','fov','orthoHeight'])if(data.camera[key]!==undefined)e.camera[key]=data.camera[key];if(data.camera.position)e.transform.position=copy(data.camera.position);if(data.camera.target)e.transform.rotation=cameraRotation(e.transform.position,data.camera.target);}else scene.camera={projection:'perspective',position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
     } else if(type==='project.files.edit'){
-      try{scene.projectFiles=editProjectFiles(scene,data);reconcileScriptComponents(scene);}catch(error){fail('AX_FS_0001',error.message);}
+      try{let captured=null;if(data.prefabRootId){if(data.action!=='create'||data.kind!=='json'||!data.path.endsWith('.prefab.json'))throw Error('Prefab capture requires a new .prefab.json file');captured=capturePrefab(scene,[data.prefabRootId]);data={...data,text:JSON.stringify(captured,null,2)};}scene.projectFiles=editProjectFiles(scene,data);if(captured)for(const entity of scene.entities)if(captured.entities.some(e=>e.id===entity.id))entity.prefab={path:data.path,rootId:data.prefabRootId};reconcileScriptComponents(scene);}catch(error){fail('AX_FS_0001',error.message);}
     } else if(type==='scene.entities.paste'){
+      if(data.prefabPath){const file=projectFiles(scene).find(f=>f.path===data.prefabPath);try{data={...data,...prefabPayload(scene,file,data.parentId)};}catch(error){fail('AX_PREFAB_0001',error.message);}}
       if(!Array.isArray(data.entities)||!data.entities.length||data.entities.length>256)fail('AX_SCENE_0001','Copy up to 256 entities');
       const ids=new Map(data.entities.map(e=>[e.id,'entity://'+randomUUID()]));if(ids.size!==data.entities.length)fail('AX_SCENE_0001','Duplicate clipboard entity IDs');
-      for(const source of data.entities){const e=copy(source);e.id=ids.get(source.id);e.name=source.name+' Copy';if(ids.has(source.parentId))e.parentId=ids.get(source.parentId);else if(data.parentId)e.parentId=data.parentId;else delete e.parentId;if(e.camera)e.camera.active=false;if(e.audioListener)e.audioListener.enabled=false;scene.entities.push(e);}
+      for(const source of data.entities){const e=remapEntityReferences(source,ids);e.id=ids.get(source.id);e.name=source.name+' Copy';if(ids.has(source.parentId))e.parentId=ids.get(source.parentId);else if(data.parentId)e.parentId=data.parentId;else delete e.parentId;if(e.camera){e.camera.active=!!data.prefabPath&&!!source.camera.active;if(e.camera.active){for(const n of scene.entities){if(n.camera)n.camera.active=false;if(n.audioListener)n.audioListener.enabled=false;}scene.cameraMode='entities';delete scene.camera;}}if(e.audioListener){e.audioListener.enabled=!!data.prefabPath&&!!source.audioListener.enabled;if(e.audioListener.enabled)for(const n of scene.entities)if(n.audioListener)n.audioListener.enabled=false;}scene.entities.push(e);}
       if(scene.script)for(const old of data.scriptAttachments??[])if(ids.has(old))scene.script.attachments.push(ids.get(old));
     } else if(type==="scene.example.create") {
       try{addExample(scene,data.example,`entity://${randomUUID()}`);}catch(e){fail("AX_PROJECT_0002",e.message);}
@@ -334,6 +338,7 @@ export class SceneWorkspace {
       if (index < 0) fail("AX_SCENE_0001", "Entity no longer exists");
       if (type === "scene.entity.delete") {const removed=new Set([data.entityId]);let changed=true;while(changed){changed=false;for(const e of scene.entities)if(removed.has(e.parentId)&&!removed.has(e.id)){removed.add(e.id);changed=true;}}scene.entities=scene.entities.filter(e=>!removed.has(e.id));if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>!removed.has(id));}
       else {
+        if(data.prefabAction==='disassemble'){if(data.name!==undefined||data.transform!==undefined)fail('AX_PREFAB_0001','Desassemble cannot include other edits');const root=scene.entities[index].prefab?.rootId;if(!root)fail('AX_PREFAB_0001','Select a linked prefab');for(const e of scene.entities)if(e.prefab?.rootId===root)delete e.prefab;}
         if (data.name !== undefined) scene.entities[index].name = data.name;
         if (data.transform !== undefined) {
           if (!data.transform || typeof data.transform !== "object" || Array.isArray(data.transform)) fail("AX_PROJECT_0002", "Transform must be an object");
@@ -345,6 +350,7 @@ export class SceneWorkspace {
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     if(scene.script?.sources)scene.script.attachments=scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id);
     syncImportedFiles(scene,this.project.scene);
+    if(data.prefabAction!=='disassemble')try{assertPrefabMutation(this.project.scene,scene,type);}catch(error){fail('AX_PREFAB_0001',error.message);}
     validateProject({ ...this.project, scene });
     if(["scene.component.paste","scene.audioSource.set","scene.animator.set","scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
     if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");

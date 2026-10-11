@@ -1,3 +1,4 @@
+import {isPrefab,prefabPayload} from '../../../engine/scene/prefabs.mjs';
 import {runtimeEditableTypes} from '../../../engine/scene/runtime-edit.mjs';
 import {mountCompileController} from './compile-controller.mjs';
 import {mountInspectorUX} from './inspector-ux.mjs';
@@ -65,7 +66,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     $("scene-redo").disabled = !editing || !state.canRedo;
     $("scene-delete").disabled = !editing || !selection.size;
     $("entity-fields").disabled = !valuesEditing || !selection.size;
-    $("entity-name").disabled=selection.size!==1;
+    $("entity-name").disabled=selection.size!==1||!!entity?.prefab;
     for(const key of ['material','light','lod','render'])$(key+'-fields').disabled=!(key==='render'?editing:valuesEditing)||!(key==='render'?project:entity);
     $("physics-fields").disabled = !valuesEditing || !entity;
     if($("rigidbody-fields"))$("rigidbody-fields").disabled=!valuesEditing||!entity;
@@ -105,10 +106,11 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       const parentId=item.parentId??null,gap=document.createElement('div');gap.className='tree-gap';gap.dataset.beforeId=item.id;gap.dataset.parentId=parentId??'';gap.setAttribute('aria-label','Insert before '+item.name);drop(gap,parentId,item.id);$('entities').append(gap);
       const row=document.createElement('div');row.className='tree-row';row.style.paddingLeft=((depth+1)*12)+'px';row.setAttribute('role','treeitem');row.setAttribute('aria-selected',String(selection.has(item.id)));row.dataset.entityId=item.id;
       const children=childrenByParent.has(item.id),toggle=document.createElement('button');toggle.className='tree-toggle';toggle.textContent=collapsed.has(item.id)?'▸':'▾';toggle.disabled=!children;toggle.setAttribute('aria-label','Expand or collapse '+item.name);if(children)row.setAttribute('aria-expanded',String(!collapsed.has(item.id)));toggle.addEventListener('click',()=>{if(collapsed.has(item.id))collapsed.delete(item.id);else collapsed.add(item.id);draw(false);});
-      const button=document.createElement('button');button.textContent=item.name;button.className=selection.has(item.id)?'entity selected':'entity';button.setAttribute('aria-pressed',String(selection.has(item.id)));button.disabled=busy;button.draggable=!busy&&!state.playing;button.addEventListener('click',event=>select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey}));row.addEventListener('click',event=>{if(event.target.closest('.entity,.tree-toggle,input'))return;select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey});});
+      const button=document.createElement('button');button.textContent=item.name;button.className=selection.has(item.id)?'entity selected':'entity';button.setAttribute('aria-pressed',String(selection.has(item.id)));button.disabled=busy;if(item.prefab){button.classList.add('prefab-entity');button.title='Linked prefab · '+item.prefab.path+' · use Desassemble to edit';}button.draggable=!busy&&!state.playing;button.addEventListener('click',event=>select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey}));row.addEventListener('click',event=>{if(event.target.closest('.entity,.tree-toggle,input'))return;select(item.id,{toggle:event.ctrlKey||event.metaKey,range:event.shiftKey});});
       button.addEventListener('dragstart',event=>{if(!selection.has(item.id)){selection=new Set([item.id]);selected=item.id;anchor=item.id;}event.dataTransfer.setData('application/axiom-entities',JSON.stringify([...selection]));});drop(row,item.id);row.append(toggle,button);$('entities').append(row);
     }
     if(end<rows.length)spacer((rows.length-end)*rowHeight);const endGap=document.createElement('div');endGap.className='tree-gap';endGap.setAttribute('aria-label','Append to Scene root');drop(endGap,null);$('entities').append(endGap);if(virtual)$('entities').scrollTop=hierarchyScrollTop;
+    if(entity?.prefab&&!state.playing&&entity.id!==entity.prefab.rootId)$('entity-fields').disabled=true;
     browser.draw();
     $("entity-empty").hidden = !!project?.scene.entities.length;
     if (updateFields) {
@@ -207,6 +209,9 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   function fileSelection(paths){filePaths=paths;selected=null;selection.clear();draw();}
   function paintDirty(){const pending=state.dirty||ideDirty;if($('project-title')){$('project-title').textContent=state.project?('● '+state.project.name+(pending?'*':'')):'';$('project-title').classList?.toggle?.('dirty-title',pending);}if($('scene-save')){$('scene-save').textContent=pending?'Save*':'Save';$('scene-save').classList?.toggle?.('dirty-save',pending);$('scene-save').disabled=!state.project||state.playing||busy||!pending||!!state.workspaceId;}if($('toolbar-save'))$('toolbar-save').disabled=$('scene-save').disabled;if($('save-dirty'))$('save-dirty').hidden=!pending;onDirty(pending&&!state.workspaceId);}
   const ide=mountCodeEditor({document,getState:()=>state,write:async data=>{const projectId=state.project?.id,workspaceId=state.workspaceId??null;const deadline=performance.now()+610000;while(busy&&performance.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));if(busy)throw Error('Wait for or cancel the current compilation before saving this source');if(state.project?.id!==projectId||(state.workspaceId??null)!==workspaceId)throw Error('The project or branch changed before this script could be saved');return act(()=>run('project.files.edit',mutation(data)));},show:id=>panels.openPanel(id,{centerIfClosed:true}),persist:async()=>{if(!state.workspaceId&&state.dirty)await act(()=>run('scene.save',mutation()));},onOpen:file=>{$('script-source').value=file.text;},onDirty:value=>{ideDirty=value;paintDirty();compiler?.draw();},onSaved:()=>compiler.sourceSaved(),reportError});
+  function prefabDrop(node,parentFor){if(!document.defaultView)return;node.addEventListener('dragover',event=>{if(event.dataTransfer.types.includes('application/axiom-files'))event.preventDefault();});node.addEventListener('drop',event=>{if(!event.dataTransfer.types.includes('application/axiom-files'))return;try{const data=JSON.parse(event.dataTransfer.getData('application/axiom-files'));const file=projectFiles(state.project.scene).find(f=>f.path===data.paths?.[0]);if(!isPrefab(file))return;event.preventDefault();event.stopPropagation();if(data.projectId!==state.project.id||data.paths.length!==1||state.playing)throw Error('Drop one prefab from this project while stopped');const parentId=parentFor(event);const payload=prefabPayload(state.project.scene,file,parentId);void act(()=>run('scene.entities.paste',mutation(payload)));}catch(error){reportError(error);}});}
+  prefabDrop($('entities'),event=>event.target.closest('[data-entity-id]')?.dataset.entityId);
+  if(document.defaultView)prefabDrop(document.querySelector('.viewport'),()=>undefined);
   const browser=mountProjectBrowser({document,getState:()=>state,mutate:data=>act(async()=>{await run('project.files.edit',mutation(data));ide.filesChanged(data);}),selectAsset:id=>{$('asset-list').value=id;},selectScript:file=>void ide.open(file),onSelection:fileSelection,beforeEdit:()=>ide.flush(),onFilesChanged:()=>{filePaths=browser.selection();},reportError});
   $('file-inspector-open')?.addEventListener('click',()=>browser.open(filePaths[0]));
   const scriptEditor=mountScriptEditor({document,getState:componentState,getSelection:()=>selection.size===1?selected:null,act,run,mutation,open:path=>browser.open(path),reveal:path=>{panels.openPanel('project');browser.reveal(path);},getRenderer,reportError});
@@ -349,7 +354,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
     selectEntity(id,options=false){select(id,options);},
     transformEntities(updates){return act(()=>run("scene.entities.update",mutation({updates,space:"world"})));},
     transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform:localTransform(state.project.scene.entities,entityId,transform)})));},
-    async saveAiSettings(value){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,...value}})));},
+    async saveAiSettings(value,options={}){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...(options.replace?{}:state.project.editor),...value}})));},
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     flushDraftSources:()=>ide.flush(),
     async synchronize(snapshot,options={}){if(options.replace)ide.reset();if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},

@@ -36,3 +36,7 @@ M18.2.1 (0.0.37) closes the scripting efficiency and preview UX correction with 
 M18.3 adds user-requested linked prefabs and four Players (estimated four scope points). Updated scope denominator is 130; M18.3 + prefab credit is contingent on real C# and browser acceptance. Potential closed total is 122/130 (~94%). M18.4 and M19 remain.
 
 M18.3 closure: 122/130 acceptance-weight points (~94%), including four added prefab/Player scope points. Two milestones remain: M18.4 GitHub and M19 hardening. See docs/reports/M18_3_CURRENT_REPORT.md; live PMD quality/cost is not inferred from controlled responses.
+
+M18.3.1 (0.0.39) corrects Create dispatch, ordinary Player instances, detached pointer input, prefab original ordering, PMD/Audio/JSON IDE UX and the supplied task-chain failure. No additional roadmap weight; current executable validation is tracked in M18_3_1_CURRENT_REPORT.md.
+
+M18.3.1 closure: CI234 passes 33/33 jobs, nine browser criteria, 303 Node tests on Linux/Windows, 39 Rust tests and real C# development/AOT. Correction complete (100%); scope and expanded completion remain 122/130 (~94%). PR #29 is draft/open/unmerged. M18.4 and M19 remain.

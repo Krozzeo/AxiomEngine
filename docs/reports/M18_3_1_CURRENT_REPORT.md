@@ -1,0 +1,23 @@
+# M18.3.1 — Create, Players and task-chain repair
+
+M18.3.1 (0.0.39) is complete: 9/9 browser acceptance groups, 100%; expanded MVP approximately 94% (122/130 acceptance-weight points). CI234 passes all 33 jobs at executable commit `5eb3924f9b0d716dc29c052eb583db3a2189ec65` (tree `fd7837a7009bcc16c30dffec58b659aedbcf3149`): 303 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and nine browser criteria with zero page errors. This correction adds no roadmap weight. Next milestones remain M18.4 GitHub integration and M19 hardening.
+
+The public command bus omitted scene.example.create even though the workspace implemented it. The route is now registered and regression tests call the real public bus for all four Players and nine implemented component presets. Audio Source creates a valid silent replaceable WAV when no audio asset exists; adding a listener disables the prior active listener. Planned Video and 3D Particles remain disabled.
+
+Create Players produces ordinary editable instances, not prefab links. An empty physical/script/audio root owns Graphics and, for 3D, Camera children. Freeze rotation is editable. First-person camera position follows the rotated body offset, including a 180-degree turn. Third-person TurnSpeed controls gradual facing. Mouse capture/movement are handled by the detached Game canvas's document; Escape and Stop release capture. Prefabs are created explicitly by dragging a Hierarchy subtree into Project. Original children remain a locked prefix; additional children can only follow that prefix. JSON files open in the multi-tab IDE; selecting prefab files no longer shows raw JSON below Project.
+
+Audio Source runtime controls stay inside its card; redundant runtime volume and JSON polling are removed. Scene draws forward arrows for cameras and directional lights. PMD operations are grouped under a compact Document control, leaving space for chat and document; its composer grows from one to ten lines before scrolling.
+
+## Supplied TasksChain analysis
+
+The first two tasks completed (39,670 and 121,240 tokens). The third failed after 120 requests/187 tools and 658,585 tokens. It repeatedly used invalid SDK/document-read arguments, guessed APIs, attempted RigidBody before Collider, and ran game tests while the live editor had not reached the proposal revision. Interleaved successful queries let invalid discovery attempts continue.
+
+The host supplies exact private schemas, actual movement/physics SDK contracts and entity component/parent summaries. Qualified SDK members resolve correctly. Invalid SDK/file reads return the correct schema; three invalid calls to the same contract stop the task even with intervening queries. Runtime verification waits for the connected editor to reach the exact proposal revision before dispatch. If the editor is unavailable, it stops and retains the authored proposal instead of spending provider turns on repeated checks. Failed checks are not reported as verified results. These controlled regressions establish bounded failure behavior, not a promised live token cost.
+
+## Validation
+
+All 33 CI234 jobs pass. Local cached-Wasm build, 296 non-server tests, schemas, tool catalog, bindings, architecture and daemon parity pass. Browser acceptance exercises real .NET Player workers, actual Create menu, Freeze rotation, prefab capture/order/JSON IDE, PMD layout, keyboard and detached pointer capture. No billable model requests are made by these automated checks.
+
+The browser test verifies a first-person 180-degree turn, third-person gradual facing, real pointer capture and camera response in detached Game, Escape release and shared Stop. Actual Inspector interaction reproduced the Freeze rotation bug: draw(false) restored the checkbox immediately before submit. Checkbox population now follows the existing updateFields guard; a local Inspector regression and native browser clicks pass. External test mutations synchronize to the rendered editor revision before drag/drop.
+
+Closure evidence: https://github.com/Krozzeo/AxiomEngine/actions/runs/38149587978. Browser artifact SHA256: `76de6cc0b9a0f2938709dd1c638813d23f592858bc93d2035c87efd75e052b56`. PMD and first-person screenshots were visually reviewed; structured evidence is in m18.3.1-browser-evidence.json. PR #29 remains draft/open/unmerged, stacked on #28. Documentation-only closure does not change the tested executable. Local Chromium cannot initialize; actual browser/.NET verification ran in CI. Only live-account model quality and billed token consumption require user measurement; controlled regressions establish bounded recovery and honest runtime checks.

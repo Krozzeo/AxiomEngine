@@ -68,10 +68,11 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   const decisions=new DecisionEvidence(),assetFailures=new Map();
   const keys=new Set();let mouseDelta=[0,0];
   const hasPlayer=()=>runtimeScene?.entities?.some(e=>e.scriptComponents?.some(c=>/Axiom(?:First|Third)PersonPlayer/.test(c.typeName??c.path??'')));
-  const mouseMove=event=>{if(!playing||testing||!hasPlayer()||(event.axiomView??view)!=='game')return;if(canvas.ownerDocument?.pointerLockElement===canvas){mouseDelta[0]=Math.max(-10000,Math.min(10000,mouseDelta[0]+(event.movementX??0)));mouseDelta[1]=Math.max(-10000,Math.min(10000,mouseDelta[1]+(event.movementY??0)));}};
+  const playerMouse=(event,source,sourceView)=>{if(!playing||testing||!hasPlayer()||sourceView!=='game'||source?.ownerDocument?.pointerLockElement!==source)return;mouseDelta[0]=Math.max(-10000,Math.min(10000,mouseDelta[0]+(event.movementX??0)));mouseDelta[1]=Math.max(-10000,Math.min(10000,mouseDelta[1]+(event.movementY??0)));};
+  const mouseMove=event=>playerMouse(event,canvas,event.axiomView??view);
   canvas.addEventListener('pointerdown',()=>{if(playing&&!testing&&view==='game'&&hasPlayer())void Promise.resolve(canvas.requestPointerLock?.()).catch(()=>{});});
   canvas.ownerDocument?.addEventListener?.('mousemove',mouseMove);
-  const keydown=event=>{if(event.code==='Escape'&&canvas.ownerDocument?.pointerLockElement===canvas)canvas.ownerDocument.exitPointerLock?.();if(!testing&&playing&&!twoDPaused&&(event.axiomView??event.target?.dataset?.parallelView??view)==='game'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
+  const keydown=event=>{if(event.code==='Escape')for(const source of [canvas,parallel?.get()?.canvas])if(source&&source.ownerDocument?.pointerLockElement===source)source.ownerDocument.exitPointerLock?.();if(!testing&&playing&&!twoDPaused&&(event.axiomView??event.target?.dataset?.parallelView??view)==='game'&&!/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName??"")&&keys.size<64&&/^(Key[A-Z]|Digit[0-9]|Arrow(Left|Right|Up|Down)|Space|ShiftLeft|ShiftRight)$/.test(event.code))keys.add(event.code);};
   const keyup=event=>keys.delete(event.code),blur=()=>{keys.clear();mouseDelta=[0,0];};
   globalThis.addEventListener?.("keydown",keydown);globalThis.addEventListener?.("keyup",keyup);globalThis.addEventListener?.("blur",blur);
   const uiPointer=event=>{if(testing||!playing||view!=='game'||!lastTwoDPlan)return;const rect=canvas.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-rect.left)*canvas.width/rect.width,(event.clientY-rect.top)*canvas.height/rect.height,lastTwoDPlan.pixel.viewport);if(!hit)return;event.preventDefault();event.stopImmediatePropagation();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;};
@@ -109,7 +110,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   }
   if(!device) stateElement.textContent=`Null Renderer · ${forceNull?"selected explicitly":"WebGPU unavailable"}`;
   gpuProfiler=createGpuProfiler(device,(sequence,ms,scopes,ticket)=>{if(profiler.attachGpuTiming(sequence,ms,scopes,ticket))gpuSample={frameSequence:sequence,milliseconds:ms};},(sequence,reason,ticket)=>profiler.gpuUnavailable(sequence,reason,ticket));
-  parallel=parallelView({device,gpu,pipeline,textureFor,getTexture:url=>textures.get(url??'white'),reportError,onPointer:(event,target,plan)=>{if(testing||!playing||target?.view!=='game'||!plan)return;const c=target.canvas,r=c.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-r.left)*c.width/r.width,(event.clientY-r.top)*c.height/r.height,plan.pixel.viewport);if(hit){event.preventDefault();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;}}});
+  parallel=parallelView({device,gpu,pipeline,textureFor,getTexture:url=>textures.get(url??'white'),reportError,onMouseMove:(event,target)=>playerMouse(event,target?.canvas,target?.view),onPointer:(event,target,plan)=>{if(playing&&!testing&&target?.view==='game'&&hasPlayer())void Promise.resolve(target.canvas.requestPointerLock?.()).catch(()=>{});if(testing||!playing||target?.view!=='game'||!plan)return;const c=target.canvas,r=c.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-r.left)*c.width/r.width,(event.clientY-r.top)*c.height/r.height,plan.pixel.viewport);if(hit){event.preventDefault();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;}}});
   async function textureFor(url) {
     const key=url??"white";
     if(textures.has(key))return textures.get(key);
@@ -156,7 +157,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     } finally {runtimeEditing=false;}
   }
   async function setSnapshot(snapshot,internalTest=false) {
-    if(!snapshot.playing&&canvas.ownerDocument?.pointerLockElement===canvas)canvas.ownerDocument.exitPointerLock?.();
+    if(!snapshot.playing)for(const source of [canvas,parallel?.get()?.canvas])if(source&&source.ownerDocument?.pointerLockElement===source)source.ownerDocument.exitPointerLock?.();
     if(!internalTest&&!testing&&snapshot.playing&&playing&&snapshot.project?.id===currentProject&&(snapshot.workspaceId??null)===workspaceId&&snapshot.project.scene.script?.build.id===runtimeScene.script?.build.id){
       const ticket=generation;snapshotLoading=true;
       try{while(frameInProgress)await new Promise(resolve=>setTimeout(resolve,1));if(ticket!==generation||disposed)return;currentSnapshot=structuredClone(snapshot);if(sceneRevision!==snapshot.sceneRevision){sceneRevision=snapshot.sceneRevision;profiler.reset({projectId:currentProject,sceneRevision,workspaceId,generation});}if(captureRequest){captureRequest.reject(new Error('Scene revision changed before capture'));captureRequest=null;}}

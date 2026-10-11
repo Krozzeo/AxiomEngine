@@ -31,6 +31,8 @@ public sealed class AxiomFirstPersonPlayer : MonoBehaviour {
   jumpWasDown=jump;
   Entity.SetVelocity(new Vector3(vx,vy,vz));
   Entity.SetRotation(Quaternion.Euler(new Vector3(0,yaw,0)));
+  var p=Entity.Transform.Position;
+  camera.SetPosition(new Vector3(p.X-0.35*Math.Sin(angle),p.Y+0.65,p.Z-0.35*Math.Cos(angle)));
   camera.SetRotation(Quaternion.Euler(new Vector3(pitch,yaw,0)));
  }
 }

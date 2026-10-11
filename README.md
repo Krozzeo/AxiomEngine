@@ -1,5 +1,11 @@
-<!-- Current release: M18.3 / 0.0.38; CI closure pending. -->
+<!-- Current release: M18.3 / 0.0.38. -->
 # Axiom Engine
+
+M18.3 (0.0.38) is complete: 8/8 browser acceptance groups, 100%; expanded MVP approximately 94% (122/130 acceptance-weight points, including the added prefab/Player scope). CI 229 passes all 33 jobs at executable commit `b2eb18cf4e4715d213263ccf1eee554d3b1886d5` (tree `e9d9caf3011d17a7e65ce90c86780f83bb9db192`): 287 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and eight new browser criteria with zero page errors.
+
+Assisted PMD provides linked documents, approval phases, history and reviewed imports/exports. Hierarchy-to-Project drag creates linked prefabs; Create → Players adds four physical C# controllers. Source precondition failures stop the AI loop immediately, and More info has a copy icon. Run `npm.cmd run demo:m18-3`; see [demo guide](demos/M18_3_GUIDE.md) and [current report](docs/reports/M18_3_CURRENT_REPORT.md). PR #28 remains draft/open/unmerged. Next: M18.4 GitHub, then M19 hardening. Only live-account/model PMD quality and billed usage require manual checking.
+
+Historical release notes below are superseded by this closure.
 
 Previous release M18.2.1 (0.0.37) is complete: 6/6 acceptance groups, 100%; expanded MVP remains approximately 88% (111/126). CI 219 passes all 32 jobs at executable commit `300d47405ee9bc0ec1c99e9dc131dd4733686831` (tree `761052eef1d16c1ea821b271a74a0c3f0c9a30eb`): 268 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and six new browser criteria with zero page errors.
 
@@ -258,4 +264,4 @@ bounded to 32 sampled frames and 30 seconds. See
 
 ## M18.3 delivery
 
-Assisted modular PMD and four linked prefab Players are implemented; real C# and browser CI closure is pending. Run `npm.cmd run demo:m18-3`. See [demo guide](demos/M18_3_GUIDE.md) and [current report](docs/reports/M18_3_CURRENT_REPORT.md). Next milestone: M18.4 GitHub integration.
+Assisted modular PMD and four linked prefab Players are complete; CI 229 passes all 33 jobs. Run `npm.cmd run demo:m18-3`. See [demo guide](demos/M18_3_GUIDE.md) and [current report](docs/reports/M18_3_CURRENT_REPORT.md). Next milestone: M18.4 GitHub integration.

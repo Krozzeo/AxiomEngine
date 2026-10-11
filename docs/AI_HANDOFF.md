@@ -1,6 +1,8 @@
 # Current work — M18.3 / 0.0.38
 
-Implementation of assisted PMD, source-readiness failure gate, More info copy and linked prefab Players is complete; release awaits real C# and browser CI. Read docs/reports/M18_3_CURRENT_REPORT.md and demos/M18_3_GUIDE.md first. Do not claim closure from local unit checks or merge automatically. Previous closure below is historical.
+M18.3 (0.0.38) is complete: 8/8 browser acceptance groups, 100%; expanded MVP approximately 94% (122/130 acceptance-weight points, including the added prefab/Player scope). CI 229 passes all 33 jobs at executable commit `b2eb18cf4e4715d213263ccf1eee554d3b1886d5` (tree `e9d9caf3011d17a7e65ce90c86780f83bb9db192`): 287 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and eight new browser criteria with zero page errors.
+
+Read docs/reports/M18_3_CURRENT_REPORT.md and demos/M18_3_GUIDE.md first. PR #28 is draft/open/unmerged, stacked on #27; do not merge automatically. The next implementation is M18.4 GitHub integration, then M19 hardening. PMD AI uses isolated proposals and section reads; approvals are human-only. Prefab original descendants are locked, root placement/script values are overrides, Desassemble/Undo detaches/restores. Four Player scripts are physical project files. Runtime SDK packets retain authored hierarchy IDs with world transforms; demo collider extents match geometry; Escape explicitly releases pointer capture. Local Chromium cannot initialize, so browser evidence is CI-based. Actual live model quality/cost remains account-specific. Previous closure notes below are historical.
 
 # Axiom Engine — context-free AI handoff
 

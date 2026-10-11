@@ -1,6 +1,6 @@
 # M18.3 — assisted Project Master Document
 
-Status: implemented; real C# and browser CI closure pending. Depends on M18.1 and M18.2. PMD begins closed, opens in center and is listed in Panels. Left chat/right structured document viewer have a draggable boundary. Manual reading/editing/import/export remains available offline; model-assisted actions require a tested connection.
+Status: complete; 8/8 browser acceptance groups, CI229 all 33 jobs passed. Depends on M18.1 and M18.2. PMD begins closed, opens in center and is listed in Panels. Left chat/right structured document viewer have a draggable boundary. Manual reading/editing/import/export remains available offline; model-assisted actions require a tested connection.
 
 The assistant opens with a short project question, then asks manageable batches to resolve ambiguity and omissions, offering recommendations with reasons and concrete improvements. Separate approved decisions, assumptions and unanswered questions. User may end definition explicitly. Next it plans deliverable Milestones grouped into Stages when warranted, for user approval/modification. Offer an optional objective critical-analysis round, iterating concrete problems/solutions. Finally construct an internally consistent document and roadmap; phases remain visible and revisitable.
 

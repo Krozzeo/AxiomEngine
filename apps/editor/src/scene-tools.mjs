@@ -9,7 +9,7 @@ export function mountSceneTools({document,canvas,getRenderer,editor,reportError}
  const boundsCache=new WeakMap();
  function corners(vertices){let bounds=boundsCache.get(vertices);if(!bounds){const lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(let i=0;i<vertices.length;i+=8)for(let j=0;j<3;j++){lo[j]=Math.min(lo[j],vertices[i+j]);hi[j]=Math.max(hi[j],vertices[i+j]);}bounds=[];for(let i=0;i<8;i++)bounds.push([0,1,2].map(j=>i&(1<<j)?hi[j]:lo[j]));boundsCache.set(vertices,bounds);}return bounds;}
  function data(){return getRenderer()?.interaction()??{scene:{entities:[]},draws:[],playing:false,view:'scene'};}
- function editable(){const d=data();return d.view==='scene'&&!d.playing&&!!d.projectId&&!editor.isBusy()&&selection.length>0;}
+ function editable(){const d=data();return d.view==='scene'&&!d.playing&&!!d.projectId&&!editor.isBusy()&&selection.length>0&&!selection.some(id=>{const e=d.scene.entities.find(e=>e.id===id);return e?.prefab&&e.prefab.rootId!==id;});}
  function entity(){return data().scene.entities.find(e=>e.id===selected);}
  function framedEntity(id){const entities=data().scene.entities,e=entities.find(e=>e.id===id);return e?{...e,transform:worldTransforms(entities).get(id)}:null;}
  function setCamera(c){camera=c;getRenderer()?.setEditorCamera(c);}

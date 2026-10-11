@@ -1,5 +1,5 @@
 import {playerExamples,createPlayerPrefab} from './player-prefabs.mjs';
-import {remapEntityReferences,assertPrefabMutation,prefabPayload} from '../../engine/scene/prefabs.mjs';
+import {remapEntityReferences,assertPrefabMutation,prefabPayload,capturePrefab} from '../../engine/scene/prefabs.mjs';
 import {materializeLegacyScripts,reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
 import {meshSettings} from '../../engine/assets/advanced.mjs';
 import {createHash} from 'node:crypto';
@@ -323,7 +323,7 @@ export class SceneWorkspace {
       if(!data.camera||typeof data.camera!=="object"||Array.isArray(data.camera))fail("AX_PROJECT_0002","Camera update must be an object");
       if(scene.cameraMode==='entities'){const e=scene.entities.find(e=>e.camera?.active);if(!e)fail('AX_SCENE_0001','No active Camera entity');for(const key of ['projection','fov','orthoHeight'])if(data.camera[key]!==undefined)e.camera[key]=data.camera[key];if(data.camera.position)e.transform.position=copy(data.camera.position);if(data.camera.target)e.transform.rotation=cameraRotation(e.transform.position,data.camera.target);}else scene.camera={projection:'perspective',position:[0,0,6],target:[0,0,0],orthoHeight:6,fov:60,...scene.camera,...data.camera};
     } else if(type==='project.files.edit'){
-      try{scene.projectFiles=editProjectFiles(scene,data);reconcileScriptComponents(scene);}catch(error){fail('AX_FS_0001',error.message);}
+      try{let captured=null;if(data.prefabRootId){if(data.action!=='create'||data.kind!=='json'||!data.path.endsWith('.prefab.json'))throw Error('Prefab capture requires a new .prefab.json file');captured=capturePrefab(scene,[data.prefabRootId]);data={...data,text:JSON.stringify(captured,null,2)};}scene.projectFiles=editProjectFiles(scene,data);if(captured)for(const entity of scene.entities)if(captured.entities.some(e=>e.id===entity.id))entity.prefab={path:data.path,rootId:data.prefabRootId};reconcileScriptComponents(scene);}catch(error){fail('AX_FS_0001',error.message);}
     } else if(type==='scene.entities.paste'){
       if(data.prefabPath){const file=projectFiles(scene).find(f=>f.path===data.prefabPath);try{data={...data,...prefabPayload(scene,file,data.parentId)};}catch(error){fail('AX_PREFAB_0001',error.message);}}
       if(!Array.isArray(data.entities)||!data.entities.length||data.entities.length>256)fail('AX_SCENE_0001','Copy up to 256 entities');

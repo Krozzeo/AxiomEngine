@@ -3756,6 +3756,10 @@
           "text": {
             "type": "string",
             "maxLength": 65536
+          },
+          "prefabRootId": {
+            "type": "string",
+            "pattern": "^entity://[0-9a-f-]{36}$"
           }
         },
         "required": [

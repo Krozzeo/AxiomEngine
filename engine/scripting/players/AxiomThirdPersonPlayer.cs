@@ -35,7 +35,7 @@ public sealed class AxiomThirdPersonPlayer : MonoBehaviour {
   Entity.SetVelocity(new Vector3(vx,vy,vz));
   if(Math.Abs(vx)+Math.Abs(vz)>0.001) {
    var target=-Math.Atan2(vx,-vz)*180/Math.PI;
-   var difference=(target-bodyYaw+540)%360-180;
+   var difference=((target-bodyYaw+180)%360+360)%360-180;
    bodyYaw+=Math.Clamp(difference,-TurnSpeed*deltaSeconds,TurnSpeed*deltaSeconds);
    Entity.SetRotation(Quaternion.Euler(new Vector3(0,bodyYaw,0)));
   }

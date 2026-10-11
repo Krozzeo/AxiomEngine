@@ -30,7 +30,7 @@ try{
  await page.locator('#orientation-widget circle[data-axis="1"][data-sign="1"]').click();await page.waitForTimeout(200);
  // Direction guides must follow provisional transforms before pointerup (including parented cameras).
  for(const guideId of [child.id,state.project.scene.entities.find(e=>e.light?.kind==='directional').id]){
-  await page.locator('[data-entity-id="'+guideId+'"] .entity').click();await page.locator('#tool-move').click();
+  await page.locator('[data-entity-id="'+guideId+'"] .entity').click();await page.keyboard.press('f');await page.waitForTimeout(200);await page.locator('#tool-move').click();
   const line=page.locator('#scene-overlay [data-direction="'+guideId+'"]');await line.waitFor({state:'attached'});await page.locator('#scene-overlay').waitFor({state:'visible'});
   for(const toolName of ['move','rotate']){report.guideCheck={guideId,toolName};
    await page.locator('#tool-'+toolName).click();await page.waitForTimeout(100);

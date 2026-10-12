@@ -1,6 +1,6 @@
 ## M18.3.4 live-account correction
 
-Implemented; full CI pending. [Current report](../reports/M18_3_4_CURRENT_REPORT.md). Fix the supplied Workflow Lab/PMD failures and improve history diagnostics before M18.4. No added scope weight; historical coverage remains 94%. Live-account success/cost is still separate acceptance.
+M18.3.4 / 0.0.42 is complete as an automated correction. CI249 passes all 35 jobs at executable commit 1399bcceb0acb531aa624cd014ba7ffd68f9b12a (tree 1ec7f4fd5918c20716dd79c03dda4e584252b67f): 333 Node tests on Linux and Windows, 39 Rust tests, real Linux development/AOT and Windows development C#, and five new live-trace/browser acceptance groups. Existing PMD/Player/editor acceptance passes in the same run. Historical MVP coverage remains approximately 94% (122/130). Live-model quality/cost requires account testing. M18.4 has not started; PR #33 stays draft/open/unmerged. Do not merge automatically. [Current report](../reports/M18_3_4_CURRENT_REPORT.md). Fix the supplied Workflow Lab/PMD failures and improve history diagnostics before M18.4. No added scope weight; historical coverage remains 94%. Live-account success/cost is still separate acceptance.
 
 ## M18.3.3 agent workflow repair
 

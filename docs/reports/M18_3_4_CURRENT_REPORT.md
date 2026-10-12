@@ -1,6 +1,6 @@
 # M18.3.4 / 0.0.42 — PMD recovery and live-trace repairs
 
-Status: implemented; final full CI/browser acceptance pending. This correction precedes M18.4. Historical MVP coverage remains approximately 94% (122/130); live-model cost/quality remains a separate acceptance dimension.
+Status: automated correction complete, 100%. CI249 passed all 35 jobs. This correction precedes M18.4. Historical MVP coverage remains approximately 94% (122/130); live-model cost/quality remains a separate acceptance dimension.
 
 ## Evidence and causes
 
@@ -21,6 +21,9 @@ PMD's document chat remains bounded for provider context; full recorded task his
 
 ## Validation
 
-73 focused tests pass, including the supplied failure shapes, numeric stages, actual phrase variants, retained warning/branch/Continue behavior and typed unions. Earlier broad local run: 325/332 pass; the seven unavailable tests rebuild the Rust kernel and require missing local Cargo. Cached-kernel editor build, catalog (88), bindings, 18 schemas, architecture, daemon parity and audit pass. Final executable tests run in CI, including a dedicated M18.3.4 browser acceptance case and existing PMD/Player/editor suites.
+CI249 passes all 35 jobs at executable commit 1399bcceb0acb531aa624cd014ba7ffd68f9b12a (tree 1ec7f4fd5918c20716dd79c03dda4e584252b67f). 333 Node tests pass on Linux and Windows, 39 Rust tests pass, and real C# Linux development/AOT and Windows development pass, alongside 26 isolated milestone browser jobs. Catalog, bindings, schemas, architecture, parity and audit pass; zero vulnerabilities.\n\n73 focused local tests pass, including the supplied failure shapes, numeric stages, actual phrase variants, retained warning/branch/Continue behavior and typed unions. Final broad local run: 326/333 pass; the seven unavailable tests rebuild the Rust kernel and require missing local Cargo. Cached-kernel editor build, catalog (88), bindings, 18 schemas, architecture, daemon parity and audit pass. Final executable tests pass in CI, including a dedicated M18.3.4 browser acceptance case and existing PMD/Player/editor suites.
 
 [Demo guide](../../demos/M18_3_4_GUIDE.md). Source is on codex/m18-3-4-pmd-recovery, stacked on the immutable M18.3.3 release; do not merge automatically. M18.4 remains next, after this repair is delivered and live-account behavior is checked.
+
+
+[CI249](https://github.com/Krozzeo/AxiomEngine/actions/runs/38314742960). [New browser evidence](https://github.com/Krozzeo/AxiomEngine/actions/runs/38314742960/artifacts/11775843544), ZIP SHA-256 14df0d124243042c166ea022fe3d0f2f3d63ffe19336df62de1154749d3c7966. Five new groups verify real authored M1/MAIN isolation, inline attachment controls/numeric stages, host phase navigation without roadmap regression, visible retained PMD errors/Continue, and response/origin/debug history copy/download. Ten existing PMD/Player groups also pass. The closure commit is documentation-only and does not change the tested executable. Prior controlled acceptance did not cover the live-model formats and phrases in these attachments; those shapes are now explicit regressions. No live paid calls were made, and no numeric cost saving is claimed.

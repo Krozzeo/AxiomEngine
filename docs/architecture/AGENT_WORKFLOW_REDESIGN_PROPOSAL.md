@@ -1,3 +1,5 @@
+> Historical research proposal. Implementation is now tracked in [M18.3.3](../reports/M18_3_3_CURRENT_REPORT.md); original live-model performance targets below remain unmeasured until account testing.
+
 # Agent workflow repair before M18.4 — research and design proposal
 
 Date: 2026-10-12. Status: research complete; architecture proposed, implementation pending. This is not a new completed milestone or a claim that the current assistant can reliably deliver arbitrary games. M18.4 remains deferred while this pillar is repaired.

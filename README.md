@@ -1,3 +1,9 @@
+# M18.3.3 / 0.0.41 — persistent verified agent workflow
+
+M18.3.3 / 0.0.41 is complete as an automated correction. CI246 passes all 34 jobs at executable commit `9f8a931cf93f714669f086b315d4868b6e8897e0` (tree `1785939561b2ece7c5a48a959902b8917777e454`): 326 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and five new workflow/browser criteria plus ten existing PMD/Player criteria. Historical expanded MVP coverage remains approximately 94% (122/130). Controlled adapters establish host behavior; live-model quality/cost remains an account-only validation. M18.4 has not started. PR #32 stays draft/open/unmerged. Do not merge automatically.
+
+Read [current report](docs/reports/M18_3_3_CURRENT_REPORT.md) and [demo guide](demos/M18_3_3_GUIDE.md). Work plans/receipts/history persist; authored checks control completion; scoped typed tools, bounded recovery and dimension conversion replace the failed discovery loop. PMD uses chat approval, reviewed attachments, Advance and shared More Info download/page controls. Prior release notes below are historical.
+
 # M18.3.2 / 0.0.40 — PMD conversation and live editor feedback
 
 M18.3.2 / 0.0.40 is complete, 100%. CI241 passed all 33 jobs at executable commit `b203852fb1832b3a84d0934604ee4d1902c00d21` (tree `36fb15cd16eff02fe18eb298af8226e7b4126d21`): 309 Node tests on Linux and Windows, 39 Rust tests, real .NET development/AOT and ten current browser criteria with zero page errors. PMD continuity, immediate prompts, shared formatting/composer/session meter, live direction guides and new-light shadow defaults are verified. Expanded MVP remains approximately 94% (122/130). Read [correction report](docs/reports/M18_3_2_CURRENT_REPORT.md) and [demo guide](demos/M18_3_2_GUIDE.md). PR #30 remains draft/open/unmerged. Next M18.4 GitHub integration, then M19 hardening. Previous release notes below are historical.

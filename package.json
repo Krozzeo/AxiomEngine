@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -61,7 +61,8 @@
     "demo:m18-1": "node demos/create-m18-1-projects.mjs",
     "test:browser:m18-1": "node tests/browser/m18-1.mjs",
     "demo:m18-3": "node demos/create-m18-3-projects.mjs",
-    "test:browser:m18-3": "node tests/browser/m18-3.mjs"
+    "test:browser:m18-3": "node tests/browser/m18-3.mjs",
+    "test:browser:m18-3-3": "node tests/browser/m18-3-3.mjs"
   },
   "dependencies": {
     "fflate": "0.8.3",

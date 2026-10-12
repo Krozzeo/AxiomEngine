@@ -1,3 +1,7 @@
+## M18.3.3 agent workflow repair
+
+Implementation complete; full acceptance pending. [Current report](../reports/M18_3_3_CURRENT_REPORT.md). Persisted verified work orders, typed tools, reconciled recovery, atomic dimension conversion, PMD natural-language phase transitions, attachments and full history UI precede M18.4. Historical 94% coverage remains; live-model success/cost and exact original M1 replay are separate checks.
+
 ## Agent workflow repair — proposed before M18.4
 
 The real user trace records 1,897,589 tokens without finishing M1. Current assistant acceptance does not establish milestone delivery reliability. M18.4 is deferred while the pillar is repaired. Read [the researched workflow proposal](AGENT_WORKFLOW_REDESIGN_PROPOSAL.md) and [trace metrics](../reports/AGENT_WORKFLOW_TRACE_METRICS.json). Workflow, natural-language PMD approval, chat attachments and associated UI corrections are pending implementation; fflate is updated compatibly to 0.8.3 on the research branch. Prior 94% coverage is historical, not a guarantee of usable autonomous development.

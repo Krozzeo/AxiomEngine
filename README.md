@@ -1,3 +1,7 @@
+# M18.3.3 / 0.0.41 — persistent verified agent workflow
+
+Implementation complete; full CI/browser closure pending. Read [current report](docs/reports/M18_3_3_CURRENT_REPORT.md) and [demo guide](demos/M18_3_3_GUIDE.md). Work plans/receipts/history persist; checks control implementation completion; typed contracts, bounded recovery and dimension conversion replace the failed discovery loop. PMD uses chat phase approval, reviewed attachments, Advance and shared More Info download/page controls. M18.4 has not started. Previous release notes are historical. Do not merge automatically.
+
 # M18.3.2 / 0.0.40 — PMD conversation and live editor feedback
 
 M18.3.2 / 0.0.40 is complete, 100%. CI241 passed all 33 jobs at executable commit `b203852fb1832b3a84d0934604ee4d1902c00d21` (tree `36fb15cd16eff02fe18eb298af8226e7b4126d21`): 309 Node tests on Linux and Windows, 39 Rust tests, real .NET development/AOT and ten current browser criteria with zero page errors. PMD continuity, immediate prompts, shared formatting/composer/session meter, live direction guides and new-light shadow defaults are verified. Expanded MVP remains approximately 94% (122/130). Read [correction report](docs/reports/M18_3_2_CURRENT_REPORT.md) and [demo guide](demos/M18_3_2_GUIDE.md). PR #30 remains draft/open/unmerged. Next M18.4 GitHub integration, then M19 hardening. Previous release notes below are historical.

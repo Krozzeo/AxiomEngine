@@ -1,3 +1,7 @@
+# M18.3.3 / 0.0.41 — persistent verified agent workflow
+
+Implementation complete; full CI/browser closure pending. Read [current report](reports/M18_3_3_CURRENT_REPORT.md) and [demo guide](../demos/M18_3_3_GUIDE.md). Work plans/receipts/history persist; checks control implementation completion; typed contracts, bounded recovery and dimension conversion replace the failed discovery loop. PMD uses chat phase approval, reviewed attachments, Advance and shared More Info download/page controls. M18.4 has not started. Previous release notes are historical. Do not merge automatically.
+
 # Current work — agent workflow research, 2026-10-12
 
 User requested a researched redesign before further milestones after a real gpt-5.6-luna/medium run consumed 1,897,589 tokens over 321 requests without finishing M1. Read architecture/AGENT_WORKFLOW_REDESIGN_PROPOSAL.md and reports/AGENT_WORKFLOW_TRACE_METRICS.json. This is a proposal, not a delivered workflow. No live paid requests were made. Complete trace omits 248 tool rows; actual M1 PMD/start snapshot are still needed for exact replay. Confirmed impossible rendering-to-2D removal through existing API, weak completion semantics, lossy checkpoints, incomplete traces and revision-sensitive loops. Next implement this repair and the requested PMD/UI/attachment changes before M18.4; do not merge automatically. fflate update to 0.8.3 fixes the audited moderate ZIP64 vulnerability; 22 relevant tests pass locally including bounded malicious ZIP extraction.

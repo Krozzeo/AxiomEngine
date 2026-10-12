@@ -128,7 +128,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.40" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.41" });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -138,7 +138,7 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.40" },
+          server: { name: "axiom-daemon-bootstrap", version: "0.0.41" },
           capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge","ai.assistant"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
@@ -146,6 +146,8 @@ export async function startServer(options = {}) {
 
       if(request.method==='POST'&&url.pathname==='/v1/pmd/import')return json(response,200,await extractPmdImport(await readJson(request)));
       if(request.method==='POST'&&url.pathname==='/v1/pmd/export'){const data=await readJson(request);return json(response,200,{base64:Buffer.from(exportPmd(data.pmd)).toString('base64')});}
+      if(request.method==='POST'&&url.pathname==='/v1/ai/attachments')return json(response,200,await assistant.attach(await readJson(request)));
+      if(request.method==='GET'&&url.pathname==='/v1/ai/history')return json(response,200,{text:assistant.exportHistory(),filename:'Axiom-AI-history.txt'});
       if(request.method==='GET'&&url.pathname==='/v1/ai/status')return json(response,200,assistant.status());
       if(request.method==='POST'&&url.pathname==='/v1/ai/configure')return json(response,200,await assistant.configure(await readJson(request)));
       if(request.method==='POST'&&url.pathname==='/v1/ai/tasks')return json(response,200,assistant.start(await readJson(request)));

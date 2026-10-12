@@ -1,0 +1,308 @@
+{
+  "status": "research observations; not an implemented workflow benchmark",
+  "source": {
+    "name": "TasksChain(1).txt",
+    "sha256": "572170dff5ed87af40d9f5a3a0445b87575e1f7132a574008393ad816f770fe2",
+    "model": "gpt-5.6-luna",
+    "reasoning": "medium",
+    "modelSource": "user confirmation"
+  },
+  "limitations": [
+    "348 visible tool rows vs 596 reported calls; last 96 retained for long tasks",
+    "No full arguments/results/state snapshots/assistant replies/PMD content",
+    "Cached input is included in input; reasoning is included in output",
+    "No dollar invoice can be inferred from these token counts"
+  ],
+  "tasks": [
+    {
+      "sequence": 1,
+      "status": "completed",
+      "toolsReported": 0,
+      "tokens": 2594,
+      "requests": 1,
+      "input": 2514,
+      "cached": 0,
+      "output": 80,
+      "reasoning": 0,
+      "visibleTools": 0,
+      "failedVisible": 0,
+      "counts": {}
+    },
+    {
+      "sequence": 2,
+      "status": "completed",
+      "toolsReported": 8,
+      "tokens": 12362,
+      "requests": 3,
+      "input": 10734,
+      "cached": 6266,
+      "output": 1628,
+      "reasoning": 437,
+      "visibleTools": 8,
+      "failedVisible": 0,
+      "counts": {
+        "project.master.read": 5,
+        "scene.query": 1,
+        "entity.query": 1,
+        "project.query": 1
+      }
+    },
+    {
+      "sequence": 3,
+      "status": "completed",
+      "toolsReported": 11,
+      "tokens": 43088,
+      "requests": 10,
+      "input": 41752,
+      "cached": 31533,
+      "output": 1336,
+      "reasoning": 587,
+      "visibleTools": 11,
+      "failedVisible": 2,
+      "counts": {
+        "project.master.read": 8,
+        "api.describe": 2,
+        "api.search": 1
+      }
+    },
+    {
+      "sequence": 4,
+      "status": "completed",
+      "toolsReported": 4,
+      "tokens": 9227,
+      "requests": 2,
+      "input": 8650,
+      "cached": 3900,
+      "output": 577,
+      "reasoning": 205,
+      "visibleTools": 4,
+      "failedVisible": 0,
+      "counts": {
+        "project.master.read": 4
+      }
+    },
+    {
+      "sequence": 5,
+      "status": "completed",
+      "toolsReported": 5,
+      "tokens": 28350,
+      "requests": 6,
+      "input": 27770,
+      "cached": 20361,
+      "output": 580,
+      "reasoning": 287,
+      "visibleTools": 5,
+      "failedVisible": 1,
+      "counts": {
+        "project.query": 1,
+        "api.describe": 2,
+        "project.master.read": 1,
+        "api.search": 1
+      }
+    },
+    {
+      "sequence": 6,
+      "status": "completed",
+      "toolsReported": 3,
+      "tokens": 19507,
+      "requests": 4,
+      "input": 18916,
+      "cached": 17964,
+      "output": 591,
+      "reasoning": 191,
+      "visibleTools": 3,
+      "failedVisible": 0,
+      "counts": {
+        "project.query": 1,
+        "project.master.read": 2
+      }
+    },
+    {
+      "sequence": 7,
+      "status": "failed",
+      "toolsReported": 29,
+      "tokens": 68405,
+      "requests": 14,
+      "input": 65165,
+      "cached": 46508,
+      "output": 3240,
+      "reasoning": 1044,
+      "visibleTools": 29,
+      "failedVisible": 4,
+      "counts": {
+        "project.master.read": 9,
+        "api.describe": 13,
+        "project.files.edit": 1,
+        "api.search": 1,
+        "script.sdk.read": 4,
+        "axiom_batch": 1
+      }
+    },
+    {
+      "sequence": 8,
+      "status": "completed",
+      "toolsReported": 78,
+      "tokens": 284779,
+      "requests": 54,
+      "input": 272289,
+      "cached": 189644,
+      "output": 12490,
+      "reasoning": 6403,
+      "visibleTools": 78,
+      "failedVisible": 17,
+      "counts": {
+        "project.master.read": 6,
+        "api.describe": 31,
+        "api.search": 3,
+        "project.query": 2,
+        "script.sdk.read": 2,
+        "scene.query": 6,
+        "entity.query": 3,
+        "scene.twoD.update": 15,
+        "scene.entity.delete": 3,
+        "scene.rendering.update": 7
+      }
+    },
+    {
+      "sequence": 9,
+      "status": "completed",
+      "toolsReported": 10,
+      "tokens": 20440,
+      "requests": 4,
+      "input": 19624,
+      "cached": 6622,
+      "output": 816,
+      "reasoning": 472,
+      "visibleTools": 10,
+      "failedVisible": 0,
+      "counts": {
+        "scene.query": 1,
+        "scene.primitive.create": 8,
+        "entity.query": 1
+      }
+    },
+    {
+      "sequence": 10,
+      "status": "completed",
+      "toolsReported": 5,
+      "tokens": 32259,
+      "requests": 6,
+      "input": 31498,
+      "cached": 24034,
+      "output": 761,
+      "reasoning": 462,
+      "visibleTools": 5,
+      "failedVisible": 1,
+      "counts": {
+        "project.master.read": 3,
+        "api.describe": 1,
+        "api.search": 1
+      }
+    },
+    {
+      "sequence": 11,
+      "status": "completed",
+      "toolsReported": 3,
+      "tokens": 21086,
+      "requests": 4,
+      "input": 20762,
+      "cached": 12987,
+      "output": 324,
+      "reasoning": 137,
+      "visibleTools": 3,
+      "failedVisible": 1,
+      "counts": {
+        "project.master.read": 1,
+        "api.describe": 1,
+        "api.search": 1
+      }
+    },
+    {
+      "sequence": 12,
+      "status": "failed",
+      "toolsReported": 135,
+      "tokens": 353257,
+      "requests": 53,
+      "input": 330252,
+      "cached": 139860,
+      "output": 23005,
+      "reasoning": 8116,
+      "visibleTools": 96,
+      "failedVisible": 10,
+      "counts": {
+        "runtime.status": 1,
+        "api.describe": 26,
+        "project.file.read": 3,
+        "project.master.read": 2,
+        "scene.query": 5,
+        "scene.entity.delete": 8,
+        "scene.entity.create": 12,
+        "scene.entity.update": 13,
+        "scene.camera.set": 2,
+        "scene.twoD.update": 8,
+        "entity.query": 13,
+        "scene.rendering.update": 2,
+        "scene.sprite2D.set": 1
+      }
+    },
+    {
+      "sequence": 13,
+      "status": "failed",
+      "toolsReported": 305,
+      "tokens": 1002235,
+      "requests": 160,
+      "input": 922652,
+      "cached": 480022,
+      "output": 79583,
+      "reasoning": 20142,
+      "visibleTools": 96,
+      "failedVisible": 15,
+      "counts": {
+        "api.describe": 30,
+        "asset.query": 3,
+        "entity.query": 33,
+        "scene.component.add": 3,
+        "scene.twoD.update": 11,
+        "project.file.read": 6,
+        "scene.component.remove": 2,
+        "scene.query": 4,
+        "project.files.edit": 1,
+        "scene.sprite2D.set": 2,
+        "scene.rendering.update": 1
+      }
+    }
+  ],
+  "tokens": 1897589,
+  "requests": 321,
+  "input": 1772578,
+  "cached": 979701,
+  "output": 125011,
+  "reasoning": 38483,
+  "toolsReported": 596,
+  "visibleTools": 348,
+  "failuresVisible": 51,
+  "toolCounts": {
+    "project.master.read": 41,
+    "scene.query": 17,
+    "entity.query": 51,
+    "project.query": 5,
+    "api.describe": 106,
+    "api.search": 8,
+    "project.files.edit": 2,
+    "script.sdk.read": 6,
+    "axiom_batch": 1,
+    "scene.twoD.update": 34,
+    "scene.entity.delete": 11,
+    "scene.rendering.update": 10,
+    "scene.primitive.create": 8,
+    "runtime.status": 1,
+    "project.file.read": 9,
+    "scene.entity.create": 12,
+    "scene.entity.update": 13,
+    "scene.camera.set": 2,
+    "scene.sprite2D.set": 3,
+    "asset.query": 3,
+    "scene.component.add": 3,
+    "scene.component.remove": 2
+  }
+}

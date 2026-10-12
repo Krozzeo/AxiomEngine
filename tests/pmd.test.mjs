@@ -14,3 +14,9 @@ test('selectable PDF text is extracted with fidelity warning, not executed or tr
 test('PMD conversation context includes every settled decision/question and current approval phase',()=>{
  const p=updatePmd(newPmd(),{decisions:Array.from({length:30},(_,i)=>({text:'Settled answer '+i,status:'proposed'})),questions:Array.from({length:15},(_,i)=>'New topic '+i)});assert.equal(selectedPmdContext(p).decisions.length,16);const all=selectedPmdContext(p,{conversation:true});assert.equal(all.decisions.length,30);assert.equal(all.questions.length,15);assert.equal(all.approvals.definition,false);assert.equal(selectedPmdContext(advancePmd(p,'approve-definition'),{conversation:true}).phase,'planning');
 });
+
+test('same-milestone refinement during document construction retains planning approval; new scope requires planning',()=>{
+ let p=updatePmd(newPmd(),{sections:[section('brief')],roadmap:[{id:'M1',stage:'1',title:'Base',deliverable:'Room',validation:'Play',status:'planned'}]});p=advancePmd(advancePmd(advancePmd(p,'approve-definition'),'approve-plan'),'skip-critique');
+ p=updatePmd(p,{roadmap:p.roadmap.map(m=>({...m,deliverable:'Room with the approved recommendations'}))});assert.equal(p.phase,'construction');assert.equal(p.approvals.planning,true);
+ p=updatePmd(p,{roadmap:[...p.roadmap,{...p.roadmap[0],id:'M2'}]});assert.equal(p.phase,'planning');
+});

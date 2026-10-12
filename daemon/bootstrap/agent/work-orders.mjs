@@ -15,22 +15,24 @@ export const workSchemas={
  'project.master.transition':{type:'object',additionalProperties:false,properties:{action:{type:'string',enum:['approve-definition','approve-plan','request-critique','skip-critique','finish-critique','finish','revisit']},userQuote:{type:'string',minLength:1,maxLength:1000},revision:{type:'integer',minimum:1}},required:['action','userQuote','revision']},
  'scene.dimension.convert':{type:'object',additionalProperties:false,properties:{dimension:{type:'integer',enum:[2,3]},dryRun:{type:'boolean'},removeIncompatible:{type:'boolean'}},required:['dimension','dryRun']}
 };
+const propertyPath=path=>path.split('.').map((part,index)=>index===0?({Transform:'transform',Material:'material',Collider:'collider',RigidBody:'rigidBody',Camera:'camera',Light:'light'}[part]??part):({Position:'position',Rotation:'rotation',Scale:'scale',x:'0',y:'1',z:'2',w:'3',X:'0',Y:'1',Z:'2',W:'3'}[part]??part)).join('.');
 const get=(value,path)=>{let next=value;for(const part of (path??'').split('.').filter(Boolean)){if(['__proto__','constructor','prototype'].includes(part)||next==null||!Object.hasOwn(next,part))return undefined;next=next[part];}return next;};
 export function setPlan(previous,args){
+ args={...args,steps:args.steps.map(s=>({...s,checks:s.checks.map(c=>c.kind==='entity'?{...c,property:propertyPath(c.property??'')}:c)}))};
  if(args.mode!=='discussion'&&!args.steps.length)throw workError('Implementation needs concrete deliverables and checks');
  const ids=new Set(args.steps.map(x=>x.id));if(ids.size!==args.steps.length)throw workError('Duplicate work step');
  for(const s of args.steps){for(const id of s.dependsOn??[])if(!ids.has(id)||id===s.id)throw workError('Invalid work dependency');for(const c of s.checks){if(['entity','file'].includes(c.kind)&&!c.selector)throw workError('Check requires a real entity/file selector');if(c.kind==='entity'&&!c.property)throw workError('Entity checks need a property and expected value');if(['entity','pmd'].includes(c.kind)&&!Object.hasOwn(c,'expected'))throw workError('Check needs an expected value');}}
  const visit=(id,path=new Set())=>{if(path.has(id))throw workError('Cyclic work plan');for(const d of args.steps.find(x=>x.id===id).dependsOn??[])visit(d,new Set([...path,id]));};for(const id of ids)visit(id);
  // Replanning cannot erase verified deliverables or quietly relax their checks.
- if(previous)for(const old of previous.steps){const next=args.steps.find(x=>x.id===old.id);if(!next||hash(old.checks)!==hash(next.checks))throw workError('Retain existing acceptance checks; add a repair step instead of removing requirements');}
- return {...args,steps:args.steps.map(s=>({...s,dependsOn:s.dependsOn??[],status:previous?.steps.find(x=>x.id===s.id)?.status??'todo',evidence:null}))};
+ if(previous)for(const old of previous.steps.filter(s=>s.status==='verified')){const next=args.steps.find(x=>x.id===old.id);if(!next||hash(old.checks)!==hash(next.checks))throw workError('Retain existing acceptance checks; add a repair step instead of removing requirements');}
+ return {...args,steps:args.steps.map(s=>({...s,checks:s.checks.map(c=>c.kind==='entity'?{...c,property:propertyPath(c.property)}:c),dependsOn:s.dependsOn??[],status:previous?.steps.find(x=>x.id===s.id)?.status??'todo',evidence:null}))};
 }
 export function checkStep(plan,id,project,{compilation,runtime}={}){
  const step=plan.steps.find(s=>s.id===id);if(!step)throw workError('Work step is unavailable');
  if(step.dependsOn.some(id=>plan.steps.find(s=>s.id===id).status!=='verified'))throw workError('Verify prerequisite steps first');
  const results=step.checks.map(c=>{
   let actual,ok=false;
-  if(c.kind==='entity'){const matches=project.scene.entities.filter(e=>e.id===c.selector||e.name===c.selector);if(matches.length===1)actual=get(matches[0],c.property);ok=matches.length===1&&JSON.stringify(actual)===JSON.stringify(c.expected);}
+  if(c.kind==='entity'){const matches=project.scene.entities.filter(e=>e.id===c.selector||e.name===c.selector);if(matches.length===1)actual=get(matches[0],c.property);if(matches.length===1&&['transform','renderable','material','collider','rigidBody','camera','light','sprite2D','light2D','audioSource','audioListener','animator','ui2D','scriptComponents'].includes(c.property)&&typeof c.expected==='boolean')actual=actual!==undefined;ok=matches.length===1&&JSON.stringify(actual)===JSON.stringify(c.expected);}
   if(c.kind==='file'){const f=projectFiles(project.scene).find(f=>f.path===c.selector);actual=f?hash(f.text??''):null;ok=!!f&&(c.expected===undefined||actual===c.expected)&&(c.contains===undefined||(f.text??'').includes(c.contains));}
   if(c.kind==='compile'){actual=compilation?.status;ok=actual==='completed'&&compilation.sourceHash===hash(projectFiles(project.scene).filter(f=>f.kind==='script').map(f=>[f.path,f.text]).sort((a,b)=>a[0].localeCompare(b[0])));}
   if(c.kind==='runtime'){actual=runtime?.status;ok=actual==='completed'&&runtime.verified===true;}

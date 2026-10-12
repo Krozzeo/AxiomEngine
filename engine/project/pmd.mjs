@@ -14,7 +14,7 @@ export function validatePmd(p){
  if(p.decisions.length>64||p.questions.length>32||p.roadmap.length>48||p.chat.length>40||p.history.length>6)fail('collection budget exceeded');
  for(const d of p.decisions)if(typeof d.text!=='string'||d.text.length>2000||!['approved','assumption','proposed','rejected'].includes(d.status))fail('invalid decision');
  for(const q of p.questions)if(typeof q!=='string'||q.length>2000)fail('invalid question');
- for(const m of p.roadmap)if(typeof m.id!=='string'||typeof m.stage!=='string'||typeof m.title!=='string'||typeof m.deliverable!=='string'||typeof m.validation!=='string'||!['planned','delivered'].includes(m.status)||[m.id,m.stage,m.title,m.deliverable,m.validation].some(v=>v.length>2000))fail('invalid milestone');
+ for(const [i,m] of p.roadmap.entries()){for(const field of ['id','stage','title','deliverable','validation'])if(typeof m?.[field]!=='string'||m[field].length>2000)fail('invalid milestone: roadmap['+i+'].'+field+' must be text (maximum 2000 characters)');if(!['planned','delivered'].includes(m.status))fail('invalid milestone: roadmap['+i+'].status must be planned or delivered');}
  if(new Set(p.roadmap.map(m=>m.id)).size!==p.roadmap.length)fail('duplicate milestone identity');
  for(const c of p.chat)if(!['user','assistant'].includes(c.role)||typeof c.text!=='string'||c.text.length>8000)fail('invalid chat entry');
  if(size(p.chat)>24000||size(p.history)>65000||size(p)>140000)fail('document/history budget exceeded');
@@ -25,7 +25,7 @@ export function pmdIndex(p){return p.sections.map(({id,title,parentId,links})=>(
 function checkpoint(p,label){const {history,...snapshot}=clone(p);const list=[...p.history,{revision:p.revision,label:label.slice(0,160),snapshot}].slice(-6);while(size(list)>65000)list.shift();return list;}
 export function updatePmd(previous,patch,label='Edit document'){
  validatePmd(previous);const next=clone(previous);for(const key of Object.keys(patch))if(!['sections','decisions','questions','roadmap','chat'].includes(key))fail('patch cannot change '+key);
- if(Object.entries(patch).every(([key,value])=>JSON.stringify(previous[key])===JSON.stringify(value)))return next;Object.assign(next,clone(patch));if(patch.roadmap&&JSON.stringify(patch.roadmap)!==JSON.stringify(previous.roadmap)&&next.approvals.planning){next.approvals.planning=false;next.phase=next.approvals.definition?'planning':'definition';}next.history=checkpoint(previous,label);next.revision++;validatePmd(next);return next;
+ if(Object.entries(patch).every(([key,value])=>JSON.stringify(previous[key])===JSON.stringify(value)))return next;Object.assign(next,clone(patch));const identities=list=>list.map(m=>m.id).sort().join('\n');if(patch.roadmap&&JSON.stringify(patch.roadmap)!==JSON.stringify(previous.roadmap)&&next.approvals.planning&&(previous.phase==='ready'||identities(patch.roadmap)!==identities(previous.roadmap))){next.approvals.planning=false;next.phase=next.approvals.definition?'planning':'definition';}next.history=checkpoint(previous,label);next.revision++;validatePmd(next);return next;
 }
 export function advancePmd(previous,action){const next=clone(previous);next.history=checkpoint(previous,'Workflow: '+action);next.revision++;
  if(action==='approve-definition'&&next.phase==='definition'){next.approvals.definition=true;next.decisions=next.decisions.map(d=>d.status==='proposed'?{...d,status:'approved'}:d);next.phase='planning';}

@@ -1,3 +1,7 @@
+# M18.3.4 / 0.0.42 — PMD recovery and live-trace repair
+
+Implementation complete; full CI/browser acceptance pending. Read [current report](reports/M18_3_4_CURRENT_REPORT.md) and [demo guide](../demos/M18_3_4_GUIDE.md). Human phase navigation is host-owned; numeric stages and SDK-style check aliases are supported; PMD errors retain chat/preview and Continue is usable. More Info captures chat origin, metadata and responses. Historical 94% MVP coverage remains; real-model quality/cost needs account testing. M18.4 has not started. Do not merge automatically. Prior notes below are historical.
+
 # M18.3.3 / 0.0.41 — persistent verified agent workflow
 
 M18.3.3 / 0.0.41 is complete as an automated correction. CI246 passes all 34 jobs at executable commit `9f8a931cf93f714669f086b315d4868b6e8897e0` (tree `1785939561b2ece7c5a48a959902b8917777e454`): 326 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and five new workflow/browser criteria plus ten existing PMD/Player criteria. Historical expanded MVP coverage remains approximately 94% (122/130). Controlled adapters establish host behavior; live-model quality/cost remains an account-only validation. M18.4 has not started. PR #32 stays draft/open/unmerged. Do not merge automatically.

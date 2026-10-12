@@ -5,9 +5,11 @@ export const agentError=(code,message)=>Object.assign(new Error(message),{code})
 export function validate(schema,value,path='arguments',depth=0) {
  const fail=()=>{throw agentError('AX_AGENT_0001',`Invalid ${path}`);};
  if(depth>24)fail();
+ if(Array.isArray(schema.type)){let matched=false;for(const type of schema.type){try{validate({...schema,type},value,path,depth+1);matched=true;break;}catch{}}if(!matched)fail();return;}
  if(schema.const!==undefined&&value!==schema.const)fail();
  if(schema.enum&&!schema.enum.includes(value))fail();
  switch(schema.type){
+ case 'null':if(value!==null)fail();break;
  case 'object':
   if(!value||typeof value!=='object'||Array.isArray(value))fail();
   for(const key of schema.required??[])if(!Object.hasOwn(value,key))fail();

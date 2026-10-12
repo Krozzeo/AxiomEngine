@@ -1,10 +1,12 @@
 ## M18.3.3 agent workflow repair
 
-Implementation complete; full acceptance pending. [Current report](../reports/M18_3_3_CURRENT_REPORT.md). Persisted verified work orders, typed tools, reconciled recovery, atomic dimension conversion, PMD natural-language phase transitions, attachments and full history UI precede M18.4. Historical 94% coverage remains; live-model success/cost and exact original M1 replay are separate checks.
+M18.3.3 / 0.0.41 is complete as an automated correction. CI246 passes all 34 jobs at executable commit `9f8a931cf93f714669f086b315d4868b6e8897e0` (tree `1785939561b2ece7c5a48a959902b8917777e454`): 326 Node tests on Linux and Windows, 39 Rust tests, real C# Linux development/AOT and Windows development, and five new workflow/browser criteria plus ten existing PMD/Player criteria. Historical expanded MVP coverage remains approximately 94% (122/130). Controlled adapters establish host behavior; live-model quality/cost remains an account-only validation. M18.4 has not started. PR #32 stays draft/open/unmerged. Do not merge automatically.
 
-## Agent workflow repair — proposed before M18.4
+[Current report](../reports/M18_3_3_CURRENT_REPORT.md). This is a repair of the existing agent/PMD scope; no extra MVP weight is added.
 
-The real user trace records 1,897,589 tokens without finishing M1. Current assistant acceptance does not establish milestone delivery reliability. M18.4 is deferred while the pillar is repaired. Read [the researched workflow proposal](AGENT_WORKFLOW_REDESIGN_PROPOSAL.md) and [trace metrics](../reports/AGENT_WORKFLOW_TRACE_METRICS.json). Workflow, natural-language PMD approval, chat attachments and associated UI corrections are pending implementation; fflate is updated compatibly to 0.8.3 on the research branch. Prior 94% coverage is historical, not a guarantee of usable autonomous development.
+## Historical agent workflow research baseline
+
+The real user trace records 1,897,589 tokens without finishing M1. Current assistant acceptance does not establish milestone delivery reliability. M18.4 is deferred while the pillar is repaired. Read [the researched workflow proposal](AGENT_WORKFLOW_REDESIGN_PROPOSAL.md) and [trace metrics](../reports/AGENT_WORKFLOW_TRACE_METRICS.json). These workflow/PMD/UI changes and the compatible fflate 0.8.3 patch are implemented in M18.3.3. The original live-model performance targets remain account-only acceptance. Prior 94% coverage is historical, not a guarantee of usable autonomous development.
 
 ## M18.3.2 correction before GitHub integration
 

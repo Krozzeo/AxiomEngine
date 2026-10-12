@@ -1,3 +1,7 @@
+## Agent workflow repair — proposed before M18.4
+
+The real user trace records 1,897,589 tokens without finishing M1. Current assistant acceptance does not establish milestone delivery reliability. M18.4 is deferred while the pillar is repaired. Read [the researched workflow proposal](AGENT_WORKFLOW_REDESIGN_PROPOSAL.md) and [trace metrics](../reports/AGENT_WORKFLOW_TRACE_METRICS.json). Workflow, natural-language PMD approval, chat attachments and associated UI corrections are pending implementation; fflate is updated compatibly to 0.8.3 on the research branch. Prior 94% coverage is historical, not a guarantee of usable autonomous development.
+
 ## M18.3.2 correction before GitHub integration
 
 Complete, 100%; CI241 passed 33/33 jobs, ten current browser criteria. PMD and AI Assistant share the session-token meter. Repaired PMD repeated-question behavior: use authoritative current document/chat and complete decision context; record firm answers once, keep only unresolved questions, separate settled answers from one human phase approval. Optimistic PMD prompt display, shared safe Markdown and composer styling, live camera/light direction guides and shadow-enabled new lights. No scope weight added. M18.4 remains next, not started.

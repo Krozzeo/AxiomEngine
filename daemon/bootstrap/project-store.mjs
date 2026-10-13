@@ -43,7 +43,7 @@ export class ProjectStore {
   async importLegacy(sourceRoot){
     const legacy=new ProjectStore(sourceRoot),items=(await legacy.run('project.list',{})).projects,imported=[];
     for(const entry of items){await this.directory();if(this.locations.has(entry.id))continue;const document=(await legacy.run('project.open',{id:entry.id})).project;
-      const folder=join(this.root,document.name.replace(/[\/<>:\"|?*\\\u0000-\u001f]/g,'_').replace(/[. ]+$/,'')+' ('+entry.id.slice(10,18)+')');
+      const folder=join(this.root,(document.name.startsWith('.')?'_'+document.name:document.name).replace(/[\/<>:\"|?*\\\u0000-\u001f]/g,'_').replace(/[. ]+$/,'')+' ('+entry.id.slice(10,18)+')');
       await mkdir(folder);try{const destination=join(folder,entry.id.slice(10)+'.json');await cp(join(sourceRoot,legacy.filename(entry.id)),destination,{errorOnExist:true,force:false});
         for(const extension of ['.assets','.scripts']){const source=join(sourceRoot,legacy.filename(entry.id).replace(/\.json$/,extension));try{await verifyTree(source);await cp(source,join(folder,legacy.filename(entry.id).replace(/\.json$/,extension)),{recursive:true,errorOnExist:true,force:false});}catch(e){if(e.code!=='ENOENT')throw e;}}
         this.locations.set(entry.id,join(folder.split(/[\\/]/).at(-1),entry.id.slice(10)+'.json'));await this.read(destination);imported.push(entry.id);

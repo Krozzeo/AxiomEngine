@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import {readFile,writeFile,rename,mkdir,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
-import {projectFiles} from '../../../engine/scene/project-files.mjs';
+import {projectPath,projectFiles} from '../../../engine/scene/project-files.mjs';
 export const hash=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
 export const workError=(message,code='AX_AI_WORK_BLOCKED')=>Object.assign(Error(message),{code});
 export const workSchemas={
@@ -21,6 +21,7 @@ export function validateChecks(checks,project){
  for(const c of checks){
   if(c.kind==='script-assigned'&&(typeof c.selector!=='string'||typeof c.expected!=='string'||!c.expected.endsWith('.cs')))throw workError('Script assignment needs an entity selector and expected physical .cs path.');
   if(c.kind==='file'){
+   try{projectPath(c.selector);}catch{throw workError('File check needs a portable project path, for example Scripts/WorkshopMotion.cs.');}
    if(typeof c.selector!=='string'||!c.selector||/\\\\|(?:^|\/)\.\.(?:\/|$)|\/$/.test(c.selector)||['Assets','Scripts','Scenes'].includes(c.selector)||projectFiles(project?.scene??{}).some(f=>f.path===c.selector&&f.kind==='folder'))throw workError('File check needs a file path, not a directory: '+c.selector+'. Use Scripts/WorkshopMotion.cs.');
    if(c.expected!==undefined&&typeof c.expected!=='boolean'&&!(typeof c.expected==='string'&&/^[a-f0-9]{64}$/.test(c.expected)))throw workError('File expected must be an existence boolean or an exact SHA-256 hash; contains checks compare text independently.');
    if(c.contains!==undefined&&(typeof c.contains!=='string'||!c.contains))throw workError('File contains requires nonempty case-sensitive text.');
@@ -45,7 +46,7 @@ export function checkStep(plan,id,project,{compilation,runtime}={}){
  if(step.dependsOn.some(id=>plan.steps.find(s=>s.id===id).status!=='verified'))throw workError('Verify prerequisite steps first');
  const results=step.checks.map(c=>{
   let actual,ok=false;
-  if(c.kind==='entity'){const matches=project.scene.entities.filter(e=>e.id===c.selector||e.name===c.selector);if(matches.length===1)actual=get(matches[0],c.property);if(matches.length===1&&['transform','renderable','material','collider','rigidBody','camera','light','sprite2D','light2D','audioSource','audioListener','animator','ui2D','scriptComponents'].includes(c.property)&&typeof c.expected==='boolean')actual=actual!==undefined;ok=matches.length===1&&JSON.stringify(actual)===JSON.stringify(c.expected);}
+  if(c.kind==='entity'){const matches=project.scene.entities.filter(e=>e.id===c.selector||e.name===c.selector);if(matches.length===1)actual=get(matches[0],c.property);if(matches.length===1&&[...componentNames,'prefab'].includes(c.property)&&typeof c.expected==='boolean')actual=actual!==undefined;ok=matches.length===1&&JSON.stringify(actual)===JSON.stringify(c.expected);}
   if(c.kind==='file'){const f=projectFiles(project.scene).find(f=>f.path===c.selector&&f.kind!=='folder');const exists=!!f,contentMatches=c.contains===undefined||exists&&(f.text??'').includes(c.contains),fileHash=f?hash(f.text??''):null;actual=typeof c.expected==='boolean'?exists:fileHash;ok=(typeof c.expected==='boolean'?exists===c.expected:exists&&(c.expected===undefined||fileHash===c.expected))&&contentMatches;return {...c,actual,predicates:{exists,contentMatches,hash:fileHash,hashMatches:typeof c.expected==='string'?fileHash===c.expected:null},passed:ok,...(!ok?{reason:!exists?'File is missing':!contentMatches?'Case-sensitive content is missing':'File hash/existence differs',repair:!exists?'Create the planned file or correct the file path':'Read this file once and correct its contents or the invalid predicate; do not recompile unchanged code'}:{})};}
   if(c.kind==='script-assigned'){const entities=project.scene.entities.filter(e=>e.id===c.selector||e.name===c.selector);actual=entities.length===1?entities[0].scriptComponents?.map(v=>v.path)??[]:null;ok=entities.length===1&&actual.includes(c.expected)&&projectFiles(project.scene).some(f=>f.path===c.expected&&f.kind==='script');}
   if(c.kind==='compile'){actual=compilation?.status;ok=actual==='completed'&&compilation.sourceHash===hash(projectFiles(project.scene).filter(f=>f.kind==='script').map(f=>[f.path,f.text]).sort((a,b)=>a[0].localeCompare(b[0])));}

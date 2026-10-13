@@ -29,7 +29,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   let hierarchyScrolling=false,hierarchyPaint=null;
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
   const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project});
-  const hub=mountHub({document,api,getState:()=>state,create:data=>switchProject('project.create',data),open:id=>switchProject('project.open',{id}),reportError});
+  const hub=mountHub({document,api,getState:()=>state,create:async data=>{if(!await act(()=>switchProject('project.create',data)))throw Error($('project-error').textContent||'Project creation failed');},open:async id=>{if(!await act(()=>switchProject('project.open',{id})))throw Error($('project-error').textContent||'Project opening failed');},reportError});
   function draw(updateFields = true) {
     hub.update();
     $("editor-workspace").setAttribute("aria-busy",String(busy));

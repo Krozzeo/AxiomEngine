@@ -1,3 +1,5 @@
+import packageData from '../../package.json' with {type:'json'};
+import {HubSettings,axiomApplications} from './hub-settings.mjs';
 import {extractPmdImport,exportPmd} from './pmd-import.mjs';
 import {OpenAiAssistant} from './agent/openai-assistant.mjs';
 import {openEditor} from './open-editor.mjs';
@@ -8,7 +10,7 @@ import {EditorBridge} from './agent/editor-bridge.mjs';
 import { createHash, randomBytes } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import { createServer as createHttpServer } from "node:http";
-import { extname, join, resolve } from "node:path";
+import { extname, join, resolve, relative, isAbsolute } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CommandBus } from "./command-bus.mjs";
 import { SceneWorkspace } from "./scene-workspace.mjs";
@@ -77,13 +79,14 @@ function mime(path) {
 export async function startServer(options = {}) {
   await ensureEditorBuild();
   const token = options.token ?? randomBytes(32).toString("base64url");
-  const workspace = new SceneWorkspace(new ProjectStore(options.projectRoot ?? join(ROOT, ".axiom/projects")));
+  const hubSettings=new HubSettings(options.hubSettings);const configured=options.projectRoot?{projectRoot:options.projectRoot}:await hubSettings.load();
+  const workspace = new SceneWorkspace(new ProjectStore(configured.projectRoot,{folders:!options.projectRoot||options.projectFolders===true}));
   const bus = new CommandBus({ projects: workspace });
   const proposals=new ProposalManager(workspace);await proposals.initialize();
   const view={get project(){return proposals.active.project;},get revision(){return proposals.active.revision;},get workspaceId(){return proposals.previewId;},snapshot:()=>proposals.view()};
   const bridge=new EditorBridge(view,error=>bus.recordError(error));
   bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;
-  const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,...(options.assistantOptions??{})});await assistant.ready;bus.agentService.assistant=assistant;
+  const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,...(!options.projectRoot?{sessionPath:join(hubSettings.settingsRoot,'assistant-session.json')}:{}) ,...(options.assistantOptions??{})});await assistant.ready;bus.agentService.assistant=assistant;
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();
@@ -128,7 +131,7 @@ export async function startServer(options = {}) {
         }catch{return json(response,404,{code:"AX_SCRIPT_0001"});}
       }
       if (request.method === "GET" && url.pathname === "/health") {
-        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: "0.0.42" });
+        return json(response, 200, { status: "ok", service: "axiom-daemon-bootstrap", version: packageData.version });
       }
 
       if (request.method === "GET" && url.pathname === "/v1/handshake") {
@@ -138,7 +141,7 @@ export async function startServer(options = {}) {
         return json(response, 200, {
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
-          server: { name: "axiom-daemon-bootstrap", version: "0.0.42" },
+          server: { name: "axiom-daemon-bootstrap", version: packageData.version },
           capabilities: [...tools.map(t=>"command."+t.name),"events.delta","diagnostics.trace","agent.tools","editor.bridge","ai.assistant"],
           limits: { requestBytes: BODY_LIMIT, importBytes: IMPORT_LIMIT, retainedEvents: 512, retainedTraces: 128 }
         });
@@ -148,6 +151,15 @@ export async function startServer(options = {}) {
       if(request.method==='POST'&&url.pathname==='/v1/pmd/export'){const data=await readJson(request);return json(response,200,{base64:Buffer.from(exportPmd(data.pmd)).toString('base64')});}
       if(request.method==='POST'&&url.pathname==='/v1/ai/attachments')return json(response,200,await assistant.attach(await readJson(request)));
       if(request.method==='GET'&&url.pathname==='/v1/ai/history')return json(response,200,{text:assistant.exportHistory(),filename:'Axiom-AI-history.txt'});
+      if(url.pathname==='/v1/hub'){
+        if(request.method==='GET')return json(response,200,{version:packageData.version,applications:axiomApplications,projectRoot:workspace.store.root,projects:(await workspace.store.run('project.list',{})).projects,legacyRoot:join(ROOT,'.axiom/projects')});
+        if(request.method==='POST'){const data=await readJson(request);if(workspace.project||assistant.active)throw Error('Close the project before changing Hub storage or deleting projects');
+          if(data.action==='delete'){if(data.confirm!==true)throw Error('Project deletion requires confirmation');for(const item of [...proposals.items.values()].filter(v=>v.base.id===data.id)){if(proposals.busy(item)||item.child.playing)throw Error('Stop the project proposal and finish its jobs before deletion');await proposals.run('workspace.reject',{workspaceId:item.id,expectedWorkspaceRevision:item.child.revision},{actor:{kind:'human',id:'hub'}});}const result=await workspace.store.run('project.delete',{id:data.id,confirm:data.confirm});return json(response,200,result);}
+          if(data.action==='import-legacy'){if(!workspace.store.folders)throw Error('Select persistent folder storage first');return json(response,200,await workspace.store.importLegacy(join(ROOT,'.axiom/projects')));}
+          if(data.action==='configure'){if(proposals.items.size)throw Error('Resolve retained proposals before switching project storage');if(typeof data.projectRoot!=='string'||!data.projectRoot.trim())throw Error('Enter a valid project storage path');const previous=workspace.store.root,next=resolve(data.projectRoot);if(next===ROOT||(!relative(ROOT,next).startsWith('..')&&!isAbsolute(relative(ROOT,next))))throw Error('Choose a project directory outside the application files');workspace.store.root=next;workspace.store.folders=true;try{await workspace.store.directory();await proposals.initialize();await hubSettings.save(next);}catch(error){workspace.store.root=previous;await proposals.initialize();throw error;}return json(response,200,{projectRoot:next});}
+          throw Error('Unknown Hub action');
+        }
+      }
       if(request.method==='GET'&&url.pathname==='/v1/ai/status')return json(response,200,assistant.status());
       if(request.method==='POST'&&url.pathname==='/v1/ai/configure')return json(response,200,await assistant.configure(await readJson(request)));
       if(request.method==='POST'&&url.pathname==='/v1/ai/tasks')return json(response,200,assistant.start(await readJson(request)));

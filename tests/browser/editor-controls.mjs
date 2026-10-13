@@ -1,5 +1,7 @@
 // Follow the current UI through real clicks; older milestone contracts remain tested.
-export async function control(page,selector){const removeLabels={'#camera-remove':'Camera','#light-remove':'Light','#material-remove':'Material','#script-remove':'Script','#collider-remove':'Collider','#rigidbody-remove':'RigidBody'};
+export async function control(page,selector){
+ if(await page.locator('#axiom-hub').isVisible()){if(selector==='#project-list')return {selectOption:async id=>{await page.locator('[data-project-id=\"'+id+'\"]').click();}};const map={'#project-name':'#hub-project-name','#project-new':'#hub-create','#project-open':'#hub-open','#project-refresh':'#hub-refresh'};if(map[selector])return page.locator(map[selector]);const dimension=selector.match(/input\[name=\"project-dimension\"\]\[value=\"([^\"]+)\"\]/);if(dimension)return {check:()=>page.locator('#hub-dimension').selectOption(dimension[1])};}
+const removeLabels={'#camera-remove':'Camera','#light-remove':'Light','#material-remove':'Material','#script-remove':'Script','#collider-remove':'Collider','#rigidbody-remove':'RigidBody'};
  const mapped=removeLabels[selector]?'.property-close[aria-label="Remove '+removeLabels[selector]+'"]':selector;const locator=page.locator(mapped);
  if(!/-cancel/.test(selector))await page.waitForFunction(()=>document.querySelector("#editor-workspace").getAttribute("aria-busy")==="false");
  if(/^#script-(mode|compile)/.test(selector)&&await locator.isHidden()){await page.locator('#panels-menu > summary').click();await page.locator('#panels-menu [data-open-panel="ide"]').click();}

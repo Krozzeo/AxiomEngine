@@ -1,3 +1,4 @@
+import {mountHub} from './hub.mjs';
 import {isPrefab,prefabPayload} from '../../../engine/scene/prefabs.mjs';
 import {runtimeEditableTypes} from '../../../engine/scene/runtime-edit.mjs';
 import {mountCompileController} from './compile-controller.mjs';
@@ -16,7 +17,7 @@ import {localTransform} from '../../../engine/scene/hierarchy.mjs';
 import {quaternionFromEuler,eulerFromQuaternion} from './view-math.mjs';
 import {mountAnimationEditor} from './animation-editor.mjs';
 import {materialDefaults,renderingDefaults} from '../../../engine/renderer/render-plan.mjs';
-export function mountProjectEditor({ document, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, onSelection=()=>{},onView=()=>{},onLocate=()=>{},getRenderer=()=>null, defaultScript = "" }) {
+export function mountProjectEditor({ document, api=null, send, reportError, confirmDiscard = () => confirm("Discard unsaved scene changes?"), onDirty = () => {}, onState = async () => {}, onSelection=()=>{},onView=()=>{},onLocate=()=>{},getRenderer=()=>null, defaultScript = "" }) {
   const $ = id => document.querySelector(`#${id}`);
   const supported = ["project.create", "project.open", "project.list", "scene.get", "scene.save", "scene.entity.create", "scene.entity.update", "scene.entity.delete", "scene.undo", "scene.redo", "asset.import", "asset.get", "scene.asset.place", "scene.camera.update", "play.start", "play.stop", "project.close"];
   let enabled = false, pipelineEnabled=false, currentJob=null;
@@ -28,7 +29,9 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
   let hierarchyScrolling=false,hierarchyPaint=null;
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
   const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project});
+  const hub=mountHub({document,api,getState:()=>state,create:data=>switchProject('project.create',data),open:id=>switchProject('project.open',{id}),reportError});
   function draw(updateFields = true) {
+    hub.update();
     $("editor-workspace").setAttribute("aria-busy",String(busy));
     const project = state.project;const nextAmbientScope=JSON.stringify([project?.id,state.workspaceId??null]);if(nextAmbientScope!==ambientScope){ambientScope=nextAmbientScope;ambientDraft=null;}if(!busy)panels.set(project?.editor);
     const scene=state.playing?getRenderer()?.interaction?.().scene??project?.scene:project?.scene;
@@ -371,7 +374,7 @@ export function mountProjectEditor({ document, send, reportError, confirmDiscard
       pipelineEnabled=["asset.job.start","asset.job.get","asset.job.cancel","asset.explain"].every(c=>capabilities.includes(`command.${c}`));
       enabled = supported.every(command => capabilities.includes(`command.${command}`));
       draw();
-      if (enabled) await act(async () => { await list(); await run("scene.get"); });
+      if (enabled){await act(async () => { await list(); await run("scene.get"); });await hub.connect();}
     }
   };
 }

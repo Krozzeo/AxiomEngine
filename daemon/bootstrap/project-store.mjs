@@ -1,6 +1,7 @@
+import packageData from '../../package.json' with {type:'json'};
 import { randomUUID } from "node:crypto";
 import { constants } from "node:fs";
-import { mkdir, realpath, open, lstat, readdir, rename, rm } from "node:fs/promises";
+import { mkdir, realpath, open, lstat, readdir, rename, rm, cp } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 import { validateProject, preserveExtensions, projectError } from "../../protocol/src/project-document.mjs";
 
@@ -8,18 +9,18 @@ const MAX_BYTES = 192 * 1024;
 const idPattern = /^project:\/\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/;
 
 export class ProjectStore {
-  constructor(root) { this.root = resolve(root); }
+  constructor(root,{folders=false}={}) { this.root = resolve(root); this.folders=folders;this.locations=new Map(); }
 
   async directory() {
     await mkdir(this.root, { recursive: true });
     if ((await lstat(this.root)).isSymbolicLink()) throw projectError("AX_FS_0001", "Project root cannot be a link");
-    return realpath(this.root);
+    const root=await realpath(this.root);if(this.folders){this.locations.clear();for(const entry of await readdir(root)){if(entry.startsWith('.'))continue;const folder=join(root,entry),info=await lstat(folder);if(!info.isDirectory()||info.isSymbolicLink())continue;for(const name of await readdir(folder))if(/^[0-9a-f-]{36}\.json$/.test(name)){const id='project://'+name.slice(0,-5);if(this.locations.has(id))throw projectError("AX_PROJECT_0002","Duplicate persistent project ID");this.locations.set(id,join(entry,name));}}}return root;
   }
 
   filename(id) {
     const match = typeof id === "string" && id.match(idPattern);
     if (!match) throw projectError("AX_FS_0001", "Expected project ID, not a filesystem path");
-    return `${match[1]}.json`;
+    return this.locations.get(id)??`${match[1]}.json`;
   }
 
   async read(path) {
@@ -33,9 +34,21 @@ export class ProjectStore {
       try { document = JSON.parse(await handle.readFile("utf8")); }
       catch { throw projectError("AX_PROJECT_0002", "Project JSON cannot be parsed"); }
       validateProject(document);
-      if (this.filename(document.id) !== basename(path)) throw projectError("AX_PROJECT_0002", "Project identity does not match its file");
+      if (basename(this.filename(document.id)) !== basename(path)) throw projectError("AX_PROJECT_0002", "Project identity does not match its file");
       return document;
     } finally { await handle.close(); }
+  }
+
+
+  async importLegacy(sourceRoot){
+    const legacy=new ProjectStore(sourceRoot),items=(await legacy.run('project.list',{})).projects,imported=[];
+    for(const entry of items){await this.directory();if(this.locations.has(entry.id))continue;const document=(await legacy.run('project.open',{id:entry.id})).project;
+      const folder=join(this.root,document.name.replace(/[\/<>:\"|?*\\\u0000-\u001f]/g,'_').replace(/[. ]+$/,'')+' ('+entry.id.slice(10,18)+')');
+      await mkdir(folder);try{const destination=join(folder,entry.id.slice(10)+'.json');await cp(join(sourceRoot,legacy.filename(entry.id)),destination,{errorOnExist:true,force:false});
+        for(const extension of ['.assets','.scripts']){const source=join(sourceRoot,legacy.filename(entry.id).replace(/\.json$/,extension));try{await verifyTree(source);await cp(source,join(folder,legacy.filename(entry.id).replace(/\.json$/,extension)),{recursive:true,errorOnExist:true,force:false});}catch(e){if(e.code!=='ENOENT')throw e;}}
+        this.locations.set(entry.id,join(folder.split(/[\\/]/).at(-1),entry.id.slice(10)+'.json'));await this.read(destination);imported.push(entry.id);
+      }catch(error){await rm(folder,{recursive:true,force:true});throw error;}
+    }return {imported};
   }
 
   async run(type, data) {
@@ -43,32 +56,34 @@ export class ProjectStore {
     const directory = await this.directory();
     if (type === "project.list") {
       const projects = [];
-      const files = (await readdir(directory)).filter(name => /^[0-9a-f-]{36}\.json$/.test(name)).sort();
+      const files = this.folders?[...this.locations.values()].sort():(await readdir(directory)).filter(name => /^[0-9a-f-]{36}\.json$/.test(name)).sort();
       if (files.length > 256) throw projectError("AX_PROJECT_0002", "Project listing exceeds 256 entries");
       for (const file of files) {
         const document = await this.read(join(directory, file));
-        projects.push({ id: document.id, name: document.name, revision: document.revision });
+        projects.push({ id: document.id, name: document.name, revision: document.revision,createdWithVersion:document.axiom?.createdWithVersion??null,lastSavedWithVersion:document.axiom?.lastSavedWithVersion??null,applicationId:document.axiom?.applicationId??'game-engine',path:join(directory,file),formatVersion:document.schemaVersion });
       }
       return { projects };
     }
     let document;
     const id = type === "project.create" ? `project://${randomUUID()}` : data.id;
+    if(type==='project.create'&&this.folders){let folder=String(data.name??'').replace(/[\/<>:"|?*\\\u0000-\u001f]/g,'_').replace(/[. ]+$/,'').trim();if(folder.startsWith('.'))folder='_'+folder;if(!folder||folder==='.'||folder==='..')throw projectError('AX_PROJECT_0002','Invalid project name');if(/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(folder))folder='_'+folder;try{await mkdir(join(directory,folder));}catch(e){if(e.code!=='EEXIST')throw e;folder+=' ('+id.slice(10,18)+')';await mkdir(join(directory,folder));}this.locations.set(id,join(folder,id.slice(10)+'.json'));}
     const path = join(directory, this.filename(id));
     if (type === "project.open") return { project: await this.read(path) };
+    if(type==='project.delete'){if(data.confirm!==true)throw projectError('AX_PROJECT_0002','Project deletion requires confirmation');await this.read(path);if(this.folders&&!this.locations.has(id))throw projectError('AX_FS_0001','Unknown project folder');await rm(this.folders?join(directory,this.filename(id).split(/[\\/]/)[0]):path,{recursive:this.folders,force:false});if(!this.folders)for(const extension of ['.assets','.scripts'])await rm(path.replace(/\.json$/,extension),{recursive:true,force:true});this.locations.delete(id);return {deleted:id};}
     if (!["project.create", "project.save"].includes(type)) throw projectError("AX_COMMAND_0002", "Unknown project command");
     let lock;
     const temporary = `${path}.${randomUUID()}.tmp`;
     try {
       lock = await open(`${path}.lock`, "wx", 0o600);
       if (type === "project.create") {
-        document = { schemaVersion: 1, id, name: data.name, revision: 0, scene: { schemaVersion: 1, id: `scene://${randomUUID()}`, entities: [] } };
+        document = { schemaVersion: 1, id, name: data.name, revision: 0, axiom:{applicationId:'game-engine',createdWithVersion:packageData.version,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: { schemaVersion: 1, id: `scene://${randomUUID()}`, entities: [] } };
       } else {
         const previous = await this.read(path);
         if (!Number.isSafeInteger(data.expectedRevision) || data.expectedRevision !== previous.revision) throw projectError("AX_PROJECT_0003", "Project revision conflict; reopen before saving");
         if (data.scene?.id !== previous.scene.id) throw projectError("AX_PROJECT_0002", "Scene identity cannot change during save");
         // Validate supplied known fields before preserving extensions.
         validateProject({ ...previous, scene: data.scene, ...(data.editor?{editor:data.editor}:{}) });
-        document = { ...previous, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
+        document = { ...previous, axiom:{...previous.axiom,applicationId:previous.axiom?.applicationId??'game-engine',createdWithVersion:previous.axiom?.createdWithVersion??null,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
       }
       validateProject(document);
       const bytes = JSON.stringify(document, null, 2) + "\n";
@@ -86,3 +101,5 @@ export class ProjectStore {
     }
   }
 }
+
+async function verifyTree(path){const info=await lstat(path);if(info.isSymbolicLink()||info.isFile()&&info.nlink!==1)throw projectError('AX_FS_0001','Legacy resources cannot contain links');if(info.isDirectory())for(const name of await readdir(path))await verifyTree(join(path,name));}

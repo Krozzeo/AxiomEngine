@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-13",
+  "snapshots": {
+    "browser": {
+      "repo": "browser-use/browser-use",
+      "sha": "c75e8476e26d18b7617643bc2ae082fae8eae431",
+      "tree": "d884bd8b7c24db71c448295108a33340c7c67abf"
+    },
+    "unity": {
+      "repo": "CoplayDev/unity-mcp",
+      "sha": "142ea0af4890337f0ff6658df61db23982313717",
+      "tree": "c4334eaad51eb515d08811356084e1c005df3954"
+    },
+    "blender": {
+      "repo": "ahujasid/mcp-for-blender",
+      "sha": "7a0373ec9199183cb460068c4f96aed9c579fb4f",
+      "tree": "f15cafed967cee94554d9c3009e7abcbeeb5ebb4"
+    },
+    "ufo": {
+      "repo": "microsoft/UFO",
+      "sha": "a795552d976c4c019d7c2f778a0effb5cef7de6b",
+      "tree": "82d1fd793460003f15c7e7feb2c608c9dc83e816"
+    }
+  },
+  "limitations": [
+    "Exact upstream methods executed with controlled collaborators, not full applications.",
+    "No live provider calls, full upstream suites or model-quality benchmark.",
+    "Legacy Unity transport replay finding does not establish behavior of its HTTP PluginHub.",
+    "Global cache reproduction is scoped to direct calls without external invalidation.",
+    "UFO aggregate result mismatch does not establish application-wide false success."
+  ]
+}

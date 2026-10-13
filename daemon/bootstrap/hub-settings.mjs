@@ -3,7 +3,7 @@ import {join,resolve} from 'node:path';
 import {readFile,mkdir,writeFile,rename} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 export function documentsFolder({platform=process.platform,home=homedir(),env=process.env,run=execFileSync}={}){
- if(platform==='win32'){try{const path=run('powershell.exe',['-NoProfile','-NonInteractive','-Command','[Environment]::GetFolderPath("MyDocuments")'],{encoding:'utf8',windowsHide:true,timeout:5000}).trim();if(path)return path;}catch{}}
+ if(platform==='win32'){try{const path=run('powershell.exe',['-NoProfile','-NonInteractive','-Command','[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new(); [Environment]::GetFolderPath("MyDocuments")'],{encoding:'utf8',windowsHide:true,timeout:5000}).trim();if(path)return path;}catch{}}
  return env.XDG_DOCUMENTS_DIR?.replace('$HOME',home)??join(home,'Documents');
 }
 export class HubSettings {

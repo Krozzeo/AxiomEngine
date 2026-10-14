@@ -12,9 +12,15 @@ export class ProjectStore {
   constructor(root,{folders=false}={}) { this.root = resolve(root); this.folders=folders;this.locations=new Map(); }
 
   async directory() {
+    if(this.directoryFlight)return this.directoryFlight;
+    const flight=this.scanDirectory();this.directoryFlight=flight;
+    try{return await flight;}finally{if(this.directoryFlight===flight)this.directoryFlight=null;}
+  }
+
+  async scanDirectory() {
     await mkdir(this.root, { recursive: true });
     if ((await lstat(this.root)).isSymbolicLink()) throw projectError("AX_FS_0001", "Project root cannot be a link");
-    const root=await realpath(this.root);if(this.folders){this.locations.clear();for(const entry of await readdir(root)){if(entry.startsWith('.'))continue;const folder=join(root,entry),info=await lstat(folder);if(!info.isDirectory()||info.isSymbolicLink())continue;for(const name of await readdir(folder))if(/^[0-9a-f-]{36}\.json$/.test(name)){const id='project://'+name.slice(0,-5);if(this.locations.has(id))throw projectError("AX_PROJECT_0002","Duplicate persistent project ID");this.locations.set(id,join(entry,name));}}}return root;
+    const root=await realpath(this.root);if(this.folders){const locations=new Map();for(const entry of await readdir(root)){if(entry.startsWith('.'))continue;const folder=join(root,entry),info=await lstat(folder);if(!info.isDirectory()||info.isSymbolicLink())continue;for(const name of await readdir(folder))if(/^[0-9a-f-]{36}\.json$/.test(name)){const id='project://'+name.slice(0,-5);if(locations.has(id))throw projectError("AX_PROJECT_0002","Duplicate persistent project ID");locations.set(id,join(entry,name));}}this.locations=locations;}return root;
   }
 
   filename(id) {

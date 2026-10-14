@@ -1,6 +1,8 @@
 # M18.3.5 / 0.0.43 — agent reliability and persistent Hub
 
-Implemented; complete CI validation is pending. Typed checks and central semantic progress address the supplied M2 loop; PMD builds progressively through a host-owned section queue; Hub stores projects outside release folders and preserves creation/save versions. No paid model evaluation or cost reduction is claimed. Historical MVP coverage remains ~94%; additional Hub scope is unweighted. M18.4 is deferred. Do not merge automatically. Read [current report](reports/M18_3_5_CURRENT_REPORT.md) and [demo guide](../demos/M18_3_5_GUIDE.md). Earlier release notes below are historical.
+M18.3.5 / 0.0.43 is complete as an automated correction. CI260 passes all 36 jobs at executable commit 6f5a756044e769264d0f47b9f5c2a79293f9e92d (tree 29ba8605c69c43ec4adcacd3338f9cf1cc392434): 354 Node tests on Linux and Windows, 39 Rust tests, real Linux development/AOT and Windows development C#, and all 27 browser groups. Four new acceptance groups cover persistent Hub, live PMD construction, repaired M2 with real runtime evidence, and Apply/Save/reopen/Play with visible GPU geometry. No paid model calls or measured live cost improvement are claimed. Historical MVP coverage remains approximately 94% (122/130); Hub is added, unweighted scope. M18.4 has not started. PR #34 stays draft/open/unmerged; do not merge automatically. Read [current report](reports/M18_3_5_CURRENT_REPORT.md) and [demo guide](../demos/M18_3_5_GUIDE.md). Earlier release notes below are historical.
+
+Authoritative source: codex/m18-3-5-agent-hub, PR #34, stacked on #33. The tested local executable tree matches the remote tree above. Closure changes only four Markdown documents. Preserve user project banks and retained proposals. Live-model acceptance and actual Windows Documents/redirection across release folders remain user-environment checks before M18.4.
 
 # M18.3.4 / 0.0.42 — PMD recovery and live-trace repair
 

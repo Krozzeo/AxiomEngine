@@ -1,6 +1,7 @@
-## M18.3.5 implementation — validation pending
+## M18.3.5 — automated acceptance complete
 
-Implemented the researched contracts/progress/PMD repair and persistent Hub. Read [current report](../reports/M18_3_5_CURRENT_REPORT.md). Full CI and live-model acceptance are distinct; no real-model cost improvement is claimed. Historical coverage remains ~94%, with Hub scope outside that denominator. M18.4 remains deferred; do not merge automatically.
+M18.3.5 / 0.0.43 is complete as an automated correction. CI260 passes all 36 jobs at executable commit 6f5a756044e769264d0f47b9f5c2a79293f9e92d (tree 29ba8605c69c43ec4adcacd3338f9cf1cc392434): 354 Node tests on Linux and Windows, 39 Rust tests, real Linux development/AOT and Windows development C#, and all 27 browser groups. Four new acceptance groups cover persistent Hub, live PMD construction, repaired M2 with real runtime evidence, and Apply/Save/reopen/Play with visible GPU geometry. No paid model calls or measured live cost improvement are claimed. Historical MVP coverage remains approximately 94% (122/130); Hub is added, unweighted scope. M18.4 has not started. PR #34 stays draft/open/unmerged; do not merge automatically. [Current report](../reports/M18_3_5_CURRENT_REPORT.md). The research-day pending-scope notes below are historical; Hub and the researched host repairs are now implemented. Live-model quality/cost is a separate acceptance gate.
+
 
 ## 2026-10-13 live reliability investigation and added Hub scope
 

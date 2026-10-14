@@ -41,11 +41,11 @@ export class ProjectStore {
 
 
   async importLegacy(sourceRoot){
-    const source=await lstat(sourceRoot);if(!source.isDirectory()||source.isSymbolicLink())throw projectError('AX_FS_0001','Import source must be an existing ordinary directory');const flat=(await readdir(sourceRoot)).some(name=>/^[0-9a-f-]{36}\.json$/.test(name));const legacy=new ProjectStore(sourceRoot,{folders:!flat}),items=(await legacy.run('project.list',{})).projects,imported=[];
+    const sourceInfo=await lstat(sourceRoot);if(!sourceInfo.isDirectory()||sourceInfo.isSymbolicLink())throw projectError('AX_FS_0001','Choose an existing ordinary projects directory');const entries=await readdir(sourceRoot);const legacy=new ProjectStore(sourceRoot,{folders:!entries.some(name=>/^[0-9a-f-]{36}\.json$/.test(name))}),items=(await legacy.run('project.list',{})).projects,imported=[];
     for(const entry of items){await this.directory();if(this.locations.has(entry.id))continue;const document=(await legacy.run('project.open',{id:entry.id})).project;
       const folder=join(this.root,(document.name.startsWith('.')?'_'+document.name:document.name).replace(/[\/<>:\"|?*\\\u0000-\u001f]/g,'_').replace(/[. ]+$/,'')+' ('+entry.id.slice(10,18)+')');
       await mkdir(folder);try{const destination=join(folder,entry.id.slice(10)+'.json');await cp(join(sourceRoot,legacy.filename(entry.id)),destination,{errorOnExist:true,force:false});
-        for(const extension of ['.assets','.scripts']){const source=join(sourceRoot,legacy.filename(entry.id).replace(/\.json$/,extension));try{await verifyTree(source);await cp(source,join(folder,legacy.filename(entry.id).split(/[\\/]/).at(-1).replace(/\.json$/,extension)),{recursive:true,errorOnExist:true,force:false});}catch(e){if(e.code!=='ENOENT')throw e;}}
+        for(const extension of ['.assets','.scripts']){const source=join(sourceRoot,legacy.filename(entry.id).replace(/\.json$/,extension));try{await verifyTree(source);await cp(source,join(folder,basename(legacy.filename(entry.id)).replace(/\.json$/,extension)),{recursive:true,errorOnExist:true,force:false});}catch(e){if(e.code!=='ENOENT')throw e;}}
         this.locations.set(entry.id,join(folder.split(/[\\/]/).at(-1),entry.id.slice(10)+'.json'));await this.read(destination);imported.push(entry.id);
       }catch(error){await rm(folder,{recursive:true,force:true});throw error;}
     }return {imported};

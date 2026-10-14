@@ -20,7 +20,7 @@ The host finishes when required sections and roadmap checks are satisfied. You s
 
 Without an open project the Hub is shown. Create a disposable 2D/3D/Empty project, close it through File and reopen it from Hub. Check folder/version display. Cancel a delete prompt and confirm that the project remains; delete the disposable project when finished.
 
-Configure a storage root while no project/proposal is active. This selects another repository of projects; it does not move previous ones. On Windows the default resolves the OS Documents folder, including redirection. Copy older checkout projects with Import previous projects, then open one. Older/unknown versions warn before opening; opening itself does not migrate or rewrite it.
+Configure a storage root while no project/proposal is active. This selects another repository of projects; it does not move previous ones. On Windows the default resolves the OS Documents folder, including redirection. Enter the older release’s .axiom/projects folder in the import path and copy with Import previous projects, then open one. Older/unknown versions warn before opening; opening itself does not migrate or rewrite it.
 
 ## Optional measured live evaluator
 

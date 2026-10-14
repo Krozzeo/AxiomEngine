@@ -54,11 +54,11 @@ export class ProposalManager {
    const persisted=await this.main.store.run('project.open',{id:item.base.id});if(persisted.project.revision!==item.base.revision)throw fail('Saved project changed in another daemon');
    validateProject(item.child.project);await item.child.validateResources(item.child.project.scene);
    const created=[],directories=[];try{
-    const root=await this.main.store.directory(),stem=this.main.store.filename(item.base.id).replace(/\.json$/,'');
-    const assets=join(item.root,stem+'.assets');
+    const root=await this.main.store.directory(),stem=this.main.store.filename(item.base.id).replace(/\.json$/,''),childStem=item.child.store.filename(item.base.id).replace(/\.json$/,'');
+    const assets=join(item.root,childStem+'.assets');
     try{await lstat(assets);await promote(assets,join(root,stem+'.assets'),created,undefined,(item.child.project.scene.assets??[]).map(a=>(a.sourceId??a.id).slice(8)+'.bin'),directories);}catch(e){if(e.code!=='ENOENT')throw e;}
     const build=item.child.project.scene.script?.build;
-    if(build&&build.id!==item.base.scene.script?.build.id){await destinationFolder(join(root,stem+'.scripts'),directories);await promote(join(item.root,stem+'.scripts',build.id),join(root,stem+'.scripts',build.id),created,undefined,['manifest.json','publish'],directories);}
+    if(build&&build.id!==item.base.scene.script?.build.id){await destinationFolder(join(root,stem+'.scripts'),directories);await promote(join(item.root,childStem+'.scripts',build.id),join(root,stem+'.scripts',build.id),created,undefined,['manifest.json','publish'],directories);}
 
     if(this.items.get(item.id)!==item||item.child.revision!==data.expectedWorkspaceRevision||this.main.project?.id!==item.base.id||this.main.revision!==item.baseSceneRevision||this.main.playing||this.main.activeJob||this.main.activeScriptJob)throw fail('Source or proposal changed during publication');
     this.main.commitScene(structuredClone(item.child.project.scene));
@@ -76,13 +76,13 @@ export class ProposalManager {
   if(digest(this.main.project)!==digest(item.base)&&data.replaceMain!==true)throw fail('MAIN changed since the proposal began. Apply replaces all later MAIN changes; explicit replacement confirmation is required');
   await item.journalFlight;validateProject(item.child.project);await item.child.validateResources(item.child.project.scene);
   const persisted=await this.main.store.run('project.open',{id:item.base.id});if(persisted.project.revision!==this.main.project.revision)throw fail('Saved MAIN changed in another daemon');
-  const root=await this.main.store.directory(),stem=this.main.store.filename(item.base.id).replace(/\.json$/,''),recoveryId=randomUUID(),recoveryRoot=await folder(join(root,'.recoveries'));
+  const root=await this.main.store.directory(),stem=this.main.store.filename(item.base.id).replace(/\.json$/,''),childStem=item.child.store.filename(item.base.id).replace(/\.json$/,''),recoveryId=randomUUID(),recoveryRoot=await folder(join(root,'.recoveries'));
   // Snapshot is durable before publishing. Existing MAIN resource bytes are retained.
   await writeJson(join(recoveryRoot,recoveryId+'.json'),{id:recoveryId,project:structuredClone(this.main.project),time:new Date().toISOString()});
   const created=[],directories=[];
   try{
-   const assets=join(item.root,stem+'.assets');try{await lstat(assets);await promote(assets,join(root,stem+'.assets'),created,undefined,(item.child.project.scene.assets??[]).map(a=>(a.sourceId??a.id).slice(8)+'.bin'),directories);}catch(e){if(e.code!=='ENOENT')throw e;}
-   const build=item.child.project.scene.script?.build;if(build&&build.id!==item.base.scene.script?.build.id){await destinationFolder(join(root,stem+'.scripts'),directories);await promote(join(item.root,stem+'.scripts',build.id),join(root,stem+'.scripts',build.id),created,undefined,['manifest.json','publish'],directories);}
+   const assets=join(item.root,childStem+'.assets');try{await lstat(assets);await promote(assets,join(root,stem+'.assets'),created,undefined,(item.child.project.scene.assets??[]).map(a=>(a.sourceId??a.id).slice(8)+'.bin'),directories);}catch(e){if(e.code!=='ENOENT')throw e;}
+   const build=item.child.project.scene.script?.build;if(build&&build.id!==item.base.scene.script?.build.id){await destinationFolder(join(root,stem+'.scripts'),directories);await promote(join(item.root,childStem+'.scripts',build.id),join(root,stem+'.scripts',build.id),created,undefined,['manifest.json','publish'],directories);}
    if(this.main.revision!==data.expectedMainRevision||digest(this.main.project)!==data.mainHash||item.child.revision!==data.expectedWorkspaceRevision||this.busy(item)||this.main.activeJob||this.main.activeScriptJob)throw fail('Branches changed during publication');
    const next=structuredClone(item.child.project);next.revision=this.main.project.revision;
    this.main.past.push(structuredClone(this.main.project.scene));this.main.future=[];this.main.project=next;this.main.pendingEditor=true;this.main.revision++;

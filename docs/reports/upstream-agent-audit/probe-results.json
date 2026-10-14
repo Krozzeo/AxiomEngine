@@ -1,0 +1,83 @@
+{
+  "method": "Exact AST methods with controlled collaborators; no full applications or paid APIs",
+  "results": [
+    {
+      "name": "browser_counts_undispatched_batch_tail",
+      "observed": [
+        "navigate",
+        "click"
+      ],
+      "expected": [
+        "navigate"
+      ],
+      "risk": "False loop evidence: proposed click is recorded although only navigation ran."
+    },
+    {
+      "name": "browser_multi_action_failure_resets_failure_count",
+      "observed": 0,
+      "expected": "Retain failure/stall evidence for the failed operation",
+      "risk": "A partially successful batch bypasses the consecutive single-action failure limit; soft loop nudges remain."
+    },
+    {
+      "name": "browser_negative_judge_keeps_self_reported_success",
+      "observed": {
+        "success": true,
+        "judge": false
+      },
+      "expected": "Separate self-report from authoritative acceptance",
+      "risk": "Intentional upstream telemetry design; cannot use self-report as Axiom verified status."
+    },
+    {
+      "name": "unity_batch_limit_cache_crosses_instances",
+      "observed": {
+        "limits": [
+          1,
+          1
+        ],
+        "editor_reads": [
+          1
+        ]
+      },
+      "expected": {
+        "limits": [
+          1,
+          20
+        ],
+        "editor_reads": [
+          1,
+          20
+        ]
+      },
+      "risk": "Global cache has no instance key; second instance can inherit first instance limit until invalidated."
+    },
+    {
+      "name": "unity_legacy_replays_mutation_after_lost_response",
+      "observed": {
+        "dispatches": 2,
+        "response": {
+          "created": true
+        }
+      },
+      "expected": "Reconcile operation ID before replaying a mutation",
+      "risk": "Exact legacy sender repeats identical payload after ambiguous receive timeout; fake endpoint represents a committed first mutation."
+    },
+    {
+      "name": "blender_queued_mutation_runs_after_client_disconnect",
+      "observed": {
+        "executions": 1,
+        "interval": 0.05
+      },
+      "expected": "Explicit queued/running/committed state and cancellation semantics",
+      "risk": "Disconnecting transport does not cancel queued authored work; execution precedes reply send."
+    },
+    {
+      "name": "ufo_combined_success_survives_failed_strategy",
+      "observed": {
+        "combined": true,
+        "phase": false
+      },
+      "expected": "Aggregate failure accurately",
+      "risk": "Processor initializes success=true, breaks on unsuccessful phase without copying failure into aggregate; other consumers may inspect phase results, so this is not proof of global false task success."
+    }
+  ]
+}

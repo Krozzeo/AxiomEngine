@@ -39,7 +39,7 @@ test("project commands persist IDs, transforms and extensions across restart", a
   assert.deepEqual(reopened.scene.plugin, scene.plugin);
   assert.deepEqual(reopened.scene.entities[0].plugin, first.plugin);
   assert.equal(reopened.scene.entities[0].transform.unit, "meters");
-  assert.deepEqual((await restarted.run("project.list", {})).projects, [{ id: project.id, name: project.name, revision: 2 }]);
+  assert.deepEqual((await restarted.run("project.list", {})).projects.map(({id,name,revision})=>({id,name,revision})), [{ id: project.id, name: project.name, revision: 2 }]);
 });
 
 test("stale saves emit no success event and command queue recovers", async t => {

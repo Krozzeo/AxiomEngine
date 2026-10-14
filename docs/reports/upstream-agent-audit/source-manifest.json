@@ -1,0 +1,127 @@
+[
+  {
+    "path": "blender/addon.py",
+    "sha256": "1d79edbe53f45dae8e015f6b7d3a659c74511d66b83902b564507d534a8826f6",
+    "lines": 6442
+  },
+  {
+    "path": "unity/Server/src/transport/unity_transport.py",
+    "sha256": "1558b8e12609e8222a4dcc1b43812584aab46210fc96ec9252a2b682707f7502",
+    "lines": 114
+  },
+  {
+    "path": "unity/Server/src/transport/legacy/unity_connection.py",
+    "sha256": "65857d3c409e275e36aadb2a89b790f14e252e28b58d3e3310599c9cbc9e28a9",
+    "lines": 1030
+  },
+  {
+    "path": "unity/Server/src/services/resources/editor_state.py",
+    "sha256": "0150fce3b0cbf32ff058d55d3dc9c153dadac401662a21df9ff3053987854b4d",
+    "lines": 310
+  },
+  {
+    "path": "unity/Server/src/services/tools/batch_execute.py",
+    "sha256": "4c59f4c384601d457d31402e36a2a19c3e1bf162cc171622de70b7a912e5616d",
+    "lines": 148
+  },
+  {
+    "path": "unity/Server/src/services/tools/refresh_unity.py",
+    "sha256": "c798f8d6964fa5a4a5fe28fff7306da6e0cb93cf0d54e1c7bb03fac7b1351968",
+    "lines": 274
+  },
+  {
+    "path": "unity/Server/tests/integration/test_refresh_unity_retry_recovery.py",
+    "sha256": "c3ab624a82aa395a12bb3cd0271bb2b3e777d1e3a14e7fecc8a359e0775ee1d4",
+    "lines": 44
+  },
+  {
+    "path": "unity/Server/tests/integration/test_editor_state_v2_contract.py",
+    "sha256": "718d2592319bac9fd42849139d993f97072ce4d51e0ef1d9af666ffe79efa4af",
+    "lines": 60
+  },
+  {
+    "path": "ufo/ufo/agents/states/app_agent_state.py",
+    "sha256": "7f40759071c91c15cec85d8da3e59a90f1a9187ba4685ec941784af8c35a64c1",
+    "lines": 511
+  },
+  {
+    "path": "ufo/ufo/agents/processors/schemas/response_schema.py",
+    "sha256": "9678af816ccbc0a05eb059a4b13540b11a45a4d0e371938de51d3aca0d864b05",
+    "lines": 48
+  },
+  {
+    "path": "ufo/ufo/agents/processors/schemas/actions.py",
+    "sha256": "42dd47336190a6d1798c0ac190c31773e086c61d6a63c39bb1756feed3686ab0",
+    "lines": 319
+  },
+  {
+    "path": "ufo/ufo/agents/processors/core/processor_framework.py",
+    "sha256": "b56526d06ae7c2e59095c96e620428d58217c30f23eb3476729c52f461be771b",
+    "lines": 443
+  },
+  {
+    "path": "ufo/ufo/agents/processors/strategies/app_agent_processing_strategy.py",
+    "sha256": "dc529cf872c8d54eab2ae705c95bd6485576c3fdc90877ff5894781c5eac9457",
+    "lines": 1873
+  },
+  {
+    "path": "browser/browser_use/agent/views.py",
+    "sha256": "dd18b915039cd55b3367a3512c2679abfdbeee866dfcf745050f4f8951084301",
+    "lines": 998
+  },
+  {
+    "path": "browser/browser_use/agent/service.py",
+    "sha256": "9582853781d792df3ed63b9518462e591ca0902e1687d0add420e78bb6495695",
+    "lines": 4164
+  },
+  {
+    "path": "browser/browser_use/tools/service.py",
+    "sha256": "b7c4af7b943a895d0012d22117d1938613931164c7c5b7de399049a606a20312",
+    "lines": 2328
+  },
+  {
+    "path": "browser/browser_use/agent/message_manager/views.py",
+    "sha256": "6806982f30387a50c76ae5c4f2807ea72a11de29b68d559dec2bee11c18b077f",
+    "lines": 102
+  },
+  {
+    "path": "browser/browser_use/agent/message_manager/service.py",
+    "sha256": "961e98647eff85d7af4be7b269c3fc01587527634979300e40e780fa0c341397",
+    "lines": 601
+  },
+  {
+    "path": "browser/tests/ci/test_action_loop_detection.py",
+    "sha256": "2e7ab9d94e3710b7f29f178d4b6426685e113b50d5b8f4d592af5be8cea8a1c4",
+    "lines": 405
+  },
+  {
+    "path": "browser/tests/ci/test_message_manager_state_isolation.py",
+    "sha256": "21abb9eb918f2551c492a333813d6137ce3f885a9ccf35ecf3d6ee35c6f9c573",
+    "lines": 53
+  },
+  {
+    "path": "blender/tests/test_context_log.py",
+    "sha256": "e606acccc26f9a2447733fb1cc8177291ab7cadbfd272bcd59ae79f5ef8338f3",
+    "lines": 105
+  },
+  {
+    "path": "blender/tests/test_server_threading.py",
+    "sha256": "8570e460f60e36365879e48a355f1906b6235b6f14febea1e1a3b81183cfc5a3",
+    "lines": 242
+  },
+  {
+    "path": "blender/tests/test_safe_mode.py",
+    "sha256": "936e7a54ce52c7d84480d9a6e70819cc362036b42e271ba6b13c652581a0e2dd",
+    "lines": 337
+  },
+  {
+    "path": "blender/src/blender_mcp/safe_mode.py",
+    "sha256": "d94b0e1456ebf2fe309971872fd9dadf5337ff7ed26c057d9806b0517245cb80",
+    "lines": 989
+  },
+  {
+    "path": "blender/src/blender_mcp/server.py",
+    "sha256": "bd2e7909fc39f83d6d68cddf99893eaf99070410d22474557fa098f4d4ddccb2",
+    "lines": 2225
+  }
+]

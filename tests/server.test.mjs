@@ -1,9 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { rm } from "node:fs/promises";
-import { resolve } from "node:path";
-import { startServer } from "../daemon/bootstrap/server.mjs";
+import { rm,mkdtemp } from "node:fs/promises";
+import { resolve,join } from "node:path";
+import {tmpdir} from 'node:os';
+import { startServer as startActualServer } from "../daemon/bootstrap/server.mjs";
+
+async function startServer(options={}){const temporary=options.projectRoot?null:await mkdtemp(join(tmpdir(),'axiom-server-test-'));const instance=await startActualServer({...options,projectRoot:options.projectRoot??temporary});const close=instance.close;return {...instance,close:async()=>{await close();if(temporary)await rm(temporary,{recursive:true,force:true});}};}
 
 function headers(instance, overrides = {}) {
   return { Origin: instance.origin, Authorization: `Bearer ${instance.token}`, "Axiom-Protocol-Version": "1", ...overrides };

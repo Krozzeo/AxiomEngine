@@ -53,7 +53,7 @@ try {
  assert.equal(navigations,0);await page.waitForFunction(()=>document.querySelector('#logs').textContent.includes('C# reloaded:'));report.criteria.push('Stop edit compile Play without page navigation','causal lifecycle logs');
  await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);assert.equal((await state()).project.scene.entities.length,1);
  await (await control(page,'#scene-save')).click();await page.waitForFunction(()=>document.querySelector('#project-status').textContent.includes('Saved'));
- await (await control(page,'#project-close')).click();await (await control(page,'#project-open')).click();await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.active;}catch{return false;}});
+ const reopenId=(await state()).project.id;await (await control(page,'#project-close')).click();await (await control(page,'#project-refresh')).click();await (await control(page,'#project-list')).selectOption(reopenId);await (await control(page,'#project-open')).click();await (await control(page,'#play-start')).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector('#frame-trace').textContent).script.active;}catch{return false;}});
  report.criteria.push('saved script bundle reopens');
  await (await control(page,'#play-stop')).click();await page.waitForFunction(()=>document.querySelector('#play-stop').disabled);
  // Modular script removal preserves the compiled source/build and is undoable.

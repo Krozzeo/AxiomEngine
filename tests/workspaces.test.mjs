@@ -8,7 +8,7 @@ import {SceneWorkspace} from '../daemon/bootstrap/scene-workspace.mjs';
 import {ProposalManager} from '../daemon/bootstrap/workspaces/manager.mjs';
 import {imageFixture} from './fixtures.mjs';
 const human={actor:{kind:'human',id:'reviewer'},traceId:'review'},agent={actor:{kind:'agent',id:'test-agent'},traceId:'edit'};
-async function fixture(t){const root=await mkdtemp(join(tmpdir(),'axiom-proposal-')),main=new SceneWorkspace(new ProjectStore(root));await main.run('project.create',{name:'Original'});const manager=new ProposalManager(main);await manager.initialize();t.after(async()=>{await manager.close();await rm(root,{recursive:true,force:true});});const begin=()=>manager.run('workspace.begin',{id:main.project.id,expectedSceneRevision:main.revision,name:'Proposal'},agent);return{root,main,manager,begin};}
+async function fixture(t,options={}){const root=await mkdtemp(join(tmpdir(),'axiom-proposal-')),main=new SceneWorkspace(new ProjectStore(root,options));await main.run('project.create',{name:'Original'});const manager=new ProposalManager(main);await manager.initialize();t.after(async()=>{await manager.close();await rm(root,{recursive:true,force:true});});const begin=()=>manager.run('workspace.begin',{id:main.project.id,expectedSceneRevision:main.revision,name:'Proposal'},agent);return{root,main,manager,begin};}
 const args=item=>({workspaceId:item.id,id:item.child.project.id,expectedSceneRevision:item.child.revision});
 async function accept(manager,item,context=human){const review=await manager.run('workspace.diff',{workspaceId:item.id,maxBytes:65536});return manager.run('workspace.accept',{workspaceId:item.id,expectedWorkspaceRevision:item.child.revision,reviewHash:review.reviewHash},context);}
 test('COW proposal keeps source and disk unchanged; reject removes all private files',async t=>{
@@ -71,3 +71,14 @@ test('M18.2 script files and editor settings are isolated, persisted and adopted
 });
 test('M18.2 Apply refuses stale review and active jobs without publication',async t=>{const {main,manager,begin}=await fixture(t),p=manager.get((await begin()).id),review=manager.review(p.id);await manager.execute('scene.entity.create',{...args(p),name:'New'},agent);await assert.rejects(manager.apply({workspaceId:p.id,expectedWorkspaceRevision:p.child.revision,expectedMainRevision:main.revision,mainHash:review.mainHash,reviewHash:review.reviewHash},human),/Review changed/);p.child.activeJob={controller:new AbortController()};await assert.rejects(apply(manager,p),/finish all jobs/);p.child.activeJob=null;assert.equal(main.project.scene.entities.length,0);assert.ok(manager.items.has(p.id));});
 test('opening an unchanged panel layout does not stale the proposal review; humans alone can Apply',async t=>{const {manager,begin}=await fixture(t),p=manager.get((await begin()).id),editor={leftWidth:220,rightWidth:330,bottomHeight:220};await manager.execute('project.editor.update',{...args(p),value:editor},human);const review=manager.review(p.id);await manager.execute('project.editor.update',{...args(p),value:editor},human);assert.equal(p.child.revision,review.workspace.revision);await assert.rejects(manager.apply({},agent),/Only human/);await apply(manager,p);});
+
+for(const path of ['accept','apply'])test('Hub folder projects promote isolated asset bytes through '+path+' and retain them after saving/reopening',async t=>{
+ const {root,main,manager,begin}=await fixture(t,{folders:true}),p=manager.get((await begin()).id);
+ await manager.execute('asset.import',{...args(p),name:'private.png',base64:imageFixture().toString('base64')},agent);
+ const assetId=p.child.project.scene.assets[0].id;await manager.execute('scene.asset.place',{...args(p),assetId},agent);
+ assert.notEqual(main.store.filename(main.project.id),p.child.store.filename(main.project.id));
+ if(path==='accept')await accept(manager,p);else await apply(manager,p);
+ await main.validateResources(main.project.scene);assert.deepEqual(await main.assets.readBytes(main.project.id,assetId),imageFixture());
+ await main.run('scene.save',{id:main.project.id,expectedSceneRevision:main.revision});const reopened=new SceneWorkspace(new ProjectStore(root,{folders:true}));
+ await reopened.run('project.open',{id:main.project.id});await reopened.validateResources(reopened.project.scene);assert.equal(reopened.project.scene.entities.length,1);assert.deepEqual(await reopened.assets.readBytes(main.project.id,assetId),imageFixture());
+});

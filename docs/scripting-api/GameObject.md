@@ -4,20 +4,23 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Named runtime entity facade for lookup, transform access and component retrieval.
+Named runtime entity facade. Find searches active entities by exact name. transform accesses a live Transform; GetComponent retrieves existing built-ins or attached script instances. SetActive controls the entity and its descendants.
 
 ## Use cases
 
-Move an entity with live transform access.
+Locate a named scene object, inspect its components or toggle its runtime participation.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
 var target = GameObject.Find("Workshop Cube");
-if (target != null) target.transform.position = new Vector3(2, 1, 0);
-var body = GetComponent<Rigidbody>();
-if (body != null) body.linearVelocity = Vector3.up * 3;
+if (target != null) {
+ target.transform.position = new Vector3(2, 1, 0);
+ target.SetActive(false);
+ target.SetActive(true);
+}
 ```
 
 ## Compatibility and limitations

@@ -4,20 +4,22 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Runtime creation and destruction entry points. Destroy removes the target entity and its descendants from the simulation.
+Base for the live object/component facade. Instantiate creates one runtime entity from an existing template; Destroy removes an entity subtree. These operations affect Play, not the authored scene.
 
 ## Use cases
 
-Move an entity with live transform access.
+Spawn a temporary pickup or remove a consumed object.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var target = GameObject.Find("Workshop Cube");
-if (target != null) target.transform.position = new Vector3(2, 1, 0);
-var body = GetComponent<Rigidbody>();
-if (body != null) body.linearVelocity = Vector3.up * 3;
+var original = GameObject.Find("Pickup");
+if (original != null) {
+ var clone = Instantiate(original, new Vector3(2, 1, 0), Quaternion.identity);
+ Destroy(clone);
+}
 ```
 
 ## Compatibility and limitations

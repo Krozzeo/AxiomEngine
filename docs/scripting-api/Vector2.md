@@ -4,19 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Vector2 belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+2-component floating vector using doubles. Supports arithmetic, normalization, magnitude, dot product and interpolation. Lowercase aliases coexist with legacy PascalCase fields.
 
 ## Use cases
 
-Vectors and quaternions.
+Represent positions, directions, velocities or packed numeric parameters.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var value = new Vector2(1, 2);
+Debug.Log(value.magnitude);
+Debug.Log(value.normalized);
 ```
 
 ## Compatibility and limitations

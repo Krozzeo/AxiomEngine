@@ -4,19 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Random belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+Deterministic random facade backed by the replay generator. value and floating Range produce bounded samples; integer Range excludes the maximum. InitState resets the shared sequence.
 
 ## Use cases
 
-Vectors and quaternions.
+Generate reproducible spawn variation.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+Axiom.Gameplay.Random.InitState(42);
+var offset = Axiom.Gameplay.Random.Range(-2.0, 2.0);
+Debug.Log(offset);
 ```
 
 ## Compatibility and limitations

@@ -4,19 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Vector4Int belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+4-component integer vector for discrete coordinates. Supports addition, subtraction, integer scale and conversion to its floating-vector counterpart. Vector4Int is an Axiom extension.
 
 ## Use cases
 
-Vectors and quaternions.
+Represent tile cells, chunk addresses or discrete grid data.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var cell = new Vector4Int(1, 2, 3, 4);
+var next = cell + Vector4Int.one;
+Debug.Log(next.x);
 ```
 
 ## Compatibility and limitations
@@ -32,11 +33,11 @@ public record struct Vector4Int(int X, int Y, int Z, int W) {
  public int y {get=>Y;set=>Y=value;}
  public int z {get=>Z;set=>Z=value;}
  public int w {get=>W;set=>W=value;}
- public static Vector4Int zero=>Zero;public static Vector4Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y+Z*Z+W*W;
+ public static Vector4Int zero=>Zero;public static Vector4Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y+(double)Z*Z+(double)W*W;
 
  public static Vector4Int Zero => new(0,0,0,0);
  public static Vector4Int One => new(1,1,1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y+Z*Z+W*W);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y+(double)Z*Z+(double)W*W);
  public static Vector4Int operator +(Vector4Int a,Vector4Int b) => new(a.X+b.X,a.Y+b.Y,a.Z+b.Z,a.W+b.W);
  public static Vector4Int operator -(Vector4Int a,Vector4Int b) => new(a.X-b.X,a.Y-b.Y,a.Z-b.Z,a.W-b.W);
  public static Vector4Int operator *(Vector4Int a,int b) => new(a.X*b,a.Y*b,a.Z*b,a.W*b);

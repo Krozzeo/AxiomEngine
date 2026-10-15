@@ -4,19 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Rect belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+Rectangle data with X, Y, Width and Height. This batch provides the value shape; full Unity Rect hit-testing/conversion helpers remain pending.
 
 ## Use cases
 
-Vectors and quaternions.
+Expose a viewport or layout rectangle as script data.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var viewport = new Rect(0, 0, 320, 180);
+Debug.Log(viewport.Width);
 ```
 
 ## Compatibility and limitations

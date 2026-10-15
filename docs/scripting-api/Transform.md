@@ -4,20 +4,22 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Live component facade for positioning and orienting an entity. Uppercase properties preserve the original snapshot access.
+Live spatial component for world position, quaternion rotation and scale. Lowercase properties read current runtime state and enqueue validated writes. Uppercase Position/Rotation/Scale preserve legacy snapshot access.
 
 ## Use cases
 
-Move an entity with live transform access.
+Position a spawned entity, orient a character, or derive movement axes.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var target = GameObject.Find("Workshop Cube");
-if (target != null) target.transform.position = new Vector3(2, 1, 0);
-var body = GetComponent<Rigidbody>();
-if (body != null) body.linearVelocity = Vector3.up * 3;
+transform.position = new Vector3(2, 1, 0);
+transform.rotation = Quaternion.Euler(0, 90, 0);
+transform.localScale = Vector3.one * 2;
+var facing = transform.forward;
+Debug.Log(facing);
 ```
 
 ## Compatibility and limitations

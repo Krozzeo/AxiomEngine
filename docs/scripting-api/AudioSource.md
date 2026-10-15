@@ -4,20 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-AudioSource belongs to the audio and animation API family. Consult the declarations below for the exact supported surface.
+Playback/volume adapter for an existing imported audio source. Play, Pause, UnPause and Stop go through the runtime audio bridge.
 
 ## Use cases
 
-Play an existing source.
+Start an authored sound or change its volume.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
 var source = GetComponent<AudioSource>();
-if (source != null) source.Play();
-var animator = GetComponent<Animator>();
-if (animator != null) animator.CrossFade("Walk", 0.2);
+if (source != null) { source.volume = 0.5; source.Play(); }
 ```
 
 ## Compatibility and limitations

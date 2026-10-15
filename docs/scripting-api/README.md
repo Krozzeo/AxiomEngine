@@ -2,7 +2,7 @@
 
 Baseline: Unity 6.3 LTS (6000.3). Axiom 0.0.45 is a partial compatibility layer, not a Unity runtime.
 
-Start with [INDEX.md](INDEX.md), which contains only ordered titles and hierarchy. Each leaf title maps to its Markdown file. The editor's Help → Scripting API panel presents the same canonical content as the repository mirror. `script.sdk.read {query:"index"}` returns its addressable section index; a type/member query retrieves focused documentation and actual SDK source. Unknown queries explicitly report no matching implementation.
+Start with [INDEX.md](INDEX.md), which contains only ordered titles and hierarchy. Each leaf has a matching Markdown page; the legacy RigidBody snapshot uses legacy-RigidBody.md to avoid a Windows path collision with Rigidbody.md. The editor's Help → Scripting API panel presents the same canonical content as the repository mirror. `script.sdk.read {query:"index"}` returns its addressable section index; a type/member query retrieves focused documentation and actual SDK source. Unknown queries explicitly report no matching implementation.
 
 Canonical content: `engine/scripting/reference/catalog.json`. `node scripts/generate-scripting-reference.mjs` adds current declarations from the real SDK and writes the GitHub Markdown mirror. `--check` detects drift. Do not claim member support just because its Unity type is present.
 
@@ -11,7 +11,7 @@ Canonical content: `engine/scripting/reference/catalog.json`. `node scripts/gene
 [unity-6.3-inventory.json](unity-6.3-inventory.json) records all 5,429 navigation nodes in the official baseline TOC, including namespaces, groups and types. It records the source URL and SHA-256. `pending` means unimplemented; `partial` points to an Axiom page whose declarations and limitations define the actual supported surface. This is a complete TOC inventory, **not** a completed audit or implementation of every member page. Documentation prose, examples, layout code and icons in Axiom are original; Unity's navigation taxonomy and API signatures guide compatibility.
 
 1. Current foundation: objects/components/transforms, explicit lifecycle, vector/math helpers, keyboard input, active-camera lookup, rigid bodies, closest-hit 2D/3D queries, contact callbacks, instantiate/destroy/activation, existing audio/animation wrappers, Inspector attributes.
-2. Physics follow-up: solver-owned fixed lifecycle, full contact arrays/relative velocity, torque/angular properties, joints, shape casts, Rigidbody2D parity and accurate world bounds. Existing contact reporting is bounded and delivered from the preceding physics snapshot.
+2. Physics follow-up: solver-owned fixed lifecycle, full contact arrays/relative velocity, torque/angular properties, joints, shape casts, Rigidbody2D parity and expanded shape queries. Existing contact reporting is bounded and delivered from the preceding physics snapshot.
 3. Runtime follow-up: coroutine scheduling, Invoke, time scale, dynamic component attachment, complete hierarchy cloning with script startup, tags/layers, scene management, Resources/asset loading and persistence APIs.
 4. Presentation follow-up: full Camera surface, materials/renderers, lights, animation curves, particles, expanded audio and UI/event APIs.
 5. Platform/tooling follow-up: gamepads/touch/action maps, networking, navigation, editor tooling, advanced rendering, platform-specific and package-specific namespaces. Remaining catalog entries remain explicitly pending; prioritize them from validated project needs.

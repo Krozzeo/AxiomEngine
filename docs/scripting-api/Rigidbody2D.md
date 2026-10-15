@@ -4,27 +4,27 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Rigidbody belongs to the physics API family. Consult the declarations below for the exact supported surface.
+Live 2D body facade. Position and velocity use Vector2 while preserving the runtime Z coordinate; force and impulse use the body mass and current step interval.
 
 ## Use cases
 
-Destroy a pickup on trigger contact.
+Control a platformer body without replacing its vertical velocity.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-public override void OnTriggerEnter(Collider other) {
- if (other.gameObject.name == "Player") Destroy(gameObject);
+var body = GetComponent<Rigidbody2D>();
+if (body != null) {
+ var velocity = body.linearVelocity;
+ body.linearVelocity = new Vector2(Input.GetAxisRaw("Horizontal") * 3, velocity.y);
 }
-// For a 2D scene use OnTriggerEnter2D(Collider2D other).
 ```
 
 ## Compatibility and limitations
 
-RigidBody is the legacy velocity snapshot; Rigidbody is the live wrapper. AddForce uses the current frame delta for force/acceleration and directly applies impulse/velocity change; mass comes from the runtime body. Collider bounds are conservative local half-extents with scale and do not yet expose a rotated world AABB. Raycasts use the current sphere/oriented-box solver baseline, layer filtering and a finite default 1000-unit distance; triggers are included. Capsules/meshes currently use their configured box collider. Contact callbacks consume the preceding completed physics snapshot (up to 128 contacts), so delivery is one render frame later and omitted contacts cannot emit callbacks. Full Unity Collision.contacts, joints and arbitrary shape casts remain pending.
-
-
+RigidBody is the legacy velocity snapshot; Rigidbody is the live wrapper. AddForce uses the current frame delta for force/acceleration and directly applies impulse/velocity change; mass comes from the runtime body. Collider bounds return the solver-aligned world AABB of configured spheres/boxes, including orientation. Collider half-extents are already world units and are not multiplied by visual Transform scale. Raycasts use the current sphere/oriented-box solver baseline, layer filtering and a finite default 1000-unit distance; triggers are included. Capsules/meshes currently use their configured box collider. Contact callbacks consume the preceding completed physics snapshot (up to 128 contacts), so delivery is one render frame later and omitted contacts cannot emit callbacks. Full Unity Collision.contacts, joints and arbitrary shape casts remain pending.
 
 
 ## Implemented declarations

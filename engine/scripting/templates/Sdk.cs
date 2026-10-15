@@ -70,11 +70,11 @@ public record struct Vector4(double X, double Y, double Z, double W) {
 public record struct Vector2Int(int X, int Y) {
  public int x {get=>X;set=>X=value;}
  public int y {get=>Y;set=>Y=value;}
- public static Vector2Int zero=>Zero;public static Vector2Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y;
+ public static Vector2Int zero=>Zero;public static Vector2Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y;
 
  public static Vector2Int Zero => new(0,0);
  public static Vector2Int One => new(1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y);
  public static Vector2Int operator +(Vector2Int a,Vector2Int b) => new(a.X+b.X,a.Y+b.Y);
  public static Vector2Int operator -(Vector2Int a,Vector2Int b) => new(a.X-b.X,a.Y-b.Y);
  public static Vector2Int operator *(Vector2Int a,int b) => new(a.X*b,a.Y*b);
@@ -86,11 +86,11 @@ public record struct Vector3Int(int X, int Y, int Z) {
  public int x {get=>X;set=>X=value;}
  public int y {get=>Y;set=>Y=value;}
  public int z {get=>Z;set=>Z=value;}
- public static Vector3Int zero=>Zero;public static Vector3Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y+Z*Z;
+ public static Vector3Int zero=>Zero;public static Vector3Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y+(double)Z*Z;
 
  public static Vector3Int Zero => new(0,0,0);
  public static Vector3Int One => new(1,1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y+Z*Z);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y+(double)Z*Z);
  public static Vector3Int operator +(Vector3Int a,Vector3Int b) => new(a.X+b.X,a.Y+b.Y,a.Z+b.Z);
  public static Vector3Int operator -(Vector3Int a,Vector3Int b) => new(a.X-b.X,a.Y-b.Y,a.Z-b.Z);
  public static Vector3Int operator *(Vector3Int a,int b) => new(a.X*b,a.Y*b,a.Z*b);
@@ -103,11 +103,11 @@ public record struct Vector4Int(int X, int Y, int Z, int W) {
  public int y {get=>Y;set=>Y=value;}
  public int z {get=>Z;set=>Z=value;}
  public int w {get=>W;set=>W=value;}
- public static Vector4Int zero=>Zero;public static Vector4Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y+Z*Z+W*W;
+ public static Vector4Int zero=>Zero;public static Vector4Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y+(double)Z*Z+(double)W*W;
 
  public static Vector4Int Zero => new(0,0,0,0);
  public static Vector4Int One => new(1,1,1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y+Z*Z+W*W);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y+(double)Z*Z+(double)W*W);
  public static Vector4Int operator +(Vector4Int a,Vector4Int b) => new(a.X+b.X,a.Y+b.Y,a.Z+b.Z,a.W+b.W);
  public static Vector4Int operator -(Vector4Int a,Vector4Int b) => new(a.X-b.X,a.Y-b.Y,a.Z-b.Z,a.W-b.W);
  public static Vector4Int operator *(Vector4Int a,int b) => new(a.X*b,a.Y*b,a.Z*b,a.W*b);

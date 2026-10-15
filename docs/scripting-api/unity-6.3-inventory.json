@@ -17247,7 +17247,8 @@
       "title": "Rigidbody2D",
       "parentId": "api-2150",
       "reference": "Rigidbody2D",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Rigidbody2D.md"
     },
     {
       "id": "api-2461",
@@ -19490,7 +19491,8 @@
       "title": "ForceMode2D",
       "parentId": "api-2697",
       "reference": "ForceMode2D",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./ForceMode2D.md"
     },
     {
       "id": "api-2779",

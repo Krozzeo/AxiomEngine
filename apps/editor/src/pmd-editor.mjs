@@ -17,7 +17,7 @@ export function mountPmdEditor({document,api,getSnapshot,save,openPanel,reportEr
  const q=id=>document.querySelector('#'+id);let lastWarning=null;let stopped=false,key='',taskId=null,connection=null,working=false,extraction=null,pending=null,replyWaitAt=null;
  const info=mountTaskInfo({document,prefix:'pmd',api,onError:reportError});
  const pmd=()=>getSnapshot()?.project?.editor?.pmd;
- const commit=async value=>{if(!getSnapshot()?.project)throw Error('Open a project first');if(await save(value)===false)throw Error('Document was not saved');key='';paint();};
+ const commit=async value=>{if(!getSnapshot()?.project)throw Error('Open a project first');if(!await save(value,{expectedPmdRevision:pmd()?.revision}))throw Error('Document was not saved');key='';paint();};
  const act=fn=>void Promise.resolve().then(fn).catch(error=>{lastWarning={id:'local-error',projectId:getSnapshot()?.project?.id,error:{message:error.message}};q('pmd-status').textContent=error.message;key='';paint();reportError(error);});
  const show=()=>{q('ai-menu').open=false;return openPanel('pmd',{centerIfClosed:true});};
  q('ai-master-create').disabled=false;q('ai-master-create').textContent='Project Master Document';q('ai-master-create').addEventListener('click',show);

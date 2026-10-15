@@ -4,19 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Color32 belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+Compact RGBA data with byte channels from 0 to 255. Alpha defaults to 255.
 
 ## Use cases
 
-Vectors and quaternions.
+Store byte-based sprite or UI color data.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var tint = new Color32(64, 128, 255);
+Debug.Log(tint.A);
 ```
 
 ## Compatibility and limitations

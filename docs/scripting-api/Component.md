@@ -4,20 +4,21 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Component belongs to the objects and components API family. Consult the declarations below for the exact supported surface.
+Base for script and built-in component wrappers. Entity identifies its owner; gameObject and transform expose the owner facade. Component searches walk the current runtime hierarchy.
 
 ## Use cases
 
-Move an entity with live transform access.
+Retrieve the owning Rigidbody without copying scene JSON or inventing entity IDs.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var target = GameObject.Find("Workshop Cube");
-if (target != null) target.transform.position = new Vector3(2, 1, 0);
 var body = GetComponent<Rigidbody>();
 if (body != null) body.linearVelocity = Vector3.up * 3;
+var camera = GetComponentInChildren<Camera>();
+if (camera != null) Debug.Log(camera.gameObject.name);
 ```
 
 ## Compatibility and limitations

@@ -7,7 +7,10 @@ public sealed class ApiCompatibilityProbe : MonoBehaviour {
  public override void Start() {
   if (GetComponent<Transform>() == null || GetComponent<Rigidbody>() == null) throw new System.Exception("Component lookup failed");
   transform.position = new Vector3(2, 1, 0);
+  transform.localScale = Vector3.one * 2;
+  if (Mathf.Abs(GetComponent<Collider>()!.bounds.Size.X - 1) > 0.0001) throw new System.Exception("Collider bounds differ from world-unit physics extents");
   transform.localScale = Vector3.one;
+  if (new Vector2Int(50000, 0).magnitude != 50000) throw new System.Exception("Integer vector magnitude overflow");
   transform.rotation = Quaternion.Euler(0, 0, 0);
   var pickup = GameObject.Find("Pickup");
   if (pickup == null) throw new System.Exception("Named pickup missing");

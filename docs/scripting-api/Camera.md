@@ -4,20 +4,22 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Camera belongs to the audio and animation API family. Consult the declarations below for the exact supported surface.
+Live wrapper for a camera entity. main chooses the active camera, using the engine active-camera property rather than Unity tags. Axiom cameras look along local -Z.
 
 ## Use cases
 
-Play an existing source.
+Derive camera-relative controls from the active camera pose.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var source = GetComponent<AudioSource>();
-if (source != null) source.Play();
-var animator = GetComponent<Animator>();
-if (animator != null) animator.CrossFade("Walk", 0.2);
+var camera = Camera.main;
+if (camera != null) {
+ var opticalForward = -camera.transform.forward;
+ Debug.Log(opticalForward);
+}
 ```
 
 ## Compatibility and limitations

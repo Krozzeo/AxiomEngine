@@ -4,25 +4,24 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-RaycastHit2D belongs to the physics API family. Consult the declarations below for the exact supported surface.
+2D query result with optional collider, distance, point and normal. A miss has a null collider and converts to false.
 
 ## Use cases
 
-Destroy a pickup on trigger contact.
+Handle a missing ground hit explicitly.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-public override void OnTriggerEnter(Collider other) {
- if (other.gameObject.name == "Player") Destroy(gameObject);
-}
-// For a 2D scene use OnTriggerEnter2D(Collider2D other).
+var hit = Physics2D.Raycast(new Vector2(0, 2), Vector2.down, 10);
+if (hit) Debug.Log(hit.distance);
 ```
 
 ## Compatibility and limitations
 
-RigidBody is the legacy velocity snapshot; Rigidbody is the live wrapper. AddForce uses the current frame delta for force/acceleration and directly applies impulse/velocity change; mass comes from the runtime body. Collider bounds are conservative local half-extents with scale and do not yet expose a rotated world AABB. Raycasts use the current sphere/oriented-box solver baseline, layer filtering and a finite default 1000-unit distance; triggers are included. Capsules/meshes currently use their configured box collider. Contact callbacks consume the preceding completed physics snapshot (up to 128 contacts), so delivery is one render frame later and omitted contacts cannot emit callbacks. Full Unity Collision.contacts, joints and arbitrary shape casts remain pending.
+RigidBody is the legacy velocity snapshot; Rigidbody is the live wrapper. AddForce uses the current frame delta for force/acceleration and directly applies impulse/velocity change; mass comes from the runtime body. Collider bounds return the solver-aligned world AABB of configured spheres/boxes, including orientation. Collider half-extents are already world units and are not multiplied by visual Transform scale. Raycasts use the current sphere/oriented-box solver baseline, layer filtering and a finite default 1000-unit distance; triggers are included. Capsules/meshes currently use their configured box collider. Contact callbacks consume the preceding completed physics snapshot (up to 128 contacts), so delivery is one render frame later and omitted contacts cannot emit callbacks. Full Unity Collision.contacts, joints and arbitrary shape casts remain pending.
 
 
 ## Implemented declarations

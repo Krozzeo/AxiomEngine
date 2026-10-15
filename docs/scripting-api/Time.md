@@ -4,22 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Time belongs to the script lifecycle API family. Consult the declarations below for the exact supported surface.
+Simulation clock visible to script callbacks. deltaTime is the current frame interval, time is elapsed simulated time, and frameCount increments once per script step.
 
 ## Use cases
 
-Frame-based behaviour.
+Make motion independent of rendering frame rate.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-public sealed class Motion : MonoBehaviour {
- public double Speed = 1;
- public override void Update() {
-  transform.position += Vector3.right * Speed * Time.deltaTime;
- }
-}
+transform.position += Vector3.right * Time.deltaTime;
+Debug.Log(Time.frameCount);
 ```
 
 ## Compatibility and limitations

@@ -4,20 +4,18 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Log belongs to the inspector and diagnostics API family. Consult the declarations below for the exact supported surface.
+Legacy bounded runtime log entry point. Info forwards a string to the same structured script console as Debug.Log.
 
 ## Use cases
 
-Expose a constrained script field.
+Keep existing Axiom diagnostic statements working.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-[Title("Movement")]
-[Tooltip("Metres per second")]
-[Range(0, 10)] public double Speed = 2;
-[Space] [ReadOnly] public Vector3 LastPosition;
+Log.Info("Controller started");
 ```
 
 ## Compatibility and limitations

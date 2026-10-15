@@ -4,20 +4,22 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Animator belongs to the audio and animation API family. Consult the declarations below for the exact supported surface.
+Adapter for authored Animator states and numeric parameters. State and parameter names must already exist. CrossFade uses the requested duration in seconds.
 
 ## Use cases
 
-Play an existing source.
+Transition an Animator with an authored Walk state and Speed parameter.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var source = GetComponent<AudioSource>();
-if (source != null) source.Play();
 var animator = GetComponent<Animator>();
-if (animator != null) animator.CrossFade("Walk", 0.2);
+if (animator != null) {
+ animator.SetFloat("Speed", 1);
+ animator.CrossFade("Walk", 0.2);
+}
 ```
 
 ## Compatibility and limitations

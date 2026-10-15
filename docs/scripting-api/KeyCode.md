@@ -4,21 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-KeyCode belongs to the input API family. Consult the declarations below for the exact supported surface.
+Supported keyboard key identifiers. The current enumeration covers WASD, arrows, Space, Escape and left/right Shift. Unsupported keys are not silently mapped.
 
 ## Use cases
 
-Keyboard movement and jump edge.
+Express keyboard controls without browser key-code strings.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var horizontal = Input.GetAxisRaw("Horizontal");
-if (Input.GetKeyDown(KeyCode.Space) && Entity.IsGrounded) {
- var body = GetComponent<Rigidbody>();
- if (body != null) body.linearVelocity = new Vector3(horizontal, 5, 0);
-}
+if (Input.GetKey(KeyCode.W)) Debug.Log("Forward held");
+if (Input.GetKeyUp(KeyCode.Space)) Debug.Log("Space released");
 ```
 
 ## Compatibility and limitations

@@ -4,19 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Mathf belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+Common scalar mathematics, interpolation, clamps, trigonometry and periodic functions. Angles for trigonometric functions are radians; Deg2Rad/Rad2Deg convert units. Numeric results use double.
 
 ## Use cases
 
-Vectors and quaternions.
+Clamp health values, ease a parameter or generate periodic animation.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var health = Mathf.Clamp(120, 0, 100);
+var pulse = 0.5 + 0.5 * Mathf.Sin(Time.time);
+Debug.Log(Mathf.Lerp(0, health, pulse));
 ```
 
 ## Compatibility and limitations

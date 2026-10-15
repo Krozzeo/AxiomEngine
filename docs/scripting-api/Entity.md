@@ -4,20 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Entity belongs to the objects and components API family. Consult the declarations below for the exact supported surface.
+Generation-scoped runtime handle. Legacy methods move, rotate, spawn and control existing physical, audio and animation components. Handles from an earlier Play generation are invalid.
 
 ## Use cases
 
-Move an entity with live transform access.
+Maintain existing Axiom scripts or write explicitly validated snapshot-based movement.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var target = GameObject.Find("Workshop Cube");
-if (target != null) target.transform.position = new Vector3(2, 1, 0);
-var body = GetComponent<Rigidbody>();
-if (body != null) body.linearVelocity = Vector3.up * 3;
+var position = Entity.Transform.Position;
+Entity.SetPosition(position + Vector3.up);
+Debug.Log(Entity.Id);
 ```
 
 ## Compatibility and limitations

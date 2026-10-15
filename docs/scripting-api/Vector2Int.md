@@ -4,19 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Vector2Int belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+2-component integer vector for discrete coordinates. Supports addition, subtraction, integer scale and conversion to its floating-vector counterpart. Vector4Int is an Axiom extension.
 
 ## Use cases
 
-Vectors and quaternions.
+Represent tile cells, chunk addresses or discrete grid data.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var cell = new Vector2Int(1, 2);
+var next = cell + Vector2Int.one;
+Debug.Log(next.x);
 ```
 
 ## Compatibility and limitations
@@ -30,11 +31,11 @@ Existing PascalCase names remain supported. Lowercase vector fields and constant
 public record struct Vector2Int(int X, int Y) {
  public int x {get=>X;set=>X=value;}
  public int y {get=>Y;set=>Y=value;}
- public static Vector2Int zero=>Zero;public static Vector2Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y;
+ public static Vector2Int zero=>Zero;public static Vector2Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y;
 
  public static Vector2Int Zero => new(0,0);
  public static Vector2Int One => new(1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y);
  public static Vector2Int operator +(Vector2Int a,Vector2Int b) => new(a.X+b.X,a.Y+b.Y);
  public static Vector2Int operator -(Vector2Int a,Vector2Int b) => new(a.X-b.X,a.Y-b.Y);
  public static Vector2Int operator *(Vector2Int a,int b) => new(a.X*b,a.Y*b);

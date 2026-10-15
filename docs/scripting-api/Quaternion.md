@@ -4,19 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Quaternion belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+Four-component rotation value with Euler/AngleAxis construction, inverse, composition and vector rotation. Euler and AngleAxis accept degrees. Entity rotation writes normalize the result.
 
 ## Use cases
 
-Vectors and quaternions.
+Rotate an entity without storing ad hoc Euler-angle arrays.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var turn = Quaternion.AngleAxis(90, Vector3.up);
+transform.rotation = turn;
+Debug.Log(turn * Vector3.forward);
 ```
 
 ## Compatibility and limitations

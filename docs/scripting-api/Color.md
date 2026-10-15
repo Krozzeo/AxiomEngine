@@ -4,19 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Color belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+Linear RGBA data with double components and optional alpha. This batch preserves PascalCase R/G/B/A and White/Black; it is not the complete Unity Color surface.
 
 ## Use cases
 
-Vectors and quaternions.
+Store a tint in an exposed script field.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var tint = new Color(0.2, 0.5, 1, 1);
+Debug.Log(tint.B);
 ```
 
 ## Compatibility and limitations

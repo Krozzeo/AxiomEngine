@@ -110,7 +110,7 @@ public class Collider : Component {
  internal Collider(Entity entity){Entity=entity;}
  internal System.Text.Json.JsonElement Data=>Context.EntityData[Entity.Id].GetProperty("collider");
  public bool isTrigger=>Data.GetProperty("trigger").GetBoolean();
- public Bounds bounds {get{var t=Entity.Transform;var h=Vector3.Read(Data.GetProperty("halfExtents"));return new(t.Position,new Vector3(h.X*Math.Abs(t.Scale.X)*2,h.Y*Math.Abs(t.Scale.Y)*2,h.Z*Math.Abs(t.Scale.Z)*2));}}
+ public Bounds bounds {get{var t=Entity.Transform;var h=Vector3.Read(Data.GetProperty("halfExtents"));var dimension=Data.GetProperty("dimension").GetInt32();Vector3 extents;if(Data.GetProperty("shape").GetString()=="sphere")extents=new(h.X,h.X,dimension==2?0:h.X);else{var x=t.Rotation*Vector3.right;var y=t.Rotation*Vector3.up;var z=t.Rotation*Vector3.forward;extents=new(Math.Abs(x.X)*h.X+Math.Abs(y.X)*h.Y+Math.Abs(z.X)*h.Z,Math.Abs(x.Y)*h.X+Math.Abs(y.Y)*h.Y+Math.Abs(z.Y)*h.Z,dimension==2?0:Math.Abs(x.Z)*h.X+Math.Abs(y.Z)*h.Y+Math.Abs(z.Z)*h.Z);}return new(t.Position,extents*2);}}
 }
 public sealed class Collider2D : Collider {internal Collider2D(Entity entity):base(entity){}}
 public sealed class Collision {

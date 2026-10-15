@@ -18,3 +18,6 @@ test('scripting index resolves real types and documents unsupported lookups expl
 test('new task context never replays orphan provider calls from an interrupted request',()=>{
  const record={sourceId:'p',createdAt:'1',public:{id:'task',channel:'assistant',steps:[]},input:[{type:'function_call',call_id:'done',name:'read',arguments:'{}'},{type:'function_call_output',call_id:'done',output:'retained documentation'},{type:'function_call',call_id:'pending',name:'write',arguments:'{}'}]};const input=conversationInput(new Map([['task',record]]),{projectId:'p',channel:'assistant'});assert.equal(input.length,2);assert.equal(input[1].output,'retained documentation');
 });
+test('SDK documentation reads remain bounded even when common type names occur throughout the source',async()=>{
+ const {readScriptingReference}=await import('../engine/scripting/reference.mjs');for(const query of ['Entity','Vector3','Input','Physics']){const result=await readScriptingReference(query);assert.ok(Buffer.byteLength(JSON.stringify(result))<32768,query+' result exceeds the semantic result budget');assert.ok(result.matches.length<=4);}
+});

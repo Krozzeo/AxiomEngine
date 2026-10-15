@@ -359,7 +359,13 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     selectEntity(id,options=false){select(id,options);},
     transformEntities(updates){return act(()=>run("scene.entities.update",mutation({updates,space:"world"})));},
     transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform:localTransform(state.project.scene.entities,entityId,transform)})));},
-    async saveAiSettings(value,options={}){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...(options.replace?{}:state.project.editor),...value}})));},
+    async saveAiSettings(value,options={}){
+      const projectId=state.project?.id,workspaceId=state.workspaceId??null,deadline=performance.now()+610000;
+      while(busy&&performance.now()<deadline)await new Promise(resolve=>setTimeout(resolve,30));
+      if(busy||!projectId||state.project?.id!==projectId||(state.workspaceId??null)!==workspaceId)throw Error('The project or preview changed before the document could be saved. Your editor draft was retained.');
+      if(options.expectedPmdRevision!==undefined&&state.project.editor?.pmd?.revision!==options.expectedPmdRevision)throw Error('The PMD changed while saving. Review the current section and retry; your draft was retained.');
+      return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...(options.replace?{}:state.project.editor),...value}})));
+    },
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     flushDraftSources:()=>ide.flush(),
     async synchronize(snapshot,options={}){if(options.replace)ide.reset();if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},

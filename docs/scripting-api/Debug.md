@@ -4,20 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Debug belongs to the inspector and diagnostics API family. Consult the declarations below for the exact supported surface.
+Bounded runtime diagnostics. Log, LogWarning and LogError forward text to the engine structured console with script/frame context.
 
 ## Use cases
 
-Expose a constrained script field.
+Report verified gameplay events during Play.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-[Title("Movement")]
-[Tooltip("Metres per second")]
-[Range(0, 10)] public double Speed = 2;
-[Space] [ReadOnly] public Vector3 LastPosition;
+Debug.Log("Pickup consumed");
+Debug.LogWarning("Optional target was not found");
 ```
 
 ## Compatibility and limitations

@@ -4,19 +4,19 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Bounds belongs to the mathematics API family. Consult the declarations below for the exact supported surface.
+Bounds data represented by Center and Size vectors. This batch provides the value shape; geometric bounds operations remain pending.
 
 ## Use cases
 
-Vectors and quaternions.
+Store the center and dimensions of a gameplay region.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var direction = (destination - transform.position).normalized;
-transform.rotation = Quaternion.Euler(0, 90, 0);
-var distance = Vector3.Distance(destination, transform.position);
+var region = new Bounds(Vector3.zero, new Vector3(4, 2, 4));
+Debug.Log(region.Size);
 ```
 
 ## Compatibility and limitations

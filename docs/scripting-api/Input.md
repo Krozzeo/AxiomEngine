@@ -4,21 +4,20 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Input belongs to the input API family. Consult the declarations below for the exact supported surface.
+Keyboard/axis facade over the focused Game view. GetKey tests held state; GetKeyDown/GetKeyUp detect frame edges using previous key state. Mouse X/Y expose captured deltas.
 
 ## Use cases
 
-Keyboard movement and jump edge.
+Move with WASD/arrows and trigger a single action when Space is first pressed.
 
 ## Example
 
+The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
+
 ```csharp
-using Axiom.Gameplay;
-var horizontal = Input.GetAxisRaw("Horizontal");
-if (Input.GetKeyDown(KeyCode.Space) && Entity.IsGrounded) {
- var body = GetComponent<Rigidbody>();
- if (body != null) body.linearVelocity = new Vector3(horizontal, 5, 0);
-}
+var x = Input.GetAxisRaw("Horizontal");
+transform.position += Vector3.right * x * Time.deltaTime;
+if (Input.GetKeyDown(KeyCode.Space)) Debug.Log("Jump pressed");
 ```
 
 ## Compatibility and limitations

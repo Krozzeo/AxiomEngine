@@ -49,3 +49,9 @@ test('private typed unions validate actual scalar types instead of silently allo
  assert.throws(()=>validate(privateToolSchemas['project.master.edit'],{roadmap:[{...row,stage:{invalid:true}}]}),/Invalid.*stage/);
  assert.throws(()=>validate(privateToolSchemas['project.master.edit'],{roadmap:[{...row,stage:1.2}]}),/Invalid.*stage/);
 });
+
+test('0.0.44 natural-language backtracking reopens only the requested PMD phase and preserves written sections',async()=>{
+ const {resolvePmdActions}=await import('../daemon/bootstrap/agent/pmd-approval.mjs');let p=updatePmd(newPmd(),{sections:[{id:'overview',title:'Overview',parentId:null,links:[],text:'Existing design stays present.'}],roadmap:[{id:'M1',stage:'One',title:'Playable',deliverable:'Scene',validation:'Play',status:'planned'}]});p=advancePmd(p,'approve-definition');p=advancePmd(p,'approve-plan');p=advancePmd(p,'skip-critique');p=advancePmd(p,'finish');
+ assert.deepEqual(resolvePmdActions(p,'Volvamos al diseño, quiero cambiar los controles'),['revisit-definition']);let next=advancePmd(p,'revisit-definition');assert.equal(next.phase,'definition');assert.equal(next.approvals.planning,false);assert.deepEqual(next.sections,p.sections);
+ assert.deepEqual(resolvePmdActions(p,'Quiero cambiar la planificación del roadmap'),['revisit-planning']);next=advancePmd(p,'revisit-planning');assert.equal(next.phase,'planning');assert.equal(next.approvals.definition,true);assert.equal(next.approvals.planning,false);assert.deepEqual(resolvePmdActions(p,'¿Cómo está el estado del proyecto?'),[]);
+});

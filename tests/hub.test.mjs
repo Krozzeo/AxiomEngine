@@ -19,3 +19,7 @@ test('parallel runtime readers share a complete persistent index without false d
  const duplicate=join(path,'Actual duplicate');await mkdir(duplicate);await writeFile(join(duplicate,a.id.slice(10)+'.json'),JSON.stringify(a));
  await assert.rejects(store.directory(),/Duplicate persistent project ID/);assert.deepEqual([store.filename(a.id),store.filename(b.id)],expected);
 });
+
+test('0.0.44 creation date remains stable; explicit Save advances modification; legacy missing dates stay unknown',async t=>{
+ const path=await root(t),store=new ProjectStore(path,{folders:true});const {project}=await store.run('project.create',{name:'Dated'});assert.ok(Number.isFinite(Date.parse(project.axiom.createdAt)));const createdAt=project.axiom.createdAt;await store.run('project.save',{id:project.id,expectedRevision:0,scene:project.scene});const saved=(await store.run('project.list',{})).projects[0];assert.equal(saved.createdAt,createdAt);assert.ok(Date.parse(saved.modifiedAt)>=Date.parse(createdAt));const document=(await store.run('project.open',{id:project.id})).project;delete document.axiom.createdAt;delete document.axiom.modifiedAt;await writeFile(join(path,store.filename(project.id)),JSON.stringify(document));const legacy=(await store.run('project.list',{})).projects[0];assert.equal(legacy.createdAt,null);assert.equal(legacy.modifiedAt,null);
+});

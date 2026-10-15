@@ -18,8 +18,9 @@ export function authorizePmdTransition({action,userQuote,revision},pmd,userText)
  if(!pmd||pmd.revision!==revision)throw workError('PMD revision changed; use the current document revision');
  const {quote}=humanPhrase(userQuote,userText);
  const valid={definition:['approve-definition'],planning:['approve-plan'],critique:['request-critique','skip-critique','finish-critique'],construction:['finish'],ready:['revisit']};
- if(!valid[pmd.phase]?.includes(action))throw workError('Transition is unavailable in '+pmd.phase+'; allowed: '+(valid[pmd.phase]??[]).join(', '));
+ if(!['revisit-definition','revisit-planning'].includes(action)&&!valid[pmd.phase]?.includes(action))throw workError('Transition is unavailable in '+pmd.phase+'; allowed: '+(valid[pmd.phase]??[]).join(', '));
  const patterns={
+  'revisit-definition':/\b(?:volv\w*|volver|cambi\w*|modific\w*|redisen\w*|revisit\w*|change|back)\b/,'revisit-planning':/\b(?:volv\w*|volver|cambi\w*|modific\w*|replan\w*|revisit\w*|change|back)\b/,
   'approve-definition':approval,'approve-plan':approval,
   'request-critique':/\b(?:si|yes|analisis|critica|critico|critique|critical|analiza|analyze)\b/,
   'skip-critique':skip,'finish-critique':approval,
@@ -36,6 +37,7 @@ export function authorizePmdTransition({action,userQuote,revision},pmd,userText)
 // Human navigation is host-owned. It does not depend on another model call choosing a magic action.
 export function resolvePmdActions(pmd,userText){
  if(!pmd)return [];const text=normalize(userText),actions=[];if(/^(?:que\b|como\b|por que\b|explica\w*\b|no entiendo\b|why\b|how\b|what\b)/.test(text.trim()))return [];
+ if(pmd.phase!=='definition'&&/\b(?:volvamos|volver|quiero cambiar|cambiemos|modificar|redisenar|change|go back)\b/.test(text)&&!/\b(?:estado|status|color del|icono)\b/.test(text)){const action=/\b(?:planificacion|planning|roadmap|milestone|hitos)\b/.test(text)?'revisit-planning':'revisit-definition';authorizePmdTransition({action,userQuote:userText,revision:pmd.revision},pmd,userText);return [action];}
  const offered=/aproba|aprueb|approve|definicion|definition|planifica|milestone|plan|critica|critique/i.test(pmd.chat?.filter(c=>c.role==='assistant').at(-1)?.text??'');
  const explicit=approval.test(text)&&(/definicion|definition|plan|recomendacion|cambios|critica|critique|sigamos|adelante/.test(text)||short.test(text));
  const directConstruction=construction.test(text)&&navigation.test(text)&&!/[?¿]/.test(text);

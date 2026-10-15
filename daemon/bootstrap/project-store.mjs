@@ -66,7 +66,7 @@ export class ProjectStore {
       if (files.length > 256) throw projectError("AX_PROJECT_0002", "Project listing exceeds 256 entries");
       for (const file of files) {
         const document = await this.read(join(directory, file));
-        projects.push({ id: document.id, name: document.name, revision: document.revision,createdWithVersion:document.axiom?.createdWithVersion??null,lastSavedWithVersion:document.axiom?.lastSavedWithVersion??null,applicationId:document.axiom?.applicationId??'game-engine',path:join(directory,file),formatVersion:document.schemaVersion });
+        projects.push({ id: document.id, name: document.name, revision: document.revision,createdWithVersion:document.axiom?.createdWithVersion??null,lastSavedWithVersion:document.axiom?.lastSavedWithVersion??null,applicationId:document.axiom?.applicationId??'game-engine',path:join(directory,file),createdAt:document.axiom?.createdAt??null,modifiedAt:document.axiom?.modifiedAt??null,formatVersion:document.schemaVersion });
       }
       return { projects };
     }
@@ -82,14 +82,14 @@ export class ProjectStore {
     try {
       lock = await open(`${path}.lock`, "wx", 0o600);
       if (type === "project.create") {
-        document = { schemaVersion: 1, id, name: data.name, revision: 0, axiom:{applicationId:'game-engine',createdWithVersion:packageData.version,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: { schemaVersion: 1, id: `scene://${randomUUID()}`, entities: [] } };
+        document = { schemaVersion: 1, id, name: data.name, revision: 0, axiom:{createdAt:new Date().toISOString(),modifiedAt:new Date().toISOString(),applicationId:'game-engine',createdWithVersion:packageData.version,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: { schemaVersion: 1, id: `scene://${randomUUID()}`, entities: [] } };
       } else {
         const previous = await this.read(path);
         if (!Number.isSafeInteger(data.expectedRevision) || data.expectedRevision !== previous.revision) throw projectError("AX_PROJECT_0003", "Project revision conflict; reopen before saving");
         if (data.scene?.id !== previous.scene.id) throw projectError("AX_PROJECT_0002", "Scene identity cannot change during save");
         // Validate supplied known fields before preserving extensions.
         validateProject({ ...previous, scene: data.scene, ...(data.editor?{editor:data.editor}:{}) });
-        document = { ...previous, axiom:{...previous.axiom,applicationId:previous.axiom?.applicationId??'game-engine',createdWithVersion:previous.axiom?.createdWithVersion??null,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
+        document = { ...previous, axiom:{...previous.axiom,modifiedAt:new Date().toISOString(),applicationId:previous.axiom?.applicationId??'game-engine',createdWithVersion:previous.axiom?.createdWithVersion??null,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
       }
       validateProject(document);
       const bytes = JSON.stringify(document, null, 2) + "\n";

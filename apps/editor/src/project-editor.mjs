@@ -29,7 +29,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   let hierarchyScrolling=false,hierarchyPaint=null;
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
   const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project});
-  const hub=mountHub({document,api,getState:()=>state,create:async data=>{if(!await act(()=>switchProject('project.create',data)))throw Error($('project-error').textContent||'Project creation failed');},open:async id=>{if(!await act(()=>switchProject('project.open',{id})))throw Error($('project-error').textContent||'Project opening failed');},reportError});
+  const hub=mountHub({document,api,getState:()=>state,isDirty:()=>state.dirty||ideDirty,save:saveProject,close:async()=>{if(!await act(()=>run('project.close',mutation({discardChanges:state.dirty}))))throw Error('Could not close project');},create:async data=>{if(!await act(()=>switchProject('project.create',data,true)))throw Error($('project-error').textContent||'Project creation failed');},open:async id=>{if(!await act(()=>switchProject('project.open',{id},true)))throw Error($('project-error').textContent||'Project opening failed');},reportError});
   function draw(updateFields = true) {
     hub.update();
     $("editor-workspace").setAttribute("aria-busy",String(busy));
@@ -233,8 +233,8 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     });});
     if(key!=='render')$(key+'-remove').addEventListener('click',()=>act(()=>run('scene.component.remove',mutation({entityId:selected,component:({material:'Material',light:'Light',lod:'LOD'})[key]}))));
   }
-  async function switchProject(type, data) {
-    if ((state.dirty||ideDirty) && !confirmDiscard()) return;
+  async function switchProject(type, data,approved=false) {
+    if (!approved&&(state.dirty||ideDirty) && !confirmDiscard()) return;
     await run(type, { ...data, discardChanges: state.dirty, expectedSceneRevision: state.sceneRevision });
     await list();
   }

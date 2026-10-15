@@ -1,3 +1,7 @@
+# M18.3.6 / 0.0.44 — PMD scope repair and overlay Hub
+
+Current correction release: actual-trace wall predicates, frozen approved construction scope, bounded PMD turns, project budgets, reply notifications and a closable project Hub. Read the [current report](docs/reports/M18_3_6_CURRENT_REPORT.md). M18.4 GitHub integration remains next, after live-model acceptance. Historical MVP coverage stays approximately 94%; no live-model reliability percentage or measured token reduction is claimed. PR remains draft/unmerged. Earlier entries below are historical.
+
 # M18.3.5 / 0.0.43 — agent reliability and persistent Hub
 
 M18.3.5 / 0.0.43 is complete as an automated correction. CI260 passes all 36 jobs at executable commit 6f5a756044e769264d0f47b9f5c2a79293f9e92d (tree 29ba8605c69c43ec4adcacd3338f9cf1cc392434): 354 Node tests on Linux and Windows, 39 Rust tests, real Linux development/AOT and Windows development C#, and all 27 browser groups. Four new acceptance groups cover persistent Hub, live PMD construction, repaired M2 with real runtime evidence, and Apply/Save/reopen/Play with visible GPU geometry. No paid model calls or measured live cost improvement are claimed. Historical MVP coverage remains approximately 94% (122/130); Hub is added, unweighted scope. M18.4 has not started. PR #34 stays draft/open/unmerged; do not merge automatically. Read [current report](docs/reports/M18_3_5_CURRENT_REPORT.md) and [demo guide](demos/M18_3_5_GUIDE.md). Earlier release notes below are historical.

@@ -1544,7 +1544,7 @@
             },
             "order": {
               "type": "array",
-              "maxItems": 11,
+              "maxItems": 12,
               "uniqueItems": true,
               "items": {
                 "enum": [
@@ -1565,7 +1565,7 @@
             },
             "closed": {
               "type": "array",
-              "maxItems": 11,
+              "maxItems": 12,
               "uniqueItems": true,
               "items": {
                 "enum": [

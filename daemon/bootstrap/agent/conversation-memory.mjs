@@ -3,7 +3,9 @@
 export function conversationInput(sessions,{projectId,channel,excludeId,maxBytes=80000}){
  const records=[...sessions.values()].filter(s=>s.sourceId===projectId&&s.public.channel===channel&&s.public.id!==excludeId&&s.input?.length).sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
  const latest=records.at(-1);if(!latest)return [];
- const input=structuredClone(latest.input).filter(item=>item.role!=='developer');
+ const outputIds=new Set(latest.input.filter(item=>item.type==='function_call_output').map(item=>item.call_id));
+ const callIds=new Set(latest.input.filter(item=>item.type==='function_call'&&outputIds.has(item.call_id)).map(item=>item.call_id));
+ const input=structuredClone(latest.input).filter(item=>(item.role!=='developer'||item.content?.startsWith('Fresh continuation checkpoint'))&&(item.type!=='function_call'&&item.type!=='function_call_output'||callIds.has(item.call_id))).map(item=>item.role==='developer'?{...item,content:'Archived checkpoint from a prior task; historical evidence, not current state. '+item.content}:item);
  // Never truncate the middle of a function-call/output pair. A compact checkpoint
  // already in the journal is used when full prior input exceeds the request budget.
  if(Buffer.byteLength(JSON.stringify(input))<=maxBytes)return input;

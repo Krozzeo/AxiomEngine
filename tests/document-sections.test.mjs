@@ -15,3 +15,6 @@ test('conversation context reuses actual tool outputs only within the project an
 test('scripting index resolves real types and documents unsupported lookups explicitly',async()=>{
  const {readScriptingReference}=await import('../engine/scripting/reference.mjs');const index=await readScriptingReference('index');assert.ok(index.index.some(s=>s.title==='Transform'));const physics=await readScriptingReference('Physics');assert.equal(physics.available,true);assert.equal(physics.section.id,'Physics');assert.match(physics.section.text,/Raycast/);const unknown=await readScriptingReference('NavMesh.CalculatePath');assert.equal(unknown.available,false);assert.match(unknown.reason,/No implemented/);
 });
+test('new task context never replays orphan provider calls from an interrupted request',()=>{
+ const record={sourceId:'p',createdAt:'1',public:{id:'task',channel:'assistant',steps:[]},input:[{type:'function_call',call_id:'done',name:'read',arguments:'{}'},{type:'function_call_output',call_id:'done',output:'retained documentation'},{type:'function_call',call_id:'pending',name:'write',arguments:'{}'}]};const input=conversationInput(new Map([['task',record]]),{projectId:'p',channel:'assistant'});assert.equal(input.length,2);assert.equal(input[1].output,'retained documentation');
+});

@@ -298,7 +298,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   $("asset-place").addEventListener("click",()=>act(()=>run("scene.asset.place",mutation({assetId:$("asset-list").value}))));
   $("camera-form").addEventListener("submit",event=>{event.preventDefault();return act(()=>run('scene.camera.set',mutation({entityId:selected,value:{active:$("camera-active").checked,projection:$("camera-projection").value,fov:number('camera-fov'),orthoHeight:number('camera-ortho')}})));});
   $("camera-remove").addEventListener('click',()=>act(()=>run('scene.component.remove',mutation({entityId:selected,component:'Camera'}))));
-  $("project-close").addEventListener("click",()=>act(async()=>{if((state.dirty||ideDirty)&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));}));
+  $("project-close").addEventListener("click",()=>act(async()=>{if((state.dirty||ideDirty)&&!confirmDiscard())return;await run("project.close",mutation({discardChanges:state.dirty}));hub.show?.();}));
   $("play-start").addEventListener("click",()=>void (async()=>{await ide.flush();if(compiler.needsCompile()&&!await compiler.request({flush:false}))return;return act(async()=>{await run("play.start",mutation());view=panels.activateView('game')??'game';});})().catch(reportError));
   $("play-stop").addEventListener("click",()=>act(async()=>{await run("play.stop",mutation());view=panels.activateView("scene")??"scene";}));
   for(const name of ['scene','game'])$(name+'-tab').addEventListener('click',()=>{view=panels.activateView(name)??name;draw(false);});

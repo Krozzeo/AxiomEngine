@@ -19,8 +19,12 @@ AI indicators/compile controls disappear without a project. Budget limits and co
 
 ## Verification
 
-Local regression and architecture checks completed; full release CI and browser results are recorded below when available. Controlled responses exercise real host/tool behavior without paid API calls. They cannot establish real-model completion rate, semantic document quality, or token savings. The user validated the prior player demos; the default demo command now generates only PMD Planning Workshop and Agent Workflow Lab. The evaluator adds an explicitly paid, opt-in `walls` case for account-side measurement.
+[CI265](https://github.com/Krozzeo/AxiomEngine/actions/runs/38668768208) passed **37/37 jobs** at executable `46ea2c3092386cb20d68f2dc330f9485da1f5515` (tree `d5e2e72eaa545dcfe2889a9790c111650d57ba6b`): 361 Node tests on Linux and Windows, 39 Rust tests, three real C# configurations and all 28 browser groups. Browser evidence was downloaded and visually inspected; the new Hub report has three acceptance groups, `passed: true` and zero page errors. The build now validates local module imports, preventing omitted interface modules from shipping. Local checks also verified that the default demo setup creates exactly two projects. Controlled responses exercise real host/tool behavior without paid API calls. They cannot establish real-model completion rate, semantic document quality, or token savings. The user validated the prior player demos; the default demo command now generates only PMD Planning Workshop and Agent Workflow Lab. The evaluator adds an explicitly paid, opt-in `walls` case for account-side measurement.
 
 ## Remaining acceptance
 
 With your configured model: complete the fresh PMD, verify the phase reaches ready, inspect all four linked sections, and export More info. In Agent Workflow Lab, run M1/M2 if needed, then request four walls around the existing floor; inspect the preview and checks. Windows Explorer and actual desktop notification delivery need user-machine confirmation. No player retest is requested.
+
+## Release provenance
+
+Source branch: `codex/m18-3-6-hub-pmd`, draft [PR #35](https://github.com/Krozzeo/AxiomEngine/pull/35), stacked on #34. Executable source matches the tested commit above. The closure commit changes Markdown only. Keep the PR unmerged. This revision is 0.0.44; the next user-facing revision must advance to 0.0.45.

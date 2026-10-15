@@ -1,5 +1,5 @@
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { resolve, win32, posix } from "node:path";
+import { access, readdir, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { dirname, resolve, win32, posix } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -53,7 +53,7 @@ export async function buildEditor({buildKernel=true}={}) {
   await cp(resolve(root,'apps/editor/src/animation-editor.mjs'),resolve(destination,'animation-editor.mjs'));
   await cp(resolve(root,'apps/editor/src/panel-layout.mjs'),resolve(destination,'panel-layout.mjs'));
   for(const name of ['render-plan','render-math','production-gpu','production-shaders','two-d-plan','two-d-gpu','skin-gpu'])await cp(resolve(root,'engine/renderer',name+'.mjs'),resolve(destination,name+'.mjs'));
-  for(const name of ['hub','task-info','chat-attachments','chat-usage','chat-format','ai-assistant','autonomy-editor','compile-controller','inspector-ux','script-editor','code-editor','project-browser','editor-actions','editor-menu','replay-editor','ai-menu','game-test-editor','parallel-view','view-math','scene-tools','causal-diagnostics','gpu-profiler','profiler-editor','dock-layout','session-token','frame-profiler'])await writeFile(resolve(destination,name+'.mjs'),(await readFile(resolve(root,'apps/editor/src',name+'.mjs'),'utf8')).replaceAll('../../../engine/renderer/','./').replaceAll('../../../engine/scene/','./').replaceAll('../../../engine/scripting/','./').replaceAll('../../../engine/project/','./'));
+  for(const name of ['hub','pmd-phases','chat-notifications','task-info','chat-attachments','chat-usage','chat-format','ai-assistant','autonomy-editor','compile-controller','inspector-ux','script-editor','code-editor','project-browser','editor-actions','editor-menu','replay-editor','ai-menu','game-test-editor','parallel-view','view-math','scene-tools','causal-diagnostics','gpu-profiler','profiler-editor','dock-layout','session-token','frame-profiler'])await writeFile(resolve(destination,name+'.mjs'),(await readFile(resolve(root,'apps/editor/src',name+'.mjs'),'utf8')).replaceAll('../../../engine/renderer/','./').replaceAll('../../../engine/scene/','./').replaceAll('../../../engine/scripting/','./').replaceAll('../../../engine/project/','./'));
   for(const [name,target]of [["runtime.mjs","script-runtime.js"],["worker.mjs","script-worker.js"],["operations.mjs","script-operations.mjs"],["contract.mjs","contract.mjs"]])await cp(resolve(root,"engine/scripting",name),resolve(destination,target));
   await cp(resolve(root,"engine/scripting/templates/Game.cs"),resolve(destination,"default-game.cs"));
   await writeFile(resolve(destination,'animation-host.mjs'),(await readFile(resolve(root,'engine/wasm/animation-host.mjs'),'utf8')).replace('../renderer/','./'));
@@ -72,7 +72,17 @@ export async function buildEditor({buildKernel=true}={}) {
     throw new Error("Bootstrap TypeScript must remain directly executable until the compiler toolchain is installed");
   }
   await writeFile(resolve(destination, "main.js"), source);
+  await validateEditorImports(destination);
   console.log("Built editor bootstrap → dist/editor");
+}
+
+export async function validateEditorImports(directory){
+  for(const name of await readdir(directory)){
+    if(!/\.(?:mjs|js)$/.test(name))continue;
+    const path=resolve(directory,name),source=await readFile(path,'utf8');
+    const imports=/(?:\b(?:import|export)\s+(?:[^'";]*?\s+from\s*)?|\bimport\s*\()\s*['"](\.[^'"]+)['"]/g;
+    for(const match of source.matchAll(imports)){const target=resolve(dirname(path),match[1].split(/[?#]/)[0]);try{await access(target);}catch{throw Error('AX_BUILD_0002: '+name+' imports missing editor file '+match[1]);}}
+  }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) await buildEditor();

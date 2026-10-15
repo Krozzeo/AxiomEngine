@@ -34,7 +34,7 @@ export function advancePmd(previous,action){const next=clone(previous);next.hist
  else if(['request-critique','skip-critique'].includes(action)&&next.phase==='critique'){next.approvals.critique=action==='skip-critique';if(action==='skip-critique')next.phase='construction';}
  else if(action==='finish-critique'&&next.phase==='critique'){next.approvals.critique=true;next.phase='construction';}
  else if(action==='finish'&&next.phase==='construction'){if(!next.sections.length)fail('create linked document sections first');next.phase='ready';}
- else if(action==='revisit'){next.phase='definition';next.approvals={definition:false,planning:false,critique:false};}
+ else if(['revisit','revisit-definition','revisit-planning'].includes(action)){next.phase=action==='revisit-planning'?'planning':'definition';next.approvals={definition:action==='revisit-planning'&&next.approvals.definition,planning:false,critique:false};delete next.construction;}
  else fail('invalid workflow action for this phase');validatePmd(next);return next;
 }
 export function restorePmd(previous,revision){const h=previous.history.find(v=>v.revision===revision);if(!h)fail('history version unavailable');const next={...clone(h.snapshot),revision:previous.revision+1,history:checkpoint(previous,'Restore '+revision)};validatePmd(next);return next;}

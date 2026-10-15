@@ -1,3 +1,4 @@
+import {spawn} from 'node:child_process';
 import packageData from '../../package.json' with {type:'json'};
 import {HubSettings,axiomApplications} from './hub-settings.mjs';
 import {extractPmdImport,exportPmd} from './pmd-import.mjs';
@@ -10,7 +11,7 @@ import {EditorBridge} from './agent/editor-bridge.mjs';
 import { createHash, randomBytes } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import { createServer as createHttpServer } from "node:http";
-import { extname, join, resolve, relative, isAbsolute } from "node:path";
+import { extname, join, resolve, relative, isAbsolute, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CommandBus } from "./command-bus.mjs";
 import { SceneWorkspace } from "./scene-workspace.mjs";
@@ -73,7 +74,7 @@ async function schemaHash() {
 }
 
 function mime(path) {
-  return ({ ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json", ".wasm": "application/wasm", ".svg":"image/svg+xml" })[extname(path)] ?? "application/octet-stream";
+  return ({ ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json", ".wasm": "application/wasm", ".svg":"image/svg+xml", ".png":"image/png" })[extname(path)] ?? "application/octet-stream";
 }
 
 export async function startServer(options = {}) {
@@ -153,8 +154,9 @@ export async function startServer(options = {}) {
       if(request.method==='GET'&&url.pathname==='/v1/ai/history')return json(response,200,{text:assistant.exportHistory(),filename:'Axiom-AI-history.txt'});
       if(url.pathname==='/v1/hub'){
         if(request.method==='GET')return json(response,200,{version:packageData.version,applications:axiomApplications,projectRoot:workspace.store.root,projects:(await workspace.store.run('project.list',{})).projects,legacyRoot:join(ROOT,'.axiom/projects')});
-        if(request.method==='POST'){const data=await readJson(request);if(workspace.project||assistant.active)throw Error('Close the project before changing Hub storage or deleting projects');
-          if(data.action==='delete'){if(data.confirm!==true)throw Error('Project deletion requires confirmation');for(const item of [...proposals.items.values()].filter(v=>v.base.id===data.id)){if(proposals.busy(item)||item.child.playing)throw Error('Stop the project proposal and finish its jobs before deletion');await proposals.run('workspace.reject',{workspaceId:item.id,expectedWorkspaceRevision:item.child.revision},{actor:{kind:'human',id:'hub'}});}const result=await workspace.store.run('project.delete',{id:data.id,confirm:data.confirm});return json(response,200,result);}
+        if(request.method==='POST'){const data=await readJson(request);if(assistant.active)throw Error('Finish or cancel the AI task before managing projects');if(['configure','import-legacy'].includes(data.action)&&workspace.project)throw Error('Close the project before changing Hub storage');
+          if(data.action==='open-folder'){await workspace.store.directory();const entry=(await workspace.store.run('project.list',{})).projects.find(p=>p.id===data.id);if(!entry)throw Error('Unknown project');const folder=dirname(entry.path),command=process.platform==='win32'?'explorer.exe':process.platform==='darwin'?'open':'xdg-open';await new Promise((yes,no)=>{const child=spawn(command,[folder],{shell:false,stdio:'ignore'});child.once('error',no);child.once('spawn',()=>{child.unref();yes();});});return json(response,200,{opened:true});}
+          if(data.action==='delete'){if(workspace.project?.id===data.id)throw Error('Close this project before deleting it');if(data.confirm!==true)throw Error('Project deletion requires confirmation');for(const item of [...proposals.items.values()].filter(v=>v.base.id===data.id)){if(proposals.busy(item)||item.child.playing)throw Error('Stop the project proposal and finish its jobs before deletion');await proposals.run('workspace.reject',{workspaceId:item.id,expectedWorkspaceRevision:item.child.revision},{actor:{kind:'human',id:'hub'}});}const result=await workspace.store.run('project.delete',{id:data.id,confirm:data.confirm});return json(response,200,result);}
           if(data.action==='import-legacy'){if(!workspace.store.folders)throw Error('Select persistent folder storage first');return json(response,200,await workspace.store.importLegacy(data.sourceRoot?resolve(data.sourceRoot):join(ROOT,'.axiom/projects')));}
           if(data.action==='configure'){if(proposals.items.size)throw Error('Resolve retained proposals before switching project storage');if(typeof data.projectRoot!=='string'||!data.projectRoot.trim())throw Error('Enter a valid project storage path');const previous=workspace.store.root,previousFolders=workspace.store.folders,next=resolve(data.projectRoot);if(next===ROOT||(!relative(ROOT,next).startsWith('..')&&!isAbsolute(relative(ROOT,next))))throw Error('Choose a project directory outside the application files');workspace.store.root=next;workspace.store.folders=true;try{await workspace.store.directory();await proposals.initialize();await assistant.rebindProjectStorage();await hubSettings.save(next);}catch(error){workspace.store.root=previous;workspace.store.folders=previousFolders;workspace.store.locations=new Map();proposals.items.clear();proposals.previewId=null;workspace.project=null;await proposals.initialize();await assistant.rebindProjectStorage();throw error;}return json(response,200,{projectRoot:next});}
           throw Error('Unknown Hub action');

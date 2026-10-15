@@ -1,10 +1,10 @@
-import {hash,workError} from './work-orders.mjs';
+import {hash,workError,entitySelector} from './work-orders.mjs';
 import {projectFiles} from '../../../engine/scene/project-files.mjs';
 
 // Revisions, jobs, chat and build IDs are bookkeeping, not authored progress.
 export function progressFingerprint(project,s){
  const scene=project.scene,pmd=project.editor?.pmd;
- const checks=s.plan?.steps.flatMap(step=>step.checks)??[],selectors=new Set(checks.filter(c=>['entity','script-assigned'].includes(c.kind)).map(c=>c.selector)),fileSelectors=new Set(checks.filter(c=>c.kind==='file').map(c=>c.selector)),coding=checks.some(c=>['compile','runtime','script-assigned'].includes(c.kind));
+ const checks=s.plan?.steps.flatMap(step=>step.checks)??[],selectors=new Set(checks.filter(c=>['entity','script-assigned'].includes(c.kind)).map(c=>entitySelector(c.selector))),fileSelectors=new Set(checks.filter(c=>c.kind==='file').map(c=>c.selector)),coding=checks.some(c=>['compile','runtime','script-assigned'].includes(c.kind));
  const entities=selectors.size?scene.entities.filter(e=>selectors.has(e.id)||selectors.has(e.name)):scene.entities;
  const files=projectFiles(scene).filter(f=>f.kind!=='folder'&&(!checks.length||fileSelectors.has(f.path)||coding&&f.kind==='script'));
  const authored=s.plan?{entities,files:files.map(f=>[f.path,f.text??f.assetId])}:{...scene,projectFiles:undefined,script:scene.script?{source:scene.script.source,entryPath:scene.script.entryPath}:null};

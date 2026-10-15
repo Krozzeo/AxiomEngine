@@ -8,13 +8,13 @@ import {ProjectStore} from '../daemon/bootstrap/project-store.mjs';
 import {newPmd,updatePmd} from '../engine/project/pmd.mjs';
 import {component2DDefaults} from '../engine/renderer/two-d-plan.mjs';
 import {playerExamples} from '../daemon/bootstrap/player-prefabs.mjs';
-export async function createM183Projects(root){
+export async function createM183Projects(root,{players=true}={}){
  const persistent=!root;if(persistent)root=(await new HubSettings().load()).projectRoot;const demos=[];const w=new SceneWorkspace(new ProjectStore(root,{folders:persistent})),run=(type,data={})=>w.run(type,{id:w.project.id,expectedSceneRevision:w.revision,...data});
- await w.run('project.create',{name:'Demo · M18.3.5 PMD Planning Workshop',dimension:3});
+ await w.run('project.create',{name:'Demo · M18.3.6 PMD Planning Workshop',dimension:3});
  const pmd=updatePmd(newPmd(),{sections:[{id:'brief',title:'Imported brief · intentionally ambiguous',parentId:null,links:['questions'],text:'A small puzzle game about arranging falling colored blocks. It should be fun, playable on a computer, and save progress. Scope, target audience, art budget, input and success criteria need definition.'},{id:'questions',title:'Questions to resolve',parentId:'brief',links:[],text:'How many levels? Which desktop targets? Keyboard or mouse? What does saving progress include? Solo development? Art/audio constraints?'}],decisions:[{text:'A small puzzle game',status:'proposed'},{text:'Desktop target (exact platforms unresolved)',status:'assumption'}],questions:['Which mechanics define winning and losing?','Which platforms and production constraints apply?']});
  await run('project.editor.update',{value:{leftWidth:220,rightWidth:290,bottomHeight:190,pmd}});demos.push({id:w.project.id,name:w.project.name});
- for(const name of Object.keys(playerExamples)){
-  const dimension=name.startsWith('3D')?3:2;await w.run('project.create',{name:'Demo · M18.3.5 '+name,dimension});
+ for(const name of (players?Object.keys(playerExamples):[])){
+  const dimension=name.startsWith('3D')?3:2;await w.run('project.create',{name:'Demo · M18.3.6 '+name,dimension});
   const starter=w.project.scene.entities.find(e=>e.renderable);if(starter)await run('scene.entity.delete',{entityId:starter.id});
   // Compile all four physical controller sources together; only the selected Player is attached.
   await run('project.files.edit',{action:'create',kind:'folder',path:'Scripts/Players'});
@@ -27,4 +27,4 @@ export async function createM183Projects(root){
  demos.push(await createWorkflowProject(root,{folders:persistent}));
  return demos;
 }
-if(process.argv[1]===fileURLToPath(import.meta.url))console.log(JSON.stringify(await createM183Projects(),null,2));
+if(process.argv[1]===fileURLToPath(import.meta.url))console.log(JSON.stringify(await createM183Projects(undefined,{players:false}),null,2));

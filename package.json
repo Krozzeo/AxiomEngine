@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -64,6 +64,7 @@
     "test:browser:m18-3": "node tests/browser/m18-3.mjs",
     "test:browser:m18-3-3": "node tests/browser/m18-3-3.mjs",
     "test:browser:m18-3-4": "node tests/browser/m18-3-4.mjs",
+    "test:browser:m18-3-6": "node tests/browser/m18-3-6.mjs",
     "test:browser:m18-3-5": "node tests/browser/m18-3-5.mjs",
     "eval:agent": "node scripts/evaluate-agent.mjs"
   },

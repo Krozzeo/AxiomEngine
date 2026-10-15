@@ -1,0 +1,2 @@
+export function approvesTask(text){return /^(?:s[ií]|ok(?:ey)?|dale|adelante|aprobado|apruebo(?: el plan)?|confirmo|procede|hazlo|ejecuta(?: el plan)?|comienza|yes|approved?|go ahead|proceed|start)(?:[.! ,]|$)/i.test(text.trim())&&!/\b(?:no|pero|excepto|but|unless)\b/i.test(text);}
+export function formatTaskPlan(steps){if(!Array.isArray(steps)||!steps.length||steps.length>20||steps.some(s=>typeof s!=='string'||!s.trim()||s.length>1200))throw Error('A task plan needs 1–20 concrete steps.');return '**Plan de la tarea**\n\n'+steps.map((s,i)=>(i+1)+'. '+s.trim()).join('\n');}

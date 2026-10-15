@@ -8,7 +8,7 @@ export function progressFingerprint(project,s){
  const entities=selectors.size?scene.entities.filter(e=>selectors.has(e.id)||selectors.has(e.name)):scene.entities;
  const files=projectFiles(scene).filter(f=>f.kind!=='folder'&&(!checks.length||fileSelectors.has(f.path)||coding&&f.kind==='script'));
  const authored=s.plan?{entities,files:files.map(f=>[f.path,f.text??f.assetId])}:{...scene,projectFiles:undefined,script:scene.script?{source:scene.script.source,entryPath:scene.script.entryPath}:null};
- return hash({scene:authored,pmd:pmd?{phase:pmd.phase,approvals:pmd.approvals,sections:pmd.construction?pmd.sections.filter(v=>pmd.construction.requiredIds.includes(v.id)):pmd.sections,decisions:pmd.decisions,questions:pmd.questions,roadmap:pmd.roadmap}:null,compilation:s.lastCompilation?{sourceHash:s.lastCompilation.sourceHash,status:s.lastCompilation.status}:null,runtime:s.runtimeEvidence?{sceneHash:s.runtimeEvidence.sceneHash,verified:s.runtimeEvidence.verified}:null,checks:s.plan?.steps.map(step=>({id:step.id,checks:step.checks,status:step.status}))});
+ return hash({scene:authored,pmd:pmd?{phase:pmd.phase,approvals:pmd.approvals,sections:pmd.sections,decisions:pmd.decisions,questions:pmd.questions,roadmap:pmd.roadmap}:null,compilation:s.lastCompilation?{sourceHash:s.lastCompilation.sourceHash,status:s.lastCompilation.status}:null,runtime:s.runtimeEvidence?{sceneHash:s.runtimeEvidence.sceneHash,verified:s.runtimeEvidence.verified}:null,checks:s.plan?.steps.map(step=>({id:step.id,checks:step.checks,status:step.status}))});
 }
 export function observeProgress(s,project,name,result){
  const fingerprint=progressFingerprint(project,s),old=s.progress;

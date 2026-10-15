@@ -1,3 +1,5 @@
+import {installPreapprovedAgentFixture} from './preapproved-agent-fixture.mjs';
+installPreapprovedAgentFixture();
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm,readdir,readFile} from 'node:fs/promises';

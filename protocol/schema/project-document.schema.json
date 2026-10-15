@@ -1558,7 +1558,8 @@
                   "game",
                   "ide",
                   "assistant",
-                  "pmd"
+                  "pmd",
+                  "scripting"
                 ]
               }
             },
@@ -1578,7 +1579,8 @@
                   "game",
                   "ide",
                   "assistant",
-                  "pmd"
+                  "pmd",
+                  "scripting"
                 ]
               }
             },
@@ -1603,6 +1605,16 @@
               ]
             },
             "pmd": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "top",
+                "bottom",
+                "center"
+              ]
+            },
+            "scripting": {
               "type": "string",
               "enum": [
                 "left",

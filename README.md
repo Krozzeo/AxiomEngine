@@ -1,3 +1,7 @@
+# M18.3.7 / 0.0.45 — approval, context, PMD sections and scripting API
+
+Implementation and verification in progress. Read [current report](docs/reports/M18_3_7_CURRENT_REPORT.md), [demo guide](demos/M18_3_7_GUIDE.md) and [Scripting API](docs/scripting-api/README.md). Release acceptance is pending CI; no live-model reliability or cost claim is made. M18.4 remains deferred.
+
 # M18.3.6 / 0.0.44 — PMD scope repair and overlay Hub
 
 M18.3.6 / 0.0.44 is complete as an automated correction. [CI265](https://github.com/Krozzeo/AxiomEngine/actions/runs/38668768208) passes all **37 jobs** at executable commit `46ea2c3092386cb20d68f2dc330f9485da1f5515` (tree `d5e2e72eaa545dcfe2889a9790c111650d57ba6b`): **361 Node tests on Linux and Windows**, **39 Rust tests**, real Linux development/AOT and Windows development C#, and **28 browser groups**. The new Hub acceptance covers reload with an active project, dirty-switch Cancel/Save, independent project budgets, notifications, supplied logo, phase visualization and refreshed cards after File Close. PMD construction and the four-wall live-trace regressions are checked with controlled model responses; real-model quality, completion rate and token savings still require account-side testing. Historical MVP coverage remains approximately **94% (122/130)**; new Hub scope is unweighted. M18.4 has not started. PR #35 remains draft/open/unmerged; do not merge automatically.

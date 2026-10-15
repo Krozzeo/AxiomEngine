@@ -1,3 +1,5 @@
+import {installPreapprovedAgentFixture} from '../preapproved-agent-fixture.mjs';
+installPreapprovedAgentFixture();
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';

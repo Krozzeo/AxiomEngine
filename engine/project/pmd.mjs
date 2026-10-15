@@ -1,3 +1,4 @@
+import {sectionIndex} from './document-sections.mjs';
 const clone=value=>structuredClone(value);
 export const pmdPhases=['definition','planning','critique','construction','ready'];
 const fail=message=>{throw Error('PMD: '+message);};
@@ -22,7 +23,7 @@ export function validatePmd(p){
  for(const h of p.history){if(!Number.isSafeInteger(h.revision)||typeof h.label!=='string'||!h.snapshot||h.snapshot.history)fail('invalid history snapshot');validatePmd({...h.snapshot,history:[]});}
  if(p.phase==='ready'&&(!p.approvals.definition||!p.approvals.planning||!p.sections.length))fail('ready document requires approvals and sections');return p;
 }
-export function pmdIndex(p){return p.sections.map(({id,title,parentId,links})=>({id,title,parentId,links}));}
+export function pmdIndex(p){return sectionIndex(p.sections).map(({id,title,parentId})=>({id,title,parentId}));}
 function checkpoint(p,label){const {history,...snapshot}=clone(p);const list=[...p.history,{revision:p.revision,label:label.slice(0,160),snapshot}].slice(-6);while(size(list)>65000)list.shift();return list;}
 export function updatePmd(previous,patch,label='Edit document'){
  validatePmd(previous);const next=clone(previous);for(const key of Object.keys(patch))if(!['sections','decisions','questions','roadmap','chat','construction'].includes(key))fail('patch cannot change '+key);

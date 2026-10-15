@@ -34,3 +34,8 @@ test('PMD incomplete sections, missing roadmap criteria and approved scope chang
  let p=beginConstruction(approved());assert.equal(finishConstruction(p).phase,'construction');p=updatePmd(p,{sections:p.sections.map(s=>({...s,text:'Long enough section that fails to mention the roadmap acceptance.'}))});assert.equal(constructionStatus(p).ready,false);assert.deepEqual(constructionStatus(p).uncoveredMilestones,['M1']);
  const changed=updatePmd(p,{roadmap:p.roadmap.map(m=>({...m,deliverable:'A different game'}))});assert.equal(changed.phase,'planning');assert.equal(changed.approvals.planning,false);assert.equal(changed.construction,undefined);
 });
+test('PMD roadmap descendants cover approved criteria without rewriting overview',()=>{
+ let p=beginConstruction(approved());p=updatePmd(p,{sections:[...p.sections.map(s=>s.id==='roadmap'?{...s,text:'See the approved milestone sections below.'}:{...s,text:'Concrete section grounded in the approved puzzle scope.'}),{id:'milestone-1',title:'M1 · Puzzle',parentId:'roadmap',links:[],text:'Deliverable: Playable\n puzzle\nValidation: Win and reset'}]});
+ assert.equal(constructionStatus(p).ready,true);assert.equal(finishConstruction(p).phase,'ready');
+ p=updatePmd(p,{sections:p.sections.map(s=>s.id==='milestone-1'?{...s,text:'Missing the approved acceptance criteria'}:s)});assert.deepEqual(constructionStatus(p).uncoveredMilestones,['M1']);assert.match(constructionStatus(p).nextAction,/Document these approved milestones/);
+});

@@ -1,3 +1,7 @@
+# M18.3.7 / 0.0.45 — approved correction in progress
+
+Read [current report](../reports/M18_3_7_CURRENT_REPORT.md). Scope: human task plans/approval, persistent bounded tool context, descendant-aware PMD construction, shared section trees/indexes, foundational Unity 6.3-style scripting and in-app reference. Keep draft/unmerged. CI acceptance and live-model validation remain pending. M18.4 and M19 are deferred.
+
 # M18.3.6 / 0.0.44 — PMD scope repair and overlay Hub
 
 M18.3.6 / 0.0.44 is complete as an automated correction. [CI265](https://github.com/Krozzeo/AxiomEngine/actions/runs/38668768208) passes all **37 jobs** at executable commit `46ea2c3092386cb20d68f2dc330f9485da1f5515` (tree `d5e2e72eaa545dcfe2889a9790c111650d57ba6b`): **361 Node tests on Linux and Windows**, **39 Rust tests**, real Linux development/AOT and Windows development C#, and **28 browser groups**. The new Hub acceptance covers reload with an active project, dirty-switch Cancel/Save, independent project budgets, notifications, supplied logo, phase visualization and refreshed cards after File Close. PMD construction and the four-wall live-trace regressions are checked with controlled model responses; real-model quality, completion rate and token savings still require account-side testing. Historical MVP coverage remains approximately **94% (122/130)**; new Hub scope is unweighted. M18.4 has not started. PR #35 remains draft/open/unmerged; do not merge automatically.

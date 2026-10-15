@@ -8,7 +8,15 @@ export function beginConstruction(p){
  for(const [id,title]of required)if(!sections.has(id))sections.set(id,{id,title,parentId:id==='overview'?null:'overview',links:[],text:''});
  const overview=sections.get('overview');sections.set('overview',{...overview,links:[...new Set([...overview.links,'requirements','technical','roadmap'])]});
  const roadmap=sections.get('roadmap');if(!roadmap.text.trim())sections.set('roadmap',{...roadmap,text:p.roadmap.map(m=>`## ${m.id} · ${m.title}\nStage: ${m.stage}\nDeliverable: ${m.deliverable}\nValidation: ${m.validation}`).join('\n\n')});
- return updatePmd(p,{sections:[...sections.values()],construction:{scopeHash:constructionScope(p),requiredIds:required.map(([id])=>id)}},'Begin section construction');
+ return ensureConstructionReferences(updatePmd(p,{sections:[...sections.values()],construction:{scopeHash:constructionScope(p),requiredIds:required.map(([id])=>id)}},'Begin section construction'));
+}
+// Approved milestone data is already structured and authoritative. Materialize it
+// once as document sections instead of making the model paraphrase it until a
+// literal verifier happens to accept it. Existing prose is never overwritten.
+export function ensureConstructionReferences(p){
+ if(p?.phase!=='construction'||!p.construction||!p.sections.some(s=>s.id==='roadmap'))return p;
+ const added=p.roadmap.map(m=>({id:'approved-'+hash(m.id).slice(0,16),title:(m.id+' · '+m.title).slice(0,160),parentId:'roadmap',links:[],text:`## ${m.id} · ${m.title}\n\nStage: ${m.stage}\n\nDeliverable: ${m.deliverable}\n\nValidation: ${m.validation}`})).filter(s=>!p.sections.some(old=>old.id===s.id));
+ return added.length?updatePmd(p,{sections:[...p.sections,...added]},'Materialize approved milestone references'):p;
 }
 export function constructionStatus(p){
  if(!p?.construction)return null;

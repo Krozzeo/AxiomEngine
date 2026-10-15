@@ -39,3 +39,7 @@ test('PMD roadmap descendants cover approved criteria without rewriting overview
  assert.equal(constructionStatus(p).ready,true);assert.equal(finishConstruction(p).phase,'ready');
  p=updatePmd(p,{sections:p.sections.map(s=>s.id==='milestone-1'?{...s,text:'Missing the approved acceptance criteria'}:s)});assert.deepEqual(constructionStatus(p).uncoveredMilestones,['M1']);assert.match(constructionStatus(p).nextAction,/Document these approved milestones/);
 });
+test('approved milestone references survive a model summary so construction does not require lexical rewrites',()=>{
+ let p=beginConstruction(approved());const references=p.sections.filter(s=>s.id.startsWith('approved-'));assert.equal(references.length,1);assert.match(references[0].text,/Playable puzzle/);assert.match(references[0].text,/Win and reset/);
+ p=updatePmd(p,{sections:p.sections.map(s=>['overview','requirements','technical','roadmap'].includes(s.id)?{...s,text:'A concise authored description of the agreed puzzle and its implementation.'}:s)});assert.equal(constructionStatus(p).ready,true);assert.equal(finishConstruction(p).phase,'ready');
+});

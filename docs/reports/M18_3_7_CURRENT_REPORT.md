@@ -4,7 +4,7 @@ This revision implements the approved Hub, conversation-memory, task-approval, P
 
 ## Concrete fixes
 
-The supplied PMD trace reached all four required pages, but completion searched only the parent roadmap body for exact approved criteria. Coverage now includes descendants, normalizes whitespace, exposes the precise missing milestone criteria and directs the next action to the affected roadmap section. Child-section changes count as progress. The loop guard remains containment, not an excuse to report success.
+The supplied PMD trace reached all four required pages, but completion searched only the parent roadmap body for exact approved criteria. Coverage now includes descendants, normalizes whitespace, exposes the precise missing milestone criteria and directs the next action to the affected roadmap section. Child-section changes count as progress. Approved milestone data is materialized once as child reference sections, so narrative summaries cannot accidentally erase the structured acceptance criteria. Existing prose is preserved. The loop guard remains containment, not an excuse to report success.
 
 Every terminal task now retains a final explanatory response including stop code, completed operations, failed tools, remaining deliverables and proposal isolation, including host budget/no-progress interruptions. Private work contracts can be described directly. Repeated authoritative missing-SDK queries stop before a discovery spiral.
 

@@ -1,7 +1,13 @@
 using System.Text.Json;
 namespace Axiom.Gameplay;
 
-public readonly record struct Vector2(double X, double Y) {
+public record struct Vector2(double X, double Y) {
+ public double x {get=>X;set=>X=value;}
+ public double y {get=>Y;set=>Y=value;}
+ public static Vector2 zero=>Zero;public static Vector2 one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y;
+ public Vector2 normalized=>Normalized;public void Normalize(){this=Normalized;}public static Vector2 Normalize(Vector2 v)=>v.Normalized;public static double Distance(Vector2 a,Vector2 b)=>(a-b).Magnitude;public static Vector2 operator -(Vector2 v)=>v*(-1);public static Vector2 operator /(Vector2 v,double n)=>v*(1/n);public static Vector2 operator *(double n,Vector2 v)=>v*n;
+
+ public static Vector2 up=>new(0,1);public static Vector2 down=>new(0,-1);public static Vector2 right=>new(1,0);public static Vector2 left=>new(-1,0);
  public static Vector2 Zero => new(0,0);
  public static Vector2 One => new(1,1);
  public double Magnitude => Math.Sqrt(X*X+Y*Y);
@@ -14,7 +20,13 @@ public readonly record struct Vector2(double X, double Y) {
  public static Vector2 Lerp(Vector2 a,Vector2 b,double t) => a+(b-a)*Math.Clamp(t,0,1);
  internal void Write(Utf8JsonWriter w) {w.WriteStartArray();w.WriteNumberValue(X);w.WriteNumberValue(Y);w.WriteEndArray();}
 }
-public readonly record struct Vector3(double X, double Y, double Z) {
+public record struct Vector3(double X, double Y, double Z) {
+ public double x {get=>X;set=>X=value;}
+ public double y {get=>Y;set=>Y=value;}
+ public double z {get=>Z;set=>Z=value;}
+ public static Vector3 zero=>Zero;public static Vector3 one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y+Z*Z;
+ public Vector3 normalized=>Normalized;public void Normalize(){this=Normalized;}public static Vector3 Normalize(Vector3 v)=>v.Normalized;public static double Distance(Vector3 a,Vector3 b)=>(a-b).Magnitude;public static Vector3 operator -(Vector3 v)=>v*(-1);public static Vector3 operator /(Vector3 v,double n)=>v*(1/n);public static Vector3 operator *(double n,Vector3 v)=>v*n;
+
  public static Vector3 Zero => new(0,0,0);
  public static Vector3 One => new(1,1,1);
  public double Magnitude => Math.Sqrt(X*X+Y*Y+Z*Z);
@@ -25,6 +37,7 @@ public readonly record struct Vector3(double X, double Y, double Z) {
  public Vector3 Normalized => Magnitude>1e-12?this*(1/Magnitude):Zero;
  public static double Dot(Vector3 a,Vector3 b) => a.X*b.X+a.Y*b.Y+a.Z*b.Z;
  public static Vector3 Lerp(Vector3 a,Vector3 b,double t) => a+(b-a)*Math.Clamp(t,0,1);
+ public static Vector3 up=>new(0,1,0);public static Vector3 down=>new(0,-1,0);public static Vector3 right=>new(1,0,0);public static Vector3 left=>new(-1,0,0);public static Vector3 forward=>new(0,0,1);public static Vector3 back=>new(0,0,-1);
  public static Vector3 Up => new(0,1,0);public static Vector3 Right => new(1,0,0);public static Vector3 Forward => new(0,0,-1);
  public static Vector3 Cross(Vector3 a,Vector3 b) => new(a.Y*b.Z-a.Z*b.Y,a.Z*b.X-a.X*b.Z,a.X*b.Y-a.Y*b.X);
  public static Vector3 operator +(Vector3 a,Vec3 b)=>a+(Vector3)b;
@@ -34,7 +47,14 @@ public readonly record struct Vector3(double X, double Y, double Z) {
  public static implicit operator Vector3(Vec3 v) => new(v.X,v.Y,v.Z);public static implicit operator Vec3(Vector3 v) => new(v.X,v.Y,v.Z);
  internal void Write(Utf8JsonWriter w) {w.WriteStartArray();w.WriteNumberValue(X);w.WriteNumberValue(Y);w.WriteNumberValue(Z);w.WriteEndArray();}
 }
-public readonly record struct Vector4(double X, double Y, double Z, double W) {
+public record struct Vector4(double X, double Y, double Z, double W) {
+ public double x {get=>X;set=>X=value;}
+ public double y {get=>Y;set=>Y=value;}
+ public double z {get=>Z;set=>Z=value;}
+ public double w {get=>W;set=>W=value;}
+ public static Vector4 zero=>Zero;public static Vector4 one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>X*X+Y*Y+Z*Z+W*W;
+ public Vector4 normalized=>Normalized;public void Normalize(){this=Normalized;}public static Vector4 Normalize(Vector4 v)=>v.Normalized;public static double Distance(Vector4 a,Vector4 b)=>(a-b).Magnitude;public static Vector4 operator -(Vector4 v)=>v*(-1);public static Vector4 operator /(Vector4 v,double n)=>v*(1/n);public static Vector4 operator *(double n,Vector4 v)=>v*n;
+
  public static Vector4 Zero => new(0,0,0,0);
  public static Vector4 One => new(1,1,1,1);
  public double Magnitude => Math.Sqrt(X*X+Y*Y+Z*Z+W*W);
@@ -47,10 +67,14 @@ public readonly record struct Vector4(double X, double Y, double Z, double W) {
  public static Vector4 Lerp(Vector4 a,Vector4 b,double t) => a+(b-a)*Math.Clamp(t,0,1);
  internal void Write(Utf8JsonWriter w) {w.WriteStartArray();w.WriteNumberValue(X);w.WriteNumberValue(Y);w.WriteNumberValue(Z);w.WriteNumberValue(W);w.WriteEndArray();}
 }
-public readonly record struct Vector2Int(int X, int Y) {
+public record struct Vector2Int(int X, int Y) {
+ public int x {get=>X;set=>X=value;}
+ public int y {get=>Y;set=>Y=value;}
+ public static Vector2Int zero=>Zero;public static Vector2Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y;
+
  public static Vector2Int Zero => new(0,0);
  public static Vector2Int One => new(1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y);
  public static Vector2Int operator +(Vector2Int a,Vector2Int b) => new(a.X+b.X,a.Y+b.Y);
  public static Vector2Int operator -(Vector2Int a,Vector2Int b) => new(a.X-b.X,a.Y-b.Y);
  public static Vector2Int operator *(Vector2Int a,int b) => new(a.X*b,a.Y*b);
@@ -58,10 +82,15 @@ public readonly record struct Vector2Int(int X, int Y) {
  public static implicit operator Vector2(Vector2Int v) => new(v.X,v.Y);
  internal void Write(Utf8JsonWriter w) {w.WriteStartArray();w.WriteNumberValue(X);w.WriteNumberValue(Y);w.WriteEndArray();}
 }
-public readonly record struct Vector3Int(int X, int Y, int Z) {
+public record struct Vector3Int(int X, int Y, int Z) {
+ public int x {get=>X;set=>X=value;}
+ public int y {get=>Y;set=>Y=value;}
+ public int z {get=>Z;set=>Z=value;}
+ public static Vector3Int zero=>Zero;public static Vector3Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y+(double)Z*Z;
+
  public static Vector3Int Zero => new(0,0,0);
  public static Vector3Int One => new(1,1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y+Z*Z);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y+(double)Z*Z);
  public static Vector3Int operator +(Vector3Int a,Vector3Int b) => new(a.X+b.X,a.Y+b.Y,a.Z+b.Z);
  public static Vector3Int operator -(Vector3Int a,Vector3Int b) => new(a.X-b.X,a.Y-b.Y,a.Z-b.Z);
  public static Vector3Int operator *(Vector3Int a,int b) => new(a.X*b,a.Y*b,a.Z*b);
@@ -69,10 +98,16 @@ public readonly record struct Vector3Int(int X, int Y, int Z) {
  public static implicit operator Vector3(Vector3Int v) => new(v.X,v.Y,v.Z);
  internal void Write(Utf8JsonWriter w) {w.WriteStartArray();w.WriteNumberValue(X);w.WriteNumberValue(Y);w.WriteNumberValue(Z);w.WriteEndArray();}
 }
-public readonly record struct Vector4Int(int X, int Y, int Z, int W) {
+public record struct Vector4Int(int X, int Y, int Z, int W) {
+ public int x {get=>X;set=>X=value;}
+ public int y {get=>Y;set=>Y=value;}
+ public int z {get=>Z;set=>Z=value;}
+ public int w {get=>W;set=>W=value;}
+ public static Vector4Int zero=>Zero;public static Vector4Int one=>One;public double magnitude=>Magnitude;public double sqrMagnitude=>(double)X*X+(double)Y*Y+(double)Z*Z+(double)W*W;
+
  public static Vector4Int Zero => new(0,0,0,0);
  public static Vector4Int One => new(1,1,1,1);
- public double Magnitude => Math.Sqrt(X*X+Y*Y+Z*Z+W*W);
+ public double Magnitude => Math.Sqrt((double)X*X+(double)Y*Y+(double)Z*Z+(double)W*W);
  public static Vector4Int operator +(Vector4Int a,Vector4Int b) => new(a.X+b.X,a.Y+b.Y,a.Z+b.Z,a.W+b.W);
  public static Vector4Int operator -(Vector4Int a,Vector4Int b) => new(a.X-b.X,a.Y-b.Y,a.Z-b.Z,a.W-b.W);
  public static Vector4Int operator *(Vector4Int a,int b) => new(a.X*b,a.Y*b,a.Z*b,a.W*b);
@@ -81,6 +116,12 @@ public readonly record struct Vector4Int(int X, int Y, int Z, int W) {
  internal void Write(Utf8JsonWriter w) {w.WriteStartArray();w.WriteNumberValue(X);w.WriteNumberValue(Y);w.WriteNumberValue(Z);w.WriteNumberValue(W);w.WriteEndArray();}
 }
 public readonly record struct Quaternion(double X,double Y,double Z,double W) {
+ public static Quaternion identity=>Identity;
+ public static Quaternion Euler(double x,double y,double z)=>Euler(new Vector3(x,y,z));
+ public static Quaternion operator *(Quaternion a,Quaternion b)=>new(a.W*b.X+a.X*b.W+a.Y*b.Z-a.Z*b.Y,a.W*b.Y-a.X*b.Z+a.Y*b.W+a.Z*b.X,a.W*b.Z+a.X*b.Y-a.Y*b.X+a.Z*b.W,a.W*b.W-a.X*b.X-a.Y*b.Y-a.Z*b.Z);
+ public static Vector3 operator *(Quaternion q,Vector3 v){var u=new Vector3(q.X,q.Y,q.Z);return v+2*Vector3.Cross(u,Vector3.Cross(u,v)+q.W*v);}
+ public static Quaternion Inverse(Quaternion q){var n=q.X*q.X+q.Y*q.Y+q.Z*q.Z+q.W*q.W;if(n<1e-20)throw new ArgumentException("Zero quaternion");return new(-q.X/n,-q.Y/n,-q.Z/n,q.W/n);}
+ public static Quaternion AngleAxis(double angle,Vector3 axis){var u=axis.normalized;var a=angle*Math.PI/360;return new(u.X*Math.Sin(a),u.Y*Math.Sin(a),u.Z*Math.Sin(a),Math.Cos(a));}
  public static Quaternion Identity => new(0,0,0,1);
  public static Quaternion Euler(Vector3 degrees) {var x=degrees.X*Math.PI/360;var y=degrees.Y*Math.PI/360;var z=degrees.Z*Math.PI/360;var cx=Math.Cos(x);var sx=Math.Sin(x);var cy=Math.Cos(y);var sy=Math.Sin(y);var cz=Math.Cos(z);var sz=Math.Sin(z);return new(sx*cy*cz-cx*sy*sz,cx*sy*cz+sx*cy*sz,cx*cy*sz-sx*sy*cz,cx*cy*cz+sx*sy*sz);}
  public static implicit operator Quat(Quaternion q)=>new(q.X,q.Y,q.Z,q.W);public static implicit operator Quaternion(Quat q)=>new(q.X,q.Y,q.Z,q.W);
@@ -90,7 +131,17 @@ public readonly record struct Color(double R,double G,double B,double A=1) {publ
 public readonly record struct Color32(byte R,byte G,byte B,byte A=255);
 public readonly record struct Rect(double X,double Y,double Width,double Height);
 public readonly record struct Bounds(Vector3 Center,Vector3 Size);
-public abstract class MonoBehaviour : Script {}
+public abstract class MonoBehaviour : Script {
+ private double fixedAccumulator;
+ public virtual void OnCollisionEnter(Collision collision){}public virtual void OnCollisionStay(Collision collision){}public virtual void OnCollisionExit(Collision collision){}
+ public virtual void OnTriggerEnter(Collider other){}public virtual void OnTriggerStay(Collider other){}public virtual void OnTriggerExit(Collider other){}
+ public virtual void OnCollisionEnter2D(Collision2D collision){}public virtual void OnCollisionStay2D(Collision2D collision){}public virtual void OnCollisionExit2D(Collision2D collision){}
+ public virtual void OnTriggerEnter2D(Collider2D other){}public virtual void OnTriggerStay2D(Collider2D other){}public virtual void OnTriggerExit2D(Collider2D other){}
+ public virtual void Awake(){}public virtual void OnEnable(){}public virtual void Start(){}public virtual void Update(){}public virtual void FixedUpdate(){}public virtual void LateUpdate(){}public virtual void OnDisable(){}public virtual void OnDestroy(){}
+ public override void OnStart(){Awake();OnEnable();Start();}
+ public override void OnUpdate(double deltaSeconds){fixedAccumulator+=deltaSeconds;while(fixedAccumulator>=Time.fixedDeltaTime){FixedUpdate();fixedAccumulator-=Time.fixedDeltaTime;}Update();LateUpdate();}
+ public override void OnStop(){OnDisable();OnDestroy();}
+}
 [AttributeUsage(AttributeTargets.Field)] public sealed class SerializeFieldAttribute : Attribute {}
 [AttributeUsage(AttributeTargets.Field)] public sealed class HideInInspectorAttribute : Attribute {}
 [AttributeUsage(AttributeTargets.Field)] public sealed class ReadOnlyAttribute : Attribute {}
@@ -99,7 +150,7 @@ public abstract class MonoBehaviour : Script {}
 [AttributeUsage(AttributeTargets.Field)] public sealed class SpaceAttribute(double height=8) : Attribute {public double Height {get;}=height;}
 [AttributeUsage(AttributeTargets.Field)] public sealed class TooltipAttribute(string text) : Attribute {public string Text {get;}=text;}
 [AttributeUsage(AttributeTargets.Field)] public sealed class RangeAttribute(double minimum,double maximum) : Attribute {public double Minimum {get;}=minimum;public double Maximum {get;}=maximum;}
-public static class Mathf {public const double PI=Math.PI;public const double Deg2Rad=Math.PI/180;public const double Rad2Deg=180/Math.PI;public static double Clamp(double value,double min,double max)=>Math.Clamp(value,min,max);public static double Lerp(double a,double b,double t)=>a+(b-a)*Math.Clamp(t,0,1);}
+public static partial class Mathf {public const double PI=Math.PI;public const double Deg2Rad=Math.PI/180;public const double Rad2Deg=180/Math.PI;public static double Clamp(double value,double min,double max)=>Math.Clamp(value,min,max);public static double Lerp(double a,double b,double t)=>a+(b-a)*Math.Clamp(t,0,1);}
 public readonly record struct Vec3(double X, double Y, double Z) {
  public static Vec3 operator +(Vec3 a, Vec3 b) => new(a.X+b.X,a.Y+b.Y,a.Z+b.Z);
  public static Vec3 operator *(Vec3 a, double b) => new(a.X*b,a.Y*b,a.Z*b);
@@ -131,8 +182,7 @@ public readonly record struct Entity(string Id, int Generation) {
  public void SetAudioVolume(double volume) => Context.Audio(this,"volume",volume);
  public Entity Spawn(Vec3 position) => Context.Spawn(this,position);
 }
-public abstract class Script {
- public Entity Entity {get; internal set;}
+public abstract class Script : Component {
  public virtual void OnStart() {}
  public virtual void OnUpdate(double deltaSeconds) {}
  public virtual void OnStop() {}
@@ -142,7 +192,7 @@ public static class ReplayRandom {
  internal static void Reset(uint seed) => state=seed;
  public static double NextDouble() {state=unchecked(state*1664525u+1013904223u);return state/4294967296.0;}
 }
-public static class Input {
+public static partial class Input {
  public static Vector2 MouseDelta => Context.MouseDelta;
  public static bool IsDown(string code) => Context.Keys.Contains(code);
  public static double Axis(string negative, string positive) => (IsDown(positive)?1:0)-(IsDown(negative)?1:0);
@@ -155,10 +205,15 @@ public static class Debug {
 public static class Log {public static void Info(string message) => Context.Log(message);}
 internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0,Quaternion? Rotation=null);
 internal static class Context {
+ internal static readonly List<Script> LiveScripts=new();
+ internal static readonly Dictionary<string,bool> ActiveStates=new();
+ internal static readonly Dictionary<string,JsonElement> PreviousContacts=new();
  internal static int Generation;
  internal static bool DeterministicSpawn;
  internal static uint ReplaySeed;
  internal static readonly Dictionary<string,Transform> Entities = new();
+ internal static readonly Dictionary<string,JsonElement> EntityData=new();
+ internal static readonly HashSet<string> PreviousKeys=new();
  internal static readonly Dictionary<string,RigidBody> Bodies = new();
  internal static readonly Dictionary<string,JsonElement> Animators = new();
  internal static readonly Dictionary<string,JsonElement> AnimationStates = new();
@@ -172,7 +227,7 @@ internal static class Context {
  internal static int Spawned,Logs;
  internal static Transform Read(Entity entity) {
   if(entity.Generation!=Generation||!Entities.TryGetValue(entity.Id,out var value))throw new InvalidOperationException("AX_SCRIPT_0002: stale entity handle");
-  return value;
+  value.Entity=entity;return value;
  }
  internal static RigidBody ReadBody(Entity entity) {
   _=Read(entity);if(!Bodies.TryGetValue(entity.Id,out var body))throw new InvalidOperationException("AX_PHYSICS_0001: entity has no rigid body");return body;
@@ -206,25 +261,38 @@ internal static class Context {
   _=Read(entity);foreach(var id in Cameras){var parent=Parents.GetValueOrDefault(id);for(var depth=0;parent!=null&&depth<32;depth++){if(parent==entity.Id)return new Entity(id,Generation);parent=Parents.GetValueOrDefault(parent);}}throw new InvalidOperationException("AX_SCENE_0001: Player needs a child Camera");
  }
  internal static void Rotate(Entity entity,Quaternion rotation) {
-  var value=Read(entity);var length=Math.Sqrt(rotation.X*rotation.X+rotation.Y*rotation.Y+rotation.Z*rotation.Z+rotation.W*rotation.W);if(!double.IsFinite(length)||length<1e-9)throw new ArgumentException("AX_SCRIPT_0003: invalid rotation");var normalized=new Quaternion(rotation.X/length,rotation.Y/length,rotation.Z/length,rotation.W/length);Add(new("rotation",entity.Id,null,default,null,Rotation:normalized));Entities[entity.Id]=value with{Rotation=normalized};
+  var value=Read(entity);var length=Math.Sqrt(rotation.X*rotation.X+rotation.Y*rotation.Y+rotation.Z*rotation.Z+rotation.W*rotation.W);if(!double.IsFinite(length)||length<1e-9)throw new ArgumentException("AX_SCRIPT_0003: invalid rotation");var normalized=new Quaternion(rotation.X/length,rotation.Y/length,rotation.Z/length,rotation.W/length);Add(new("rotation",entity.Id,null,default,null,Rotation:normalized));Entities[entity.Id]=new Transform(value.Position,normalized,value.Scale){Entity=entity};
  }
+ internal static void Scaling(Entity entity,Vector3 scale){var v=Read(entity);Position(scale);Add(new("scale",entity.Id,null,scale,null));Entities[entity.Id]=new Transform(v.Position,v.Rotation,scale){Entity=entity};}
  internal static void Move(Entity entity,Vec3 position) {
-  var value=Read(entity);Position(position);Add(new("move",entity.Id,null,position,null));Entities[entity.Id]=value with{Position=position};
+  var value=Read(entity);Position(position);Add(new("move",entity.Id,null,position,null));Entities[entity.Id]=new Transform(position,value.Rotation,value.Scale){Entity=entity};
  }
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
   if(Spawned>=Limits.Spawns||Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
-  var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,value with{Position=position});if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
+  var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,new Transform(position,value.Rotation,value.Scale){Entity=new Entity(id,Generation)});if(EntityData.TryGetValue(template.Id,out var data))EntityData[id]=data;if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
+ internal static void DispatchContacts(JsonElement request){
+  var current=new Dictionary<string,JsonElement>();if(request.TryGetProperty("contacts",out var contacts))foreach(var c in contacts.EnumerateArray()){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;if(!Entities.ContainsKey(a)||!Entities.ContainsKey(b))continue;var key=string.CompareOrdinal(a,b)<0?a+"|"+b:b+"|"+a;current[key]=c.Clone();}
+  void Emit(JsonElement c,int phase){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;var trigger=c.GetProperty("trigger").GetBoolean();var normal=Vector3.Read(c.GetProperty("normal"));var point=Vector3.Read(c.GetProperty("point"));foreach(var script in LiveScripts.OfType<MonoBehaviour>().ToArray()){if(!Entities.ContainsKey(script.Entity.Id)||!IsActive(script.Entity.Id)||script.Entity.Id!=a&&script.Entity.Id!=b)continue;var other=script.Entity.Id==a?b:a;if(!EntityData.TryGetValue(other,out var data)||!data.TryGetProperty("collider",out var collider))continue;var e=new Entity(other,Generation);var n=script.Entity.Id==a?normal:-normal;
+   if(collider.GetProperty("dimension").GetInt32()==2){var col=new Collider2D(e);if(trigger){if(phase==0)script.OnTriggerEnter2D(col);else if(phase==1)script.OnTriggerStay2D(col);else script.OnTriggerExit2D(col);}else{var collision=new Collision2D(col,n,point);if(phase==0)script.OnCollisionEnter2D(collision);else if(phase==1)script.OnCollisionStay2D(collision);else script.OnCollisionExit2D(collision);}}
+   else{var col=new Collider(e);if(trigger){if(phase==0)script.OnTriggerEnter(col);else if(phase==1)script.OnTriggerStay(col);else script.OnTriggerExit(col);}else{var collision=new Collision(col,n,point);if(phase==0)script.OnCollisionEnter(collision);else if(phase==1)script.OnCollisionStay(collision);else script.OnCollisionExit(collision);}}
+  }}
+  foreach(var pair in current)Emit(pair.Value,PreviousContacts.ContainsKey(pair.Key)?1:0);foreach(var pair in PreviousContacts)if(!current.ContainsKey(pair.Key))Emit(pair.Value,2);PreviousContacts.Clear();foreach(var pair in current)PreviousContacts.Add(pair.Key,pair.Value);
+ }
+ internal static bool IsActive(string id){for(var depth=0;id!=null&&depth<64;depth++){if(!ActiveStates.GetValueOrDefault(id,true))return false;id=Parents.GetValueOrDefault(id)!;}return true;}
+ internal static void Activate(Entity entity,bool active){_=Read(entity);var previous=LiveScripts.OfType<MonoBehaviour>().ToDictionary(script=>script,script=>IsActive(script.Entity.Id));ActiveStates[entity.Id]=active;Add(new("active",entity.Id,null,default,null,active?"true":"false"));foreach(var script in previous.Keys){var now=IsActive(script.Entity.Id);if(now&&!previous[script])script.OnEnable();else if(!now&&previous[script])script.OnDisable();}}
+ internal static void Destroy(Entity entity){_=Read(entity);var ids=new HashSet<string>{entity.Id};bool changed=true;while(changed){changed=false;foreach(var pair in Parents)if(pair.Value!=null&&ids.Contains(pair.Value)&&ids.Add(pair.Key))changed=true;}Add(new("destroy",entity.Id,null,default,null));foreach(var script in LiveScripts.Where(script=>ids.Contains(script.Entity.Id)).ToArray()){script.OnStop();LiveScripts.Remove(script);}foreach(var id in ids){Entities.Remove(id);EntityData.Remove(id);Bodies.Remove(id);Cameras.Remove(id);}}
  internal static void Log(string message) {
   if(message.Length>2048||Logs>=Limits.Logs)throw new InvalidOperationException("AX_SCRIPT_0003: log limit exceeded");
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
-  Entities.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
+  PreviousKeys.Clear();PreviousKeys.UnionWith(Keys);Entities.Clear();EntityData.Clear();ActiveStates.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {
    if(Entities.Count>=Limits.Entities)throw new ArgumentException("Entity limit exceeded");
    if(e.TryGetProperty("grounded",out var grounded)&&grounded.ValueKind==JsonValueKind.True)Grounded.Add(e.GetProperty("id").GetString()!);
+   EntityData[e.GetProperty("id").GetString()!]=e.Clone();ActiveStates[e.GetProperty("id").GetString()!]=!e.TryGetProperty("runtimeActive",out var active)||active.GetBoolean();
    Parents[e.GetProperty("id").GetString()!]=e.TryGetProperty("parentId",out var parent)?parent.GetString():null;
    if(e.TryGetProperty("camera",out _))Cameras.Add(e.GetProperty("id").GetString()!);
    if(e.TryGetProperty("audioSource",out _))AudioSources.Add(e.GetProperty("id").GetString()!);
@@ -244,6 +312,7 @@ internal static class Context {
    if(error==null)foreach(var op in Operations) {
     writer.WriteStartObject();writer.WriteString("kind",op.Kind);writer.WriteString("id",op.Id);
     if(op.Template!=null)writer.WriteString("template",op.Template);
+    if(op.Kind=="active")writer.WriteBoolean("active",op.Action=="true");
     if(op.Kind=="animation"||op.Kind=="audio"){writer.WriteString("action",op.Action);if(op.Name!=null)writer.WriteString("name",op.Name);writer.WriteNumber("value",op.Value);writer.WriteNumber("duration",op.Duration);}
     if(op.Rotation is Quaternion rotation){writer.WritePropertyName("rotation");writer.WriteStartArray();writer.WriteNumberValue(rotation.X);writer.WriteNumberValue(rotation.Y);writer.WriteNumberValue(rotation.Z);writer.WriteNumberValue(rotation.W);writer.WriteEndArray();}
     if(op.Kind!="rotation"&&op.Kind!="log"&&op.Kind!="animation"&&op.Kind!="audio"){writer.WritePropertyName("position");op.Position.Write(writer);}

@@ -27,3 +27,12 @@ test('rotation operations validate normalized quaternions atomically and preserv
 test('SDK packets restore parent identities without converting world transforms or mutating the runtime scene',async()=>{
  const {runtimeScriptEntities}=await import('../engine/scripting/operations.mjs');const entities=[{id:'root',transform:{position:[0,1,0]}},{id:'camera',camera:{active:true},transform:{position:[0,1.65,-.35]}}],hierarchy=[{id:'root'},{id:'camera',parentId:'root'}];const packet=runtimeScriptEntities(entities,hierarchy);assert.equal(packet[1].parentId,'root');assert.deepEqual(packet[1].transform.position,[0,1.65,-.35]);assert.equal(entities[1].parentId,undefined);
 });
+test('destroy removes an entire runtime hierarchy atomically and scale rebuilds topology without changing authoring',()=>{
+ const child={...structuredClone(scene.entities[0]),id:spawn,parentId:id};const source={entities:[...scene.entities,child]};
+ const removed=applyScriptOperations(source,{generation:1,operations:[{kind:'destroy',id}]},1);assert.equal(removed.scene.entities.length,0);assert.equal(source.entities.length,2);assert.equal(removed.changedTopology,true);
+ assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'destroy',id},{kind:'move',id:spawn,position:[1,0,0]}]},1),/stale/);assert.equal(source.entities.length,2);
+ const scaled=applyScriptOperations(source,{generation:1,operations:[{kind:'scale',id,position:[2,3,4]}]},1);assert.deepEqual(scaled.scene.entities[0].transform.scale,[2,3,4]);assert.equal(scaled.changedTopology,true);assert.deepEqual(source.entities[0].transform.scale,[1,1,1]);
+});
+test('runtime activation excludes entire hierarchies from world rendering/physics and re-enables without losing entities',async()=>{
+ const {worldScene}=await import('../engine/scene/hierarchy.mjs');const child={...structuredClone(scene.entities[0]),id:spawn,parentId:id};const source={entities:[...scene.entities,child]};const disabled=applyScriptOperations(source,{generation:1,operations:[{kind:'active',id,active:false}]},1);assert.equal(disabled.scene.entities.length,2);assert.equal(worldScene(disabled.scene).entities.length,0);const enabled=applyScriptOperations(disabled.scene,{generation:1,operations:[{kind:'active',id,active:true}]},1);assert.equal(worldScene(enabled.scene).entities.length,2);assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'active',id,active:'yes'}]},1),/activation/);
+});

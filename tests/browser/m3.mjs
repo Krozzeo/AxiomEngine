@@ -14,6 +14,8 @@ let daemon=await startServer({projectRoot:root});
 let browser;
 const errors=[],commandRequests=[];
 const report={criteria:[],backend:null};
+const recordProgress=report.criteria.push.bind(report.criteria);report.criteria.push=(...items)=>{console.log('m3: '+items.join(', '));return recordProgress(...items);};
+async function stopDaemon(){console.log('m3: stopping daemon');let timer;try{await Promise.race([daemon.close(),new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('Daemon shutdown exceeded 10 seconds')),10000))]);}finally{clearTimeout(timer);}console.log('m3: daemon stopped');}
 async function state() {
   const response=await fetch(daemon.origin+"/v1/commands",{method:"POST",headers:{Origin:daemon.origin,Authorization:`Bearer ${daemon.token}`,"Content-Type":"application/json"},body:JSON.stringify(envelope("command",{type:"scene.get",data:{}}))});
   assert.equal(response.status,200);return (await response.json()).payload.data;
@@ -28,6 +30,7 @@ try {
   browser=await chromium.launch({headless:process.env.AXIOM_HEADLESS!=="false",channel:"chromium",...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{}),args:["--no-sandbox","--enable-gpu","--enable-unsafe-webgpu","--enable-unsafe-swiftshader","--enable-features=Vulkan","--use-angle=vulkan","--use-vulkan=swiftshader","--use-webgpu-adapter=swiftshader","--disable-vulkan-surface","--disable-dev-shm-usage"]});
   const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});page.on("pageerror",error=>errors.push(error.message));
   page.setDefaultTimeout(30000);
+  page.on('dialog',async dialog=>{const detail=dialog.type()+': '+dialog.message();errors.push('Unexpected dialog: '+detail);console.error('m3: unexpected dialog '+detail);await dialog.dismiss();});
   page.on('request',request=>{if(!request.url().endsWith('/v1/commands'))return;try{const payload=JSON.parse(request.postData()??'{}').payload;if(payload){commandRequests.push({type:payload.type,revision:payload.data?.expectedSceneRevision,assetId:payload.data?.assetId});if(commandRequests.length>24)commandRequests.shift();}}catch{}});
   await page.goto(daemon.editorUrl);
   await page.waitForFunction(()=>document.querySelector("#connection").textContent.includes("Connected"));
@@ -62,7 +65,7 @@ try {
   const savedImage=await page.locator("#viewport").screenshot({path:join(evidence,"scene.png")});
   assert.ok(!pixels(initial).data.equals(pixels(savedImage).data),"Moving objects and changing projection must change rendered pixels");
   await (await control(page,"#project-close")).click();await page.waitForFunction(()=>document.querySelectorAll("#entities .entity").length===0);report.criteria.push("close");
-  await daemon.close();daemon=await startServer({projectRoot:root});
+  await stopDaemon();console.log('m3: restarting daemon');daemon=await startServer({projectRoot:root});console.log('m3: navigating to reopened editor');
   await page.goto(daemon.editorUrl);await (await control(page,"#project-list")).selectOption(saved.id);await (await control(page,"#project-open")).click();
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
   assert.deepEqual((await state()).project,saved);report.criteria.push("reopen");
@@ -124,7 +127,7 @@ try {
   await (await control(page,"#scene-save")).click();await page.waitForFunction(()=>document.querySelector("#project-status").textContent.includes("Saved")&&!document.querySelector("#scene-add").disabled);
   const updated=(await state()).project;
   await (await control(page,"#project-close")).click();await page.waitForFunction(()=>document.querySelectorAll("#entities .entity").length===0);
-  await daemon.close();daemon=await startServer({projectRoot:root});await page.goto(daemon.editorUrl);await (await control(page,"#project-list")).selectOption(saved.id);await (await control(page,"#project-open")).click();
+  await stopDaemon();console.log('m3: restarting daemon');daemon=await startServer({projectRoot:root});console.log('m3: navigating to reopened editor');await page.goto(daemon.editorUrl);await (await control(page,"#project-list")).selectOption(saved.id);await (await control(page,"#project-open")).click();
   await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.meshes===2;}catch{return false;}});
   await (await control(page,"#game-tab")).click();await page.waitForFunction(()=>{try{return JSON.parse(document.querySelector("#frame-trace").textContent).kernel.view==="game";}catch{return false;}});
   assert.deepEqual((await state()).project,updated);assert.ok(pixels(await page.locator("#viewport").screenshot()).data.equals(pixels(updatedImage).data),"Hot-reloaded saved Game pixels must survive restart");

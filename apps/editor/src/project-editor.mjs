@@ -1,3 +1,4 @@
+import {mountScriptingApi} from './scripting-api.mjs';
 import {mountHub} from './hub.mjs';
 import {isPrefab,prefabPayload} from '../../../engine/scene/prefabs.mjs';
 import {runtimeEditableTypes} from '../../../engine/scene/runtime-edit.mjs';
@@ -33,7 +34,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   function draw(updateFields = true) {
     hub.update();
     $("editor-workspace").setAttribute("aria-busy",String(busy));
-    const project = state.project;const nextAmbientScope=JSON.stringify([project?.id,state.workspaceId??null]);if(nextAmbientScope!==ambientScope){ambientScope=nextAmbientScope;ambientDraft=null;}if(!busy)panels.set(project?.editor);
+    const project = state.project;const nextAmbientScope=JSON.stringify([project?.id,state.workspaceId??null]);if(nextAmbientScope!==ambientScope){ambientScope=nextAmbientScope;ambientDraft=null;}if(!busy)panels.set(project?.editor,project?.id??null);
     const scene=state.playing?getRenderer()?.interaction?.().scene??project?.scene:project?.scene;
     const entity = selection.size===1?scene?.entities.find(item => item.id === selected):null;
     const file=browser.files().find(f=>filePaths.length===1&&f.path===filePaths[0]);
@@ -211,6 +212,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   const twoDEditor=mountTwoDEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null});
   function fileSelection(paths){filePaths=paths;selected=null;selection.clear();draw();}
   function paintDirty(){const pending=state.dirty||ideDirty;if($('project-title')){$('project-title').textContent=state.project?('● '+state.project.name+(pending?'*':'')):'';$('project-title').classList?.toggle?.('dirty-title',pending);}if($('scene-save')){$('scene-save').textContent=pending?'Save*':'Save';$('scene-save').classList?.toggle?.('dirty-save',pending);$('scene-save').disabled=!state.project||state.playing||busy||!pending||!!state.workspaceId;}if($('toolbar-save'))$('toolbar-save').disabled=$('scene-save').disabled;if($('save-dirty'))$('save-dirty').hidden=!pending;onDirty(pending&&!state.workspaceId);}
+  mountScriptingApi({document,openPanel:(id,options)=>panels.openPanel(id,options),reportError});
   const ide=mountCodeEditor({document,getState:()=>state,write:async data=>{const projectId=state.project?.id,workspaceId=state.workspaceId??null;const deadline=performance.now()+610000;while(busy&&performance.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));if(busy)throw Error('Wait for or cancel the current compilation before saving this source');if(state.project?.id!==projectId||(state.workspaceId??null)!==workspaceId)throw Error('The project or branch changed before this script could be saved');return act(()=>run('project.files.edit',mutation(data)));},show:id=>panels.openPanel(id,{centerIfClosed:true}),persist:async()=>{if(!state.workspaceId&&state.dirty)await act(()=>run('scene.save',mutation()));},onOpen:file=>{if(file.kind==='script')$('script-source').value=file.text;},onDirty:value=>{ideDirty=value;paintDirty();compiler?.draw();},onSaved:()=>compiler.sourceSaved(),reportError});
   function prefabDrop(node,parentFor){if(!document.defaultView)return;node.addEventListener('dragover',event=>{if(event.dataTransfer.types.includes('application/axiom-files'))event.preventDefault();});node.addEventListener('drop',event=>{if(!event.dataTransfer.types.includes('application/axiom-files'))return;try{const data=JSON.parse(event.dataTransfer.getData('application/axiom-files'));const file=projectFiles(state.project.scene).find(f=>f.path===data.paths?.[0]);if(!isPrefab(file))return;event.preventDefault();event.stopPropagation();if(data.projectId!==state.project.id||data.paths.length!==1||state.playing)throw Error('Drop one prefab from this project while stopped');const parentId=parentFor(event);const payload=prefabPayload(state.project.scene,file,parentId);void act(()=>run('scene.entities.paste',mutation(payload)));}catch(error){reportError(error);}});}
   prefabDrop($('entities'),event=>event.target.closest('[data-entity-id]')?.dataset.entityId);
@@ -357,7 +359,13 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     selectEntity(id,options=false){select(id,options);},
     transformEntities(updates){return act(()=>run("scene.entities.update",mutation({updates,space:"world"})));},
     transformEntity(entityId,transform){return act(()=>run('scene.entity.update',mutation({entityId,transform:localTransform(state.project.scene.entities,entityId,transform)})));},
-    async saveAiSettings(value,options={}){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...(options.replace?{}:state.project.editor),...value}})));},
+    async saveAiSettings(value,options={}){
+      const projectId=state.project?.id,workspaceId=state.workspaceId??null,deadline=performance.now()+610000;
+      while(busy&&performance.now()<deadline)await new Promise(resolve=>setTimeout(resolve,30));
+      if(busy||!projectId||state.project?.id!==projectId||(state.workspaceId??null)!==workspaceId)throw Error('The project or preview changed before the document could be saved. Your editor draft was retained.');
+      if(options.expectedPmdRevision!==undefined&&state.project.editor?.pmd?.revision!==options.expectedPmdRevision)throw Error('The PMD changed while saving. Review the current section and retry; your draft was retained.');
+      return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...(options.replace?{}:state.project.editor),...value}})));
+    },
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     flushDraftSources:()=>ide.flush(),
     async synchronize(snapshot,options={}){if(options.replace)ide.reset();if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},

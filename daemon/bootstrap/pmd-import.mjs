@@ -1,8 +1,9 @@
+import {sectionIndexMarkdown} from '../../engine/project/document-sections.mjs';
 import {unzipSync,zipSync,strToU8,strFromU8} from 'fflate';
 import {importPmd} from '../../engine/project/pmd.mjs';
 const MAX_TEXT=32768;
 function archive(bytes){return unzipSync(bytes,{filter:file=>{if(file.originalSize>200000)throw Error('Archive entry exceeds extraction budget');return file.name==='pmd.json'||file.name==='word/document.xml';}});}
-export function exportPmd(pmd){importPmd(pmd);const files={'pmd.json':strToU8(JSON.stringify(pmd,null,2)), 'index.md':strToU8('# Project Master Document\n\n'+pmd.sections.map(s=>'- ['+s.title+'](sections/'+s.id+'.md)').join('\n'))};for(const s of pmd.sections)files['sections/'+s.id+'.md']=strToU8('# '+s.title+'\n\n'+s.text+'\n\n'+s.links.map(id=>'['+id+']('+id+'.md)').join(' · '));return zipSync(files);}
+export function exportPmd(pmd){importPmd(pmd);const files={'pmd.json':strToU8(JSON.stringify(pmd,null,2)), 'index.md':strToU8(sectionIndexMarkdown(pmd.sections))};for(const s of pmd.sections)files['sections/'+s.id+'.md']=strToU8('# '+s.title+'\n\n'+s.text+'\n\n'+s.links.map(id=>'['+id+']('+id+'.md)').join(' · '));return zipSync(files);}
 export async function extractPmdImport({name,base64}){
  if(typeof name!=='string'||name.length>128||typeof base64!=='string'||base64.length>200000)throw Error('Import a text, DOCX, PDF or PMD ZIP up to 140 KiB');const bytes=Uint8Array.from(Buffer.from(base64,'base64'));let text='',warnings=[],pmd=null;
  if(/\.zip$/i.test(name)){const files=archive(bytes);if(!files['pmd.json'])throw Error('Archive has no pmd.json manifest');pmd=importPmd(JSON.parse(strFromU8(files['pmd.json'])));return {pmd,text:pmd.sections.map(s=>s.title+'\n'+s.text).join('\n\n'),warnings:['Import restores section identities, links and workflow; exported history is not re-imported.']};}

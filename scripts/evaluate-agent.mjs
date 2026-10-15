@@ -18,7 +18,7 @@ const prompts={walls:'Agrega cuatro paredes físicas alrededor del piso existent
 const report={scenario,engine:status.engineVersion??null,model:status.model,reasoning:status.reasoning,startedAt:new Date().toISOString(),budget:maxTokens,transport:'Live configured model; paid requests explicitly opted in',checks:{},task:null};let taskId=null,workspaceId=null;
 try{
  const sessionLimit=Math.min(status.limits.maxTokens??Infinity,status.sessionUsage.totalTokens+maxTokens);await api('/v1/ai/configure',{action:'update',limits:{...status.limits,maxTokens:sessionLimit,maxRequests:12,maxTools:48,maxWorkTokens:maxTokens,maxStepTokens:maxTokens,maxSeconds:300,maxOutputTokens:4096}});
- const started=await api('/v1/ai/tasks',{text:value('objective')??prompts[scenario],channel:scenario==='pmd'?'pmd':'assistant'});taskId=started.id;
+ const started=await api('/v1/ai/tasks',{text:value('objective')??prompts[scenario],requireConfirmation:false,channel:scenario==='pmd'?'pmd':'assistant'});taskId=started.id;
  const deadline=Date.now()+310000;let task;do{await new Promise(r=>setTimeout(r,500));task=await api('/v1/ai/tasks?id='+encodeURIComponent(taskId));workspaceId=task.workspaceId;}while(task.status==='running'&&Date.now()<deadline);
  if(task.status==='running'){await api('/v1/ai/cancel',{id:taskId});throw Error('Evaluation deadline exceeded; task cancelled.');}report.task=task;
  const preview=await command('scene.get',workspaceId?{workspaceId}:{});report.authoredProject=preview.project;report.checks.taskCompleted=task.status==='completed';

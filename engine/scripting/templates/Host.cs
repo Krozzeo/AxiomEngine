@@ -15,19 +15,19 @@ public static partial class Program {
    var action=value.GetProperty("action").GetString();var generation=value.GetProperty("generation").GetInt32();
    if(action=="start") {
     if(Scripts.Count!=0)throw new InvalidOperationException("Runtime already started");
-    Context.ReplaySeed=value.TryGetProperty("seed",out var seed)?seed.GetUInt32():0;Context.DeterministicSpawn=value.TryGetProperty("replay",out var replay)&&replay.GetBoolean();ReplayRandom.Reset(Context.ReplaySeed);Context.Generation=generation;Context.Spawned=0;Context.Load(value);
+    Context.ReplaySeed=value.TryGetProperty("seed",out var seed)?seed.GetUInt32():0;Context.DeterministicSpawn=value.TryGetProperty("replay",out var replay)&&replay.GetBoolean();ReplayRandom.Reset(Context.ReplaySeed);Time.Reset();Context.LiveScripts.Clear();Context.PreviousContacts.Clear();Context.Generation=generation;Context.Spawned=0;Context.Load(value);
     foreach(var id in value.GetProperty("attachments").EnumerateArray()) {
      if(Scripts.Count>=Limits.Attachments)throw new ArgumentException("Script attachment limit exceeded");
      var script=new Game.GameScript {Entity=new Entity(id.GetString()!,generation)};
-     _=script.Entity.Transform;Scripts.Add(script);script.OnStart();
+     _=script.Entity.Transform;Scripts.Add(script);Context.LiveScripts.Add(script);script.OnStart();
     }
    } else {
     if(generation!=Context.Generation)throw new InvalidOperationException("Stale runtime generation");
     Context.Load(value);
     if(action=="step") {
      var delta=value.GetProperty("delta").GetDouble();if(!double.IsFinite(delta)||delta<0||delta>0.25)throw new ArgumentException("Invalid delta");
-     foreach(var script in Scripts)script.OnUpdate(delta);
-    } else if(action=="stop") {foreach(var script in Scripts)script.OnStop();Scripts.Clear();}
+     Time.Step(delta);Context.DispatchContacts(value);foreach(var script in Scripts.ToArray())if(Context.Entities.ContainsKey(script.Entity.Id)&&Context.IsActive(script.Entity.Id))script.OnUpdate(delta);
+    } else if(action=="stop") {foreach(var script in Context.LiveScripts.ToArray())script.OnStop();Context.LiveScripts.Clear();Scripts.Clear();}
     else throw new ArgumentException("Unknown runtime action");
    }
    return Context.Output();

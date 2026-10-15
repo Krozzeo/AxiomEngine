@@ -1,6 +1,6 @@
 import {mountDockLayout} from './dock-layout.mjs';
 export function mountPanelLayout({document,save,isBusy,onView,onParallel}){
- const workspace=document.querySelector('#editor-workspace');let layout={leftWidth:220,rightWidth:290,bottomHeight:190},drag=null;
+ const workspace=document.querySelector('#editor-workspace');let layout={leftWidth:220,rightWidth:290,bottomHeight:190},drag=null,lastScope=undefined;
  const limits={leftWidth:[150,600],rightWidth:[220,700],bottomHeight:[120,650]};
  const docking=mountDockLayout({document,isBusy,onView,onParallel,save:docks=>{layout.docks=docks;return save({...layout});}});
  const clamp=(key,value)=>{const available=key==='bottomHeight'?(workspace.clientHeight??900)-195:(workspace.clientWidth??1700)-(key==='leftWidth'?layout.rightWidth:layout.leftWidth)-300;return Math.min(Math.max(limits[key][0],Math.min(limits[key][1],available)),Math.max(limits[key][0],value));};
@@ -14,5 +14,5 @@ export function mountPanelLayout({document,save,isBusy,onView,onParallel}){
   node.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.code)||isBusy())return;event.preventDefault();layout[key]=clamp(key,layout[key]+(['ArrowRight','ArrowDown'].includes(event.code)?10:-10)*sign);paint();void save({...layout});});
  }
  globalThis.addEventListener?.('resize',()=>{if(workspace.style?.setProperty)paint();});
- return {openPanel:docking.openPanel??(()=>{}),activateView:docking.activateView??(()=>{}),set(value){if(drag)return;layout={leftWidth:220,rightWidth:290,bottomHeight:190,...value};docking.set(layout.docks);if(workspace.style?.setProperty)paint();}};
+ return {openPanel:docking.openPanel??(()=>{}),activateView:docking.activateView??(()=>{}),set(value,scope){if(drag)return;const keepOpenState=scope!==undefined&&scope===lastScope;lastScope=scope;layout={leftWidth:220,rightWidth:290,bottomHeight:190,...value};docking.set(layout.docks,{keepOpenState});if(workspace.style?.setProperty)paint();}};
 }

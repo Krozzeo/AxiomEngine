@@ -34,7 +34,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   function draw(updateFields = true) {
     hub.update();
     $("editor-workspace").setAttribute("aria-busy",String(busy));
-    const project = state.project;const nextAmbientScope=JSON.stringify([project?.id,state.workspaceId??null]);if(nextAmbientScope!==ambientScope){ambientScope=nextAmbientScope;ambientDraft=null;}if(!busy)panels.set(project?.editor);
+    const project = state.project;const nextAmbientScope=JSON.stringify([project?.id,state.workspaceId??null]);if(nextAmbientScope!==ambientScope){ambientScope=nextAmbientScope;ambientDraft=null;}if(!busy)panels.set(project?.editor,project?.id??null);
     const scene=state.playing?getRenderer()?.interaction?.().scene??project?.scene:project?.scene;
     const entity = selection.size===1?scene?.entities.find(item => item.id === selected):null;
     const file=browser.files().find(f=>filePaths.length===1&&f.path===filePaths[0]);

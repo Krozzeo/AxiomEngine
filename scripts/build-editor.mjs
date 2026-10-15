@@ -44,6 +44,7 @@ export async function buildEditor({buildKernel=true}={}) {
   await writeFile(resolve(destination,"scene-renderer.js"),(await readFile(resolve(root,"apps/editor/src/scene-renderer.mjs"),"utf8")).replaceAll("../../../engine/renderer/","./").replaceAll("../../../engine/scene/","./").replaceAll("../../../engine/scripting/","./"));
   await cp(resolve(root,'engine/scene/hierarchy.mjs'),resolve(destination,'hierarchy.mjs'));
   await writeFile(resolve(destination,'hierarchy.mjs'),(await readFile(resolve(destination,'hierarchy.mjs'),'utf8')).replace('../renderer/','./'));
+  await cp(resolve(root,'engine/scripting/sdk-version.mjs'),resolve(destination,'sdk-version.mjs'));
   await cp(resolve(root,'engine/scripting/reference/catalog.json'),resolve(destination,'scripting-reference.json'));
   await cp(resolve(root,'engine/project/document-sections.mjs'),resolve(destination,'document-sections.mjs'));
   await cp(resolve(root,'engine/scene/project-files.mjs'),resolve(destination,'project-files.mjs'));

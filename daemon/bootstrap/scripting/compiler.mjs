@@ -1,3 +1,4 @@
+import {SCRIPT_SDK_VERSION} from '../../../engine/scripting/sdk-version.mjs';
 import {readFile,mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
@@ -39,7 +40,7 @@ export class ScriptCompiler {
   if(signal?.aborted)fail('Compilation cancelled');
   const manifest={...await collectBundle(join(root,'publish')),id,mode,sourceHash:createHash('sha256').update(entries?JSON.stringify(entries.map(f=>[f.path,f.text])):source).digest('hex'),durationMs:performance.now()-start};
   await writeNew(join(root,'manifest.json'),JSON.stringify(manifest));
-  return {id,mode,sdkVersion:2,sourceHash:manifest.sourceHash,durationMs:manifest.durationMs,bytes:manifest.bytes,diagnostics};
+  return {id,mode,sdkVersion:SCRIPT_SDK_VERSION,sourceHash:manifest.sourceHash,durationMs:manifest.durationMs,bytes:manifest.bytes,diagnostics};
  }
  async read(projectId,build,name) {
   const root=await scriptDirectory(this.projects,projectId,build.id),manifest=await readManifest(join(root,'manifest.json'));

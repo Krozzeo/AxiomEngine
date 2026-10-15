@@ -21,3 +21,9 @@ test('new task context never replays orphan provider calls from an interrupted r
 test('SDK documentation reads remain bounded even when common type names occur throughout the source',async()=>{
  const {readScriptingReference}=await import('../engine/scripting/reference.mjs');for(const query of ['Entity','Vector3','Input','Physics']){const result=await readScriptingReference(query);assert.ok(Buffer.byteLength(JSON.stringify(result))<32768,query+' result exceeds the semantic result budget');assert.ok(result.matches.length<=4);}
 });
+
+test('a known SDK type does not imply an invented member is implemented',async()=>{
+ const {readScriptingReference}=await import('../engine/scripting/reference.mjs');
+ for(const query of ['Transform.DoesNotExist','Physics.SphereCast','Input.GetTouch'])assert.equal((await readScriptingReference(query)).available,false,query);
+ for(const query of ['Entity.IsGrounded','Transform.position','Transform.GetComponent','Physics.Raycast'])assert.equal((await readScriptingReference(query)).available,true,query);
+});

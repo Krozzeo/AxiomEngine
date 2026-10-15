@@ -74,7 +74,7 @@ async function schemaHash() {
 }
 
 function mime(path) {
-  return ({ ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json", ".wasm": "application/wasm", ".svg":"image/svg+xml" })[extname(path)] ?? "application/octet-stream";
+  return ({ ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json", ".wasm": "application/wasm", ".svg":"image/svg+xml", ".png":"image/png" })[extname(path)] ?? "application/octet-stream";
 }
 
 export async function startServer(options = {}) {

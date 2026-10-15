@@ -1,6 +1,6 @@
 # M18.3.7 / 0.0.45 — approval, context, PMD sections and scripting API
 
-Implementation and verification in progress. Read [current report](docs/reports/M18_3_7_CURRENT_REPORT.md), [demo guide](demos/M18_3_7_GUIDE.md) and [Scripting API](docs/scripting-api/README.md). Release acceptance is pending CI; no live-model reliability or cost claim is made. M18.4 remains deferred.
+Automated acceptance is complete: [CI 278](https://github.com/Krozzeo/AxiomEngine/actions/runs/38818870923) passes all 38 jobs at executable commit `f3324b9f7396df873c8e161270f88b4728e76089` (tree `238fc50a493b5259a62265e8b8ae21c45b735370`). This includes 378 Node tests on Linux and Windows, 39 Rust tests and native checks, real Linux development/AOT and Windows development C#, and all 29 browser groups. No paid model calls were performed. Live-model quality, the supplied conversational scenarios and actual token usage remain a separate user acceptance gate. Historical MVP coverage remains approximately 94% (122/130 original weights). M18.4 GitHub integration and M19 hardening remain next; PR #36 stays draft/open/unmerged. Read [current report](docs/reports/M18_3_7_CURRENT_REPORT.md), [demo guide](demos/M18_3_7_GUIDE.md) and [Scripting API](docs/scripting-api/README.md).
 
 # M18.3.6 / 0.0.44 — PMD scope repair and overlay Hub
 

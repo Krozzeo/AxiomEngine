@@ -43,7 +43,7 @@ try {
  }
 `,
  'Scripts/Observer.cs':`using Axiom.Gameplay;namespace Game;public sealed class Observer : MonoBehaviour {public override void Awake(){Debug.Log("awake-observer");}public override void Update(){RuntimeProbe.ObserverUpdated=true;}}`,
- 'Scripts/Extra.cs':`using Axiom.Gameplay;namespace Game;public sealed class Extra : MonoBehaviour {public int Value=1;public override void Awake(){Debug.Log("extra-awake");}}`
+ 'Scripts/Extra.cs':`using Axiom.Gameplay;namespace Game;public sealed class Extra : MonoBehaviour {[Range(0,3)] public int Value=1;public override void Awake(){Debug.Log("extra-awake");}}`
  };
  const entries=Object.entries(sources).map(([path,text])=>({path,kind:'script',text,metadata:scriptMetadata({path,kind:'script',text})})),source=entries[0].text;
  const build=await compiler.build(projectId,source,mode,undefined,entries);

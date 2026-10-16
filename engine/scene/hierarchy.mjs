@@ -16,4 +16,4 @@ export function reparent(entities,ids,parentId){const world=worldTransforms(enti
 export const rotatedDirection=(q,d)=>transform(modelMatrix({position:[0,0,0],rotation:q,scale:[1,1,1]}),d,0).slice(0,3);
 export {quaternionMultiply};
 
-export function activeEntities(entities){const byId=new Map(entities.map(e=>[e.id,e]));return entities.filter(e=>{let current=e;const visited=new Set();while(current){if(current.runtimeActive===false||visited.has(current.id))return false;visited.add(current.id);current=byId.get(current.parentId);}return true;});}
+export function activeEntities(entities){const byId=new Map(entities.map(e=>[e.id,e]));return entities.filter(e=>{let current=e;const visited=new Set();while(current){if(current.runtimeActive===false||visited.has(current.id))return false;visited.add(current.id);current=byId.get(Object.hasOwn(current,'runtimeParentId')?current.runtimeParentId:current.parentId);}return true;});}

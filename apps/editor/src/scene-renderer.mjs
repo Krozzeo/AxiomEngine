@@ -7,7 +7,7 @@ import {createAudioSession} from './audio-session.mjs';
 import {twoDPlan,uiHit} from '../../../engine/renderer/two-d-plan.mjs';
 import {createTwoDGPU} from '../../../engine/renderer/two-d-gpu.mjs';
 import {updateTransforms} from '../../../engine/scene/editor-operations.mjs';
-import {worldScene,localTransform,reparent} from '../../../engine/scene/hierarchy.mjs';
+import {worldScene,localTransform,reparent,activeEntities} from '../../../engine/scene/hierarchy.mjs';
 import {createSkinGPU} from '../../../engine/renderer/skin-gpu.mjs';
 import {renderPlan} from '../../../engine/renderer/render-plan.mjs';
 import {createProductionGPU} from '../../../engine/renderer/production-gpu.mjs';
@@ -182,7 +182,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     if(nextWidth!==canvas.width||nextHeight!==canvas.height){canvas.width=nextWidth;canvas.height=nextHeight;production?.dispose();production=null;productionLoading=null;twoDGPU?.dispose();twoDGPU=null;if(device){depth?.destroy();depth=device.createTexture({size:[nextWidth,nextHeight],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}}
 
     lineage=snapshot.commandLineage??null;assetFailures.clear();authoredHierarchy=structuredClone(project?.scene??{entities:[]});
-    let scene=worldScene(structuredClone(project?.scene??{entities:[]}));if(testing&&replaySeeded)for(const e of scene.entities)if(e.particles2D)e.particles2D.seed=replaySeed;for(const e of scene.entities)delete e.parentId;
+    let scene=worldScene(structuredClone(project?.scene??{entities:[]}));if(testing&&replaySeeded)for(const e of scene.entities)if(e.particles2D)e.particles2D.seed=replaySeed;for(const e of scene.entities){e.runtimeParentId=authoredHierarchy.entities.find(a=>a.id===e.id)?.parentId??null;delete e.parentId;}
     if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
     const referenced=new Set(scene.entities.flatMap(entity=>[entity.audioSource?.assetId,entity.renderable?.assetId,entity.tilemap?.assetId,...(entity.lod?.levels??[]).map(l=>l.assetId)]));
@@ -247,7 +247,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           const animationStates=new Map(kernel.animationStatus().map(a=>[a.entityId,a]));
           scriptFlight=active.execute({action,generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),contacts:kernel.physicsSnapshot()?.contacts??[],keys:[...keys],mouseDelta:[...mouseDelta],delta});
           scriptScope('script.prepare',scriptStart,performance.now());
-          const packet=await scriptFlight;scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=performance.now()-scriptStart;
+          const packet=await scriptFlight;scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+performance.now()-scriptStart;
           if(ticket!==generation||disposed){return;}
           scriptScope('script.roundtrip',scriptStart,performance.now(),'wall');
           if(Number.isFinite(packet.metrics?.workerDispatchMs)&&packet.metrics.workerDispatchMs>=0&&packet.metrics.workerDispatchMs<=2000)scriptScope('worker.dispatch',0,packet.metrics.workerDispatchMs,'worker');
@@ -261,8 +261,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
               try {kernel.compileScene(result.scene,assets,true);kernel.configurePhysics(result.scene,true);}catch(error){kernel.compileScene(runtimeScene,assets);throw error;}
               destroyResources(resources);resources=next;geometry=draws;await parallel.prepare(result.scene,assets,draws);
             }catch(error){destroyResources(next);throw error;}
-          }else kernel.setPositions(result.positions);
-          kernel.setRotations(result.rotations);kernel.setVelocities(result.velocities);
+          }else {const ids=new Set(activeEntities(result.scene.entities).map(e=>e.id));kernel.setPositions([...result.positions].filter(([id])=>ids.has(id)));}
+          const activeIds=new Set(activeEntities(result.scene.entities).map(e=>e.id));kernel.setRotations([...result.rotations].filter(([id])=>activeIds.has(id)));kernel.setVelocities([...result.velocities].filter(([id])=>activeIds.has(id)));
           for(const op of result.animations)kernel.animationControl(op);
           runtimeScene=result.scene;audio.reconcile(runtimeScene);if(!testing)for(const op of result.audio)audio.control(op);spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
           scriptScope('script.apply',applyStart,performance.now(),result.changedTopology?'wall':'main');

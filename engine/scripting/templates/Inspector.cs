@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json;
 namespace Axiom.Gameplay;
 internal static class ScriptValues {
+ internal static void Copy([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields|DynamicallyAccessedMemberTypes.NonPublicFields)] Type type,Script source,Script target){foreach(var field in type.GetFields(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance)){if(field.IsStatic||field.IsInitOnly||!field.IsPublic&&field.GetCustomAttribute<SerializeFieldAttribute>()==null)continue;var value=field.GetValue(source);if(value is Array array)field.SetValue(target,array.Clone());else if(value==null||field.FieldType.IsValueType||value is string)field.SetValue(target,value);else throw new NotSupportedException("Cloning script reference fields is not implemented: "+field.Name);}}
  internal static void Apply([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields|DynamicallyAccessedMemberTypes.NonPublicFields)] Type type,Script script,JsonElement values){
   if(values.ValueKind!=JsonValueKind.Object)throw new ArgumentException("Script fields must be an object");
   foreach(var property in values.EnumerateObject()){var field=type.GetField(property.Name,BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic);if(field==null||field.IsInitOnly||field.IsStatic||field.GetCustomAttribute<HideInInspectorAttribute>()!=null||!field.IsPublic&&field.GetCustomAttribute<SerializeFieldAttribute>()==null)continue;field.SetValue(script,Read(field.FieldType,property.Value));}

@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {worldScene} from '../engine/scene/hierarchy.mjs';
 import {applyScriptOperations,runtimeScriptEntities} from '../engine/scripting/operations.mjs';
 const a='entity://11111111-1111-4111-8111-111111111111',b='entity://22222222-2222-4222-8222-222222222222';
 const scene=()=>({entities:[{id:a,name:'Root',transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]}}]});
@@ -13,4 +14,9 @@ test('component snapshots reject unsupported fields; sibling reorder and runtime
  const source=scene();source.entities.push({id:b,name:'B',transform:{position:[2,0,0],rotation:[0,0,0,1],scale:[1,1,1]}});
  assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'property',id:a,name:'scriptComponents',data:[{path:'Scripts/Unknown.cs',typeName:'Fake',values:{}}]}]},1),/Invalid/);
  const next=applyScriptOperations(source,{generation:1,operations:[{kind:'sibling',id:b,index:0}]},1);assert.deepEqual(next.scene.entities.map(e=>e.id),[b,a]);assert.deepEqual(source.entities.map(e=>e.id),[a,b]);
+});
+
+test('world-space runtime parent metadata controls descendant activation without applying transforms twice',()=>{
+ const s=scene();s.entities[0].runtimeActive=false;s.entities.push({id:b,name:'Child',runtimeParentId:a,transform:{position:[5,2,1],rotation:[0,0,0,1],scale:[1,1,1]}});
+ assert.equal(worldScene(s).entities.length,0);s.entities[0].runtimeActive=true;assert.deepEqual(worldScene(s).entities[1].transform.position,[5,2,1]);
 });

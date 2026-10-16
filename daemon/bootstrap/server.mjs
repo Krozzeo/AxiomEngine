@@ -95,6 +95,7 @@ export async function startServer(options = {}) {
   let rejectedCount = 0;
   let allowedOrigins = new Set();
 
+  let closing;
   const server = createHttpServer(async (request, response) => {
     requestCount += 1;
     const url = new URL(request.url ?? "/", "http://127.0.0.1");
@@ -244,13 +245,19 @@ export async function startServer(options = {}) {
   const address = server.address();
   const origin = `http://127.0.0.1:${address.port}`;
   allowedOrigins = new Set([origin, `http://localhost:${address.port}`]);
-  let closing;
   return {
     server,
     token,
     origin,
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
-    close: () => closing??=(async()=>{await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await proposals.close();return new Promise((resolveClose,reject)=>{server.close(error=>error&&error.code!=='ERR_SERVER_NOT_RUNNING'?reject(error):resolveClose());server.closeAllConnections();});})()
+    close: () => closing??=(async()=>{
+      const httpClosed=new Promise((resolveClose,reject)=>{server.close(error=>error&&error.code!=='ERR_SERVER_NOT_RUNNING'?reject(error):resolveClose());server.closeAllConnections();});
+      await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await bus.transaction(async()=>{});
+      workspace.activeJob?.controller.abort();workspace.activeScriptJob?.controller.abort();
+      const deadline=Date.now()+10000;while((workspace.activeJob||workspace.activeScriptJob)&&Date.now()<deadline)await new Promise(r=>setTimeout(r,20));
+      if(workspace.activeJob||workspace.activeScriptJob)throw Error('Owned compiler/import job did not stop during shutdown');
+      await proposals.close();await httpClosed;
+    })()
   };
 }
 

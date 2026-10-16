@@ -239,13 +239,14 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       const delta=manual?.delta??(previousTime===null?0:Math.min((now-previousTime)/1000,0.25));previousTime=now;
       const diagnostic=profiler.begin(performance.now(),crypto.randomUUID(),{view,playing,route:runtimeScene.twoD?'2d':runtimeScene.rendering?'hdr':'legacy'});
       const timing=presentFrame?gpuProfiler.begin(diagnostic.frameSequence,ticket):{reason:'Controlled simulation frame not presented',writes:()=>undefined,resolve(){},submitted(){}};diagnostic.gpuReason=timing.reason;
+      const inputKeys=[...keys],inputMouseDelta=[...mouseDelta];if(playing&&!twoDPaused&&scriptRuntime)mouseDelta=[0,0];
       const scriptScopes=new Map(),scriptScope=(name,start,end,kind='main')=>{const key=name+'|'+kind;scriptScopes.set(key,(scriptScopes.get(key)??0)+end-start);};
       const runScriptPhase=async action=>{if(!scriptRuntime)return;
         const active=scriptRuntime;
         try {
           const scriptStart=performance.now();
           const animationStates=new Map(kernel.animationStatus().map(a=>[a.entityId,a]));
-          scriptFlight=action==='end-apply'?Promise.resolve(pendingEndPacket):active.execute({action,generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),contacts:kernel.physicsSnapshot()?.contacts??[],keys:[...keys],mouseDelta:[...mouseDelta],delta});
+          scriptFlight=action==='end-apply'?Promise.resolve(pendingEndPacket):active.execute({action,generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),contacts:kernel.physicsSnapshot()?.contacts??[],keys:inputKeys,mouseDelta:inputMouseDelta,delta});
           scriptScope('script.prepare',scriptStart,performance.now());
           const packet=await scriptFlight;if(action==='end-apply')pendingEndPacket=null;if(action==='end'){if(packet.error)throw Error(packet.error);if(ticket===generation&&!disposed)pendingEndPacket=packet;const elapsed=performance.now()-scriptStart;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+elapsed;scriptScope('script.roundtrip',0,elapsed,'wall');return;}scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+performance.now()-scriptStart;
           if(ticket!==generation||disposed){return;}
@@ -274,7 +275,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(phased){
        if(pendingEndPacket)await runScriptPhase('end-apply');await runScriptPhase('frame');const fixed=kernel.beginFixedFrame(Math.min(delta*scriptTimeScale,.25),trace+1n);
        for(let i=0;i<fixed;i++){await runScriptPhase('fixed');if(ticket!==generation||disposed)return;kernel.stepPhysics(1);syncRuntime(kernel.stepScene(0,trace+1n,canvas.width/canvas.height,{advanceClock:false,stepPhysics:false}));await runScriptPhase('physics');}
-       await runScriptPhase('update');await runScriptPhase('late');mouseDelta=[0,0];
+       await runScriptPhase('update');await runScriptPhase('late');
       }
       if(ticket!==generation||disposed){if(!disposed&&!manual)animationId=requestAnimationFrame(frame);return;}
       diagnostic.profileContext.view=view;

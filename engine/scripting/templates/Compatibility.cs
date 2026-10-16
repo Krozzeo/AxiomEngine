@@ -22,23 +22,8 @@ public sealed partial class GameObject : Object {
  public Transform transform=>new(Entity);
  public bool activeSelf=>Context.ActiveStates.GetValueOrDefault(Entity.Id,true);public bool activeInHierarchy=>Context.IsActive(Entity.Id);public void SetActive(bool active)=>Context.Activate(Entity,active);
  public static GameObject? Find(string name){foreach(var (id,data) in Context.EntityData)if(Context.IsActive(id)&&data.TryGetProperty("name",out var value)&&value.GetString()==name)return new(new Entity(id,Context.Generation));return null;}
- public T? GetComponent<T>() where T:Component {
-  _=Context.Read(Entity);Component? component=null;
-  if(typeof(T)==typeof(AudioListener)&&Context.EntityData[Entity.Id].TryGetProperty("audioListener",out _))component=new AudioListener(Entity);
-  else if(typeof(T)==typeof(BoxCollider)&&Context.EntityData[Entity.Id].TryGetProperty("collider",out var bc)&&bc.GetProperty("dimension").GetInt32()==3&&bc.GetProperty("shape").GetString()=="box")component=new BoxCollider(Entity);
-  else if(typeof(T)==typeof(SphereCollider)&&Context.EntityData[Entity.Id].TryGetProperty("collider",out var sc)&&sc.GetProperty("dimension").GetInt32()==3&&sc.GetProperty("shape").GetString()=="sphere")component=new SphereCollider(Entity);
-  else if(typeof(T)==typeof(BoxCollider2D)&&Context.EntityData[Entity.Id].TryGetProperty("collider",out var bc2)&&bc2.GetProperty("dimension").GetInt32()==2&&bc2.GetProperty("shape").GetString()=="box")component=new BoxCollider2D(Entity);
-  else if(typeof(T)==typeof(CircleCollider2D)&&Context.EntityData[Entity.Id].TryGetProperty("collider",out var cc2)&&cc2.GetProperty("dimension").GetInt32()==2&&cc2.GetProperty("shape").GetString()=="sphere")component=new CircleCollider2D(Entity);
-  else if(typeof(T)==typeof(Collider)&&Context.EntityData[Entity.Id].TryGetProperty("collider",out _))component=new Collider(Entity);
-  else if(typeof(T)==typeof(Collider2D)&&Context.EntityData[Entity.Id].TryGetProperty("collider",out var collider)&&collider.GetProperty("dimension").GetInt32()==2)component=new Collider2D(Entity);
-  else if(typeof(T)==typeof(Transform))component=transform;
-  else if(typeof(T)==typeof(Rigidbody2D)&&Context.Bodies.ContainsKey(Entity.Id)&&Context.EntityData[Entity.Id].GetProperty("collider").GetProperty("dimension").GetInt32()==2)component=new Rigidbody2D(Entity);
-  else if(typeof(T)==typeof(Rigidbody)&&Context.Bodies.ContainsKey(Entity.Id))component=new Rigidbody(Entity);
-  else if(typeof(T)==typeof(Camera)&&Context.Cameras.Contains(Entity.Id))component=new Camera(Entity);
-  else if(typeof(T)==typeof(AudioSource)&&Context.AudioSources.Contains(Entity.Id))component=new AudioSource(Entity);
-  else if(typeof(T)==typeof(Animator)&&Context.Animators.ContainsKey(Entity.Id))component=new Animator(Entity);
-  return component as T??Context.LiveScripts.OfType<T>().FirstOrDefault(script=>script.Entity.Id==Entity.Id);
- }
+ public T? GetComponent<T>() where T:Component=>GetComponents<T>().FirstOrDefault();
+
 }
 public sealed partial class Transform {
  internal Transform(Entity entity){Entity=entity;var v=Context.Read(entity);Position=v.Position;Rotation=v.Rotation;Scale=v.Scale;}

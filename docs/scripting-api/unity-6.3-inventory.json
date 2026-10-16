@@ -15313,7 +15313,8 @@
       "title": "AudioListener",
       "parentId": "api-2150",
       "reference": "AudioListener",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./AudioListener.md"
     },
     {
       "id": "api-2187",
@@ -15426,7 +15427,8 @@
       "title": "Behaviour",
       "parentId": "api-2150",
       "reference": "Behaviour",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Behaviour.md"
     },
     {
       "id": "api-2203",
@@ -15447,14 +15449,16 @@
       "title": "BoxCollider",
       "parentId": "api-2150",
       "reference": "BoxCollider",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./BoxCollider.md"
     },
     {
       "id": "api-2206",
       "title": "BoxCollider2D",
       "parentId": "api-2150",
       "reference": "BoxCollider2D",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./BoxCollider2D.md"
     },
     {
       "id": "api-2207",
@@ -15581,7 +15585,8 @@
       "title": "CircleCollider2D",
       "parentId": "api-2150",
       "reference": "CircleCollider2D",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./CircleCollider2D.md"
     },
     {
       "id": "api-2225",
@@ -15754,7 +15759,8 @@
       "title": "Coroutine",
       "parentId": "api-2150",
       "reference": "Coroutine",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Coroutine.md"
     },
     {
       "id": "api-2249",
@@ -17409,7 +17415,8 @@
       "title": "SphereCollider",
       "parentId": "api-2150",
       "reference": "SphereCollider",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./SphereCollider.md"
     },
     {
       "id": "api-2484",
@@ -17747,42 +17754,48 @@
       "title": "WaitForEndOfFrame",
       "parentId": "api-2150",
       "reference": "WaitForEndOfFrame",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Coroutine.md"
     },
     {
       "id": "api-2532",
       "title": "WaitForFixedUpdate",
       "parentId": "api-2150",
       "reference": "WaitForFixedUpdate",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Coroutine.md"
     },
     {
       "id": "api-2533",
       "title": "WaitForSeconds",
       "parentId": "api-2150",
       "reference": "WaitForSeconds",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Coroutine.md"
     },
     {
       "id": "api-2534",
       "title": "WaitForSecondsRealtime",
       "parentId": "api-2150",
       "reference": "WaitForSecondsRealtime",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Coroutine.md"
     },
     {
       "id": "api-2535",
       "title": "WaitUntil",
       "parentId": "api-2150",
       "reference": "WaitUntil",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Coroutine.md"
     },
     {
       "id": "api-2536",
       "title": "WaitWhile",
       "parentId": "api-2150",
       "reference": "WaitWhile",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Coroutine.md"
     },
     {
       "id": "api-2537",
@@ -20452,7 +20465,8 @@
       "title": "Space",
       "parentId": "api-2697",
       "reference": "Space",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Space.md"
     },
     {
       "id": "api-2916",

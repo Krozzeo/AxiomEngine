@@ -116,7 +116,7 @@ jobs:
       # Isolated runners: parallel browser jobs do not share GPU or scene state.
       max-parallel: 8
       matrix:
-        milestone: [m2, m3, m18-3-7, m18-3-6, m18-3-5, m18-3-4, m18-3-3, m18-3, m18-2-1, m18-2, m18-1, m18, m17, m16-1, m16, m15, m14, m13-1, m13, m12, m11, m10, corrections, m9, m4, m5, m6, m7, m8]
+        milestone: [m18-3-8, m2, m3, m18-3-7, m18-3-6, m18-3-5, m18-3-4, m18-3-3, m18-3, m18-2-1, m18-2, m18-1, m18, m17, m16-1, m16, m15, m14, m13-1, m13, m12, m11, m10, corrections, m9, m4, m5, m6, m7, m8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -128,11 +128,11 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - uses: actions/setup-dotnet@v4
-        if: contains(fromJSON('["m18-3-7","m18-3-5","m18-3","m18-2-1","m18","m17","m16-1","m16","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
+        if: contains(fromJSON('["m18-3-8","m18-3-7","m18-3-5","m18-3","m18-2-1","m18","m17","m16-1","m16","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
         with:
           global-json-file: global.json
       - run: dotnet workload install wasm-tools
-        if: contains(fromJSON('["m18-3-7","m18-3-5","m18-3","m18-2-1","m18","m17","m16-1","m16","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
+        if: contains(fromJSON('["m18-3-8","m18-3-7","m18-3-5","m18-3","m18-2-1","m18","m17","m16-1","m16","m15","m14","m4","m6","m7","m10","m11","m12","m13"]'), matrix.milestone)
       - run: npm run build
       - name: Install software Vulkan and virtual display
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libvulkan1 mesa-vulkan-drivers
@@ -187,6 +187,7 @@ jobs:
             .axiom/browser-m7-evidence
             .axiom/browser-corrections-evidence
             .axiom/assistant-benchmark.json
+            .axiom/browser-m18-3-8-evidence
             .axiom/browser-m18-3-7-evidence
             .axiom/browser-m18-3-6-evidence
             .axiom/browser-m18-3-5-evidence

@@ -7,7 +7,7 @@
   - Behaviour
   - Space
   - AudioListener
-- Script lifecycle
+- Execution and time
   - MonoBehaviour
   - Script
   - Time

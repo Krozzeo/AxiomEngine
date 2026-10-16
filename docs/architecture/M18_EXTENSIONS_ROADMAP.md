@@ -1,3 +1,7 @@
+# Current correction — M18.3.8 / 0.0.46
+
+Before M18.4: complete named panel vision and real image delivery, automatic durable Apply, and the first two additional SDK batches (objects/components; execution/time). Scope and remaining compatibility limits are tracked in [BATCHES.md](../scripting-api/BATCHES.md); automated acceptance is tracked in [current report](../reports/M18_3_8_CURRENT_REPORT.md). Work is in progress; M18.4 GitHub integration remains next. Historical notes below retain their original dates and status.
+
 # M18.3.7 / 0.0.45 — automated correction complete
 
 Automated acceptance is complete: [CI 278](https://github.com/Krozzeo/AxiomEngine/actions/runs/38818870923) passes all 38 jobs at executable commit `f3324b9f7396df873c8e161270f88b4728e76089` (tree `238fc50a493b5259a62265e8b8ae21c45b735370`). This includes 378 Node tests on Linux and Windows, 39 Rust tests and native checks, real Linux development/AOT and Windows development C#, and all 29 browser groups. No paid model calls were performed. Live-model quality, the supplied conversational scenarios and actual token usage remain a separate user acceptance gate. Historical MVP coverage remains approximately 94% (122/130 original weights). M18.4 GitHub integration and M19 hardening remain next; PR #36 stays draft/open/unmerged. Read [current report](../reports/M18_3_7_CURRENT_REPORT.md).

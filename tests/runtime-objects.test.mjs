@@ -9,3 +9,8 @@ test('runtime creation, component structural edits, metadata and hierarchy publi
  const removed=applyScriptOperations(result.scene,{generation:1,operations:[{kind:'property',id:b,name:'collider',data:null},{kind:'parent',id:b}]},1,result.spawned);assert.equal(removed.scene.entities[1].collider,undefined);assert.equal(runtimeScriptEntities(removed.scene.entities,[{id:b,parentId:a}])[1].parentId,undefined);
  assert.throws(()=>applyScriptOperations(result.scene,{generation:1,operations:[{kind:'parent',id:a,name:b}]},1),/cycle/);assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'property',id:a,name:'collider',data:{dimension:4}}]},1),/Missing|Invalid/);assert.equal(source.entities[0].collider,undefined);
 });
+test('component snapshots reject unsupported fields; sibling reorder and runtime unparent preserve identity',()=>{
+ const source=scene();source.entities.push({id:b,name:'B',transform:{position:[2,0,0],rotation:[0,0,0,1],scale:[1,1,1]}});
+ assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'property',id:a,name:'scriptComponents',data:[{path:'Scripts/Unknown.cs',typeName:'Fake',values:{}}]}]},1),/Invalid/);
+ const next=applyScriptOperations(source,{generation:1,operations:[{kind:'sibling',id:b,index:0}]},1);assert.deepEqual(next.scene.entities.map(e=>e.id),[b,a]);assert.deepEqual(source.entities.map(e=>e.id),[a,b]);
+});

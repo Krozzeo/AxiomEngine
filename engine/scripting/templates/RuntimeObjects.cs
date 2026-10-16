@@ -4,7 +4,7 @@ namespace Axiom.Gameplay;
 public class Behaviour : Component {
  private bool active=true;
  public bool enabled {get=>active;set{if(active==value)return;var before=isActiveAndEnabled;active=value;if(this is MonoBehaviour)RuntimeLifecycle.Activation();}}
- public bool isActiveAndEnabled=>active&&Context.Entities.ContainsKey(Entity.Id)&&Context.IsActive(Entity.Id);
+ public bool isActiveAndEnabled=>active&&Context.Entities.ContainsKey(Entity.Id)&&Context.IsActive(Entity.Id)&&(this is not Script script||Context.LiveScripts.Contains(script));
 }
 public enum Space {World,Self}
 public class BoxCollider : Collider {internal BoxCollider(Entity entity):base(entity){}}
@@ -60,7 +60,15 @@ public sealed partial class GameObject {
  public static GameObject? FindWithTag(string tag)=>FindGameObjectsWithTag(tag).FirstOrDefault();
  public T AddComponent<T>() where T:Component=>Context.AddComponent<T>(Entity);
  public bool TryGetComponent<T>(out T? component) where T:Component {component=GetComponent<T>();return component!=null;}
- public T[] GetComponents<T>() where T:Component {var result=Context.LiveScripts.Where(s=>s.Entity.Id==Entity.Id).OfType<T>().ToList();var own=GetComponent<T>();if(own!=null&&!result.Contains(own))result.Insert(0,own);return result.ToArray();}
+ public T[] GetComponents<T>() where T:Component {
+  _=Context.Read(Entity);var result=new List<Component>{transform};var data=Context.EntityData[Entity.Id];
+  var twoD=data.TryGetProperty("collider",out var c)&&c.GetProperty("dimension").GetInt32()==2;
+  if(c.ValueKind==JsonValueKind.Object){var sphere=c.GetProperty("shape").GetString()=="sphere";result.Add(twoD?(sphere?new CircleCollider2D(Entity):new BoxCollider2D(Entity)):(sphere?new SphereCollider(Entity):new BoxCollider(Entity)));}
+  if(Context.Bodies.ContainsKey(Entity.Id))result.Add(twoD?new Rigidbody2D(Entity):new Rigidbody(Entity));
+  if(Context.Cameras.Contains(Entity.Id))result.Add(new Camera(Entity));if(Context.AudioSources.Contains(Entity.Id))result.Add(new AudioSource(Entity));if(Context.Animators.ContainsKey(Entity.Id))result.Add(new Animator(Entity));if(data.TryGetProperty("audioListener",out _))result.Add(new AudioListener(Entity));
+  result.AddRange(Context.LiveScripts.Where(s=>s.Entity.Id==Entity.Id));return result.OfType<T>().ToArray();
+ }
+
  public T? GetComponentInChildren<T>(bool includeInactive=false) where T:Component=>GetComponentsInChildren<T>(includeInactive).FirstOrDefault();
  public T? GetComponentInParent<T>(bool includeInactive=false) where T:Component=>GetComponentsInParent<T>(includeInactive).FirstOrDefault();
  public T[] GetComponentsInChildren<T>(bool includeInactive=false) where T:Component {var found=new List<T>();void Visit(Transform node){if(includeInactive||node.gameObject.activeInHierarchy)found.AddRange(node.GetComponents<T>());for(var i=0;i<node.childCount;i++)Visit(node.GetChild(i));}Visit(transform);return found.ToArray();}

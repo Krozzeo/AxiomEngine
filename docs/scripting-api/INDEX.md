@@ -4,10 +4,14 @@
   - Component
   - Transform
   - Entity
+  - Behaviour
+  - Space
+  - AudioListener
 - Script lifecycle
   - MonoBehaviour
   - Script
   - Time
+  - Coroutine
 - Mathematics
   - Vector2
   - Vector3
@@ -40,6 +44,10 @@
   - RaycastHit2D
   - Rigidbody2D
   - ForceMode2D
+  - BoxCollider
+  - SphereCollider
+  - BoxCollider2D
+  - CircleCollider2D
 - Audio and animation
   - AudioSource
   - Animator

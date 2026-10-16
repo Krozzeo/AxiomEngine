@@ -4,28 +4,22 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Base class for attachable gameplay scripts, with explicit virtual lifecycle and contact callbacks.
-
-## Use cases
-
-Frame-based behaviour.
+Attachable compiled script with enabled/isActiveAndEnabled, ordered lifecycle callbacks, native fixed-step and contact callbacks, coroutines and scheduled methods. Use public override callbacks in Axiom. Disabled behaviours skip updates; their coroutines continue until explicitly stopped, object deactivation, destruction or Stop.
 
 ## Example
 
 ```csharp
 using Axiom.Gameplay;
-public sealed class Motion : MonoBehaviour {
- public double Speed = 1;
- public override void Update() {
-  transform.position += Vector3.right * Speed * Time.deltaTime;
- }
+using System.Collections;
+public sealed class Pulse : MonoBehaviour {
+    public override void Start() { StartCoroutine(Loop()); }
+    private IEnumerator Loop() {
+        while (true) { yield return new WaitForSeconds(1); Debug.Log("pulse"); }
+    }
 }
 ```
 
-## Compatibility and limitations
-
-Override public callbacks; Unity-style private message methods are not reflected. Existing OnStart/OnUpdate/OnStop overrides remain supported and take precedence if they do not call base. FixedUpdate uses a local 0.02-second accumulator and is not yet a solver-owned callback. LateUpdate follows Update for each behaviour, not a separate global phase. Time uses doubles. Coroutines, Invoke, timeScale and scene loading remain pending.
-
+Limits: 256 active coroutines, 256 pending invocations, 32 nested enumerators and 128 immediate advances per resume. A bad callback/yield fails visibly; unsupported yields are never treated as successful asynchronous work.
 
 ## Implemented declarations
 

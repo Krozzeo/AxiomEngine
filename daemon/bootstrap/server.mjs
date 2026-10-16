@@ -244,12 +244,13 @@ export async function startServer(options = {}) {
   const address = server.address();
   const origin = `http://127.0.0.1:${address.port}`;
   allowedOrigins = new Set([origin, `http://localhost:${address.port}`]);
+  let closing;
   return {
     server,
     token,
     origin,
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
-    close: async () => {await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await proposals.close();return new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose()));}
+    close: () => closing??=(async()=>{await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await proposals.close();return new Promise((resolveClose,reject)=>{server.close(error=>error&&error.code!=='ERR_SERVER_NOT_RUNNING'?reject(error):resolveClose());server.closeAllConnections();});})()
   };
 }
 

@@ -208,7 +208,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
        }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
       }
       const drawable={...scene,entities:scene.entities.map(e=>e.renderable&&(!localAssets.has(e.renderable.assetId)||localAssets.get(e.renderable.assetId).kind!==e.renderable.kind)?Object.fromEntries(Object.entries(e).filter(([k])=>k!=='renderable')):e)};
-      const authored=project?.scene??{entities:[]};let kernelScene=structuredClone(drawable);for(const e of authored.entities)if(e.parentId&&kernelScene.entities.some(n=>n.id===e.id)&&kernelScene.entities.some(n=>n.id===e.parentId))kernelScene.entities=reparent(kernelScene.entities,[e.id],e.parentId);
+      const authored=project?.scene??{entities:[]};let kernelScene=structuredClone(drawable);const originalParents=new Map(authored.entities.map(e=>[e.id,e.parentId]));for(const e of kernelScene.entities){const parent=Object.hasOwn(e,'runtimeParentId')?e.runtimeParentId:originalParents.get(e.id);if(parent&&kernelScene.entities.some(n=>n.id===parent))kernelScene.entities=reparent(kernelScene.entities,[e.id],parent);}
       const draws=replacement.compileScene(kernelScene,localAssets);
       if(snapshot.playing){replacement.configurePhysics(kernelScene);replacement.animationStep(0,true);for(const op of startAnimationControls)replacement.animationControl(op);}
       if(scene.twoD&&device){
@@ -239,17 +239,18 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       const delta=manual?.delta??(previousTime===null?0:Math.min((now-previousTime)/1000,0.25));previousTime=now;
       const diagnostic=profiler.begin(performance.now(),crypto.randomUUID(),{view,playing,route:runtimeScene.twoD?'2d':runtimeScene.rendering?'hdr':'legacy'});
       const timing=presentFrame?gpuProfiler.begin(diagnostic.frameSequence,ticket):{reason:'Controlled simulation frame not presented',writes:()=>undefined,resolve(){},submitted(){}};diagnostic.gpuReason=timing.reason;
+      const scriptScopes=new Map(),scriptScope=(name,start,end,kind='main')=>{const key=name+'|'+kind;scriptScopes.set(key,(scriptScopes.get(key)??0)+end-start);};
       const runScriptPhase=async action=>{if(!scriptRuntime)return;
         const active=scriptRuntime;
         try {
           const scriptStart=performance.now();
           const animationStates=new Map(kernel.animationStatus().map(a=>[a.entityId,a]));
           scriptFlight=active.execute({action,generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),contacts:kernel.physicsSnapshot()?.contacts??[],keys:[...keys],mouseDelta:[...mouseDelta],delta});
-          profiler.scope(diagnostic,'script.prepare',scriptStart,performance.now());
+          scriptScope('script.prepare',scriptStart,performance.now());
           const packet=await scriptFlight;scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=performance.now()-scriptStart;
           if(ticket!==generation||disposed){return;}
-          profiler.scope(diagnostic,'script.roundtrip',scriptStart,performance.now(),'wall');
-          if(Number.isFinite(packet.metrics?.workerDispatchMs)&&packet.metrics.workerDispatchMs>=0&&packet.metrics.workerDispatchMs<=2000)profiler.scope(diagnostic,'worker.dispatch',0,packet.metrics.workerDispatchMs,'worker');
+          scriptScope('script.roundtrip',scriptStart,performance.now(),'wall');
+          if(Number.isFinite(packet.metrics?.workerDispatchMs)&&packet.metrics.workerDispatchMs>=0&&packet.metrics.workerDispatchMs<=2000)scriptScope('worker.dispatch',0,packet.metrics.workerDispatchMs,'worker');
           const applyStart=performance.now();
           const result=applyScriptOperations(runtimeScene,packet,ticket,spawned);
           if(result.changedTopology) {
@@ -264,7 +265,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
           kernel.setRotations(result.rotations);kernel.setVelocities(result.velocities);
           for(const op of result.animations)kernel.animationControl(op);
           runtimeScene=result.scene;audio.reconcile(runtimeScene);if(!testing)for(const op of result.audio)audio.control(op);spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
-          profiler.scope(diagnostic,'script.apply',applyStart,performance.now(),result.changedTopology?'wall':'main');
+          scriptScope('script.apply',applyStart,performance.now(),result.changedTopology?'wall':'main');
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
         finally{scriptFlight=null;}
       };
@@ -276,6 +277,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
        await runScriptPhase('update');await runScriptPhase('late');mouseDelta=[0,0];
       }
       if(ticket!==generation||disposed){if(!disposed&&!manual)animationId=requestAnimationFrame(frame);return;}
+      for(const [key,milliseconds]of scriptScopes){const [name,kind]=key.split('|');profiler.scope(diagnostic,name,0,milliseconds,kind);}
       diagnostic.profileContext.view=view;
       let stageStart=performance.now();
       const packet=kernel.stepScene(twoDPaused?0:Math.min(delta*scriptTimeScale,.25),++trace,canvas.width/canvas.height,phased?{advanceClock:false,stepPhysics:false}:{});

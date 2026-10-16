@@ -1,5 +1,7 @@
-# Script lifecycle
+# Execution and time
 
-Axiom.Gameplay API reference. Unity naming baseline: Unity 6.3 LTS.
+At Play start all initially active scripts receive Awake, then OnEnable, then Start. Scripts added/cloned at runtime receive Awake and OnEnable immediately, and Start before their first update. Disabled behaviours skip Update/FixedUpdate/LateUpdate; deactivating their GameObject also stops coroutines. OnDisable precedes OnDestroy. All Update callbacks finish before LateUpdate begins.
 
-Override public callbacks; Unity-style private message methods are not reflected. Existing OnStart/OnUpdate/OnStop overrides remain supported and take precedence if they do not call base. FixedUpdate uses a local 0.02-second accumulator and is not yet a solver-owned callback. LateUpdate follows Update for each behaviour, not a separate global phase. Time uses doubles. Coroutines, Invoke, timeScale and scene loading remain pending.
+Each real fixed step invokes FixedUpdate, advances the native solver once at 1/60 second, dispatches contacts and resumes WaitForFixedUpdate. Variable Update and coroutines then run, followed by global LateUpdate/end-of-frame waits. Physics has an eight-step catch-up cap. Axiom callbacks are explicit public virtual overrides; Unity private message dispatch is not implemented.
+
+Time supports scaled and unscaled frame time and timeScale in [0,8]. At zero scale Update and unscaled waits continue; physics, scaled waits and Invoke pause. Coroutines support nested IEnumerator, yield null, WaitForSeconds, WaitForSecondsRealtime, WaitUntil, WaitWhile, WaitForFixedUpdate, WaitForEndOfFrame and waiting on Coroutine handles. Invoke/InvokeRepeating accept compiled parameterless void methods; cancellation and query are available. There is no string-based StartCoroutine or arbitrary async Unity resource yield instruction.

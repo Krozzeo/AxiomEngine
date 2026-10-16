@@ -65,6 +65,14 @@ public sealed partial class Transform {
  public void Rotate(Vector3 eulers,Space relativeTo=Space.Self){var q=Quaternion.Euler(eulers);rotation=relativeTo==Space.Self?rotation*q:q*rotation;}
 }
 
+public sealed partial class Transform {
+ public int GetSiblingIndex(){var siblings=Context.Parents.Where(p=>p.Value==Context.Parents.GetValueOrDefault(Entity.Id)).Select(p=>p.Key).ToList();return siblings.IndexOf(Entity.Id);}
+ public void SetSiblingIndex(int index){var parent=Context.Parents.GetValueOrDefault(Entity.Id);var siblings=Context.Parents.Where(p=>p.Value==parent).Select(p=>p.Key).ToList();siblings.Remove(Entity.Id);siblings.Insert(Math.Clamp(index,0,siblings.Count),Entity.Id);var entries=Context.Parents.ToArray();Context.Parents.Clear();var queue=new Queue<string>(siblings);foreach(var entry in entries)if(entry.Value==parent){var id=queue.Dequeue();Context.Parents[id]=parent;}else Context.Parents[entry.Key]=entry.Value;Context.Sibling(Entity,index);}
+ public void SetAsFirstSibling()=>SetSiblingIndex(0);
+ public void SetAsLastSibling()=>SetSiblingIndex(int.MaxValue);
+ public void DetachChildren(){foreach(var id in Context.Parents.Where(p=>p.Value==Entity.Id).Select(p=>p.Key).ToArray())new Transform(new Entity(id,Context.Generation)).SetParent(null);}
+}
+
 public sealed partial class Transform : Component {
  public Vector3 Position {get;init;}
  public Quaternion Rotation {get;init;}

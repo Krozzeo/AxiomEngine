@@ -4,29 +4,21 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Named runtime entity facade. Find searches active entities by exact name. transform accesses a live Transform; GetComponent retrieves existing built-ins or attached script instances. SetActive controls the entity and its descendants.
-
-## Use cases
-
-Locate a named scene object, inspect its components or toggle its runtime participation.
+Create an empty runtime GameObject, retrieve/add compiled components, activate it and query live tags/layers. One script instance per compiled physical path and one built-in storage kind per object are supported. AddComponent supports compiled scripts, box/sphere colliders in 2D/3D, Rigidbody/Rigidbody2D, Camera and AudioListener. Asset-backed AudioSource and Animator require authored configuration and can be cloned. Transform cannot be removed.
 
 ## Example
 
-The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
-
 ```csharp
-var target = GameObject.Find("Workshop Cube");
-if (target != null) {
- target.transform.position = new Vector3(2, 1, 0);
- target.SetActive(false);
- target.SetActive(true);
-}
+var child = new GameObject("Sensor");
+child.transform.SetParent(transform, false);
+child.transform.localPosition = new Vector3(0, 1, 0);
+child.tag = "Sensor";
+child.AddComponent<BoxCollider>();
 ```
 
-## Compatibility and limitations
+## Notes
 
-Transforms use world position/rotation. localScale writes the runtime scale. Legacy Entity.Transform.Position/Rotation/Scale remain snapshots; lowercase transform properties are live. Generic component lookup covers built-in wrappers and already attached scripts. Instantiate clones one entity using the existing spawn contract; it does not yet clone a hierarchy or start new script instances. SetActive controls runtime hierarchy participation; GetComponentInChildren and GetComponentInParent traverse existing components. Dynamic AddComponent, tags and full Unity object identity semantics remain pending.
-
+Object.Instantiate copies the full descendant hierarchy and serialized fields of compiled scripts. Static fields and coroutine state are not duplicated. Runtime edits never persist to the authored project.
 
 ## Implemented declarations
 
@@ -62,7 +54,7 @@ public sealed partial class GameObject {
  public string tag {get=>Context.Metadata(Entity,"runtimeTag","Untagged");set{if(string.IsNullOrWhiteSpace(value)||value.Length>128)throw new ArgumentException("Invalid tag");Context.Property(Entity,"runtimeTag",JsonValue.Create(value));}}
  public int layer {get=>Context.EntityData[Entity.Id].TryGetProperty("runtimeLayer",out var layer)?layer.GetInt32():0;set{if(value<0||value>31)throw new ArgumentOutOfRangeException(nameof(value));Context.Property(Entity,"runtimeLayer",JsonValue.Create(value));if(Context.EntityData[Entity.Id].TryGetProperty("collider",out var c)){var node=JsonNode.Parse(c.GetRawText())!;node["layer"]=1u<<value;Context.Property(Entity,"collider",node);}}}
  public bool CompareTag(string value)=>tag==value;
- public static GameObject[] FindGameObjectsWithTag(string tag)=>Context.Entities.Keys.Where(Context.IsActive).Select(id=>new GameObject(new(id,Context.Generation))).Where(e=>e.tag==tag).ToArray();
+ public static GameObject[] FindGameObjectsWithTag(string tag)=>Context.Entities.Keys.Where(Context.IsActive).Select(id=>new GameObject(new Entity(id,Context.Generation))).Where(e=>e.tag==tag).ToArray();
  public static GameObject? FindWithTag(string tag)=>FindGameObjectsWithTag(tag).FirstOrDefault();
  public T AddComponent<T>() where T:Component=>Context.AddComponent<T>(Entity);
  public bool TryGetComponent<T>(out T? component) where T:Component {component=GetComponent<T>();return component!=null;}

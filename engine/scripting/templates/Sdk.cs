@@ -315,6 +315,7 @@ internal static partial class Context {
     if(op.Kind=="animation"||op.Kind=="audio"){writer.WriteString("action",op.Action);if(op.Name!=null)writer.WriteString("name",op.Name);writer.WriteNumber("value",op.Value);writer.WriteNumber("duration",op.Duration);}
     if(op.Rotation is Quaternion rotation){writer.WritePropertyName("rotation");writer.WriteStartArray();writer.WriteNumberValue(rotation.X);writer.WriteNumberValue(rotation.Y);writer.WriteNumberValue(rotation.Z);writer.WriteNumberValue(rotation.W);writer.WriteEndArray();}
     if(op.Kind!="rotation"&&op.Kind!="log"&&op.Kind!="animation"&&op.Kind!="audio"){writer.WritePropertyName("position");op.Position.Write(writer);}
+    if(op.Kind=="sibling")writer.WriteNumber("index",op.Value);
     if(op.Name!=null&&op.Kind!="animation"&&op.Kind!="audio")writer.WriteString("name",op.Name);
     if(op.Data!=null){writer.WritePropertyName("data");using var data=JsonDocument.Parse(op.Data);data.RootElement.WriteTo(writer);}
     if(op.Message!=null)writer.WriteString("message",op.Message);

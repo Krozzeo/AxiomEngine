@@ -264,7 +264,7 @@ test('capability discovery searches terms across the full allowed public/private
 
 test('renderer capture delivers actual image content to Responses while keeping bytes out of task history',async t=>{
  const {ai,workspace,bridge,http}=await fixture(t,[[tool('renderer.capture',{panel:'game',width:64,height:64},'capture')],[message('Inspected the captured Game view.')]]);
- bridge.capture=async args=>({projectId:workspace.project.id,workspaceId:null,sceneRevision:workspace.revision,generation:1,frame:2,panel:args.panel,width:64,height:64,base64:'iVBORw0KGgoAAAATESTIMAGE',semantic:{channel:'color'}});
+ bridge.status=()=>({connected:true,projectId:workspace.project.id,sceneRevision:workspace.revision,workspaceId:null});bridge.capture=async args=>({projectId:workspace.project.id,workspaceId:null,sceneRevision:workspace.revision,generation:1,frame:2,panel:args.panel,width:64,height:64,base64:'iVBORw0KGgoAAAATESTIMAGE',semantic:{channel:'color'}});
  const task=await complete(ai,{text:'Inspect the Game view without changing the project.'});assert.equal(task.status,'completed',JSON.stringify(task.error));
  const image=http.requests.at(-1).body.input.flatMap(i=>Array.isArray(i.content)?i.content:[]).find(c=>c.type==='input_image');assert.equal(image.image_url,'data:image/png;base64,iVBORw0KGgoAAAATESTIMAGE');assert.ok(!JSON.stringify(task).includes('AAAATESTIMAGE'));assert.equal(task.steps[0].result.imageDelivered,true);
 });

@@ -4,25 +4,18 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Simulation clock visible to script callbacks. deltaTime is the current frame interval, time is elapsed simulated time, and frameCount increments once per script step.
-
-## Use cases
-
-Make motion independent of rendering frame rate.
+Scaled/unscaled delta and elapsed time, frame count, fixed time, inFixedTimeStep and validated timeScale. The fixed solver period is read-only 1/60 second; maximum variable delta is .25 seconds and native catch-up is capped at eight fixed steps. Time resets at Play. realtimeSinceStartup currently means unscaled time since this Play, not process uptime.
 
 ## Example
 
-The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
-
 ```csharp
-transform.position += Vector3.right * Time.deltaTime;
-Debug.Log(Time.frameCount);
+public override void Update() {
+    if (Input.GetKeyDown(KeyCode.Space)) Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+    transform.position += Vector3.right * Time.deltaTime;
+}
 ```
 
-## Compatibility and limitations
-
-Override public callbacks; Unity-style private message methods are not reflected. Existing OnStart/OnUpdate/OnStop overrides remain supported and take precedence if they do not call base. FixedUpdate uses a local 0.02-second accumulator and is not yet a solver-owned callback. LateUpdate follows Update for each behaviour, not a separate global phase. Time uses doubles. Coroutines, Invoke, timeScale and scene loading remain pending.
-
+At timeScale zero Update still runs and unscaled time advances, allowing scripts to unpause. FixedUpdate and scaled timers do not advance.
 
 ## Implemented declarations
 

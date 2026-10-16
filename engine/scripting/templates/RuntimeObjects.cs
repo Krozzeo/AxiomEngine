@@ -14,9 +14,7 @@ public sealed class CircleCollider2D : Collider2D {internal CircleCollider2D(Ent
 public sealed class AudioListener : Component {internal AudioListener(Entity entity){Entity=entity;}}
 internal static partial class Context {
  internal static readonly Dictionary<Script,string> ScriptPaths=new();
- internal static Action<Script>? CopyScript;
  internal static Func<Type,Entity,Script>? AddCompiledScript;
- internal static Action? StartPending;
  internal static JsonElement ParseData(string json){using var d=JsonDocument.Parse(json);return d.RootElement.Clone();}
  internal static string Metadata(Entity entity,string key,string fallback){_=Read(entity);return EntityData[entity.Id].TryGetProperty(key,out var v)?v.GetString()??fallback:fallback;}
  internal static void Property(Entity entity,string key,JsonNode? value){_=Read(entity);var node=JsonNode.Parse(EntityData[entity.Id].GetRawText())!.AsObject();if(value==null)node.Remove(key);else node[key]=value.DeepClone();EntityData[entity.Id]=ParseData(node.ToJsonString());Add(new("property",entity.Id,null,default,null,Name:key,Data:value?.ToJsonString()??"null"));Refresh(entity);}
@@ -41,8 +39,8 @@ internal static partial class Context {
 }
 public partial class Object {
  public static GameObject Instantiate(GameObject original,Transform? parent)=>Instantiate(original,parent,true);
- public static GameObject Instantiate(GameObject original,Transform? parent,bool worldPositionStays){var clone=Instantiate(original);clone.transform.SetParent(parent,worldPositionStays);return clone;}
- public static T[] FindObjectsByType<T>() where T:Component=>Context.Entities.Keys.Where(Context.IsActive).SelectMany(id=>new GameObject(new(id,Context.Generation)).GetComponents<T>()).ToArray();
+ public static GameObject Instantiate(GameObject original,Transform? parent,bool worldPositionStays){var clone=Instantiate(original);var local=Context.Local(original.Entity);clone.transform.SetParent(parent,true);if(!worldPositionStays)Context.LocalTransform(clone.Entity,local.Position,local.Rotation,local.Scale);return clone;}
+ public static T[] FindObjectsByType<T>() where T:Component=>Context.Entities.Keys.Where(Context.IsActive).SelectMany(id=>new GameObject(new Entity(id,Context.Generation)).GetComponents<T>()).ToArray();
  public static T? FindFirstObjectByType<T>() where T:Component=>FindObjectsByType<T>().FirstOrDefault();
 }
 public partial class Component {
@@ -58,7 +56,7 @@ public sealed partial class GameObject {
  public string tag {get=>Context.Metadata(Entity,"runtimeTag","Untagged");set{if(string.IsNullOrWhiteSpace(value)||value.Length>128)throw new ArgumentException("Invalid tag");Context.Property(Entity,"runtimeTag",JsonValue.Create(value));}}
  public int layer {get=>Context.EntityData[Entity.Id].TryGetProperty("runtimeLayer",out var layer)?layer.GetInt32():0;set{if(value<0||value>31)throw new ArgumentOutOfRangeException(nameof(value));Context.Property(Entity,"runtimeLayer",JsonValue.Create(value));if(Context.EntityData[Entity.Id].TryGetProperty("collider",out var c)){var node=JsonNode.Parse(c.GetRawText())!;node["layer"]=1u<<value;Context.Property(Entity,"collider",node);}}}
  public bool CompareTag(string value)=>tag==value;
- public static GameObject[] FindGameObjectsWithTag(string tag)=>Context.Entities.Keys.Where(Context.IsActive).Select(id=>new GameObject(new(id,Context.Generation))).Where(e=>e.tag==tag).ToArray();
+ public static GameObject[] FindGameObjectsWithTag(string tag)=>Context.Entities.Keys.Where(Context.IsActive).Select(id=>new GameObject(new Entity(id,Context.Generation))).Where(e=>e.tag==tag).ToArray();
  public static GameObject? FindWithTag(string tag)=>FindGameObjectsWithTag(tag).FirstOrDefault();
  public T AddComponent<T>() where T:Component=>Context.AddComponent<T>(Entity);
  public bool TryGetComponent<T>(out T? component) where T:Component {component=GetComponent<T>();return component!=null;}
@@ -84,3 +82,17 @@ public sealed partial class Transform {
 internal static partial class Context {
  internal static void FollowChildren(Entity parent,Transform old){var now=Read(parent);foreach(var id in Parents.Where(p=>p.Value==parent.Id).Select(p=>p.Key).ToArray()){if(!Entities.TryGetValue(id,out var child))continue;var local=Quaternion.Inverse(old.Rotation)*(child.Position-old.Position);if(Math.Abs(old.Scale.X*old.Scale.Y*old.Scale.Z)<1e-20)throw new InvalidOperationException("Cannot transform a child through zero scale");local=new(local.X/old.Scale.X,local.Y/old.Scale.Y,local.Z/old.Scale.Z);var position=now.Position+now.Rotation*new Vector3(local.X*now.Scale.X,local.Y*now.Scale.Y,local.Z*now.Scale.Z);var rotation=now.Rotation*Quaternion.Inverse(old.Rotation)*child.Rotation;var scale=new Vector3(child.Scale.X/old.Scale.X*now.Scale.X,child.Scale.Y/old.Scale.Y*now.Scale.Y,child.Scale.Z/old.Scale.Z*now.Scale.Z);var entity=new Entity(id,Generation);Entities[id]=new Transform(position,rotation,scale){Entity=entity};FollowChildren(entity,child);}}
 }
+public partial class Object {
+ private Entity? Handle=>this is GameObject go?go.Entity:this is Component c?c.Entity:null;
+ public int GetInstanceID()=>Handle is Entity e?HashCode.Combine(e.Id,e.Generation,this is Component c?c.GetType():typeof(GameObject)):System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
+ private static bool Exists(Object? value)=>value!=null&&(value.Handle is not Entity e||e.Generation==Context.Generation&&Context.Entities.ContainsKey(e.Id));
+ public static implicit operator bool(Object? value)=>Exists(value);
+}
+public sealed partial class Transform {
+ public int GetSiblingIndex(){var siblings=Context.Parents.Where(p=>p.Value==Context.Parents.GetValueOrDefault(Entity.Id)).Select(p=>p.Key).ToList();return siblings.IndexOf(Entity.Id);}
+ public void SetSiblingIndex(int index){var parent=Context.Parents.GetValueOrDefault(Entity.Id);var siblings=Context.Parents.Where(p=>p.Value==parent).Select(p=>p.Key).ToList();siblings.Remove(Entity.Id);siblings.Insert(Math.Clamp(index,0,siblings.Count),Entity.Id);var entries=Context.Parents.ToArray();Context.Parents.Clear();var queue=new Queue<string>(siblings);foreach(var entry in entries)if(entry.Value==parent){var id=queue.Dequeue();Context.Parents[id]=parent;}else Context.Parents[entry.Key]=entry.Value;Context.Sibling(Entity,index);}
+ public void SetAsFirstSibling()=>SetSiblingIndex(0);
+ public void SetAsLastSibling()=>SetSiblingIndex(int.MaxValue);
+ public void DetachChildren(){foreach(var id in Context.Parents.Where(p=>p.Value==Entity.Id).Select(p=>p.Key).ToArray())new Transform(new Entity(id,Context.Generation)).SetParent(null);}
+}
+internal static partial class Context {internal static void Sibling(Entity entity,int index){_=Read(entity);Add(new("sibling",entity.Id,null,default,null,Value:index));}}

@@ -99,6 +99,9 @@ jobs:
       - run: node tests/browser/csharp-gameplay.mjs
         env:
           AXIOM_CSHARP_MODE: ${{ matrix.mode }}
+      - run: node tests/browser/csharp-runtime-api.mjs
+        env:
+          AXIOM_CSHARP_MODE: ${{ matrix.mode }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

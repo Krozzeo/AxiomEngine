@@ -27,5 +27,5 @@ RigidBody is the legacy velocity snapshot; Rigidbody is the live wrapper. AddFor
 ## Implemented declarations
 
 ```csharp
-public sealed class Collider2D : Collider {internal Collider2D(Entity entity):base(entity){}}
+public class Collider2D : Collider {internal Collider2D(Entity entity):base(entity){}}
 ```

@@ -29,7 +29,7 @@ Transforms use world position/rotation. localScale writes the runtime scale. Leg
 ## Implemented declarations
 
 ```csharp
-public class Component : Object {
+public partial class Component : Object {
  public Entity Entity {get;internal set;}
  public GameObject gameObject=>new(Entity);
  public Transform transform=>new(Entity);
@@ -37,5 +37,14 @@ public class Component : Object {
  public T? GetComponentInChildren<T>() where T:Component {var own=GetComponent<T>();if(own!=null)return own;for(var i=0;i<transform.childCount;i++){var found=transform.GetChild(i).GetComponentInChildren<T>();if(found!=null)return found;}return null;}
  public T? GetComponentInParent<T>() where T:Component {Transform? current=transform;while(current!=null){var component=current.GetComponent<T>();if(component!=null)return component;current=current.parent;}return null;}
  public bool TryGetComponent<T>(out T? component) where T:Component {component=GetComponent<T>();return component!=null;}
+}
+
+public partial class Component {
+ public string name {get=>gameObject.name;set=>gameObject.name=value;}
+ public string tag {get=>gameObject.tag;set=>gameObject.tag=value;}
+ public bool CompareTag(string value)=>gameObject.CompareTag(value);
+ public T[] GetComponents<T>() where T:Component=>gameObject.GetComponents<T>();
+ public T[] GetComponentsInChildren<T>(bool includeInactive=false) where T:Component=>gameObject.GetComponentsInChildren<T>(includeInactive);
+ public T[] GetComponentsInParent<T>(bool includeInactive=false) where T:Component=>gameObject.GetComponentsInParent<T>(includeInactive);
 }
 ```

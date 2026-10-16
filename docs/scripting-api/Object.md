@@ -30,10 +30,17 @@ Transforms use world position/rotation. localScale writes the runtime scale. Leg
 ## Implemented declarations
 
 ```csharp
-public class Object {
+public partial class Object {
  public static GameObject Instantiate(GameObject original)=>Instantiate(original,original.transform.position,original.transform.rotation);
- public static GameObject Instantiate(GameObject original,Vector3 position,Quaternion rotation){var entity=original.Entity.Spawn(position);entity.SetRotation(rotation);return new GameObject(entity);}
+ public static GameObject Instantiate(GameObject original,Vector3 position,Quaternion rotation){var entity=Context.CloneHierarchy(original.Entity,position,rotation);entity.SetRotation(rotation);return new GameObject(entity);}
  public static void Destroy(GameObject target)=>Context.Destroy(target.Entity);
- public static void Destroy(Component target)=>Destroy(target.gameObject);
+ public static void Destroy(Component target)=>Context.Remove(target);
+}
+
+public partial class Object {
+ public static GameObject Instantiate(GameObject original,Transform? parent)=>Instantiate(original,parent,true);
+ public static GameObject Instantiate(GameObject original,Transform? parent,bool worldPositionStays){var clone=Instantiate(original);clone.transform.SetParent(parent,worldPositionStays);return clone;}
+ public static T[] FindObjectsByType<T>() where T:Component=>Context.Entities.Keys.Where(Context.IsActive).SelectMany(id=>new GameObject(new(id,Context.Generation)).GetComponents<T>()).ToArray();
+ public static T? FindFirstObjectByType<T>() where T:Component=>FindObjectsByType<T>().FirstOrDefault();
 }
 ```

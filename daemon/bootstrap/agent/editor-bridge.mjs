@@ -46,7 +46,7 @@ export class EditorBridge {
  }
  capture(args){
   const status=this.status();
-  if((status.workspaceId??null)!==(args.workspaceId??null)||!status.connected||status.renderer!=='webgpu'||status.projectId!==args.id||status.sceneRevision!==args.expectedSceneRevision)throw agentError('AX_AGENT_0002','A ready WebGPU editor at this scene revision is required');
+  if((status.workspaceId??null)!==(args.workspaceId??null)||!status.connected||(['current','scene','game'].includes(args.panel??'current')&&status.renderer!=='webgpu')||status.projectId!==args.id||status.sceneRevision!==args.expectedSceneRevision)throw agentError('AX_AGENT_0002','A ready WebGPU editor at this scene revision is required');
   if(this.pending)throw agentError('AX_AGENT_0002','Capture already in progress');
   return new Promise((resolve,reject)=>{const pending={id:randomUUID(),clientId:this.client.id,args:{width:640,height:360,maxEntities:16,...args},resolve,reject};pending.timer=setTimeout(()=>{if(this.pending===pending)this.pending=null;reject(agentError('AX_AGENT_0002','Editor capture timed out'));},this.timeoutMs);this.pending=pending;});
  }

@@ -131,16 +131,15 @@ public readonly record struct Color(double R,double G,double B,double A=1) {publ
 public readonly record struct Color32(byte R,byte G,byte B,byte A=255);
 public readonly record struct Rect(double X,double Y,double Width,double Height);
 public readonly record struct Bounds(Vector3 Center,Vector3 Size);
-public abstract class MonoBehaviour : Script {
- private double fixedAccumulator;
+public abstract partial class MonoBehaviour : Script {
  public virtual void OnCollisionEnter(Collision collision){}public virtual void OnCollisionStay(Collision collision){}public virtual void OnCollisionExit(Collision collision){}
  public virtual void OnTriggerEnter(Collider other){}public virtual void OnTriggerStay(Collider other){}public virtual void OnTriggerExit(Collider other){}
  public virtual void OnCollisionEnter2D(Collision2D collision){}public virtual void OnCollisionStay2D(Collision2D collision){}public virtual void OnCollisionExit2D(Collision2D collision){}
  public virtual void OnTriggerEnter2D(Collider2D other){}public virtual void OnTriggerStay2D(Collider2D other){}public virtual void OnTriggerExit2D(Collider2D other){}
  public virtual void Awake(){}public virtual void OnEnable(){}public virtual void Start(){}public virtual void Update(){}public virtual void FixedUpdate(){}public virtual void LateUpdate(){}public virtual void OnDisable(){}public virtual void OnDestroy(){}
- public override void OnStart(){Awake();OnEnable();Start();}
- public override void OnUpdate(double deltaSeconds){fixedAccumulator+=deltaSeconds;while(fixedAccumulator>=Time.fixedDeltaTime){FixedUpdate();fixedAccumulator-=Time.fixedDeltaTime;}Update();LateUpdate();}
- public override void OnStop(){OnDisable();OnDestroy();}
+ public override void OnStart(){}
+ public override void OnUpdate(double deltaSeconds){Update();}
+ public override void OnStop(){}
 }
 [AttributeUsage(AttributeTargets.Field)] public sealed class SerializeFieldAttribute : Attribute {}
 [AttributeUsage(AttributeTargets.Field)] public sealed class HideInInspectorAttribute : Attribute {}
@@ -182,7 +181,7 @@ public readonly record struct Entity(string Id, int Generation) {
  public void SetAudioVolume(double volume) => Context.Audio(this,"volume",volume);
  public Entity Spawn(Vec3 position) => Context.Spawn(this,position);
 }
-public abstract class Script : Component {
+public abstract class Script : Behaviour {
  public virtual void OnStart() {}
  public virtual void OnUpdate(double deltaSeconds) {}
  public virtual void OnStop() {}
@@ -203,8 +202,8 @@ public static class Debug {
  public static void LogError(object? value)=>Axiom.Gameplay.Log.Info("Error: "+value);
 }
 public static class Log {public static void Info(string message) => Context.Log(message);}
-internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0,Quaternion? Rotation=null);
-internal static class Context {
+internal readonly record struct Operation(string Kind,string Id,string? Template,Vec3 Position,string? Message,string? Action=null,string? Name=null,double Value=0,double Duration=0,Quaternion? Rotation=null,string? Data=null);
+internal static partial class Context {
  internal static readonly List<Script> LiveScripts=new();
  internal static readonly Dictionary<string,bool> ActiveStates=new();
  internal static readonly Dictionary<string,JsonElement> PreviousContacts=new();
@@ -261,34 +260,34 @@ internal static class Context {
   _=Read(entity);foreach(var id in Cameras){var parent=Parents.GetValueOrDefault(id);for(var depth=0;parent!=null&&depth<32;depth++){if(parent==entity.Id)return new Entity(id,Generation);parent=Parents.GetValueOrDefault(parent);}}throw new InvalidOperationException("AX_SCENE_0001: Player needs a child Camera");
  }
  internal static void Rotate(Entity entity,Quaternion rotation) {
-  var value=Read(entity);var length=Math.Sqrt(rotation.X*rotation.X+rotation.Y*rotation.Y+rotation.Z*rotation.Z+rotation.W*rotation.W);if(!double.IsFinite(length)||length<1e-9)throw new ArgumentException("AX_SCRIPT_0003: invalid rotation");var normalized=new Quaternion(rotation.X/length,rotation.Y/length,rotation.Z/length,rotation.W/length);Add(new("rotation",entity.Id,null,default,null,Rotation:normalized));Entities[entity.Id]=new Transform(value.Position,normalized,value.Scale){Entity=entity};
+  var value=Read(entity);var length=Math.Sqrt(rotation.X*rotation.X+rotation.Y*rotation.Y+rotation.Z*rotation.Z+rotation.W*rotation.W);if(!double.IsFinite(length)||length<1e-9)throw new ArgumentException("AX_SCRIPT_0003: invalid rotation");var normalized=new Quaternion(rotation.X/length,rotation.Y/length,rotation.Z/length,rotation.W/length);Add(new("rotation",entity.Id,null,default,null,Rotation:normalized));Entities[entity.Id]=new Transform(value.Position,normalized,value.Scale){Entity=entity};FollowChildren(entity,value);
  }
- internal static void Scaling(Entity entity,Vector3 scale){var v=Read(entity);Position(scale);Add(new("scale",entity.Id,null,scale,null));Entities[entity.Id]=new Transform(v.Position,v.Rotation,scale){Entity=entity};}
+ internal static void Scaling(Entity entity,Vector3 scale){var v=Read(entity);Position(scale);Add(new("scale",entity.Id,null,scale,null));Entities[entity.Id]=new Transform(v.Position,v.Rotation,scale){Entity=entity};FollowChildren(entity,v);}
  internal static void Move(Entity entity,Vec3 position) {
-  var value=Read(entity);Position(position);Add(new("move",entity.Id,null,position,null));Entities[entity.Id]=new Transform(position,value.Rotation,value.Scale){Entity=entity};
+  var value=Read(entity);Position(position);Add(new("move",entity.Id,null,position,null));Entities[entity.Id]=new Transform(position,value.Rotation,value.Scale){Entity=entity};FollowChildren(entity,value);
  }
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
   if(Spawned>=Limits.Spawns||Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
-  var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,new Transform(position,value.Rotation,value.Scale){Entity=new Entity(id,Generation)});if(EntityData.TryGetValue(template.Id,out var data))EntityData[id]=data;if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
+  var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,new Transform(position,value.Rotation,value.Scale){Entity=new Entity(id,Generation)});if(EntityData.TryGetValue(template.Id,out var data))EntityData[id]=data;if(Cameras.Contains(template.Id))Cameras.Add(id);Parents[id]=null;ActiveStates[id]=ActiveStates.GetValueOrDefault(template.Id,true);if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
  internal static void DispatchContacts(JsonElement request){
   var current=new Dictionary<string,JsonElement>();if(request.TryGetProperty("contacts",out var contacts))foreach(var c in contacts.EnumerateArray()){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;if(!Entities.ContainsKey(a)||!Entities.ContainsKey(b))continue;var key=string.CompareOrdinal(a,b)<0?a+"|"+b:b+"|"+a;current[key]=c.Clone();}
-  void Emit(JsonElement c,int phase){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;var trigger=c.GetProperty("trigger").GetBoolean();var normal=Vector3.Read(c.GetProperty("normal"));var point=Vector3.Read(c.GetProperty("point"));foreach(var script in LiveScripts.OfType<MonoBehaviour>().ToArray()){if(!Entities.ContainsKey(script.Entity.Id)||!IsActive(script.Entity.Id)||script.Entity.Id!=a&&script.Entity.Id!=b)continue;var other=script.Entity.Id==a?b:a;if(!EntityData.TryGetValue(other,out var data)||!data.TryGetProperty("collider",out var collider))continue;var e=new Entity(other,Generation);var n=script.Entity.Id==a?normal:-normal;
+  void Emit(JsonElement c,int phase){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;var trigger=c.GetProperty("trigger").GetBoolean();var normal=Vector3.Read(c.GetProperty("normal"));var point=Vector3.Read(c.GetProperty("point"));foreach(var script in LiveScripts.OfType<MonoBehaviour>().ToArray()){if(!Entities.ContainsKey(script.Entity.Id)||!script.isActiveAndEnabled||script.Entity.Id!=a&&script.Entity.Id!=b)continue;var other=script.Entity.Id==a?b:a;if(!EntityData.TryGetValue(other,out var data)||!data.TryGetProperty("collider",out var collider))continue;var e=new Entity(other,Generation);var n=script.Entity.Id==a?normal:-normal;
    if(collider.GetProperty("dimension").GetInt32()==2){var col=new Collider2D(e);if(trigger){if(phase==0)script.OnTriggerEnter2D(col);else if(phase==1)script.OnTriggerStay2D(col);else script.OnTriggerExit2D(col);}else{var collision=new Collision2D(col,n,point);if(phase==0)script.OnCollisionEnter2D(collision);else if(phase==1)script.OnCollisionStay2D(collision);else script.OnCollisionExit2D(collision);}}
    else{var col=new Collider(e);if(trigger){if(phase==0)script.OnTriggerEnter(col);else if(phase==1)script.OnTriggerStay(col);else script.OnTriggerExit(col);}else{var collision=new Collision(col,n,point);if(phase==0)script.OnCollisionEnter(collision);else if(phase==1)script.OnCollisionStay(collision);else script.OnCollisionExit(collision);}}
   }}
   foreach(var pair in current)Emit(pair.Value,PreviousContacts.ContainsKey(pair.Key)?1:0);foreach(var pair in PreviousContacts)if(!current.ContainsKey(pair.Key))Emit(pair.Value,2);PreviousContacts.Clear();foreach(var pair in current)PreviousContacts.Add(pair.Key,pair.Value);
  }
  internal static bool IsActive(string id){for(var depth=0;id!=null&&depth<64;depth++){if(!ActiveStates.GetValueOrDefault(id,true))return false;id=Parents.GetValueOrDefault(id)!;}return true;}
- internal static void Activate(Entity entity,bool active){_=Read(entity);var previous=LiveScripts.OfType<MonoBehaviour>().ToDictionary(script=>script,script=>IsActive(script.Entity.Id));ActiveStates[entity.Id]=active;Add(new("active",entity.Id,null,default,null,active?"true":"false"));foreach(var script in previous.Keys){var now=IsActive(script.Entity.Id);if(now&&!previous[script])script.OnEnable();else if(!now&&previous[script])script.OnDisable();}}
- internal static void Destroy(Entity entity){_=Read(entity);var ids=new HashSet<string>{entity.Id};bool changed=true;while(changed){changed=false;foreach(var pair in Parents)if(pair.Value!=null&&ids.Contains(pair.Value)&&ids.Add(pair.Key))changed=true;}Add(new("destroy",entity.Id,null,default,null));foreach(var script in LiveScripts.Where(script=>ids.Contains(script.Entity.Id)).ToArray()){script.OnStop();LiveScripts.Remove(script);}foreach(var id in ids){Entities.Remove(id);EntityData.Remove(id);Bodies.Remove(id);Cameras.Remove(id);}}
+ internal static void Activate(Entity entity,bool active){_=Read(entity);ActiveStates[entity.Id]=active;Add(new("active",entity.Id,null,default,null,active?"true":"false"));RuntimeLifecycle.Activation();}
+ internal static void Destroy(Entity entity){_=Read(entity);var ids=new HashSet<string>{entity.Id};bool changed=true;while(changed){changed=false;foreach(var pair in Parents)if(pair.Value!=null&&ids.Contains(pair.Value)&&ids.Add(pair.Key))changed=true;}Add(new("destroy",entity.Id,null,default,null));foreach(var script in LiveScripts.Where(script=>ids.Contains(script.Entity.Id)).ToArray()){RuntimeLifecycle.Remove(script);LiveScripts.Remove(script);}foreach(var id in ids){Entities.Remove(id);EntityData.Remove(id);Bodies.Remove(id);Cameras.Remove(id);}}
  internal static void Log(string message) {
   if(message.Length>2048||Logs>=Limits.Logs)throw new InvalidOperationException("AX_SCRIPT_0003: log limit exceeded");
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
-  PreviousKeys.Clear();PreviousKeys.UnionWith(Keys);Entities.Clear();EntityData.Clear();ActiveStates.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
+  if(value.GetProperty("action").GetString() is "frame" or "step" or "start"){PreviousKeys.Clear();PreviousKeys.UnionWith(Keys);}Entities.Clear();EntityData.Clear();ActiveStates.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {
    if(Entities.Count>=Limits.Entities)throw new ArgumentException("Entity limit exceeded");
    if(e.TryGetProperty("grounded",out var grounded)&&grounded.ValueKind==JsonValueKind.True)Grounded.Add(e.GetProperty("id").GetString()!);
@@ -306,7 +305,7 @@ internal static class Context {
  }
  internal static string Output(string? error=null,Action<Utf8JsonWriter>? fields=null) {
   using var stream=new MemoryStream();using(var writer=new Utf8JsonWriter(stream)) {
-   writer.WriteStartObject();writer.WriteNumber("generation",Generation);
+   writer.WriteStartObject();writer.WriteNumber("generation",Generation);writer.WriteStartObject("time");writer.WriteNumber("scale",Time.timeScale);writer.WriteNumber("delta",Time.deltaTime);writer.WriteNumber("unscaledDelta",Time.unscaledDeltaTime);writer.WriteEndObject();
    if(error!=null)writer.WriteString("error",error.Length>4096?error[..4096]:error);
    writer.WriteStartArray("operations");
    if(error==null)foreach(var op in Operations) {
@@ -316,6 +315,8 @@ internal static class Context {
     if(op.Kind=="animation"||op.Kind=="audio"){writer.WriteString("action",op.Action);if(op.Name!=null)writer.WriteString("name",op.Name);writer.WriteNumber("value",op.Value);writer.WriteNumber("duration",op.Duration);}
     if(op.Rotation is Quaternion rotation){writer.WritePropertyName("rotation");writer.WriteStartArray();writer.WriteNumberValue(rotation.X);writer.WriteNumberValue(rotation.Y);writer.WriteNumberValue(rotation.Z);writer.WriteNumberValue(rotation.W);writer.WriteEndArray();}
     if(op.Kind!="rotation"&&op.Kind!="log"&&op.Kind!="animation"&&op.Kind!="audio"){writer.WritePropertyName("position");op.Position.Write(writer);}
+    if(op.Name!=null&&op.Kind!="animation"&&op.Kind!="audio")writer.WriteString("name",op.Name);
+    if(op.Data!=null){writer.WritePropertyName("data");using var data=JsonDocument.Parse(op.Data);data.RootElement.WriteTo(writer);}
     if(op.Message!=null)writer.WriteString("message",op.Message);
     writer.WriteEndObject();
    }

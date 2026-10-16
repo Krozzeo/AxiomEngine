@@ -156,7 +156,7 @@ async function boot() {
     const stopAutonomy=mountAutonomyEditor({document,getSnapshot:()=>projectEditor.snapshot(),send:sendCommand,reportError});addEventListener('pagehide',stopAutonomy,{once:true});
     const stopTests=mountGameTestEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,save:values=>projectEditor.saveTestSuites(values),reportError});addEventListener('pagehide',stopTests,{once:true});
     const stopProfiler=mountProfilerEditor({document,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,reportError});addEventListener("pagehide",stopProfiler,{once:true});
-    if(agentBridgeEnabled){const stop=startAgentBridge({api,projectEditor,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,takeErrors:()=>agentErrors.splice(0),onProposals:proposalEditor.refresh,reportError});addEventListener("pagehide",stop,{once:true});}
+    if(agentBridgeEnabled){const stop=startAgentBridge({document,api,projectEditor,getRenderer:()=>renderer,getSnapshot:()=>pendingSnapshot,takeErrors:()=>agentErrors.splice(0),onProposals:proposalEditor.refresh,reportError});addEventListener("pagehide",stop,{once:true});}
   } catch (error) {
     document.querySelector("#gpu-state").textContent = "Renderer initialization failed; preview disabled.";
     log("error", "AX_RENDERER_0005", error.message);

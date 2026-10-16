@@ -49,7 +49,7 @@ export async function loadKernel(bytes) {
     compileScene(scene, assets, preserveHierarchy=false) {
       if(disposed) throw new Error("AX_WASM_0003: disposed world");
       const localScene=structuredClone(scene);
-      if(preserveHierarchy&&compiled){for(const e of compiled.localScene.entities)if(e.parentId&&localScene.entities.some(n=>n.id===e.id)&&localScene.entities.some(n=>n.id===e.parentId))localScene.entities=reparent(localScene.entities,[e.id],e.parentId);}
+      if(preserveHierarchy&&compiled){const previous=new Map(compiled.localScene.entities.map(e=>[e.id,e.parentId]));const parents=new Map(localScene.entities.map(e=>[e.id,Object.hasOwn(e,'runtimeParentId')?e.runtimeParentId:previous.get(e.id)]));for(const e of localScene.entities)delete e.parentId;for(const [child,parent]of parents)if(parent&&localScene.entities.some(e=>e.id===parent))localScene.entities=reparent(localScene.entities,[child],parent);}
       scene=worldScene(localScene);
       const draws=scenePrimitives(scene,assets);
       if(api.axiom_scene_clear(id)!==0) throw new Error("AX_WASM_0006: missing authoring ABI");
@@ -84,13 +84,14 @@ export async function loadKernel(bytes) {
         const local=compiled.localScene.entities.find(e=>e.id===entityId);local.transform=localTransform(compiled.localScene.entities,entityId,{...compiled.scene.entities.find(e=>e.id===entityId).transform,position:[...position]});compiled.scene.entities.find(e=>e.id===entityId).transform.position=[...position];
       }
     },
-    stepScene(delta, trace, aspect) {
+    beginFixedFrame(delta,trace){if(disposed||!compiled)throw Error('AX_WASM_0003: missing compiled scene');if(api.axiom_tick(id,delta,trace)!==0)throw Error('AX_TIME_0001: invalid tick');return api.axiom_fixed_steps(id);},
+    stepScene(delta, trace, aspect,options={}) {
       if(disposed||!compiled) throw new Error("AX_WASM_0003: missing compiled scene");
       if(typeof trace!=="bigint"||trace<0n||trace>0xffffffffffffffffn) throw new Error("AX_WASM_0005: invalid trace");
       const c=activeGameCamera(compiled.scene)??{position:[0,0,6],target:[0,0,0],projection:"perspective",fov:60,orthoHeight:6};
       if(api.axiom_scene_camera(id,...c.position,...c.target,aspect,c.projection==="orthographic"?1:0,c.projection==="orthographic"?c.orthoHeight:c.fov)!==0) throw new Error("AX_WASM_0004: invalid camera");
-      if(api.axiom_tick(id,delta,trace)!==0) throw new Error("AX_TIME_0001: invalid kernel tick");
-      const physical=physics.step(api.axiom_fixed_steps(id));
+      if(options.advanceClock!==false&&api.axiom_tick(id,delta,trace)!==0) throw new Error("AX_TIME_0001: invalid kernel tick");
+      const physical=options.stepPhysics===false?physics.snapshot():physics.step(api.axiom_fixed_steps(id));
       if(physical){
         const overrides=new Map(physical.bodies.filter(b=>compiled.localScene.entities.find(e=>e.id===b.id)?.rigidBody).map(b=>[b.id,b]));
         const pending=new Set(compiled.localScene.entities.map(e=>e.id));

@@ -30,7 +30,7 @@ Override public callbacks; Unity-style private message methods are not reflected
 ## Implemented declarations
 
 ```csharp
-public abstract class Script : Component {
+public abstract class Script : Behaviour {
  public virtual void OnStart() {}
  public virtual void OnUpdate(double deltaSeconds) {}
  public virtual void OnStop() {}

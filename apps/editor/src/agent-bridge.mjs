@@ -1,5 +1,6 @@
+import {capturePanel} from './panel-capture.mjs';
 // Sync only snapshots accepted by the same public editor path; renderer owns pixels.
-export function startAgentBridge({api,projectEditor,getRenderer,getSnapshot,takeErrors,reportError,onProposals=()=>{}}){
+export function startAgentBridge({api,projectEditor,getRenderer,getSnapshot,takeErrors,reportError,onProposals=()=>{},document=globalThis.document}){
  const clientId=crypto.randomUUID();let stopped=false,capture=null,diagnostic=null,animation=null,audio=null,profiler=null,gameTest=null,replay=null,timer;
  async function poll(){
   try{
@@ -11,7 +12,7 @@ export function startAgentBridge({api,projectEditor,getRenderer,getSnapshot,take
    if(result.animation){const requestId=result.animation.requestId;try{animation={requestId,value:getRenderer().animationControl(result.animation)};}catch(error){animation={requestId,error:error.message};}}
    if(result.profiler){const requestId=result.profiler.requestId;try{profiler={requestId,value:getRenderer().profilerQuery(result.profiler)};}catch(error){profiler={requestId,error:error.message};}}
    if(result.audio){const requestId=result.audio.requestId;try{audio={requestId,value:getRenderer().audioControl(result.audio)};}catch(error){audio={requestId,error:error.message};}}
-   if(result.capture){const requestId=result.capture.requestId;try{capture={requestId,value:await getRenderer().capture(result.capture)};}catch(error){capture={requestId,error:error.message};}}
+   if(result.capture){const requestId=result.capture.requestId;try{capture={requestId,value:await capturePanel(result.capture,getRenderer(),document)};}catch(error){capture={requestId,error:error.message};}}
    if(result.diagnostic){diagnostic={requestId:result.diagnostic.requestId,value:getRenderer().explain(result.diagnostic)};}
   }catch(error){if(!stopped&&error.data?.code!=='AX_AGENT_0002')reportError(error);}
   finally{if(!stopped)timer=setTimeout(poll,300);}

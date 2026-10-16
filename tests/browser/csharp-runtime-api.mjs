@@ -25,6 +25,7 @@ try {
    Check(Vector3.Distance(child.transform.position,new Vector3(11,2,0))<.00001,"local/world transform");
    child.tag="Player";child.layer=4;Check(GameObject.FindWithTag("Player")!.name==child.name,"tag query");
    var collider=child.AddComponent<BoxCollider>();var body=child.AddComponent<Rigidbody>();Object.Destroy(body);Check(child.GetComponent<Rigidbody>()==null&&child.GetComponent<BoxCollider>()!=null,"remove component destroyed object");
+   var bodyOnly=new GameObject("2D body");Check(bodyOnly.AddComponent<Rigidbody2D>()!=null,"body-only 2D facade");Check(bodyOnly.AddComponent<BoxCollider2D>()!=null,"2D collider attachment");Object.Destroy(bodyOnly);
    var extra=child.AddComponent<Extra>();extra.Value=7;
    var grandchild=new GameObject("Nested");grandchild.transform.SetParent(child.transform,false);grandchild.transform.localPosition=new Vector3(0,1,0);
    var clone=Object.Instantiate(child,new Vector3(20,2,0),Quaternion.identity);Check(clone.transform.childCount==1,"hierarchy cloning");Check(clone.GetComponent<Extra>()!.Value==7,"cloned serialized fields");Check(clone.transform.GetChild(0).position.Y==3,"clone child pose");
@@ -67,10 +68,10 @@ try {
    // Apply the actual SDK operations between phases, just as the editor host does.
    const {applyScriptOperations,runtimeScriptEntities}=await import('/operations.mjs');let scene={entities,projectFiles:SOURCE_FILES},spawned=0;
    const phase=async(action,delta)=>{const result=await dispatch(action,delta),next=applyScriptOperations(scene,result,1,spawned);scene=next.scene;spawned=next.spawned;entities=runtimeScriptEntities(scene.entities,[]);return result;};
-   await phase('start');for(let frame=0;frame<6;frame++){await phase('frame',.02);await phase('fixed');await phase('physics');await phase('update');await phase('late');}
+   await phase('start');for(let frame=0;frame<6;frame++){await phase('frame',.02);await phase('fixed');await phase('physics');await phase('update');await phase('late');await phase('end');}
    const values=()=>packets.at(-1).scriptValues.find(s=>s.path==='Scripts/RuntimeProbe.cs').values;
    const state=values();const edit=async Paused=>{const result=await send({request:{generation:1,entities,keys:[],action:'fields',edits:[{entityId:entity.id,path:'Scripts/RuntimeProbe.cs',values:{Paused}}]}});if(result.error)throw Error(result.error);};
-   const frame=async()=>{await phase('frame',.02);if(packets.at(-1).time.scale>0){await phase('fixed');await phase('physics');}await phase('update');await phase('late');};
+   const frame=async()=>{await phase('frame',.02);if(packets.at(-1).time.scale>0){await phase('fixed');await phase('physics');}await phase('update');await phase('late');await phase('end');};
    await edit(true);for(let i=0;i<5;i++)await frame();const paused=values();
    await edit(false);for(let i=0;i<5;i++)await frame();const resumed=values();await phase('stop');return {state,paused,resumed,packets};
   }finally{worker.terminate();}

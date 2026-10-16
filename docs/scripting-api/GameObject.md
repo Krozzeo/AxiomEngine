@@ -45,7 +45,7 @@ public sealed partial class GameObject {
  public bool TryGetComponent<T>(out T? component) where T:Component {component=GetComponent<T>();return component!=null;}
  public T[] GetComponents<T>() where T:Component {
   _=Context.Read(Entity);var result=new List<Component>{transform};var data=Context.EntityData[Entity.Id];
-  var twoD=data.TryGetProperty("collider",out var c)&&c.GetProperty("dimension").GetInt32()==2;
+  var hasCollider=data.TryGetProperty("collider",out var c);var twoD=hasCollider?c.GetProperty("dimension").GetInt32()==2:data.TryGetProperty("runtimePhysicsDimension",out var dim)&&dim.GetInt32()==2;
   if(c.ValueKind==JsonValueKind.Object){var sphere=c.GetProperty("shape").GetString()=="sphere";result.Add(twoD?(sphere?new CircleCollider2D(Entity):new BoxCollider2D(Entity)):(sphere?new SphereCollider(Entity):new BoxCollider(Entity)));}
   if(Context.Bodies.ContainsKey(Entity.Id))result.Add(twoD?new Rigidbody2D(Entity):new Rigidbody(Entity));
   if(Context.Cameras.Contains(Entity.Id))result.Add(new Camera(Entity));if(Context.AudioSources.Contains(Entity.Id))result.Add(new AudioSource(Entity));if(Context.Animators.ContainsKey(Entity.Id))result.Add(new Animator(Entity));if(data.TryGetProperty("audioListener",out _))result.Add(new AudioListener(Entity));

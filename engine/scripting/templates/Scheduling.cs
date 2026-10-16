@@ -30,7 +30,8 @@ internal static class RuntimeLifecycle {
  internal static void Update(double delta){StartAll();foreach(var s in Context.LiveScripts.ToArray())if(s.isActiveAndEnabled)s.OnUpdate(delta);Tick("update");}
  internal static void Fixed(){StartAll();Time.inFixedTimeStep=true;try{foreach(var s in Context.LiveScripts.OfType<MonoBehaviour>().ToArray())if(s.isActiveAndEnabled)s.FixedUpdate();}finally{Time.inFixedTimeStep=false;}}
  internal static void Physics(){Tick("fixed");}
- internal static void Late(){foreach(var s in Context.LiveScripts.OfType<MonoBehaviour>().ToArray())if(s.isActiveAndEnabled)s.LateUpdate();Tick("end");}
+ internal static void Late(){foreach(var s in Context.LiveScripts.OfType<MonoBehaviour>().ToArray())if(s.isActiveAndEnabled)s.LateUpdate();}
+ internal static void End(){Tick("end");}
  internal static void Activation(){foreach(var s in Context.LiveScripts.ToArray()){var active=s.isActiveAndEnabled;if(active&&!Enabled.Contains(s)){Initialize();}else if(!active&&Enabled.Remove(s)){if(s is MonoBehaviour m)m.OnDisable();if(!Context.IsActive(s.Entity.Id))StopAll(s as MonoBehaviour);}}}
  internal static void Remove(Script s){if(Enabled.Remove(s)&&s is MonoBehaviour m)m.OnDisable();StopAll(s as MonoBehaviour);Invocations.RemoveAll(i=>i.Owner==s);s.OnStop();if(Awakened.Remove(s)&&s is MonoBehaviour mono)mono.OnDestroy();Started.Remove(s);}
  internal static Script Add(Type type,Entity entity){if(!Factories.TryGetValue(type,out var factory))throw new NotSupportedException("Script type is not compiled: "+type.Name);if(Context.LiveScripts.Count>=Limits.Attachments||Context.LiveScripts.Count(s=>s.Entity.Id==entity.Id)>=8||Context.LiveScripts.Any(s=>s.Entity.Id==entity.Id&&s.GetType()==type))throw new InvalidOperationException("Duplicate script or attachment limit");var s=factory.Create();s.Entity=entity;Context.LiveScripts.Add(s);Context.ScriptPaths[s]=factory.Path;PublishComponents(entity);Initialize();return s;}

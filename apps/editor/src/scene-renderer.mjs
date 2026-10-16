@@ -62,7 +62,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let controlledPixels=null;
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
   let measuredFps=null,fpsStart=null,fpsCount=0,traceDisplayAt=-Infinity;
-  let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null,scriptTimeScale=1;
+  let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null,scriptTimeScale=1,pendingEndPacket=null;
   let authoredHierarchy={entities:[]};
   let view='scene',editorCamera=null,transformPreview=null,geometry=[],lastPacket=null,lastTraceId=null,lineage=null;
   const decisions=new DecisionEvidence(),assetFailures=new Map();
@@ -166,7 +166,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
 
     mouseDelta=[0,0];if(!internalTest){currentSnapshot=structuredClone(snapshot);if(testing){testing=false;testSession.control({action:'cancel'});replaySession.control({action:'cancel'});}}
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
-    scriptTimeScale=1;controlledPixels=null;measuredFps=null;fpsStart=null;fpsCount=0;traceDisplayAt=-Infinity;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
+    pendingEndPacket=null;scriptTimeScale=1;controlledPixels=null;measuredFps=null;fpsStart=null;fpsCount=0;traceDisplayAt=-Infinity;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
     const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
     snapshotLoading=true;
     try {
@@ -245,9 +245,9 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         try {
           const scriptStart=performance.now();
           const animationStates=new Map(kernel.animationStatus().map(a=>[a.entityId,a]));
-          scriptFlight=active.execute({action,generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),contacts:kernel.physicsSnapshot()?.contacts??[],keys:[...keys],mouseDelta:[...mouseDelta],delta});
+          scriptFlight=action==='end-apply'?Promise.resolve(pendingEndPacket):active.execute({action,generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),contacts:kernel.physicsSnapshot()?.contacts??[],keys:[...keys],mouseDelta:[...mouseDelta],delta});
           scriptScope('script.prepare',scriptStart,performance.now());
-          const packet=await scriptFlight;scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+performance.now()-scriptStart;
+          const packet=await scriptFlight;if(action==='end-apply')pendingEndPacket=null;if(action==='end'){if(packet.error)throw Error(packet.error);if(ticket===generation&&!disposed)pendingEndPacket=packet;const elapsed=performance.now()-scriptStart;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+elapsed;scriptScope('script.roundtrip',0,elapsed,'wall');return;}scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+performance.now()-scriptStart;
           if(ticket!==generation||disposed){return;}
           scriptScope('script.roundtrip',scriptStart,performance.now(),'wall');
           if(Number.isFinite(packet.metrics?.workerDispatchMs)&&packet.metrics.workerDispatchMs>=0&&packet.metrics.workerDispatchMs<=2000)scriptScope('worker.dispatch',0,packet.metrics.workerDispatchMs,'worker');
@@ -272,12 +272,11 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       const syncRuntime=packet=>{if(packet.transforms)for(const item of packet.transforms){const e=runtimeScene.entities.find(e=>e.id===item.id);if(e)e.transform=item.transform;}if(packet.physics)for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);if(e?.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;}}};
       const phased=playing&&!twoDPaused&&!!scriptRuntime;
       if(phased){
-       await runScriptPhase('frame');const fixed=kernel.beginFixedFrame(Math.min(delta*scriptTimeScale,.25),trace+1n);
+       if(pendingEndPacket)await runScriptPhase('end-apply');await runScriptPhase('frame');const fixed=kernel.beginFixedFrame(Math.min(delta*scriptTimeScale,.25),trace+1n);
        for(let i=0;i<fixed;i++){await runScriptPhase('fixed');if(ticket!==generation||disposed)return;kernel.stepPhysics(1);syncRuntime(kernel.stepScene(0,trace+1n,canvas.width/canvas.height,{advanceClock:false,stepPhysics:false}));await runScriptPhase('physics');}
        await runScriptPhase('update');await runScriptPhase('late');mouseDelta=[0,0];
       }
       if(ticket!==generation||disposed){if(!disposed&&!manual)animationId=requestAnimationFrame(frame);return;}
-      for(const [key,milliseconds]of scriptScopes){const [name,kind]=key.split('|');profiler.scope(diagnostic,name,0,milliseconds,kind);}
       diagnostic.profileContext.view=view;
       let stageStart=performance.now();
       const packet=kernel.stepScene(twoDPaused?0:Math.min(delta*scriptTimeScale,.25),++trace,canvas.width/canvas.height,phased?{advanceClock:false,stepPhysics:false}:{});
@@ -333,7 +332,9 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       // buffer may be cleared before the async test adapter reads the canvas.
       if(device&&presentFrame&&manual?.capturePixels){controlledPixels??=canvas.ownerDocument.createElement('canvas');controlledPixels.width=canvas.width;controlledPixels.height=canvas.height;controlledPixels.getContext('2d',{willReadFrequently:true}).drawImage(canvas,0,0);}
       profiler.scope(diagnostic,'render.submit',stageStart,performance.now());stageStart=performance.now();
-      const audioState=audio.step(runtimeScene,{playing,view:view==='game'||parallel.get()?.view==='game'?'game':'scene',paused:twoDPaused||testing});diagnostic.audio=audioState;diagnostic.audioProvenance={projectId:currentProject,sceneRevision,workspaceId,generation};
+      if(phased)await runScriptPhase('end');
+      for(const [key,milliseconds]of scriptScopes){const [name,kind]=key.split('|');profiler.scope(diagnostic,name,0,milliseconds,kind);}
+      stageStart=performance.now();const audioState=audio.step(runtimeScene,{playing,view:view==='game'||parallel.get()?.view==='game'?'game':'scene',paused:twoDPaused||testing});diagnostic.audio=audioState;diagnostic.audioProvenance={projectId:currentProject,sceneRevision,workspaceId,generation};
       profiler.scope(diagnostic,'audio.update',stageStart,performance.now());
       diagnostic.camera=structuredClone(lastTwoDPlan?.pixel.camera??camera);
       diagnostic.kernel={frame:packet.frame,trace:packet.trace,fixedSteps:packet.fixedSteps,meshes:packet.nullProcessedMeshes,renderer:device?"webgpu":"null",mode:playing?"play":"stopped",view,sceneId};

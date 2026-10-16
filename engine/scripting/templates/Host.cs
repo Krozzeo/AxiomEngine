@@ -30,11 +30,12 @@ public static partial class Program {
     if(generation!=Context.Generation)throw new InvalidOperationException("Stale runtime generation");
     Context.Load(value);
     if(action=="fields") {foreach(var edit in value.GetProperty("edits").EnumerateArray())foreach(var s in Scripts.ToArray())if(s.Entity.Id==edit.GetProperty("entityId").GetString()&&RuntimeLifecycle.PathOf(s)==edit.GetProperty("path").GetString())RuntimeLifecycle.Factories[s.GetType()].Apply(s,edit.GetProperty("values"));}
-    else if(action=="frame"||action=="step") {var delta=value.GetProperty("delta").GetDouble();if(!double.IsFinite(delta)||delta<0||delta>0.25)throw new ArgumentException("Invalid delta");Time.Step(delta);if(action=="step"){Context.DispatchContacts(value);RuntimeLifecycle.Update(Time.deltaTime);RuntimeLifecycle.Late();}}
-    else if(action=="fixed") {RuntimeLifecycle.Fixed();Time.fixedTime+=Time.fixedDeltaTime;}
+    else if(action=="frame"||action=="step") {var delta=value.GetProperty("delta").GetDouble();if(!double.IsFinite(delta)||delta<0||delta>0.25)throw new ArgumentException("Invalid delta");Time.Step(delta);if(action=="step"){Context.DispatchContacts(value);RuntimeLifecycle.Update(Time.deltaTime);RuntimeLifecycle.Late();RuntimeLifecycle.End();}}
+    else if(action=="fixed") {Time.fixedTime+=Time.fixedDeltaTime;Time.fixedUnscaledTime+=Time.fixedUnscaledDeltaTime;RuntimeLifecycle.Fixed();}
     else if(action=="physics") {Time.inFixedTimeStep=true;try{Context.DispatchContacts(value);RuntimeLifecycle.Physics();}finally{Time.inFixedTimeStep=false;}}
     else if(action=="update")RuntimeLifecycle.Update(Time.deltaTime);
     else if(action=="late")RuntimeLifecycle.Late();
+    else if(action=="end")RuntimeLifecycle.End();
     else if(action=="stop") {foreach(var s in Scripts.ToArray())RuntimeLifecycle.Remove(s);Scripts.Clear();RuntimeLifecycle.Reset();}
     else throw new ArgumentException("Unknown runtime action");
    }

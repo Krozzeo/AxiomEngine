@@ -233,7 +233,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   async function frame(now,manual=null) {
     if(disposed)return;
     if(snapshotLoading||runtimeEditing||testing&&!manual){if(!manual)animationId=requestAnimationFrame(frame);return;}
-    frameInProgress=true;
+    frameInProgress=true;let frameFault=false;
     const ticket=generation,presentFrame=manual?.present!==false;
     try {
       const delta=manual?.delta??(previousTime===null?0:Math.min((now-previousTime)/1000,0.25));previousTime=now;
@@ -277,7 +277,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
        for(let i=0;i<fixed;i++){await runScriptPhase('fixed');if(ticket!==generation||disposed)return;kernel.stepPhysics(1);syncRuntime(kernel.stepScene(0,trace+1n,canvas.width/canvas.height,{advanceClock:false,stepPhysics:false}));await runScriptPhase('physics');}
        await runScriptPhase('update');await runScriptPhase('late');
       }
-      if(ticket!==generation||disposed){if(!disposed&&!manual)animationId=requestAnimationFrame(frame);return;}
+      if(ticket!==generation||disposed){return;}
       diagnostic.profileContext.view=view;
       let stageStart=performance.now();
       const packet=kernel.stepScene(twoDPaused?0:Math.min(delta*scriptTimeScale,.25),++trace,canvas.width/canvas.height,phased?{advanceClock:false,stepPhysics:false}:{});
@@ -372,8 +372,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       // Bound queued GPU work on slow adapters; manual test/replay pixels must
       // also complete before their next controlled frame. Device loss owns fallback.
       if(device&&presentFrame){const submittedDevice=device;await submittedDevice.queue.onSubmittedWorkDone().catch(()=>submittedDevice.lost);}
-    } catch(error) {audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;}
-    if(!manual)animationId=requestAnimationFrame(frame);
+    } catch(error) {frameFault=true;audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;if(!manual&&!disposed&&!frameFault)animationId=requestAnimationFrame(frame);}
   }
   const isolatedAdapter={
     async begin({seed}={}){replaySeed=seed??0;replaySeeded=seed!==undefined;if(!currentSnapshot?.project||playing)throw testError('Open a stopped project first');testSource=currentSnapshot;testing=true;keys.clear();while(frameInProgress)await new Promise(r=>setTimeout(r,1));await setSnapshot({...testSource,playing:true},true);if(currentSnapshot!==testSource)throw testError('Project changed','AX_TEST_0002');testGeneration=generation;view='game';audio.clear();},

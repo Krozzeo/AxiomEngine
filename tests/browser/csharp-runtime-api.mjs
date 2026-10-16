@@ -16,7 +16,7 @@ try {
  'Scripts/RuntimeProbe.cs':`using Axiom.Gameplay;using System.Collections;using Object=Axiom.Gameplay.Object;namespace Game;
  public sealed class RuntimeProbe : MonoBehaviour {
   public bool Paused=false;[ReadOnly] public int Updates=0;[ReadOnly] public int Fixed=0;[ReadOnly] public int Scaled=0;[ReadOnly] public int Unscaled=0;[ReadOnly] public int Invoked=0;
-  public static bool ObserverUpdated; private GameObject? child;private Coroutine? running;
+  public static bool ObserverUpdated; private GameObject? child;private GameObject? cloned;private Coroutine? running;
   private static void Check(bool value,string why){if(!value)throw new System.Exception(why);}
   public override void Awake(){Debug.Log("awake-probe");}
   public override void Start(){
@@ -29,7 +29,7 @@ try {
    var extra=child.AddComponent<Extra>();extra.Value=7;
    var grandchild=new GameObject("Nested");grandchild.transform.SetParent(child.transform,false);grandchild.transform.localPosition=new Vector3(0,1,0);
    var clone=Object.Instantiate(child,new Vector3(20,2,0),Quaternion.identity);Check(clone.transform.childCount==1,"hierarchy cloning");Check(clone.GetComponent<Extra>()!.Value==7,"cloned serialized fields");Check(clone.transform.GetChild(0).position.Y==3,"clone child pose");
-   Object.Destroy(clone);Check(!clone,"destroyed handle truthiness");
+   cloned=clone;
    transform.position=new Vector3(12,0,0);Check(child.transform.position.X==13,"live child propagation");
    running=StartCoroutine(ScaledRoutine());StartCoroutine(RealtimeRoutine());Invoke(nameof(Ping),.04);InvokeRepeating(nameof(Repeat),.02,.02);CancelInvoke(nameof(Repeat));
    Check(IsInvoking(nameof(Ping))&&!IsInvoking(nameof(Repeat)),"invoke cancel");
@@ -38,7 +38,7 @@ try {
   private IEnumerator RealtimeRoutine(){yield return new WaitForSecondsRealtime(.04);Unscaled++;yield return new WaitUntil(()=>Updates>=1);yield return null;Debug.Log("coroutine-finished");}
   private void Ping(){Invoked++;}private void Repeat(){throw new System.Exception("cancelled invocation executed");}
   public override void FixedUpdate(){Check(Time.inFixedTimeStep&&Time.deltaTime==Time.fixedDeltaTime,"fixed time mismatch");Fixed++;}
-  public override void Update(){Updates++;ObserverUpdated=false;if(Updates==7){StartCoroutine(ScaledRoutine());StartCoroutine(RealtimeRoutine());Invoke(nameof(Ping),.04);}Time.timeScale=Paused?0:1;}
+  public override void Update(){Updates++;ObserverUpdated=false;if(Updates==1){Check(cloned!.transform.Find("Nested")!=null,"clone child name changed across host phases");Object.Destroy(cloned);Check(!cloned,"destroyed handle truthiness");}if(Updates==7){StartCoroutine(ScaledRoutine());StartCoroutine(RealtimeRoutine());Invoke(nameof(Ping),.04);}Time.timeScale=Paused?0:1;}
   public override void LateUpdate(){Check(ObserverUpdated,"LateUpdate ran before all Updates");}
  }
 `,

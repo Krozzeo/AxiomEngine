@@ -10,7 +10,7 @@ Play creates **Runtime API Probe (clone)** beneath **Runtime API Probe**. Expand
 
 - WASD/arrows or gamepad left stick move the cube; Space or gamepad A raises it.
 - **J** switches Jump between Space and Enter, preserving gamepad A, then saves that binding.
-- **P** increments and explicitly saves the score. Select the probe to watch SavedScore, JumpControl, Touches and Gamepads.
+- **P** increments and explicitly saves the score. Select the probe to watch SavedScore, JumpControl, Touches, Gamepads and accumulated MouseTravel. Mouse axes work for custom scripts as well as built-in player controllers.
 - **R** restores the starting position.
 - On a touch device, touch/drag Game to position the cube. Coordinates use canvas pixels; the demonstration assumes the default 960×540 canvas.
 

@@ -74,7 +74,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   for(const type of ['pointerdown','pointermove','pointerup','pointercancel'])canvas.addEventListener?.(type,pointerInput);
   canvas.addEventListener?.('wheel',wheelInput);
   const hasPlayer=()=>runtimeScene?.entities?.some(e=>e.scriptComponents?.some(c=>/Axiom(?:First|Third)PersonPlayer/.test(c.typeName??c.path??'')));
-  const playerMouse=(event,source,sourceView)=>{if(!playing||testing||!hasPlayer()||sourceView!=='game'||source?.ownerDocument?.pointerLockElement!==source)return;mouseDelta[0]=Math.max(-10000,Math.min(10000,mouseDelta[0]+(event.movementX??0)));mouseDelta[1]=Math.max(-10000,Math.min(10000,mouseDelta[1]+(event.movementY??0)));};
+  const playerMouse=(event,source,sourceView)=>{if(!playing||testing||sourceView!=='game'||!source||source.ownerDocument?.pointerLockElement!==source&&event.target!==source)return;mouseDelta[0]=Math.max(-10000,Math.min(10000,mouseDelta[0]+(event.movementX??0)));mouseDelta[1]=Math.max(-10000,Math.min(10000,mouseDelta[1]+(event.movementY??0)));};
   const mouseMove=event=>playerMouse(event,canvas,event.axiomView??view);
   canvas.addEventListener('pointerdown',()=>{if(playing&&!testing&&view==='game'&&hasPlayer())void Promise.resolve(canvas.requestPointerLock?.()).catch(()=>{});});
   canvas.ownerDocument?.addEventListener?.('mousemove',mouseMove);

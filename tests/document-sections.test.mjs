@@ -24,8 +24,8 @@ test('SDK documentation reads remain bounded even when common type names occur t
 
 test('a known SDK type does not imply an invented member is implemented',async()=>{
  const {readScriptingReference}=await import('../engine/scripting/reference.mjs');
- for(const query of ['Transform.DoesNotExist','Physics.CapsuleCast','Input.GetTouch'])assert.equal((await readScriptingReference(query)).available,false,query);
- for(const query of ['Entity.IsGrounded','Transform.position','Transform.GetComponent','Physics.Raycast'])assert.equal((await readScriptingReference(query)).available,true,query);
+ for(const query of ['Transform.DoesNotExist','Physics.CapsuleCast','Input.GetGyroscope'])assert.equal((await readScriptingReference(query)).available,false,query);
+ for(const query of ['Entity.IsGrounded','Transform.position','Transform.GetComponent','Physics.Raycast','Physics.SphereCast','Input.GetTouch','SceneManager.LoadScene','PlayerPrefs.Save'])assert.equal((await readScriptingReference(query)).available,true,query);
 });
 
 test('bodyless record declarations do not expose the following class as API members',async()=>{

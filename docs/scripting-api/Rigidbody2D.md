@@ -28,7 +28,7 @@ public sealed partial class Rigidbody2D : Component {
  public double gravityScale {get=>PhysicsData.Number(Entity,"gravityScale",1);set=>PhysicsData.Number(Entity,"gravityScale",value,-100,100);}
  public bool freezeRotation {get=>Body.freezeRotation;set=>Body.freezeRotation=value;}
  public RigidbodyType2D bodyType {get=>Context.EntityData[Entity.Id].TryGetProperty("runtimeStatic",out var s)&&s.GetBoolean()?RigidbodyType2D.Static:Body.isKinematic?RigidbodyType2D.Kinematic:RigidbodyType2D.Dynamic;set{if(!Enum.IsDefined(value))throw new ArgumentException("Invalid body type");Context.Property(Entity,"runtimeStatic",JsonValue.Create(value==RigidbodyType2D.Static));Body.isKinematic=value==RigidbodyType2D.Kinematic;}}
- public bool isKinematic {get=>Body.isKinematic;set=>Body.isKinematic=value;}
+ public bool isKinematic {get=>Body.isKinematic;set=>bodyType=value?RigidbodyType2D.Kinematic:RigidbodyType2D.Dynamic;}
  public Vector2 position {get{var p=transform.position;return new(p.X,p.Y);}set=>transform.position=new(value.X,value.Y,transform.position.Z);}
  public double rotation {get{var q=transform.rotation;return 2*Math.Atan2(q.Z,q.W)*180/Math.PI;}set=>transform.rotation=Quaternion.Euler(0,0,value);}
  public void MovePosition(Vector2 value)=>position=value;

@@ -85,7 +85,11 @@ export class ProposalManager {
    const build=item.child.project.scene.script?.build;if(build&&build.id!==item.base.scene.script?.build.id){await destinationFolder(join(root,stem+'.scripts'),directories);await promote(join(item.root,childStem+'.scripts',build.id),join(root,stem+'.scripts',build.id),created,undefined,['manifest.json','publish'],directories);}
    if(this.main.revision!==data.expectedMainRevision||digest(this.main.project)!==data.mainHash||item.child.revision!==data.expectedWorkspaceRevision||this.busy(item)||this.main.activeJob||this.main.activeScriptJob)throw fail('Branches changed during publication');
    const next=structuredClone(item.child.project);next.revision=this.main.project.revision;
-   this.main.past.push(structuredClone(this.main.project.scene));this.main.future=[];this.main.project=next;this.main.pendingEditor=true;this.main.revision++;
+   // Commit the durable project before publishing the accepted branch in memory.
+   // A failed save leaves MAIN and the editable proposal intact, and rolls back
+   // newly promoted resources through the same failure path as publication.
+   const saved=await this.main.store.run('project.save',{id:next.id,expectedRevision:next.revision,scene:next.scene,editor:next.editor});
+   this.main.past.push(structuredClone(this.main.project.scene));this.main.future=[];this.main.project=saved.project;this.main.savedScene=JSON.stringify(saved.project.scene);this.main.pendingEditor=false;this.main.revision++;
   }catch(error){await Promise.all(created.map(p=>rm(p,{force:true})));for(const path of directories.reverse())await rmdir(path).catch(()=>{});throw error;}
   if(this.previewId===item.id){this.previewId=null;await this.persistView();}this.items.delete(item.id);await rm(item.root,{recursive:true,force:true});
   return {status:'applied',recoveryId,snapshot:this.view()};

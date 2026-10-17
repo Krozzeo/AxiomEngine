@@ -4,10 +4,14 @@
   - Component
   - Transform
   - Entity
-- Script lifecycle
+  - Behaviour
+  - Space
+  - AudioListener
+- Execution and time
   - MonoBehaviour
   - Script
   - Time
+  - Coroutine
 - Mathematics
   - Vector2
   - Vector3
@@ -26,20 +30,26 @@
   - Input
   - KeyCode
 - Physics
-  - Rigidbody
   - RigidBody
   - ForceMode
-  - Collider
-  - Collider2D
-  - Collision
-  - Collision2D
-  - Physics
-  - Physics2D
   - Ray
-  - RaycastHit
-  - RaycastHit2D
-  - Rigidbody2D
   - ForceMode2D
+  - Physics 3D
+    - Rigidbody
+    - Collider
+    - Collision
+    - Physics
+    - RaycastHit
+    - BoxCollider
+    - SphereCollider
+  - Physics 2D
+    - Collider2D
+    - Collision2D
+    - Physics2D
+    - RaycastHit2D
+    - Rigidbody2D
+    - BoxCollider2D
+    - CircleCollider2D
 - Audio and animation
   - AudioSource
   - Animator

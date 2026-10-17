@@ -15,3 +15,5 @@ export function applyRuntimeEdit(scene,{type,data}) {
  }else{const key=components[type.split('.')[1]],e=find(data.entityId);if(!e[key])fail('Attach components before Play');check(data.value,entitySchema.properties[key]);e[key]=structuredClone(data.value);if(key==='camera'&&e.camera.active)for(const other of next.entities)if(other.id!==e.id&&other.camera)other.camera.active=false;}
  for(const e of next.entities)check(e,entitySchema);return next;
 }
+
+export function validateRuntimeComponent(key,value){if(!Object.hasOwn(entitySchema.properties,key))fail("Unknown runtime component");check(value,entitySchema.properties[key]);}

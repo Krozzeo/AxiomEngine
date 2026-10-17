@@ -1,0 +1,19 @@
+# Scripting API implementation batches
+
+The original 0.0.45 supplied a foundation. Version 0.0.46 expands it for the current engine. Physics is now split into **2D** and **3D** as requested, so the numbering below replaces the previous combined physics row. Completion of this surface does not mean every Unity overload or subsystem exists.
+
+| Batch | Implemented surface | Explicit remaining compatibility limits |
+|---|---|---|
+| 1 · Objects and components | Runtime GameObject creation, lookup, numeric layers/tags, live local/world TRS, hierarchy/recursive clone with compiled script fields, activation, supported component/script add/remove | One built-in storage kind per entity and one same compiled script path; asset-backed components require authored assets; no asset database, Unity-null equality or shear transforms. |
+| 2 · Execution and time | Global Awake/OnEnable/Start, real FixedUpdate/contact phases, global Update/LateUpdate, activation/destruction callbacks, scaled/unscaled time, coroutines and Invoke | Fixed period 1/60, eight-step catch-up, public explicit overrides; no private Unity message dispatch, custom PlayerLoop, string coroutine overloads or arbitrary async resource yields. |
+| 3 · Physics 2D | Body-only gravity; box/circle native simulation; mass, force/impulse/relative/off-center force, inertia-aware torque, angular velocity in degrees, dynamic/kinematic and freeze rotation; live sizes/trigger/enabled; ray all/buffers/line, circle/box/point overlap; grouped manifold contacts and relative linear velocity | No capsule/polygon/edge/compound shapes, joints, CCD, sleep/interpolation, damping/global-gravity controls, ContactFilter2D/depth overloads, shape casts, contact impulse or pre-impact velocity. Static bodyType is rejected: use a collider without a body. |
+| 4 · Physics 3D | Body-only gravity; OBB/sphere native solver; linear/angular body state, mass/gravity/kinematic/freeze, ForceMode variants, force at position and inertia torque; collider sizes/trigger/enabled/closest point/raycast; all/nearest/bounded ray queries, linecast, oriented box/sphere overlap/check, trigger/layer filtering; manifold contacts | No capsule/mesh/compound shapes, joints, CCD, sleeping/interpolation, damping/global-gravity or inertia-tensor overrides, shape casts, per-axis constraints, contact impulse or pre-impact velocity. Collider dimensions remain explicit world units; Transform scale does not resize them. |
+| 5 · Input | Existing keyboard/mouse and axis aliases | Action maps, gamepad/touch, rebinding. |
+| 6 · Scene/assets and persistence | Existing project/assets editor contracts | Runtime scene loading, Resources/Addressables, PlayerPrefs/persistence. |
+| 7 · Presentation | Existing rendering, lights, cameras, audio, animation and UI authoring | Broader runtime renderer/material/light/animation/audio/UI facade. |
+| 8 · Navigation/network | No implementation claimed | Navigation, networking and associated packages. |
+| 9 · Platform/tooling | Existing editor/diagnostics APIs | Broader editor, platform-specific, low-level and package APIs. |
+
+Five main batches remain (5–9), plus the advanced physics limitations and compatibility gaps listed above. The managed NonAlloc overloads bound writes to the caller's buffer but currently allocate temporary arrays internally. MovePosition/MoveRotation are immediate pose updates, not interpolated kinematic targets. Kinematic bodies are manually positioned; automatic integration of a kinematic Rigidbody2D velocity remains pending. Relative velocity is sampled after the solver. Query snapshots cap published contacts at 128; each native manifold has at most four points.
+
+The full baseline remains `unity-6.3-inventory.json`: a TOC inventory, not a claim of complete Unity member compatibility. Per-type pages contain the actual declarations. The Scripting API index and PMD index share an addressable section hierarchy.

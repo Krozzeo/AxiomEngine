@@ -4,35 +4,41 @@ Namespace: `Axiom.Gameplay`
 
 ## Description
 
-Simulation clock visible to script callbacks. deltaTime is the current frame interval, time is elapsed simulated time, and frameCount increments once per script step.
-
-## Use cases
-
-Make motion independent of rendering frame rate.
+Scaled/unscaled delta and elapsed time, frame count, fixed time, inFixedTimeStep and validated timeScale. The fixed solver period is read-only 1/60 second; maximum variable delta is .25 seconds and native catch-up is capped at eight fixed steps. Time resets at Play. realtimeSinceStartup currently means unscaled time since this Play, not process uptime.
 
 ## Example
 
-The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
-
 ```csharp
-transform.position += Vector3.right * Time.deltaTime;
-Debug.Log(Time.frameCount);
+public override void Update() {
+    if (Input.GetKeyDown(KeyCode.Space)) Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+    transform.position += Vector3.right * Time.deltaTime;
+}
 ```
 
-## Compatibility and limitations
-
-Override public callbacks; Unity-style private message methods are not reflected. Existing OnStart/OnUpdate/OnStop overrides remain supported and take precedence if they do not call base. FixedUpdate uses a local 0.02-second accumulator and is not yet a solver-owned callback. LateUpdate follows Update for each behaviour, not a separate global phase. Time uses doubles. Coroutines, Invoke, timeScale and scene loading remain pending.
-
+At timeScale zero Update still runs and unscaled time advances, allowing scripts to unpause. FixedUpdate and scaled timers do not advance.
 
 ## Implemented declarations
 
 ```csharp
 public static class Time {
- public static double deltaTime {get;internal set;}
- public static double time {get;internal set;}
+ private static double scale=1,delta,elapsed,unscaledElapsed,unscaledDelta;
+ public static double deltaTime {get=>inFixedTimeStep?fixedDeltaTime:delta;internal set=>delta=value;}
+ public static double unscaledDeltaTime {get=>inFixedTimeStep?fixedUnscaledDeltaTime:unscaledDelta;internal set=>unscaledDelta=value;}
+ public static double time {get=>inFixedTimeStep?fixedTime:elapsed;internal set=>elapsed=value;}
+ public static double unscaledTime {get=>inFixedTimeStep?fixedUnscaledTime:unscaledElapsed;internal set=>unscaledElapsed=value;}
+ public static double realtimeSinceStartup=>unscaledTime;
+ public static double timeSinceLevelLoad=>time;
+ public static double timeAsDouble=>time;
+ public static double unscaledTimeAsDouble=>unscaledTime;
+ public static double fixedTime {get;internal set;}
+ public static double fixedUnscaledTime {get;internal set;}
+ public static double fixedUnscaledDeltaTime=>scale>0?fixedDeltaTime/scale:0;
+ public static bool inFixedTimeStep {get;internal set;}
+ public static double timeScale {get=>scale;set{if(!double.IsFinite(value)||value<0||value>8)throw new ArgumentException("Time scale must be between 0 and 8");scale=value;}}
  public static int frameCount {get;internal set;}
- public const double fixedDeltaTime=0.02;
- internal static void Reset(){deltaTime=0;time=0;frameCount=0;}
- internal static void Step(double delta){deltaTime=delta;time+=delta;frameCount++;}
+ public const double fixedDeltaTime=1.0/60.0;
+ public const double maximumDeltaTime=0.25;
+ internal static void Reset(){scale=1;delta=0;time=0;unscaledTime=0;unscaledDeltaTime=0;fixedTime=0;fixedUnscaledTime=0;frameCount=0;inFixedTimeStep=false;}
+ internal static void Step(double value){unscaledDeltaTime=value;unscaledTime+=value;delta=Math.Min(value*scale,maximumDeltaTime);time+=delta;frameCount++;}
 }
 ```

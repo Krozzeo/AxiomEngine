@@ -1,0 +1,87 @@
+{
+  "version": "0.0.46",
+  "executableCommit": "d7d11fb0dfa07a1d157f8a9779078017f16f4e66",
+  "tree": "f22939062469f36bf466bd63b1be227e1bc0f86b",
+  "ciRun": 39001000290,
+  "ciRunNumber": 295,
+  "criteria": [
+    "Runtime API Lab compiles and executes hierarchy cloning, component removal, coroutines, Invoke and real fixed phases without a script fault; Stop preserves authoring.",
+    "Repeated Play/Stop during asynchronous worker frames resumes stopped rendering instead of freezing the last Play diagnostic.",
+    "Named Scene, Game and Hierarchy captures return real bounded PNGs without switching active view or Play.",
+    "The Responses adapter receives actual input_image content; More Info keeps bounded metadata without image bytes.",
+    "Apply is immediately durable: close/open preserves the accepted change without an explicit Save.",
+    "Physics 2D API Lab compiles the physical script, falls on its floor, jumps with Space through the native solver and restores authored state on Stop.",
+    "Physics 3D API Lab compiles the physical script, falls on its floor, jumps with Space through the native solver and restores authored state on Stop."
+  ],
+  "errors": [],
+  "provider": "Controlled Responses adapter. Real engine screenshots and .NET/Wasm runtime; no paid requests.",
+  "motion": [
+    {
+      "dimension": 2,
+      "restingHeight": -0.3507757124199717,
+      "samples": [
+        {
+          "y": -0.35077411408274506,
+          "vy": 9.033062561975003e-7,
+          "spin": 0.000005993873794902001,
+          "frame": 1066,
+          "fault": null
+        },
+        {
+          "y": -0.35077371449655387,
+          "vy": 5.00000090331311,
+          "spin": 6.000005993889893,
+          "frame": 1067,
+          "fault": null
+        },
+        {
+          "y": -0.04469032094234654,
+          "vy": 4.34600090331311,
+          "spin": 6.000005993889893,
+          "frame": 1068,
+          "fault": null
+        }
+      ]
+    },
+    {
+      "dimension": 3,
+      "restingHeight": -0.35077981982523176,
+      "samples": [
+        {
+          "y": -0.350777895290056,
+          "vy": 5.893208935778271e-8,
+          "spin": -2.2942301088741388e-7,
+          "frame": 1185,
+          "fault": null
+        },
+        {
+          "y": -0.3507777110846657,
+          "vy": 5.000000058932649,
+          "spin": 11.99999977057768,
+          "frame": 1186,
+          "fault": null
+        },
+        {
+          "y": 0.22534156882201664,
+          "vy": 3.692000058932649,
+          "spin": 11.99999977057768,
+          "frame": 1187,
+          "fault": null
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "visualReview": {
+    "reviewed": true,
+    "panels": [
+      "scene",
+      "game",
+      "hierarchy",
+      "physics-2d",
+      "physics-3d",
+      "editor"
+    ],
+    "note": "Real PNGs reviewed from CI 294, whose rendering/application source is identical; CI 295 changes only the legacy manual/Auto acceptance test."
+  }
+}

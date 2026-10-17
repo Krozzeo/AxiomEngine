@@ -261,3 +261,10 @@ test('automatic execution still presents its task plan and PMD approval remains 
 test('capability discovery searches terms across the full allowed public/private catalog and stops after missing tools',async t=>{
  const {ai}=await fixture(t,[[tool('api.search',{query:'work plan'},'plan-search')],[tool('api.search',{query:'nonexistent-navigation-tool'},'missing1')],[tool('api.search',{query:'invented-pathfinder-tool'},'missing2')],[tool('api.search',{query:'imaginary-agent-tool'},'missing3')],[message('Never reached')]]);const task=await complete(ai,{text:'Check available navigation contracts'});assert.ok(task.steps[0].result.items.some(t=>t.name==='work.plan'));assert.equal(task.requests,4);assert.equal(task.error.code,'AX_AI_BLOCKED');assert.match(task.response,/complete allowed catalog/);
 });
+
+test('renderer capture delivers actual image content to Responses while keeping bytes out of task history',async t=>{
+ const {ai,workspace,bridge,http}=await fixture(t,[[tool('renderer.capture',{panel:'game',width:64,height:64},'capture')],[message('Inspected the captured Game view.')]]);
+ bridge.status=()=>({connected:true,projectId:workspace.project.id,sceneRevision:workspace.revision,workspaceId:null});bridge.capture=async args=>({projectId:workspace.project.id,workspaceId:null,sceneRevision:workspace.revision,generation:1,frame:2,panel:args.panel,width:64,height:64,base64:'iVBORw0KGgoAAAATESTIMAGE',semantic:{channel:'color'}});
+ const task=await complete(ai,{text:'Inspect the Game view without changing the project.'});assert.equal(task.status,'completed',JSON.stringify(task.error));
+ const image=http.requests.at(-1).body.input.flatMap(i=>Array.isArray(i.content)?i.content:[]).find(c=>c.type==='input_image');assert.equal(image.image_url,'data:image/png;base64,iVBORw0KGgoAAAATESTIMAGE');assert.ok(!JSON.stringify(task).includes('AAAATESTIMAGE'));assert.equal(task.steps[0].result.imageDelivered,true);
+});

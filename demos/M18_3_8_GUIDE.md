@@ -1,0 +1,31 @@
+# M18.3.8 / 0.0.46 demos
+
+Run `npm.cmd run demo`, then open **Demo · M18.3.8 Runtime API Lab** from the Hub. New demos preserve existing projects. The project compiles on opening and needs .NET 10 plus wasm-tools. Save once after the initial compilation before asking the agent for an editing proposal; read-only screenshots do not require a proposal.
+
+## Runtime API Lab
+
+- Before Play, one authored cube is present. In Play a second runtime cube appears beside it. It is a recursive clone whose script component was removed programmatically, and it is parented to the original.
+- Both cubes move together as the parent oscillates. This checks live parent/world transforms, cloning, dynamic component removal and descendant following rather than two unrelated animations.
+- Select the original cube during Play. RuntimeApiLab exposes Speed, FixedTicks, Pulses, ScaledTime and RealTime. Speed controls oscillation; FixedTicks reflects real native fixed steps and Pulses advances through a coroutine.
+- With Game focused, Space switches timeScale between zero and one. Oscillation, physics ticks and scaled coroutine pulses pause; RealTime continues. Space again resumes. The console receives a scheduled report every two scaled seconds.
+- Stop removes runtime clones and restores the authored scene. No player demo is repeated.
+
+## Agent visual inspection
+
+With a connected vision-capable OpenAI model, ask: “Inspect the actual Scene and Game images using renderer.capture for each panel. Describe the visible objects and camera differences. Do not modify the project.” The agent receives real image content, not only entity metadata. Scene and Game can be captured independently without switching the active tab or starting Play. Visible UI panels such as hierarchy/inspector/project can also be captured; closed or hidden UI panels report unavailable.
+
+Images cost model input tokens. Captures are bounded to eight per task and only the latest two images are submitted at once. More Info keeps capture identity, project/workspace revision, frame and dimensions, not a large base64 dump. Semantic scene checks remain preferable when pixels are not needed.
+
+## Apply persistence
+
+Ask for a small edit in an isolated preview, make any desired manual preview adjustment, then Apply. The accepted branch is saved automatically. Close and reopen: the accepted and manually adjusted preview state should remain. Diverged MAIN edits are replaced under the existing explicit replacement policy; the pre-Apply recovery snapshot is retained. A failed save leaves the proposal available and does not report successful Apply.
+
+API scope and pending compatibility work: [BATCHES.md](../docs/scripting-api/BATCHES.md).
+
+## Physics 2D API Lab and Physics 3D API Lab
+
+Both projects contain an authored box above a static floor. Play simulates its fall using the real native solver. Select the probe to inspect live Height, Spin (degrees/second), ContactPoints and NearbyColliders. Once it rests, ContactPoints should reflect the manifold rather than just a single event.
+
+With **Game focused**, Space applies an upward impulse and torque. In 3D part of that torque comes from applying force away from the center; in 2D AddTorque uses the body's moment of inertia. R resets pose and linear/angular velocity. Edit JumpImpulse and SpinImpulse during Play to compare different responses. Stop restores authored state.
+
+These labs exercise scripting access to existing box/circle/sphere physics and its new queries/forces/contact data. They do not demonstrate joints, continuous collision detection, capsule/mesh collision or compound rigid bodies; those remain explicit follow-up work.

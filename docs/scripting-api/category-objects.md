@@ -1,5 +1,5 @@
 # Objects and components
 
-Axiom.Gameplay API reference. Unity naming baseline: Unity 6.3 LTS.
+Live lowercase Transform properties expose world and local TRS. Runtime object creation, hierarchy cloning (including compiled script fields and lifecycle), component addition/removal, hierarchy activation, tags and layers are available. Legacy Entity.Transform remains an immutable snapshot. Runtime changes are discarded on Stop. Objects may have one built-in component of each storage kind and one instance of each compiled script path; unsupported component types fail explicitly.
 
-Transforms use world position/rotation. localScale writes the runtime scale. Legacy Entity.Transform.Position/Rotation/Scale remain snapshots; lowercase transform properties are live. Generic component lookup covers built-in wrappers and already attached scripts. Instantiate clones one entity using the existing spawn contract; it does not yet clone a hierarchy or start new script instances. SetActive controls runtime hierarchy participation; GetComponentInChildren and GetComponentInParent traverse existing components. Dynamic AddComponent, tags and full Unity object identity semantics remain pending.
+Transforms reject parenting cycles. Native TRS hierarchy cannot represent shear from rotated nonuniform parent scale; use uniform parent scales. Authored asset-backed AudioSource/Animator instances can be cloned and removed; adding either from an empty object still requires an authored asset/configuration. No asset, script source or authored project is created by runtime AddComponent.

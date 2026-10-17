@@ -27,3 +27,11 @@ test('a known SDK type does not imply an invented member is implemented',async()
  for(const query of ['Transform.DoesNotExist','Physics.SphereCast','Input.GetTouch'])assert.equal((await readScriptingReference(query)).available,false,query);
  for(const query of ['Entity.IsGrounded','Transform.position','Transform.GetComponent','Physics.Raycast'])assert.equal((await readScriptingReference(query)).available,true,query);
 });
+
+test('bodyless record declarations do not expose the following class as API members',async()=>{
+ const {readScriptingReference}=await import('../engine/scripting/reference.mjs');
+ assert.equal((await readScriptingReference('Bounds.Update')).available,false);
+ assert.equal((await readScriptingReference('Rect.Awake')).available,false);
+ assert.equal((await readScriptingReference('Color32.StartCoroutine')).available,false);
+ assert.equal((await readScriptingReference('Bounds.Size')).available,true);
+});

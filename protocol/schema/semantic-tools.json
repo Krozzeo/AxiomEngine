@@ -408,7 +408,7 @@
             "properties": {
               "unitScale": {
                 "type": "number",
-                "minimum": 0.000001,
+                "minimum": 1e-06,
                 "maximum": 1000
               },
               "upAxis": {
@@ -906,7 +906,7 @@
             "properties": {
               "unitScale": {
                 "type": "number",
-                "minimum": 0.000001,
+                "minimum": 1e-06,
                 "maximum": 1000
               },
               "upAxis": {
@@ -1204,7 +1204,7 @@
     },
     {
       "name": "renderer.capture",
-      "description": "Capture an actual WebGPU color frame plus bounded semantic entity context. Requires a ready editor and current scene revision; Null returns unavailable.",
+      "description": "Capture a named editor panel as a bounded PNG and semantic metadata. Scene and Game use independent real WebGPU views without changing active tabs or Play. Other panels capture visible editor UI; unavailable panels fail explicitly. Requires a connected editor at this project/workspace revision.",
       "mutates": false,
       "route": "agent",
       "mcp": true,
@@ -1243,6 +1243,24 @@
           "workspaceId": {
             "type": "string",
             "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "panel": {
+            "type": "string",
+            "enum": [
+              "current",
+              "scene",
+              "game",
+              "hierarchy",
+              "inspector",
+              "project",
+              "console",
+              "diagnostics",
+              "profiler",
+              "ide",
+              "assistant",
+              "pmd",
+              "scripting"
+            ]
           }
         },
         "required": [

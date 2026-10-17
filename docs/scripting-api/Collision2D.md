@@ -1,38 +1,17 @@
 # Collision2D
 
-Namespace: `Axiom.Gameplay`
-
-## Description
-
-Collision2D belongs to the physics API family. Consult the declarations below for the exact supported surface.
-
-## Use cases
-
-Destroy a pickup on trigger contact.
-
-## Example
-
-```csharp
-using Axiom.Gameplay;
-public override void OnTriggerEnter(Collider other) {
- if (other.gameObject.name == "Player") Destroy(gameObject);
-}
-// For a 2D scene use OnTriggerEnter2D(Collider2D other).
-```
-
-## Compatibility and limitations
-
-RigidBody is the legacy velocity snapshot; Rigidbody is the live wrapper. AddForce uses the current frame delta for force/acceleration and directly applies impulse/velocity change; mass comes from the runtime body. Collider bounds return the solver-aligned world AABB of configured spheres/boxes, including orientation. Collider half-extents are already world units and are not multiplied by visual Transform scale. Raycasts use the current sphere/oriented-box solver baseline, layer filtering and a finite default 1000-unit distance; triggers are included. Capsules/meshes currently use their configured box collider. Contact callbacks consume the preceding completed physics snapshot (up to 128 contacts), so delivery is one render frame later and omitted contacts cannot emit callbacks. Full Unity Collision.contacts, joints and arbitrary shape casts remain pending.
-
+2D contact manifold and relativeVelocity with Vector2 values. Same pair-level enter/stay/exit semantics and snapshot limits as Collision. Exit returns zero current contact points.
 
 ## Implemented declarations
 
 ```csharp
 public sealed class Collision2D {
- public Collider2D collider {get;}
- public GameObject gameObject=>collider.gameObject;
- public Vector2 normal {get;}
- public Vector2 point {get;}
- internal Collision2D(Collider2D collider,Vector3 normal,Vector3 point){this.collider=collider;this.normal=new(normal.X,normal.Y);this.point=new(point.X,point.Y);}
+ public Collider2D collider {get;}public GameObject gameObject=>collider.gameObject;public Transform transform=>collider.transform;public Rigidbody2D? rigidbody=>collider.attachedRigidbody;
+ public Vector2 normal {get;}public Vector2 point {get;}public Vector2 relativeVelocity {get;}
+ public ContactPoint2D[] contacts {get;}public int contactCount=>contacts.Length;
+ public ContactPoint2D GetContact(int index)=>contacts[index];public int GetContacts(ContactPoint2D[] buffer){var count=Math.Min(buffer.Length,contacts.Length);Array.Copy(contacts,buffer,count);return count;}
+ internal Collision2D(Collider2D collider,Vector3 normal,Vector3 point,ContactPoint2D[] contacts,Vector3 relativeVelocity){this.collider=collider;this.normal=new(normal.X,normal.Y);this.point=new(point.X,point.Y);this.contacts=contacts;this.relativeVelocity=new(relativeVelocity.X,relativeVelocity.Y);}
 }
+
+public readonly record struct ContactPoint2D(Vector2 point,Vector2 normal,double separation,Collider2D collider,Collider2D otherCollider);
 ```

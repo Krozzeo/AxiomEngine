@@ -247,6 +247,7 @@ internal static partial class Context {
  }
  internal static void Velocity(Entity entity,Vec3 velocity) {
   _=ReadBody(entity);Position(velocity);if(Math.Max(Math.Abs(velocity.X),Math.Max(Math.Abs(velocity.Y),Math.Abs(velocity.Z)))>10000)throw new ArgumentException("AX_PHYSICS_0001: invalid velocity");
+  if(Context.EntityData[entity.Id].TryGetProperty("runtimeStatic",out var fixedBody)&&fixedBody.GetBoolean()&&(velocity.X!=0||velocity.Y!=0||velocity.Z!=0))return;
   if((velocity.X!=0||velocity.Y!=0||velocity.Z!=0)&&PhysicsData.Body(entity).TryGetProperty("sleeping",out var sleep)&&sleep.GetBoolean())PhysicsData.Set(entity,"rigidBody","sleeping",System.Text.Json.Nodes.JsonValue.Create(false)!);Add(new("velocity",entity.Id,null,velocity,null));Bodies[entity.Id]=new RigidBody(velocity);PhysicsData.VelocityData(entity,velocity);
  }
  internal static void Add(Operation operation) {

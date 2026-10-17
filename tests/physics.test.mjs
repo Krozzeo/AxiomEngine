@@ -39,6 +39,7 @@ test('expanded Wasm body controls and pre-impact evidence work in 2D and 3D',asy
  for(const dimension of [2,3]){const k=await loadKernel(bytes),body=entity(2,3,true,dimension);body.rigidBody={...body.rigidBody,gravityScale:0,velocity:[6,6,0],angularVelocity:[0,0,2],linearDamping:60,angularDamping:60,constraints:2};try{
   k.configurePhysics({entities:[body]});k.stepPhysics(1);let s=k.physicsSnapshot();assert.equal(s.bodies[0].position[0],0);assert.ok(Math.abs(s.bodies[0].velocity[1]-3)<1e-9);assert.equal(s.bodies[0].angularVelocity[2],1);
   const moving={...body,runtimeKinematic:true,rigidBody:{...body.rigidBody,linearDamping:0,angularDamping:0,constraints:0,velocity:[3,0,0],angularVelocity:[0,0,0]}};k.configurePhysics({entities:[moving]});k.stepPhysics(1);s=k.physicsSnapshot();assert.ok(Math.abs(s.bodies[0].position[0]-.05)<1e-9);assert.equal(s.bodies[0].position[1],3);
+  k.configurePhysics({entities:[{...body,runtimeStatic:true}]});k.stepPhysics(1);assert.deepEqual(k.physicsSnapshot().bodies[0].velocity,[0,0,0]);assert.deepEqual(k.physicsSnapshot().bodies[0].angularVelocity,[0,0,0]);
   const sleeping={...body,rigidBody:{...body.rigidBody,sleeping:true}};k.configurePhysics({entities:[sleeping]});k.stepPhysics(1);assert.equal(k.physicsSnapshot().bodies[0].sleeping,true);
   k.configurePhysics({entities:[{...body,runtimeSimulated:false}]});assert.equal(k.physicsSnapshot().bodies.length,0);
   const a=entity(2,0,true,dimension),b=entity(3,0,false,dimension);a.rigidBody.gravityScale=0;a.rigidBody.velocity=[6,0,0];b.transform.position=[1,0,0];

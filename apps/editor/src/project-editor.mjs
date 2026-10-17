@@ -214,7 +214,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     }
     if (projects.some(project => project.id === previous)) $("project-list").value = previous;
   }
-  const mutation = extra => ({ id: state.project?.id, expectedSceneRevision: state.sceneRevision, ...extra });
+  const mutation = extra => ({ id: state.project?.id, expectedSceneRevision: state.sceneRevision, ...(state.workspaceId?{workspaceId:state.workspaceId}:{}), ...extra });
   const componentState=()=>state.playing?{...state,project:{...state.project,scene:getRenderer()?.interaction?.().scene??state.project.scene}}:state;
   const audioEditor=mountAudioEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null,getRenderer});
   const animationEditor=mountAnimationEditor({document,act,run,mutation,getState:componentState,getSelection:()=>selection.size===1?selected:null,getRenderer});

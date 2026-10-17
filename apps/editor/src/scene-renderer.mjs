@@ -55,7 +55,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let skinGPU=null;
   let device=null, context=null, pipeline=null, sampler=null, depth=null;
   let gpuProfiler=null,gpuSample=null;
-  let snapshotLoading=false,testing=false,frameInProgress=false,currentSnapshot=null,testSource=null,testGeneration=null,replaySeed=0,replaySeeded=false;
+  let kernelReady=false,snapshotLoading=false,testing=false,frameInProgress=false,currentSnapshot=null,testSource=null,testGeneration=null,replaySeed=0,replaySeeded=false;
   let kernel=await loadKernel(bytes), resources=[], disposed=false, generation=0, animationId=null;
   const baseWidth=canvas.width,baseHeight=canvas.height;
   let previousTime=null, trace=0n, playing=false, sceneId=null, currentProject=null;
@@ -166,10 +166,15 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
 
     mouseDelta=[0,0];if(!internalTest){currentSnapshot=structuredClone(snapshot);if(testing){testing=false;testSession.control({action:'cancel'});replaySession.control({action:'cancel'});}}
     if(captureRequest){captureRequest.reject(new Error("Scene changed before capture"));captureRequest=null;}
-    pendingEndPacket=null;scriptTimeScale=1;controlledPixels=null;measuredFps=null;fpsStart=null;fpsCount=0;traceDisplayAt=-Infinity;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
-    const oldGeneration=generation,ticket=++generation,oldRuntime=scriptRuntime,oldScene=runtimeScene;
+    const oldGeneration=generation,ticket=++generation;
     snapshotLoading=true;
     try {
+    // Finish the old frame before resetting state or disposing its kernel/resources.
+    // Generation cancellation makes any suspended script phase exit without touching the replacement.
+    while(frameInProgress)await new Promise(resolve=>setTimeout(resolve,1));
+    if(ticket!==generation||disposed)return;
+    const oldRuntime=scriptRuntime,oldScene=runtimeScene;
+    pendingEndPacket=null;scriptTimeScale=1;controlledPixels=null;measuredFps=null;fpsStart=null;fpsCount=0;traceDisplayAt=-Infinity;audio.clear();skinGPU?.reset();lastFrame=null;renderStats=null;lastRenderPlan=null;lastTwoDPlan=null;twoDPaused=false;twoDTime=0;
     profiler.reset({projectId:snapshot.project?.id??null,sceneRevision:snapshot.sceneRevision,workspaceId:snapshot.workspaceId??null,generation:ticket});
     scriptRuntime=null;
     if(oldRuntime) {
@@ -220,7 +225,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         production.reset();await production.prepare([...draws,...[...localAssets.values()].flatMap(a=>a.primitives??[])]);
       }else pending=await buildResources(draws,ticket);
       if(ticket!==generation||disposed){replacement.dispose();destroyResources(pending);nextRuntime?.dispose();return;}
-      skinGPU?.reset();kernel.dispose();destroyResources(resources);kernel=replacement;resources=pending;geometry=draws;
+      skinGPU?.reset();kernel.dispose();destroyResources(resources);kernel=replacement;kernelReady=true;resources=pending;geometry=draws;
       workspaceId=snapshot.workspaceId??null;sceneRevision=snapshot.sceneRevision;runtimeScene=scene;scriptRuntime=nextRuntime;spawned=nextSpawned;scriptFault=nextScriptFault;
       assets=localAssets;await parallel.prepare(scene,assets,draws);playing=!!snapshot.playing;sceneId=scene.id??null;currentProject=project?.id??null;await audio.configure(scene,localAssets,{playing:playing&&!internalTest});if(ticket!==generation||disposed)return;if(playing&&!internalTest)for(const op of startAudioControls)audio.control(op);previousTime=null;trace=0n;gpuSample=null;
       // Old texture entries are bounded to those referenced by the active scene.
@@ -228,11 +233,13 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(scene.twoD)used.add("white");
       for(const [key,texture] of textures)if(!used.has(key)){texture.destroy();textures.delete(key);}
     } catch(error) {if(ticket===generation)audio.clear();nextRuntime?.dispose();replacement.dispose();destroyResources(pending);throw error;}
-    }finally{if(ticket===generation)snapshotLoading=false;}
+    }finally{if(ticket===generation){snapshotLoading=false;scheduleFrame();}}
   }
+  function scheduleFrame(){if(!disposed&&animationId===null&&!frameInProgress)animationId=requestAnimationFrame(frame);}
   async function frame(now,manual=null) {
+    if(!manual)animationId=null;
     if(disposed)return;
-    if(snapshotLoading||runtimeEditing||testing&&!manual){if(!manual)animationId=requestAnimationFrame(frame);return;}
+    if(!kernelReady||snapshotLoading||runtimeEditing||testing&&!manual){if(!manual)scheduleFrame();return;}
     frameInProgress=true;let frameFault=false;
     const ticket=generation,presentFrame=manual?.present!==false;
     try {
@@ -263,7 +270,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
               destroyResources(resources);resources=next;geometry=draws;await parallel.prepare(result.scene,assets,draws);
             }catch(error){destroyResources(next);throw error;}
           }else {const ids=new Set(activeEntities(result.scene.entities).map(e=>e.id));kernel.setPositions([...result.positions].filter(([id])=>ids.has(id)));}
-          const activeIds=new Set(activeEntities(result.scene.entities).map(e=>e.id));kernel.setRotations([...result.rotations].filter(([id])=>activeIds.has(id)));kernel.setVelocities([...result.velocities].filter(([id])=>activeIds.has(id)));
+          const activeIds=new Set(activeEntities(result.scene.entities).map(e=>e.id));kernel.setRotations([...result.rotations].filter(([id])=>activeIds.has(id)));kernel.setVelocities([...result.velocities].filter(([id])=>activeIds.has(id)));kernel.setAngularVelocities([...result.angularVelocities].filter(([id])=>activeIds.has(id)));
           for(const op of result.animations)kernel.animationControl(op);
           runtimeScene=result.scene;audio.reconcile(runtimeScene);if(!testing)for(const op of result.audio)audio.control(op);spawned=result.spawned;for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"update",traceId:diagnostic.traceId,frameTrace:trace.toString(),buildId:runtimeScene.script?.build.id});
           scriptScope('script.apply',applyStart,performance.now(),result.changedTopology?'wall':'main');
@@ -372,7 +379,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       // Bound queued GPU work on slow adapters; manual test/replay pixels must
       // also complete before their next controlled frame. Device loss owns fallback.
       if(device&&presentFrame){const submittedDevice=device;await submittedDevice.queue.onSubmittedWorkDone().catch(()=>submittedDevice.lost);}
-    } catch(error) {frameFault=true;audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;if(!manual&&!disposed&&!frameFault)animationId=requestAnimationFrame(frame);}
+    } catch(error) {if(ticket!==generation||disposed)return;frameFault=true;audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;if(!manual&&!frameFault)scheduleFrame();}
   }
   const isolatedAdapter={
     async begin({seed}={}){replaySeed=seed??0;replaySeeded=seed!==undefined;if(!currentSnapshot?.project||playing)throw testError('Open a stopped project first');testSource=currentSnapshot;testing=true;keys.clear();while(frameInProgress)await new Promise(r=>setTimeout(r,1));await setSnapshot({...testSource,playing:true},true);if(currentSnapshot!==testSource)throw testError('Project changed','AX_TEST_0002');testGeneration=generation;view='game';audio.clear();},
@@ -384,7 +391,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   const replaySession=new ReplaySession({...isolatedAdapter,scope:()=>({id:currentProject,sceneRevision,workspaceId,resources:(currentSnapshot?.project.scene.assets??[]).map(a=>({id:a.id,buildKey:a.buildKey??null})),script:currentSnapshot?.project.scene.script?.build?.id??null}),snapshot:()=>({entities:runtimeScene.entities,physics:kernel.physicsSnapshot(),animation:kernel.animationStatus(),time:twoDTime}),diagnostic:args=>{decisions.record(evidence());return args?{traceId:lastTraceId,evidence:decisions.query({...args,id:currentProject,workspaceId})}:{traceId:lastTraceId,contacts:structuredClone(lastPacket?.physics?.contacts??[]),animation:kernel.animationStatus()};}});let testView='scene';
   function replayControl(args){if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw replayError('Project revision changed');if(testSession.active)throw replayError('Finish the active game test first');if(['record','replay'].includes(args.action))testView=view;return replaySession.control(args);}
   function gameTestControl(args){if(replaySession.active)throw testError('Finish replay first');if(args.id!==currentProject||args.expectedSceneRevision!==sceneRevision||(args.workspaceId??null)!==workspaceId)throw testError('Project revision changed','AX_TEST_0002');if(args.action==='begin'||args.action==='run')testView=view;return testSession.control(args);}
-  animationId=requestAnimationFrame(frame);
+  scheduleFrame();
   function capture(args){
     if(disposed||!device||captureRequest||!lastFrame) return Promise.reject(new Error('WebGPU capture unavailable'));
     return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{if(captureRequest?.args===args)captureRequest=null;reject(new Error('Capture timed out'));},4000);captureRequest={args,resolve:value=>{clearTimeout(timer);resolve(value);},reject:error=>{clearTimeout(timer);reject(error);}};});

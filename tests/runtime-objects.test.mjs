@@ -20,3 +20,11 @@ test('world-space runtime parent metadata controls descendant activation without
  const s=scene();s.entities[0].runtimeActive=false;s.entities.push({id:b,name:'Child',runtimeParentId:a,transform:{position:[5,2,1],rotation:[0,0,0,1],scale:[1,1,1]}});
  assert.equal(worldScene(s).entities.length,0);s.entities[0].runtimeActive=true;assert.deepEqual(worldScene(s).entities[1].transform.position,[5,2,1]);
 });
+
+test('angular velocity and physics flags publish atomically and preserve source state',()=>{
+ const source=scene();source.entities[0].rigidBody={mass:1,velocity:[0,0,0],restitution:0,friction:.5,gravityScale:1};
+ const result=applyScriptOperations(source,{generation:1,operations:[{kind:'angularVelocity',id:a,position:[0,0,2]},{kind:'property',id:a,name:'runtimeKinematic',data:true}]},1);
+ assert.deepEqual(result.angularVelocities.get(a),[0,0,2]);assert.equal(result.scene.entities[0].runtimeKinematic,true);assert.equal(result.changedTopology,true);assert.equal(source.entities[0].rigidBody.angularVelocity,undefined);
+ assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'angularVelocity',id:a,position:[0,0,10001]}]},1),/angular velocity/);
+ assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'property',id:a,name:'runtimeColliderEnabled',data:1}]},1),/physics flag/);
+});

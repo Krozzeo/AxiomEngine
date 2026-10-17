@@ -21,3 +21,11 @@ Images cost model input tokens. Captures are bounded to eight per task and only 
 Ask for a small edit in an isolated preview, make any desired manual preview adjustment, then Apply. The accepted branch is saved automatically. Close and reopen: the accepted and manually adjusted preview state should remain. Diverged MAIN edits are replaced under the existing explicit replacement policy; the pre-Apply recovery snapshot is retained. A failed save leaves the proposal available and does not report successful Apply.
 
 API scope and pending compatibility work: [BATCHES.md](../docs/scripting-api/BATCHES.md).
+
+## Physics 2D API Lab and Physics 3D API Lab
+
+Both projects contain an authored box above a static floor. Play simulates its fall using the real native solver. Select the probe to inspect live Height, Spin (degrees/second), ContactPoints and NearbyColliders. Once it rests, ContactPoints should reflect the manifold rather than just a single event.
+
+With **Game focused**, Space applies an upward impulse and torque. In 3D part of that torque comes from applying force away from the center; in 2D AddTorque uses the body's moment of inertia. R resets pose and linear/angular velocity. Edit JumpImpulse and SpinImpulse during Play to compare different responses. Stop restores authored state.
+
+These labs exercise scripting access to existing box/circle/sphere physics and its new queries/forces/contact data. They do not demonstrate joints, continuous collision detection, capsule/mesh collision or compound rigid bodies; those remain explicit follow-up work.

@@ -20,7 +20,7 @@ public static partial class Program {
    var action=value.GetProperty("action").GetString();var generation=value.GetProperty("generation").GetInt32();
    if(action=="start") {
     if(Scripts.Count!=0)throw new InvalidOperationException("Runtime already started");
-    Context.ReplaySeed=value.TryGetProperty("seed",out var seed)?seed.GetUInt32():0;Context.DeterministicSpawn=value.TryGetProperty("replay",out var replay)&&replay.GetBoolean();ReplayRandom.Reset(Context.ReplaySeed);Time.Reset();RuntimeLifecycle.Reset();Configure();Context.PreviousContacts.Clear();Context.Generation=generation;Context.Spawned=0;Context.Load(value);
+    Context.ReplaySeed=value.TryGetProperty("seed",out var seed)?seed.GetUInt32():0;Context.DeterministicSpawn=value.TryGetProperty("replay",out var replay)&&replay.GetBoolean();ReplayRandom.Reset(Context.ReplaySeed);Time.Reset();Physics.queriesHitTriggers=true;Physics2D.queriesHitTriggers=true;RuntimeLifecycle.Reset();Configure();Context.PreviousContacts.Clear();Context.Generation=generation;Context.Spawned=0;Context.Load(value);
     foreach(var id in value.GetProperty("attachments").EnumerateArray()) {
      var entity=value.GetProperty("entities").EnumerateArray().First(e=>e.GetProperty("id").GetString()==id.GetString());Attach(entity,generation);
      if(Scripts.Count>Limits.Attachments)throw new ArgumentException("Script attachment limit exceeded");

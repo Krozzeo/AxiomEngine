@@ -68,6 +68,7 @@ export async function loadKernel(bytes) {
     stepPhysics(count){return physics.step(count);},
     raycast(args){return physics.raycast(args);},
     setVelocities(values){physics.velocities(values);},
+    setAngularVelocities(values){physics.angularVelocities(values);},
     setRotations(rotations){
       if(disposed||!compiled)throw new Error('AX_WASM_0003: missing compiled scene');
       for(const [entityId,rotation]of rotations){const e=compiled.scene.entities.find(e=>e.id===entityId);if(!e||!Array.isArray(rotation)||rotation.length!==4||rotation.some(v=>!Number.isFinite(v))||Math.abs(Math.hypot(...rotation)-1)>1e-5)throw new Error('AX_WASM_0007: invalid runtime rotation');}

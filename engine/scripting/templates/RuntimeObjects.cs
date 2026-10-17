@@ -7,10 +7,10 @@ public class Behaviour : Component {
  public bool isActiveAndEnabled=>active&&Context.Entities.ContainsKey(Entity.Id)&&Context.IsActive(Entity.Id)&&(this is not Script script||Context.LiveScripts.Contains(script));
 }
 public enum Space {World,Self}
-public class BoxCollider : Collider {internal BoxCollider(Entity entity):base(entity){}}
-public sealed class SphereCollider : Collider {internal SphereCollider(Entity entity):base(entity){}}
-public sealed class BoxCollider2D : Collider2D {internal BoxCollider2D(Entity entity):base(entity){}}
-public sealed class CircleCollider2D : Collider2D {internal CircleCollider2D(Entity entity):base(entity){}}
+public class BoxCollider : Collider {internal BoxCollider(Entity entity):base(entity){} public Vector3 size {get=>PhysicsData.Half(Entity)*2;set=>PhysicsData.Half(Entity,value/2);}}
+public sealed class SphereCollider : Collider {internal SphereCollider(Entity entity):base(entity){} public double radius {get=>PhysicsData.Half(Entity).X;set=>PhysicsData.Half(Entity,new(value,value,value));}}
+public sealed class BoxCollider2D : Collider2D {internal BoxCollider2D(Entity entity):base(entity){} public Vector2 size {get{var h=PhysicsData.Half(Entity);return new(h.X*2,h.Y*2);}set=>PhysicsData.Half(Entity,new(value.X/2,value.Y/2,.5));}}
+public sealed class CircleCollider2D : Collider2D {internal CircleCollider2D(Entity entity):base(entity){} public double radius {get=>PhysicsData.Half(Entity).X;set=>PhysicsData.Half(Entity,new(value,value,.5));}}
 public sealed class AudioListener : Component {internal AudioListener(Entity entity){Entity=entity;}}
 internal static partial class Context {
  internal static readonly Dictionary<Script,string> ScriptPaths=new();

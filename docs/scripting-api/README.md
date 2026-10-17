@@ -10,7 +10,7 @@ Canonical content: `engine/scripting/reference/catalog.json`. `node scripts/gene
 
 [unity-6.3-inventory.json](unity-6.3-inventory.json) records all 5,429 navigation nodes in the official baseline TOC, including namespaces, groups and types. It records the source URL and SHA-256. `pending` means unimplemented; `partial` points to an Axiom page whose declarations and limitations define the actual supported surface. This is a complete TOC inventory, **not** a completed audit or implementation of every member page. Documentation prose, examples, layout code and icons in Axiom are original; Unity's navigation taxonomy and API signatures guide compatibility.
 
-The first two additional batches are implemented for the current engine model: **Objects and components** and **Execution and time**. See [BATCHES.md](BATCHES.md) for their exact implemented scope, compatibility limits and the next six batches. Existing physics and presentation functionality remains available; their broader Unity surfaces are still follow-up work.
+Four batches now have an expanded implemented surface: **Objects and components**, **Execution and time**, **Physics 2D** and **Physics 3D**. See [BATCHES.md](BATCHES.md) for exact limits, five remaining main batches and advanced physics work. This is not full Unity compatibility.
 
 ## Important migration boundaries
 

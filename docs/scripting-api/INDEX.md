@@ -30,24 +30,26 @@
   - Input
   - KeyCode
 - Physics
-  - Rigidbody
   - RigidBody
   - ForceMode
-  - Collider
-  - Collider2D
-  - Collision
-  - Collision2D
-  - Physics
-  - Physics2D
   - Ray
-  - RaycastHit
-  - RaycastHit2D
-  - Rigidbody2D
   - ForceMode2D
-  - BoxCollider
-  - SphereCollider
-  - BoxCollider2D
-  - CircleCollider2D
+  - Physics 3D
+    - Rigidbody
+    - Collider
+    - Collision
+    - Physics
+    - RaycastHit
+    - BoxCollider
+    - SphereCollider
+  - Physics 2D
+    - Collider2D
+    - Collision2D
+    - Physics2D
+    - RaycastHit2D
+    - Rigidbody2D
+    - BoxCollider2D
+    - CircleCollider2D
 - Audio and animation
   - AudioSource
   - Animator

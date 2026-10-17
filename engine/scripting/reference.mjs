@@ -2,7 +2,7 @@ import {SCRIPT_SDK_VERSION} from './sdk-version.mjs';
 import {readFile} from 'node:fs/promises';
 const root=new URL('./',import.meta.url);
 let loaded;
-export async function scriptingReference(){if(!loaded)loaded=Promise.all([readFile(new URL('reference/catalog.json',root),'utf8'),...['Sdk.cs','Compatibility.cs','RuntimeObjects.cs','Scheduling.cs','GeneratedComponents.cs'].map(name=>readFile(new URL('templates/'+name,root),'utf8').then(text=>({name,text})))]).then(([json,...sources])=>({catalog:JSON.parse(json),sources}));return loaded;}
+export async function scriptingReference(){if(!loaded)loaded=Promise.all([readFile(new URL('reference/catalog.json',root),'utf8'),...['Sdk.cs','Compatibility.cs','RuntimeObjects.cs','Scheduling.cs','Physics.cs','GeneratedComponents.cs'].map(name=>readFile(new URL('templates/'+name,root),'utf8').then(text=>({name,text})))]).then(([json,...sources])=>({catalog:JSON.parse(json),sources}));return loaded;}
 export async function readScriptingReference(query){
  const {catalog,sources}=await scriptingReference(),index=catalog.sections.map(({id,title,parentId})=>({id,title,parentId}));
  if(/^(?:index|scripting api|api)$/i.test(query.trim()))return {sdkVersion:SCRIPT_SDK_VERSION,engineVersion:catalog.version,index,instructions:'Select a type or member from this index. Pending Unity APIs are not available Axiom APIs.'};

@@ -206,7 +206,7 @@ internal readonly record struct Operation(string Kind,string Id,string? Template
 internal static partial class Context {
  internal static readonly List<Script> LiveScripts=new();
  internal static readonly Dictionary<string,bool> ActiveStates=new();
- internal static readonly Dictionary<string,JsonElement> PreviousContacts=new();
+ internal static readonly Dictionary<string,List<JsonElement>> PreviousContacts=new();
  internal static int Generation;
  internal static bool DeterministicSpawn;
  internal static uint ReplaySeed;
@@ -247,9 +247,9 @@ internal static partial class Context {
  }
  internal static void Velocity(Entity entity,Vec3 velocity) {
   _=ReadBody(entity);Position(velocity);if(Math.Max(Math.Abs(velocity.X),Math.Max(Math.Abs(velocity.Y),Math.Abs(velocity.Z)))>10000)throw new ArgumentException("AX_PHYSICS_0001: invalid velocity");
-  Add(new("velocity",entity.Id,null,velocity,null));Bodies[entity.Id]=new RigidBody(velocity);
+  Add(new("velocity",entity.Id,null,velocity,null));Bodies[entity.Id]=new RigidBody(velocity);PhysicsData.VelocityData(entity,velocity);
  }
- private static void Add(Operation operation) {
+ internal static void Add(Operation operation) {
   if(Operations.Count>=Limits.Operations)throw new InvalidOperationException("AX_SCRIPT_0003: operation limit exceeded");
   Operations.Add(operation);
  }
@@ -272,11 +272,15 @@ internal static partial class Context {
   var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,new Transform(position,value.Rotation,value.Scale){Entity=new Entity(id,Generation)});if(EntityData.TryGetValue(template.Id,out var data))EntityData[id]=data;if(Cameras.Contains(template.Id))Cameras.Add(id);Parents[id]=null;ActiveStates[id]=ActiveStates.GetValueOrDefault(template.Id,true);if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
  internal static void DispatchContacts(JsonElement request){
-  var current=new Dictionary<string,JsonElement>();if(request.TryGetProperty("contacts",out var contacts))foreach(var c in contacts.EnumerateArray()){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;if(!Entities.ContainsKey(a)||!Entities.ContainsKey(b))continue;var key=string.CompareOrdinal(a,b)<0?a+"|"+b:b+"|"+a;current[key]=c.Clone();}
-  void Emit(JsonElement c,int phase){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;var trigger=c.GetProperty("trigger").GetBoolean();var normal=Vector3.Read(c.GetProperty("normal"));var point=Vector3.Read(c.GetProperty("point"));foreach(var script in LiveScripts.OfType<MonoBehaviour>().ToArray()){if(!Entities.ContainsKey(script.Entity.Id)||!script.isActiveAndEnabled||script.Entity.Id!=a&&script.Entity.Id!=b)continue;var other=script.Entity.Id==a?b:a;if(!EntityData.TryGetValue(other,out var data)||!data.TryGetProperty("collider",out var collider))continue;var e=new Entity(other,Generation);var n=script.Entity.Id==a?normal:-normal;
-   if(collider.GetProperty("dimension").GetInt32()==2){var col=new Collider2D(e);if(trigger){if(phase==0)script.OnTriggerEnter2D(col);else if(phase==1)script.OnTriggerStay2D(col);else script.OnTriggerExit2D(col);}else{var collision=new Collision2D(col,n,point);if(phase==0)script.OnCollisionEnter2D(collision);else if(phase==1)script.OnCollisionStay2D(collision);else script.OnCollisionExit2D(collision);}}
-   else{var col=new Collider(e);if(trigger){if(phase==0)script.OnTriggerEnter(col);else if(phase==1)script.OnTriggerStay(col);else script.OnTriggerExit(col);}else{var collision=new Collision(col,n,point);if(phase==0)script.OnCollisionEnter(collision);else if(phase==1)script.OnCollisionStay(collision);else script.OnCollisionExit(collision);}}
-  }}
+  var current=new Dictionary<string,List<JsonElement>>();
+  string Key(JsonElement c){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;return string.CompareOrdinal(a,b)<0?a+"|"+b:b+"|"+a;}
+  if(request.TryGetProperty("contacts",out var contacts))foreach(var c in contacts.EnumerateArray()){var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;if(!Entities.ContainsKey(a)||!Entities.ContainsKey(b))continue;var key=Key(c);if(!current.ContainsKey(key))current[key]=new();current[key].Add(c.Clone());}
+  void Emit(List<JsonElement> manifold,int phase){var c=manifold[0];var a=c.GetProperty("a").GetString()!;var b=c.GetProperty("b").GetString()!;var trigger=c.GetProperty("trigger").GetBoolean();var normal=Vector3.Read(c.GetProperty("normal"));var point=Vector3.Read(c.GetProperty("point"));
+   foreach(var script in LiveScripts.OfType<MonoBehaviour>().ToArray()){if(!Entities.ContainsKey(script.Entity.Id)||!script.isActiveAndEnabled||script.Entity.Id!=a&&script.Entity.Id!=b)continue;var other=script.Entity.Id==a?b:a;if(!EntityData.TryGetValue(other,out var data)||!data.TryGetProperty("collider",out var collider)||!EntityData[script.Entity.Id].TryGetProperty("collider",out _))continue;var e=new Entity(other,Generation);var n=script.Entity.Id==a?-normal:normal;var relative=(Bodies.TryGetValue(script.Entity.Id,out var selfBody)?(Vector3)selfBody.Velocity:Vector3.zero)-(Bodies.TryGetValue(other,out var otherBody)?(Vector3)otherBody.Velocity:Vector3.zero);
+    if(collider.GetProperty("dimension").GetInt32()==2){var col=new Collider2D(e);if(trigger){if(phase==0)script.OnTriggerEnter2D(col);else if(phase==1)script.OnTriggerStay2D(col);else script.OnTriggerExit2D(col);}else{var self=new Collider2D(script.Entity);var points=phase==2?Array.Empty<ContactPoint2D>():manifold.Select(m=>{var p=Vector3.Read(m.GetProperty("point"));var normal=Vector3.Read(m.GetProperty("normal"))*(script.Entity.Id==a?-1:1);return new ContactPoint2D(new(p.X,p.Y),new(normal.X,normal.Y),-m.GetProperty("depth").GetDouble(),self,col);}).ToArray();var collision=new Collision2D(col,n,point,points,relative);if(phase==0)script.OnCollisionEnter2D(collision);else if(phase==1)script.OnCollisionStay2D(collision);else script.OnCollisionExit2D(collision);}}
+    else{var col=new Collider(e);if(trigger){if(phase==0)script.OnTriggerEnter(col);else if(phase==1)script.OnTriggerStay(col);else script.OnTriggerExit(col);}else{var self=new Collider(script.Entity);var points=phase==2?Array.Empty<ContactPoint>():manifold.Select(m=>new ContactPoint(Vector3.Read(m.GetProperty("point")),Vector3.Read(m.GetProperty("normal"))*(script.Entity.Id==a?-1:1),-m.GetProperty("depth").GetDouble(),self,col)).ToArray();var collision=new Collision(col,n,point,points,relative);if(phase==0)script.OnCollisionEnter(collision);else if(phase==1)script.OnCollisionStay(collision);else script.OnCollisionExit(collision);}}
+   }
+  }
   foreach(var pair in current)Emit(pair.Value,PreviousContacts.ContainsKey(pair.Key)?1:0);foreach(var pair in PreviousContacts)if(!current.ContainsKey(pair.Key))Emit(pair.Value,2);PreviousContacts.Clear();foreach(var pair in current)PreviousContacts.Add(pair.Key,pair.Value);
  }
  internal static bool IsActive(string id){for(var depth=0;id!=null&&depth<64;depth++){if(!ActiveStates.GetValueOrDefault(id,true))return false;id=Parents.GetValueOrDefault(id)!;}return true;}

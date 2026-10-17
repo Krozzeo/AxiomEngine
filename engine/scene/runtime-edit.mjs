@@ -1,3 +1,4 @@
+import {validateReference} from '../scripting/references.mjs';
 import schema from '../../protocol/schema/project-document.schema.json' with {type:'json'};
 import {scriptFields,scriptValue} from '../scripting/fields.mjs';
 const fail=message=>{throw Object.assign(Error(message),{code:'AX_SCENE_0001'});};
@@ -9,7 +10,7 @@ function check(value,rule,path='value',depth=0){if(depth>24)fail('Runtime value 
 export function applyRuntimeEdit(scene,{type,data}) {
  if(!runtimeEditableTypes.includes(type)||!data||typeof data!=='object'||Array.isArray(data)||new TextEncoder().encode(JSON.stringify(data)).byteLength>32768)fail('Unsupported runtime edit');const next=structuredClone(scene);
  const find=id=>{const e=next.entities.find(e=>e.id===id);if(!e)fail('Runtime entity is missing');return e;};
- if(type==='scene.script.edit'){if(data.action!=='values')fail('Script structure cannot change during Play');const e=find(data.entityId),c=e.scriptComponents?.find(c=>c.path===data.path);if(!c)fail('Script is not attached');const meta=scriptFields(next,data.path);for(const[name,value]of Object.entries(data.values??{})){const field=meta.fields.find(f=>f.name===name);if(!field||field.readOnly)fail('Field is hidden or readonly');c.values[name]=scriptValue(field,value);}}
+ if(type==='scene.script.edit'){if(data.action!=='values')fail('Script structure cannot change during Play');const e=find(data.entityId),c=e.scriptComponents?.find(c=>c.path===data.path);if(!c)fail('Script is not attached');const meta=scriptFields(next,data.path);for(const[name,value]of Object.entries(data.values??{})){const field=meta.fields.find(f=>f.name===name);if(!field||field.readOnly)fail('Field is hidden or readonly');c.values[name]=field.reference?validateReference(next,field,value):scriptValue(field,value);}}
  else if(type==='scene.entity.update'||type==='scene.entities.update'){
   const updates=type==='scene.entities.update'?data.updates:[data];if(!Array.isArray(updates)||updates.length>256)fail('Runtime selection budget exceeded');for(const update of updates){const e=find(update.entityId);if(update.name!==undefined)e.name=update.name;if(update.transform)e.transform={...e.transform,...structuredClone(update.transform)};check(e,entitySchema);}
  }else{const key=components[type.split('.')[1]],e=find(data.entityId);if(!e[key])fail('Attach components before Play');check(data.value,entitySchema.properties[key]);e[key]=structuredClone(data.value);if(key==='camera'&&e.camera.active)for(const other of next.entities)if(other.id!==e.id&&other.camera)other.camera.active=false;}

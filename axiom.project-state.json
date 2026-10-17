@@ -2,11 +2,11 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-17",
-  "engineVersion": "0.0.47",
+  "engineVersion": "0.0.48",
   "activeMilestone": 18.3,
-  "milestoneStatus": "complete",
+  "milestoneStatus": "in_progress",
   "completion": {
-    "activeMilestonePercent": 100,
+    "activeMilestonePercent": 70,
     "wholeProjectPercent": 94,
     "method": "docs/architecture/MILESTONE_REPORTING.md",
     "scopeNote": "Historical original weighted MVP 122/130; expanded API compatibility is additional unweighted scope."
@@ -1116,7 +1116,8 @@
     "docs/scripting-api/README.md",
     "docs/scripting-api/BATCHES.md",
     "docs/scripting-api/INDEX.md",
-    "docs/reports/m18-3-8-sdk-evidence.json"
+    "docs/reports/m18-3-8-sdk-evidence.json",
+    "docs/reports/M18_3_10_CURRENT_REPORT.md"
   ],
-  "nextTask": "M18.4 GitHub integration and M19 hardening. Remaining SDK batches: presentation; navigation/networking; platform/tooling; advanced physics/input/resource extensions are tracked in docs/scripting-api/BATCHES.md."
+  "nextTask": "Complete and verify M18.3.10 scenes, API expansions, typed references and independent Inspectors; do not treat WIP PR #39 as a completed release."
 }

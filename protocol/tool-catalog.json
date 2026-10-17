@@ -4202,7 +4202,7 @@
                   },
                   "order": {
                     "type": "array",
-                    "maxItems": 12,
+                    "maxItems": 19,
                     "uniqueItems": true,
                     "items": {
                       "enum": [
@@ -4217,13 +4217,20 @@
                         "ide",
                         "assistant",
                         "pmd",
-                        "scripting"
+                        "scripting",
+                        "inspector2",
+                        "inspector3",
+                        "inspector4",
+                        "inspector5",
+                        "inspector6",
+                        "inspector7",
+                        "inspector8"
                       ]
                     }
                   },
                   "closed": {
                     "type": "array",
-                    "maxItems": 12,
+                    "maxItems": 19,
                     "uniqueItems": true,
                     "items": {
                       "enum": [
@@ -4238,7 +4245,14 @@
                         "ide",
                         "assistant",
                         "pmd",
-                        "scripting"
+                        "scripting",
+                        "inspector2",
+                        "inspector3",
+                        "inspector4",
+                        "inspector5",
+                        "inspector6",
+                        "inspector7",
+                        "inspector8"
                       ]
                     }
                   },
@@ -4273,6 +4287,76 @@
                     ]
                   },
                   "scripting": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector2": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector3": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector4": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector5": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector6": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector7": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "right",
+                      "top",
+                      "bottom",
+                      "center"
+                    ]
+                  },
+                  "inspector8": {
                     "type": "string",
                     "enum": [
                       "left",

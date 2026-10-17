@@ -195,7 +195,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     if(nextWidth!==canvas.width||nextHeight!==canvas.height){canvas.width=nextWidth;canvas.height=nextHeight;production?.dispose();production=null;productionLoading=null;twoDGPU?.dispose();twoDGPU=null;if(device){depth?.destroy();depth=device.createTexture({size:[nextWidth,nextHeight],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}}
 
     lineage=snapshot.commandLineage??null;assetFailures.clear();authoredHierarchy=structuredClone(project?.scene??{entities:[]});
-    let scene=worldScene(structuredClone(project?.scene??{entities:[]}));if(testing&&replaySeeded)for(const e of scene.entities)if(e.particles2D)e.particles2D.seed=replaySeed;for(const e of scene.entities){e.runtimeParentId=authoredHierarchy.entities.find(a=>a.id===e.id)?.parentId??null;delete e.parentId;}
+    const authoredScene=structuredClone(project?.scene??{entities:[]});if(!snapshot.playing&&authoredScene.sceneDocuments){const d=authoredScene.sceneDocuments;authoredScene.entities=authoredScene.entities.filter(e=>d.owners[e.id]===d.active);}
+    let scene=worldScene(authoredScene);if(testing&&replaySeeded)for(const e of scene.entities)if(e.particles2D)e.particles2D.seed=replaySeed;for(const e of scene.entities){e.runtimeParentId=authoredHierarchy.entities.find(a=>a.id===e.id)?.parentId??null;delete e.parentId;}
     if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
     const referenced=new Set(scene.entities.flatMap(entity=>[entity.audioSource?.assetId,entity.renderable?.assetId,entity.tilemap?.assetId,...(entity.lod?.levels??[]).map(l=>l.assetId)]));

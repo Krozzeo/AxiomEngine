@@ -67,6 +67,7 @@
   - RangeAttribute
   - Debug
   - Log
+  - Script object and asset references
 - Scenes, assets and persistence
   - SceneManager
   - Scene

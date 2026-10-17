@@ -10,11 +10,11 @@ public static class Application {
  internal static int Number(string name,int fallback=0)=>Data.TryGetProperty(name,out var v)?v.GetInt32():fallback;
  public static bool isEditor=>true;internal static bool Running;public static bool isPlaying=>Running;
  public static RuntimePlatform platform=>RuntimePlatform.WebGLPlayer;
- public static string version=>Text("version","0.0.48");public static string unityVersion=>throw new NotSupportedException("Use Application.axiomVersion");public static string axiomVersion=>version;
+ public static string version=>Text("version","0.0.48");public static string unityVersion=>version;public static string axiomVersion=>version;
  public static string productName=>Text("productName","Axiom Project");public static string identifier=>Text("projectId");
  public static string absoluteURL=>Text("absoluteURL");public static string persistentDataPath=>"playerprefs://"+identifier;
  public static NetworkReachability internetReachability=>Data.TryGetProperty("online",out var online)&&!online.GetBoolean()?NetworkReachability.NotReachable:NetworkReachability.ReachableViaLocalAreaNetwork;
- public static string dataPath=>"project://"+identifier;
+ public static string dataPath=>identifier;
 }
 public static class Screen {
  public static int width=>Application.Number("width",960);public static int height=>Application.Number("height",540);
@@ -23,7 +23,7 @@ public static class Screen {
 }
 public static class SystemInfo {
  public static string operatingSystem=>Application.Text("operatingSystem","Browser");
- public static OperatingSystemFamily operatingSystemFamily=>operatingSystem.Contains("Windows")?OperatingSystemFamily.Windows:operatingSystem.Contains("Mac")?OperatingSystemFamily.MacOSX:operatingSystem.Contains("Linux")?OperatingSystemFamily.Linux:OperatingSystemFamily.Other;
+ public static OperatingSystemFamily operatingSystemFamily=>operatingSystem.Contains("Win")?OperatingSystemFamily.Windows:operatingSystem.Contains("Mac")?OperatingSystemFamily.MacOSX:operatingSystem.Contains("Linux")?OperatingSystemFamily.Linux:OperatingSystemFamily.Other;
  public static int processorCount=>Application.Number("processorCount",1);public static string graphicsDeviceType=>Application.Text("graphicsDeviceType","unknown");public static bool supportsComputeShaders=>graphicsDeviceType=="webgpu";
 }
 public static class JsonUtility {

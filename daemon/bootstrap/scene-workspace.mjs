@@ -81,6 +81,7 @@ export class SceneWorkspace {
     if (data.expectedSceneRevision !== this.revision) fail("AX_SCENE_0002", "Scene changed; refresh before editing");
   }
   commitScene(scene) {
+    for(const e of scene.entities)for(const c of e.scriptComponents??[])for(const [key,value]of Object.entries(c.values))if(value?.entityId&&!scene.entities.some(n=>n.id===value.entityId))c.values[key]=null;
     syncImportedFiles(scene,this.project.scene);
     syncSceneDocuments(scene);
     validateProject({...this.project,scene});
@@ -354,6 +355,7 @@ export class SceneWorkspace {
     if(data.parentId&&['scene.entity.create','scene.example.create','scene.primitive.create'].includes(type)){if(!scene.entities.some(e=>e.id===data.parentId))fail('AX_SCENE_0001','Parent entity missing');scene.entities.at(-1).parentId=data.parentId;}
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     if(scene.script?.sources)scene.script.attachments=scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id);
+    for(const e of scene.entities)for(const c of e.scriptComponents??[])for(const [key,value]of Object.entries(c.values))if(value?.entityId&&!scene.entities.some(n=>n.id===value.entityId))c.values[key]=null;
     syncImportedFiles(scene,this.project.scene);
     syncSceneDocuments(scene);
     if(data.prefabAction!=='disassemble')try{assertPrefabMutation(this.project.scene,scene,type);}catch(error){fail('AX_PREFAB_0001',error.message);}

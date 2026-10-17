@@ -10,7 +10,6 @@
     "entities": 1024,
     "attachments": 32,
     "operations": 128,
-    "spawns": 64,
     "logs": 32,
     "sourceBytes": 65536
   }

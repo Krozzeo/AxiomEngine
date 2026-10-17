@@ -373,3 +373,9 @@ input[type="file"] { font-size: 11px; }
 
 /* Physical scene documents share the compact hierarchy framing. */
 .scene-root[data-scene-path]{border:1px solid #31445b;border-radius:4px;margin:3px 0;color:#e4eaf2}.scene-root.active-scene .scene-root-button{color:#62b9ff;font-weight:700}.scene-close{margin-left:auto;flex:none;width:22px;height:22px}.scene-close img{width:14px;height:14px}
+
+.reference-field{display:flex;align-items:center;gap:3px;min-width:0;flex:1}.reference-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;border:1px solid #344860;background:#101d2b;color:#a9d5f5;text-align:left}.reference-field>.icon-button{width:20px;height:20px;flex:none}.reference-field img{width:12px;height:12px}.reference-field select{max-width:100%}
+
+.additional-inspector{padding:10px;overflow:auto;background:#101b2b;color:#dce6f3;min-width:0}.additional-inspector-body .script-field{display:flex;align-items:center;gap:6px;margin:5px 0}.additional-inspector-body .script-field>span:first-child{min-width:85px;flex:1}.additional-inspector-body input,.additional-inspector-body select{min-width:0;max-width:100%;background:#172536;color:#dce6f3;border:1px solid #31465c;border-radius:3px;padding:4px}.additional-inspector-body .vector-inputs .script-field>span{min-width:0;flex:0}.additional-inspector-body .vector-inputs input{width:100%}.inspector-object{border-left:1px solid #2c4159;padding-left:8px;min-width:0}.inspector-fold{border:0;background:none;padding:0 4px 0 0;color:inherit}.inspector-lock{display:flex;align-items:center}.scene-root{flex:none}
+
+#entities{min-height:0}.additional-inspector .property-heading{display:flex;align-items:center;gap:4px}.additional-inspector .property-close{margin-left:auto}

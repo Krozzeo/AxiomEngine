@@ -15,7 +15,6 @@ internal static class Limits {
  internal const int Entities = 1024;
  internal const int Attachments = 32;
  internal const int Operations = 128;
- internal const int Spawns = 64;
  internal const int Logs = 32;
  internal const int SourceBytes = 65536;
 }

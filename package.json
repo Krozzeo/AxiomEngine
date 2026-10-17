@@ -69,7 +69,8 @@
     "eval:agent": "node scripts/evaluate-agent.mjs",
     "check:scripting-api": "node scripts/generate-scripting-reference.mjs --check",
     "test:browser:m18-3-7": "node tests/browser/m18-3-7.mjs",
-    "test:browser:m18-3-9": "node tests/browser/m18-3-9.mjs"
+    "test:browser:m18-3-9": "node tests/browser/m18-3-9.mjs",
+    "test:browser:m18-3-10": "node tests/browser/m18-3-10.mjs"
   },
   "dependencies": {
     "fflate": "0.8.3",

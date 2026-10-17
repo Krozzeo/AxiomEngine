@@ -15,7 +15,7 @@ public static partial class Program {
  [JSExport]
  public static string Dispatch(string request) {
   try {
-   if(request.Length>512*1024)throw new ArgumentException("Script request too large");
+   if(request.Length>4*1024*1024)throw new ArgumentException("Script request too large");
    using var document=JsonDocument.Parse(request);var value=document.RootElement;
    var action=value.GetProperty("action").GetString();var generation=value.GetProperty("generation").GetInt32();
    if(action=="start") {
@@ -25,6 +25,7 @@ public static partial class Program {
      var entity=value.GetProperty("entities").EnumerateArray().First(e=>e.GetProperty("id").GetString()==id.GetString());Attach(entity,generation);
      if(Scripts.Count>Limits.Attachments)throw new ArgumentException("Script attachment limit exceeded");
     }
+    foreach(var script in Scripts){if(!RuntimeLifecycle.Factories.TryGetValue(script.GetType(),out var factory)||factory.Path=="")continue;var entity=Context.EntityData[script.Entity.Id];if(entity.TryGetProperty("scriptComponents",out var components))foreach(var c in components.EnumerateArray())if(c.GetProperty("path").GetString()==factory.Path)factory.Apply(script,c.GetProperty("values"));}
     RuntimeLifecycle.StartAll();
    } else {
     if(generation!=Context.Generation)throw new InvalidOperationException("Stale runtime generation");

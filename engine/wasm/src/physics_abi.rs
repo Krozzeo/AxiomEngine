@@ -43,6 +43,13 @@ pub extern "C" fn axiom_physics_add(
                     rotation: [0.0, 0.0, 0.0, 1.0],
                     angular_velocity: [0.0; 3],
                     freeze_rotation: false,
+                    gravity: [0.0, -9.81, 0.0],
+                    linear_damping: 0.0,
+                    angular_damping: 0.0,
+                    kinematic: false,
+                    sleeping: false,
+                    constraints: 0,
+                    continuous: false,
                     half: [hx, hy, hz],
                     inverse_mass,
                     restitution,
@@ -85,6 +92,13 @@ pub extern "C" fn axiom_physics_read(id: u32, index: u32, field: u32) -> f64 {
                 3..=5 => b.velocity[field as usize - 3],
                 6..=9 => b.rotation[field as usize - 6],
                 10..=12 => b.angular_velocity[field as usize - 10],
+                21 => {
+                    if b.sleeping {
+                        1.0
+                    } else {
+                        0.0
+                    }
+                }
                 _ => f64::NAN,
             })
     })
@@ -107,6 +121,13 @@ pub extern "C" fn axiom_physics_write(id: u32, index: u32, field: u32, value: f6
             3..=5 => b.velocity[field as usize - 3] = value,
             10..=12 => b.angular_velocity[field as usize - 10] = value,
             13 => b.freeze_rotation = value != 0.0,
+            14..=16 => b.gravity[field as usize - 14] = value,
+            17 if value >= 0.0 => b.linear_damping = value,
+            18 if value >= 0.0 => b.angular_damping = value,
+            19 => b.kinematic = value != 0.0,
+            20 if (0.0..=126.0).contains(&value) => b.constraints = value as u32,
+            21 => b.sleeping = value != 0.0,
+            22 => b.continuous = value != 0.0,
             _ => return 2,
         };
         0
@@ -142,6 +163,8 @@ pub extern "C" fn axiom_physics_contact(id: u32, index: u32, field: u32) -> f64 
                 3 => c.depth,
                 4..=6 => c.normal[field as usize - 4],
                 7..=9 => c.point[field as usize - 7],
+                10..=12 => c.relative_velocity[field as usize - 10],
+                13 => c.impulse,
                 _ => f64::NAN,
             })
     })
@@ -197,6 +220,25 @@ pub extern "C" fn axiom_physics_rotation(
         } else {
             q.map(|v| v / norm)
         };
+        0
+    })
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn axiom_physics_ignore_pair(id: u32, a: u32, b: u32, ignore: u32) -> u32 {
+    REGISTRY.with_borrow_mut(|r| {
+        let Some(w) = r.physics.get_mut(&id) else {
+            return 1;
+        };
+        if a as usize >= w.bodies.len() || b as usize >= w.bodies.len() {
+            return 2;
+        }
+        let pair = (a.min(b) as usize, a.max(b) as usize);
+        if ignore != 0 {
+            w.ignored_pairs.insert(pair);
+        } else {
+            w.ignored_pairs.remove(&pair);
+        }
         0
     })
 }

@@ -31,6 +31,10 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   let view='scene',anchor=null,folderPath='Project',fileSelected=null,foldersCollapsed=false;
   const panels=mountPanelLayout({document,onParallel:value=>getRenderer()?.setParallelViewport?.(value),onView:name=>{view=name;onView(name);},save:value=>act(()=>run('project.editor.update',mutation({value:{...state.project?.editor,...value}}))),isBusy:()=>busy||!state.project});
   const hub=mountHub({document,api,getState:()=>state,isDirty:()=>state.dirty||ideDirty,save:saveProject,close:async()=>{if(!await act(()=>run('project.close',mutation({discardChanges:state.dirty}))))throw Error('Could not close project');},create:async data=>{if(!await act(()=>switchProject('project.create',data,true)))throw Error($('project-error').textContent||'Project creation failed');},open:async id=>{if(!await act(()=>switchProject('project.open',{id},true)))throw Error($('project-error').textContent||'Project opening failed');},reportError});
+  // Runtime transforms are already world-space; parent identity is only projected for the tree.
+  const visibleScene=()=>state.playing?getRenderer()?.interaction?.().scene??state.project?.scene:state.project?.scene;
+  const hierarchyEntities=()=> (visibleScene()?.entities??[]).map(e=>state.playing?{...e,parentId:e.runtimeParentId??e.parentId??null}:e);
+  let runtimeTopology='';
   function draw(updateFields = true) {
     hub.update();
     $("editor-workspace").setAttribute("aria-busy",String(busy));
@@ -95,7 +99,9 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     $("preview-note").textContent=project ? `${view==='game'?'Game camera':'Scene camera'}` : "Create or open a project to begin";
     let hierarchyScrollTop=$("entities").scrollTop??0;
     $("entities").replaceChildren();
-    const entities=project?.scene.entities??[];
+    const entities=hierarchyEntities();
+    selection=new Set([...selection].filter(id=>entities.some(e=>e.id===id)));selected=selection.has(selected)?selected:[...selection].at(-1)??null;
+    runtimeTopology=JSON.stringify(entities.map(e=>[e.id,e.parentId,e.name]));
     const childrenByParent=new Map();for(const e of entities){const p=e.parentId??null;if(!childrenByParent.has(p))childrenByParent.set(p,[]);childrenByParent.get(p).push(e);}
     function drop(node,parentId,beforeId){node.addEventListener('dragover',event=>{if(!event.dataTransfer.types.includes('application/axiom-entities'))return;event.preventDefault();event.stopPropagation();node.classList.add('drag-target');});node.addEventListener('dragleave',()=>node.classList.remove('drag-target'));node.addEventListener('drop',event=>{if(!event.dataTransfer.types.includes('application/axiom-entities'))return;event.preventDefault();event.stopPropagation();node.classList.remove('drag-target');try{const ids=JSON.parse(event.dataTransfer.getData('application/axiom-entities'));void act(()=>run('scene.entity.reparent',mutation({entityIds:ids,...(parentId?{parentId}:{}),...(beforeId?{beforeId}:{})})));}catch(error){reportError(error);}});}
     const root=document.createElement('div');root.className='tree-row scene-root';root.setAttribute('role','treeitem');root.setAttribute('aria-expanded',String(!collapsed.has('root')));const rootToggle=document.createElement('button');rootToggle.className='tree-toggle';rootToggle.textContent=collapsed.has('root')?'▸':'▾';rootToggle.setAttribute('aria-label','Expand or collapse Scene root');rootToggle.addEventListener('click',()=>{if(collapsed.has('root'))collapsed.delete('root');else collapsed.add('root');draw(false);});root.append(rootToggle);const rootButton=document.createElement('button');rootButton.className='scene-root-button';rootButton.textContent='Scene root';rootButton.addEventListener('click',()=>select(null));root.append(rootButton);drop(root,null);$('entities').append(root);
@@ -115,7 +121,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     if(end<rows.length)spacer((rows.length-end)*rowHeight);const endGap=document.createElement('div');endGap.className='tree-gap';endGap.setAttribute('aria-label','Append to Scene root');drop(endGap,null);$('entities').append(endGap);if(virtual)$('entities').scrollTop=hierarchyScrollTop;
     if(entity?.prefab&&!state.playing&&entity.id!==entity.prefab.rootId)$('entity-fields').disabled=true;
     browser.draw();
-    $("entity-empty").hidden = !!project?.scene.entities.length;
+    $("entity-empty").hidden = !!entities.length;
     if (updateFields) {
     const assetSelection=$("asset-list").value;
     $("asset-list").replaceChildren();
@@ -321,7 +327,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     event.preventDefault();const updates=(state.playing?getRenderer().interaction().scene:state.project.scene).entities.filter(e=>selection.has(e.id)).map(e=>{const t=structuredClone(e.transform);const rotation=eulerFromQuaternion(t.rotation);for(const group of ['position','rotation','scale'])for(let i=0;i<3;i++){const raw=$(group+'-'+i).value.trim();if(raw!==''){const value=Number(raw);if(!Number.isFinite(value))throw Error('Transform values must be finite');if(group==='rotation')rotation[i]=value;else t[group][i]=value;}}t.rotation=quaternionFromEuler(rotation);return {entityId:e.id,transform:t};});
     return act(()=>updates.length===1?run('scene.entity.update',mutation({...updates[0],name:$('entity-name').value})):run('scene.entities.update',mutation({updates,space:'local'})));
   });
-  function select(id,options=false){if(busy)return;filePaths=[];browser.clear(false);const o=typeof options==='boolean'?{toggle:options}:options;const valid=state.project?.scene.entities.some(e=>e.id===id);if(o.range&&valid){selection=new Set(rangeSelection(hierarchyRows(state.project.scene.entities,collapsed),anchor,id));}else{if(!o.toggle)selection.clear();if(valid){if(o.toggle&&selection.has(id))selection.delete(id);else selection.add(id);}anchor=id;}selected=selection.has(id)?id:[...selection].at(-1)??null;draw();}
+  function select(id,options=false){if(busy)return;filePaths=[];browser.clear(false);const o=typeof options==='boolean'?{toggle:options}:options;const entities=hierarchyEntities(),valid=entities.some(e=>e.id===id);if(o.range&&valid){selection=new Set(rangeSelection(hierarchyRows(entities,collapsed),anchor,id));}else{if(!o.toggle)selection.clear();if(valid){if(o.toggle&&selection.has(id))selection.delete(id);else selection.add(id);}anchor=id;}selected=selection.has(id)?id:[...selection].at(-1)??null;draw();}
   function deleteSelected(){if(!selection.size||state.playing||busy)return;return act(()=>run('scene.entities.delete',mutation({entityIds:[...selection]})));}
   if($('component-add')){
     $('component-add').addEventListener('click',()=>act(async()=>{const component=$('component-choice').value,entity=state.project.scene.entities.find(e=>e.id===selected);if(selection.size!==1)throw Error('Select one entity');
@@ -349,7 +355,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   }
   if(document.defaultView)document.querySelector('.hierarchy').addEventListener('click',event=>{if(!event.target.closest('[data-entity-id],.tree-toggle,.scene-root-button,button,input,select,.dock-panel-controls'))select(null);});
   $('entities').addEventListener('scroll',()=>{if(!document.defaultView||hierarchyPaint!==null)return;hierarchyPaint=requestAnimationFrame(()=>{hierarchyPaint=null;hierarchyScrolling=true;draw(false);hierarchyScrolling=false;});});
-  const runtimeInspectorTimer=document.defaultView?setInterval(()=>{if(!enabled||busy||!state.playing||selection.size!==1)return;const entity=getRenderer()?.interaction?.().scene?.entities.find(e=>e.id===selected);if(!entity)return;for(const [group,values]of [['position',entity.transform.position],['rotation',eulerFromQuaternion(entity.transform.rotation)],['scale',entity.transform.scale]]){const inputs=values.map((_,i)=>$(group+'-'+i));if(inputs.some(input=>input.ownerDocument.activeElement===input))continue;inputs.forEach((input,i)=>{if(input.value!==String(values[i]))input.value=String(values[i]);});}},100):null;runtimeInspectorTimer?.unref?.();
+  const runtimeInspectorTimer=document.defaultView?setInterval(()=>{if(!enabled||busy||!state.playing)return;const topology=JSON.stringify(hierarchyEntities().map(e=>[e.id,e.parentId,e.name]));if(topology!==runtimeTopology)draw(false);if(selection.size!==1)return;const entity=getRenderer()?.interaction?.().scene?.entities.find(e=>e.id===selected);if(!entity)return;for(const [group,values]of [['position',entity.transform.position],['rotation',eulerFromQuaternion(entity.transform.rotation)],['scale',entity.transform.scale]]){const inputs=values.map((_,i)=>$(group+'-'+i));if(inputs.some(input=>input.ownerDocument.activeElement===input))continue;inputs.forEach((input,i)=>{if(input.value!==String(values[i]))input.value=String(values[i]);});}},100):null;runtimeInspectorTimer?.unref?.();
   draw();
   return {
     dispose(){clearInterval(runtimeInspectorTimer);},

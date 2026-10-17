@@ -9,7 +9,7 @@ public sealed class RuntimeApiLab : MonoBehaviour {
  [ReadOnly] public double RealTime=0;
  private Vector3 origin;
  private GameObject? clone;
- public override void Start(){origin=transform.position;gameObject.tag="RuntimeProbe";clone=Instantiate(gameObject);Destroy(clone.GetComponent<RuntimeApiLab>()!);clone.name="Runtime clone (script removed)";clone.transform.position=origin+new Vector3(2,0,0);clone.transform.SetParent(transform,true);StartCoroutine(Pulse());InvokeRepeating(nameof(Report),1,2);}
+ public override void Start(){origin=transform.position;gameObject.tag="RuntimeProbe";clone=Instantiate(gameObject);Destroy(clone.GetComponent<RuntimeApiLab>()!);clone.transform.position=origin+new Vector3(2,0,0);clone.transform.SetParent(transform,true);StartCoroutine(Pulse());InvokeRepeating(nameof(Report),1,2);}
  private IEnumerator Pulse(){while(true){yield return new WaitForSeconds(.5);Pulses++;}}
  private void Report(){Debug.Log("Runtime API: fixed="+FixedTicks+", pulses="+Pulses+", children="+transform.childCount);}
  public override void FixedUpdate(){FixedTicks++;}

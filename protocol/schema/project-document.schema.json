@@ -222,6 +222,27 @@
                   },
                   "freezeRotation": {
                     "type": "boolean"
+                  },
+                  "linearDamping": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "angularDamping": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "constraints": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 126
+                  },
+                  "sleeping": {
+                    "type": "boolean"
+                  },
+                  "continuous": {
+                    "type": "boolean"
                   }
                 }
               },

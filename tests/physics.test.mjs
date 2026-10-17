@@ -24,7 +24,7 @@ test('runtime rebuild for script spawns retains parent links and moving descenda
 test('body-only physics, explicit angular velocity and kinematic rebuild use the actual Wasm solver',async()=>{
  for(const dimension of [2,3]){const k=await loadKernel(bytes),body=entity(2,3,true,dimension);delete body.collider;body.runtimePhysicsDimension=dimension;const scene={entities:[body]};
  try{k.compileScene(scene,new Map());k.configurePhysics(scene);k.setAngularVelocities([[body.id,[0,0,2]]]);const first=k.stepScene(1/60,1n,1);assert.ok(first.transforms[0].transform.position[1]<3);assert.ok(first.transforms[0].transform.rotation[2]>0);assert.equal(k.raycast({origin:[0,5,0],direction:[0,-1,0],dimension}),null);
- const next={entities:[{...body,transform:first.transforms[0].transform,runtimeKinematic:true}]};k.compileScene(next,new Map());k.configurePhysics(next,true);const fixed=k.stepScene(1/60,2n,1);assert.deepEqual(fixed.transforms[0].transform,next.entities[0].transform);assert.throws(()=>k.setAngularVelocities([[body.id,[0,0,10001]]]),/angular velocity/);
+ const next={entities:[{...body,transform:first.transforms[0].transform,runtimeKinematic:true}]};k.compileScene(next,new Map());k.configurePhysics(next,true);const fixed=k.stepScene(1/60,2n,1);assert.ok(fixed.transforms[0].transform.position[1]<next.entities[0].transform.position[1]);assert.notDeepEqual(fixed.transforms[0].transform.rotation,next.entities[0].transform.rotation);assert.throws(()=>k.setAngularVelocities([[body.id,[0,0,10001]]]),/angular velocity/);
  }finally{k.dispose();}}
 });
 

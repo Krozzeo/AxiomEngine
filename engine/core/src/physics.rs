@@ -6,6 +6,13 @@ pub struct Body {
     pub rotation: [f64; 4],
     pub angular_velocity: [f64; 3],
     pub freeze_rotation: bool,
+    pub gravity: [f64; 3],
+    pub linear_damping: f64,
+    pub angular_damping: f64,
+    pub kinematic: bool,
+    pub sleeping: bool,
+    pub constraints: u32,
+    pub continuous: bool,
     pub half: [f64; 3],
     pub inverse_mass: f64,
     pub restitution: f64,
@@ -25,6 +32,8 @@ pub struct Contact {
     pub depth: f64,
     pub point: [f64; 3],
     pub trigger: bool,
+    pub relative_velocity: [f64; 3],
+    pub impulse: f64,
 }
 #[derive(Default)]
 pub struct World {
@@ -32,6 +41,7 @@ pub struct World {
     pub contacts: Vec<Contact>,
     pub candidates: usize,
     pub steps: u64,
+    pub ignored_pairs: std::collections::BTreeSet<(usize, usize)>,
 }
 fn dot(a: [f64; 3], b: [f64; 3]) -> f64 {
     a.iter().zip(b).map(|(x, y)| x * y).sum()
@@ -294,16 +304,32 @@ fn inverse_inertia(b: &Body, v: [f64; 3]) -> [f64; 3] {
     };
     let ax = axes(b);
     let local: [f64; 3] = std::array::from_fn(|i| dot(v, ax[i]) * inertia[i]);
-    (0..3).fold([0.0; 3], |sum, i| add(sum, mul(ax[i], local[i])))
+    let result = (0..3).fold([0.0; 3], |sum, i| add(sum, mul(ax[i], local[i])));
+    std::array::from_fn(|i| {
+        if b.constraints & (16 << i) != 0 {
+            0.0
+        } else {
+            result[i]
+        }
+    })
 }
 fn point_velocity(b: &Body, p: [f64; 3]) -> [f64; 3] {
     add(b.velocity, cross(b.angular_velocity, sub(p, b.position)))
 }
+fn linear_mass(b: &Body, vector: [f64; 3]) -> [f64; 3] {
+    std::array::from_fn(|i| {
+        if b.constraints & (2 << i) != 0 {
+            0.0
+        } else {
+            vector[i] * b.inverse_mass
+        }
+    })
+}
 fn effective_mass(a: &Body, b: &Body, p: [f64; 3], n: [f64; 3]) -> f64 {
     let ra = sub(p, a.position);
     let rb = sub(p, b.position);
-    a.inverse_mass
-        + b.inverse_mass
+    dot(n, linear_mass(a, n))
+        + dot(n, linear_mass(b, n))
         + dot(
             n,
             add(
@@ -313,7 +339,10 @@ fn effective_mass(a: &Body, b: &Body, p: [f64; 3], n: [f64; 3]) -> f64 {
         )
 }
 fn apply(b: &mut Body, p: [f64; 3], impulse: [f64; 3]) {
-    b.velocity = add(b.velocity, mul(impulse, b.inverse_mass));
+    b.velocity = add(b.velocity, linear_mass(b, impulse));
+    if dot(impulse, impulse) > 1e-12 && b.inverse_mass > 0.0 {
+        b.sleeping = false;
+    }
     b.angular_velocity = add(
         b.angular_velocity,
         inverse_inertia(b, cross(sub(p, b.position), impulse)),
@@ -386,14 +415,70 @@ impl World {
         Ok(id)
     }
     pub fn step(&mut self) {
-        const DT: f64 = 1.0 / 60.0;
+        let before = self.steps;
+        let minimum = self
+            .bodies
+            .iter()
+            .map(|b| {
+                b.half
+                    .iter()
+                    .take(b.dimension as usize)
+                    .copied()
+                    .fold(f64::INFINITY, f64::min)
+            })
+            .fold(f64::INFINITY, f64::min)
+            .max(0.001);
+        let samples = self
+            .bodies
+            .iter()
+            .filter(|b| b.continuous)
+            .map(|b| {
+                ((dot(b.velocity, b.velocity).sqrt() / 60.0 / (minimum * 0.5)).ceil() as usize)
+                    .clamp(1, 64)
+            })
+            .max()
+            .unwrap_or(1);
+        let mut contacts = std::collections::BTreeMap::new();
+        let mut candidates = 0;
+        for _ in 0..samples {
+            self.step_dt(1.0 / 60.0 / samples as f64);
+            candidates += self.candidates;
+            for c in &self.contacts {
+                contacts
+                    .entry((c.a, c.b))
+                    .or_insert_with(Vec::new)
+                    .push(c.clone());
+            }
+        }
+        self.contacts = contacts
+            .into_values()
+            .flat_map(|points| points.into_iter().take(4))
+            .collect();
+        self.candidates = candidates;
+        self.steps = before + 1;
+    }
+    fn step_dt(&mut self, dt: f64) {
         for b in &mut self.bodies {
-            if b.inverse_mass > 0.0 {
-                b.velocity[1] -= 9.81 * b.gravity_scale * DT;
-                for i in 0..b.dimension as usize {
-                    b.position[i] += b.velocity[i] * DT;
+            if (b.inverse_mass > 0.0 || b.kinematic) && !b.sleeping {
+                if !b.kinematic {
+                    for i in 0..b.dimension as usize {
+                        b.velocity[i] += b.gravity[i] * b.gravity_scale * dt;
+                    }
                 }
-                integrate_rotation(b, DT);
+                for i in 0..3 {
+                    b.velocity[i] /= 1.0 + b.linear_damping * dt;
+                    b.angular_velocity[i] /= 1.0 + b.angular_damping * dt;
+                    if b.constraints & (2 << i) != 0 {
+                        b.velocity[i] = 0.0;
+                    }
+                    if b.constraints & (16 << i) != 0 {
+                        b.angular_velocity[i] = 0.0;
+                    }
+                }
+                for i in 0..b.dimension as usize {
+                    b.position[i] += b.velocity[i] * dt;
+                }
+                integrate_rotation(b, dt);
             }
         }
         let mut order: Vec<usize> = (0..self.bodies.len()).collect();
@@ -411,7 +496,11 @@ impl World {
                 if b.position[0] - extent(b, 0) > a.position[0] + extent(a, 0) {
                     break;
                 }
-                if a.dimension != b.dimension || a.layer & b.mask == 0 || b.layer & a.mask == 0 {
+                if self.ignored_pairs.contains(&(i.min(j), i.max(j)))
+                    || a.dimension != b.dimension
+                    || a.layer & b.mask == 0
+                    || b.layer & a.mask == 0
+                {
                     continue;
                 }
                 self.candidates += 1;
@@ -424,6 +513,11 @@ impl World {
                             depth,
                             point,
                             trigger: a.trigger || b.trigger,
+                            relative_velocity: sub(
+                                point_velocity(a, point),
+                                point_velocity(b, point),
+                            ),
+                            impulse: 0.0,
                         });
                     }
                 }
@@ -435,18 +529,19 @@ impl World {
             if c.trigger || !corrected.insert((c.a, c.b)) {
                 continue;
             }
-            let mass = self.bodies[c.a].inverse_mass + self.bodies[c.b].inverse_mass;
+            let mass = dot(c.normal, linear_mass(&self.bodies[c.a], c.normal))
+                + dot(c.normal, linear_mass(&self.bodies[c.b], c.normal));
             if mass <= 0.0 {
                 continue;
             }
             let correction = mul(c.normal, (c.depth - 0.0001).max(0.0) * 0.8 / mass);
             self.bodies[c.a].position = sub(
                 self.bodies[c.a].position,
-                mul(correction, self.bodies[c.a].inverse_mass),
+                linear_mass(&self.bodies[c.a], correction),
             );
             self.bodies[c.b].position = add(
                 self.bodies[c.b].position,
-                mul(correction, self.bodies[c.b].inverse_mass),
+                linear_mass(&self.bodies[c.b], correction),
             );
         }
         let bounce: Vec<f64> = self
@@ -501,6 +596,9 @@ impl World {
                     }
                 }
             }
+        }
+        for (c, impulse) in self.contacts.iter_mut().zip(accumulated) {
+            c.impulse = impulse;
         }
         self.steps += 1;
     }
@@ -596,6 +694,13 @@ mod tests {
             rotation: [0.0, 0.0, 0.0, 1.0],
             angular_velocity: [0.0; 3],
             freeze_rotation: false,
+            gravity: [0.0, -9.81, 0.0],
+            linear_damping: 0.0,
+            angular_damping: 0.0,
+            kinematic: false,
+            sleeping: false,
+            constraints: 0,
+            continuous: false,
             half: [0.5; 3],
             inverse_mass: if dynamic { 1.0 } else { 0.0 },
             restitution: 0.0,
@@ -710,6 +815,13 @@ mod angular_tests {
             rotation: [0.0, 0.0, 0.0, 1.0],
             angular_velocity: [0.0; 3],
             freeze_rotation: false,
+            gravity: [0.0, -9.81, 0.0],
+            linear_damping: 0.0,
+            angular_damping: 0.0,
+            kinematic: false,
+            sleeping: false,
+            constraints: 0,
+            continuous: false,
             half: [0.5; 3],
             inverse_mass: if dynamic { 1.0 } else { 0.0 },
             restitution: 0.0,
@@ -779,6 +891,129 @@ mod angular_tests {
             }
             assert!(w.bodies[1].position[0].abs() < 0.02);
             assert!(w.bodies[1].angular_velocity[2].abs() < 0.02);
+        }
+    }
+}
+
+#[cfg(test)]
+mod expanded_api_tests {
+    use super::*;
+    fn body(position: [f64; 3], dynamic: bool) -> Body {
+        Body {
+            position,
+            velocity: [0.0; 3],
+            rotation: [0.0, 0.0, 0.0, 1.0],
+            angular_velocity: [0.0; 3],
+            freeze_rotation: false,
+            gravity: [0.0, -9.81, 0.0],
+            linear_damping: 0.0,
+            angular_damping: 0.0,
+            kinematic: false,
+            sleeping: false,
+            constraints: 0,
+            continuous: false,
+            half: [0.5; 3],
+            inverse_mass: if dynamic { 1.0 } else { 0.0 },
+            restitution: 0.0,
+            friction: 0.5,
+            gravity_scale: 1.0,
+            dimension: 3,
+            sphere: false,
+            trigger: false,
+            layer: 1,
+            mask: u32::MAX,
+        }
+    }
+    #[test]
+    fn kinematic_velocity_and_custom_gravity_integrate() {
+        let mut w = World::default();
+        let mut a = body([0.0, 4.0, 0.0], false);
+        a.kinematic = true;
+        a.velocity = [3.0, 0.0, 0.0];
+        w.add(a).unwrap();
+        let mut b = body([4.0, 4.0, 0.0], true);
+        b.gravity = [6.0, 0.0, 0.0];
+        w.add(b).unwrap();
+        w.step();
+        assert!((w.bodies[0].position[0] - 0.05).abs() < 1e-9);
+        assert_eq!(w.bodies[0].position[1], 4.0);
+        assert!((w.bodies[1].velocity[0] - 0.1).abs() < 1e-9);
+    }
+    #[test]
+    fn damping_and_axis_constraints_affect_real_integration() {
+        let mut w = World::default();
+        let mut a = body([0.0, 4.0, 0.0], true);
+        a.velocity = [6.0, 6.0, 6.0];
+        a.angular_velocity = [2.0, 2.0, 2.0];
+        a.linear_damping = 60.0;
+        a.angular_damping = 60.0;
+        a.gravity_scale = 0.0;
+        a.constraints = 2 | 32;
+        w.add(a).unwrap();
+        w.step();
+        assert_eq!(w.bodies[0].velocity, [0.0, 3.0, 3.0]);
+        assert_eq!(w.bodies[0].angular_velocity, [1.0, 0.0, 1.0]);
+        assert_eq!(w.bodies[0].position[0], 0.0);
+    }
+    #[test]
+    fn sleeping_body_stays_and_collision_wakes_it() {
+        let mut w = World::default();
+        let mut a = body([0.0, 0.0, 0.0], true);
+        a.sleeping = true;
+        w.add(a).unwrap();
+        w.step();
+        assert_eq!(w.bodies[0].position, [0.0; 3]);
+        let mut b = body([-1.0, 0.0, 0.0], true);
+        b.velocity = [6.0, 0.0, 0.0];
+        b.gravity_scale = 0.0;
+        w.add(b).unwrap();
+        w.step();
+        assert!(!w.bodies[0].sleeping);
+    }
+    #[test]
+    fn pair_filter_and_pre_solver_evidence_are_real() {
+        for ignore in [false, true] {
+            let mut w = World::default();
+            let mut a = body([0.0, 0.0, 0.0], true);
+            a.velocity = [6.0, 0.0, 0.0];
+            a.gravity_scale = 0.0;
+            w.add(a).unwrap();
+            w.add(body([1.0, 0.0, 0.0], false)).unwrap();
+            if ignore {
+                w.ignored_pairs.insert((0, 1));
+            }
+            w.step();
+            if ignore {
+                assert!(w.contacts.is_empty());
+                assert_eq!(w.bodies[0].velocity[0], 6.0);
+            } else {
+                assert!(!w.contacts.is_empty());
+                assert_eq!(w.contacts[0].relative_velocity[0], 6.0);
+                assert!(w.contacts.iter().any(|c| c.impulse > 0.0));
+            }
+        }
+    }
+    #[test]
+    fn bounded_continuous_substeps_stop_fast_box_at_thin_wall() {
+        for continuous in [false, true] {
+            let mut w = World::default();
+            let mut a = body([-2.0, 0.0, 0.0], true);
+            a.half = [0.05; 3];
+            a.velocity = [240.0, 0.0, 0.0];
+            a.gravity_scale = 0.0;
+            a.continuous = continuous;
+            w.add(a).unwrap();
+            let mut wall = body([0.0; 3], false);
+            wall.half = [0.05, 2.0, 2.0];
+            w.add(wall).unwrap();
+            w.step();
+            assert_eq!(w.steps, 1);
+            if continuous {
+                assert!(w.bodies[0].position[0] < 0.1);
+                assert!(!w.contacts.is_empty());
+            } else {
+                assert!(w.bodies[0].position[0] > 1.0);
+            }
         }
     }
 }

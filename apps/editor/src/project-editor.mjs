@@ -166,7 +166,9 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
   function adopt(data) {
     if (!("project" in data)) return;
     const oldIds = new Set(state.project?.scene.entities.map(entity => entity.id));
+    const previousProjectId=state.project?.id;
     state = data;
+    if(state.project&&state.project.id!==previousProjectId&&!state.workspaceId)pendingOpenCompile=true;
     if (!state.project?.scene.entities.some(entity => entity.id === selected)) selected = null;
     const added = state.project?.scene.entities.find(entity => !oldIds.has(entity.id));
     if (added) {filePaths=[];browser.clear(false);selected = added.id;selection=new Set([selected]);}
@@ -368,7 +370,7 @@ export function mountProjectEditor({ document, api=null, send, reportError, conf
     },
     async saveTestSuites(gameTests){return act(()=>run('project.editor.update',mutation({value:{leftWidth:220,rightWidth:290,bottomHeight:190,...state.project.editor,gameTests}})));},
     flushDraftSources:()=>ide.flush(),
-    async synchronize(snapshot,options={}){if(options.replace)ide.reset();if(!enabled||busy||(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
+    async synchronize(snapshot,options={}){if(options.replace)ide.reset();if(!enabled||busy||snapshot.project?.id===state.project?.id&&(snapshot.workspaceId??null)===(state.workspaceId??null)&&snapshot.sceneRevision===state.sceneRevision)return false;return act(async()=>{adopt(snapshot);await onState(snapshot);});},
     setDefaultSource(source){defaultScript=source;if(!state.project?.scene.script)$("script-source").value=source;},
     async refreshAssets() {
       if(!enabled||busy||assetRefreshing)return false;assetRefreshing=true;

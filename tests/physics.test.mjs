@@ -27,3 +27,9 @@ test('body-only physics, explicit angular velocity and kinematic rebuild use the
  const next={entities:[{...body,transform:first.transforms[0].transform,runtimeKinematic:true}]};k.compileScene(next,new Map());k.configurePhysics(next,true);const fixed=k.stepScene(1/60,2n,1);assert.deepEqual(fixed.transforms[0].transform,next.entities[0].transform);assert.throws(()=>k.setAngularVelocities([[body.id,[0,0,10001]]]),/angular velocity/);
  }finally{k.dispose();}}
 });
+
+test('angular batch validation is atomic and a recreated body does not inherit removed momentum',async()=>{
+ const k=await loadKernel(bytes),body=entity(2,3,true),scene={entities:[body]};try{k.compileScene(scene,new Map());k.configurePhysics(scene);k.setAngularVelocities([[body.id,[1,2,3]]]);assert.throws(()=>k.setAngularVelocities([[body.id,[5,6,NaN]]]),/angular velocity/);assert.deepEqual(k.physicsSnapshot().bodies[0].angularVelocity,[1,2,3]);
+ k.setVelocities([[body.id,[3,2,1]]]);const recreated={entities:[{...body,runtimeBodyEpoch:1}]};k.configurePhysics(recreated,true);assert.deepEqual(k.physicsSnapshot().bodies[0].velocity,[0,0,0]);assert.deepEqual(k.physicsSnapshot().bodies[0].angularVelocity,[0,0,0]);
+ }finally{k.dispose();}
+});

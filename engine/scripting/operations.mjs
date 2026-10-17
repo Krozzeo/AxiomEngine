@@ -20,10 +20,11 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
   if(op.kind==='property'){const e=entities.get(op.id);if(!e)fail('Stale property target');const key=op.name,value=op.data;
    if(key==='runtimeTag'||key==='name'){if(typeof value!=='string'||!value.trim()||value.length>128)fail('Invalid runtime name/tag');e[key]=value;}
    else if(key==='runtimeKinematic'||key==='runtimeColliderEnabled'){if(typeof value!=='boolean')fail('Invalid runtime physics flag');e[key]=value;changedTopology=true;}
+   else if(key==='runtimeBodyEpoch'){if(!Number.isSafeInteger(value)||value<0||value>1000000)fail('Invalid body epoch');e[key]=value;}
    else if(key==='runtimePhysicsDimension'){if(![2,3].includes(value))fail('Invalid physics dimension');e[key]=value;}
    else if(key==='runtimeLayer'){if(!Number.isInteger(value)||value<0||value>31)fail('Invalid layer');e[key]=value;}
    else if(['collider','rigidBody','camera','audioSource','audioListener','animator','scriptComponents'].includes(key)){
-    if(value===null)delete e[key];else {validateRuntimeComponent(key,value);if(key==='scriptComponents')for(const c of value){const meta=scriptFields(candidate,c.path);if(!meta.typeName)fail('Uncompiled component type');for(const [name,v]of Object.entries(c.values)){const field=meta.fields.find(f=>f.name===name);if(!field)fail('Unknown script field');scriptValue({...field,minimum:undefined,maximum:undefined},v);}}e[key]=structuredClone(value);}changedTopology=true;
+    if(value===null){delete e[key];if(key==='rigidBody'){velocities.delete(e.id);angularVelocities.delete(e.id);}}else {validateRuntimeComponent(key,value);if(key==='scriptComponents')for(const c of value){const meta=scriptFields(candidate,c.path);if(!meta.typeName)fail('Uncompiled component type');for(const [name,v]of Object.entries(c.values)){const field=meta.fields.find(f=>f.name===name);if(!field)fail('Unknown script field');scriptValue({...field,minimum:undefined,maximum:undefined},v);}}e[key]=structuredClone(value);}changedTopology=true;
    }else fail('Unsupported runtime property');continue;
   }
   if(op.kind==='active'){const entity=entities.get(op.id);if(!entity||typeof op.active!=='boolean')fail('invalid activation');entity.runtimeActive=op.active;changedTopology=true;continue;}

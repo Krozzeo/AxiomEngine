@@ -78,7 +78,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   const uiPointer=event=>{if(testing||!playing||view!=='game'||!lastTwoDPlan)return;const rect=canvas.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-rect.left)*canvas.width/rect.width,(event.clientY-rect.top)*canvas.height/rect.height,lastTwoDPlan.pixel.viewport);if(!hit)return;event.preventDefault();event.stopImmediatePropagation();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;};
   canvas.addEventListener?.('pointerdown',uiPointer,{capture:true});
   let parallel=null;let textures=new Map(), assets=new Map(), assetKeys=new Map();
-  kernel.compileScene({entities:[]},new Map());
+  kernel.compileScene({entities:[]},new Map());kernelReady=true;
   function destroyResources(items) { for(const item of items) {item.vertex?.destroy();item.uniform?.destroy();} }
   function clearTextures() {for(const texture of textures.values())texture.destroy();textures=new Map();}
   if(!forceNull&&gpu) {

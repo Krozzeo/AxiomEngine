@@ -28,3 +28,8 @@ test('angular velocity and physics flags publish atomically and preserve source 
  assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'angularVelocity',id:a,position:[0,0,10001]}]},1),/angular velocity/);
  assert.throws(()=>applyScriptOperations(source,{generation:1,operations:[{kind:'property',id:a,name:'runtimeColliderEnabled',data:1}]},1),/physics flag/);
 });
+
+test('removing a body after queued force/torque removes obsolete native writes',()=>{
+ const source=scene();source.entities[0].rigidBody={mass:1,velocity:[0,0,0],restitution:0,friction:.5,gravityScale:0};
+ const result=applyScriptOperations(source,{generation:1,operations:[{kind:'velocity',id:a,position:[1,0,0]},{kind:'angularVelocity',id:a,position:[0,0,1]},{kind:'property',id:a,name:'rigidBody',data:null}]},1);assert.equal(result.velocities.size,0);assert.equal(result.angularVelocities.size,0);assert.equal(result.scene.entities[0].rigidBody,undefined);
+});

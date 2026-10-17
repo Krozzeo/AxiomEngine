@@ -34,6 +34,7 @@ export function validateFiles(scene,{uniqueScripts=false}={}){
  for(const f of files){projectPath(f.path);const key=f.path.toLowerCase();if(paths.has(key))throw Error('Duplicate project path');paths.add(key);
   if(uniqueScripts&&f.kind==='script'){const name=leafName(f.path).toLowerCase();if(scripts.has(name))throw Error('C# script names must be unique throughout the project');scripts.add(name);}
   if(!['folder','asset','script','json','scene'].includes(f.kind))throw Error('Invalid project file kind');
+  if(f.kind==='scene'&&!/\.scene$/i.test(f.path))throw Error('Scene documents require a .scene extension');
   if(f.kind==='asset'&&!scene.assets?.some(a=>a.id===f.assetId))throw Error('Project file references a missing asset');
   if(['script','json','scene'].includes(f.kind)){if(typeof f.text!=='string')throw Error('Project text file needs content');if(f.kind==='scene'){sceneBytes+=new TextEncoder().encode(f.text).length;if(sceneBytes>2097152)throw Error('Scene document text exceeds 2 MiB');}if(f.kind!=='scene')bytes+=new TextEncoder().encode(f.text).length;if(bytes>65536)throw Error('Project text files exceed 64 KiB');}
  }

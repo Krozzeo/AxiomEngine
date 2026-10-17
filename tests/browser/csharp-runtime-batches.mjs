@@ -15,6 +15,7 @@ try {
  const sources={'Scripts/RuntimeBatchProbe.cs':await readFile(new URL('./RuntimeBatchProbe.cs',import.meta.url),'utf8')};
  for(const name of ['PhysicsStressLab','PresentationLab','NavigationLab','PlatformNetworkLab'])sources['Scripts/'+name+'.cs']=await readFile(new URL('../../demos/scripts/'+name+'.cs',import.meta.url),'utf8');
  sources['Scripts/LinkedBehaviour.cs']='using Axiom.Gameplay; namespace Game; public sealed class LinkedBehaviour:MonoBehaviour {public int Value=7;}';
+ sources['Scripts/ReferenceGraphProbe.cs']='using Axiom.Gameplay; namespace Game; public sealed class ReferenceGraphProbe:MonoBehaviour {public GameObject? Peer;}';
  const files=Object.entries(sources).map(([path,text])=>({path,kind:'script',text}));const entries=files.map(f=>({...f,metadata:scriptMetadata(f,files)})),source=entries[0].text;
  const build=await compiler.build(projectId,source,mode,undefined,entries);
  server=createServer(async(req,res)=>{try{
@@ -47,5 +48,5 @@ try {
    await phase('stop');return {state,preferences};
   }finally{worker.terminate();}
  },entries.map(({path,text,kind})=>({path,text,kind})).concat([{path:'Assets/Settings.json',kind:'json',text:'{"difficulty":2}'}]));
- assert.equal(results.state.Created,68);assert.ok(results.state.Checks>=46,JSON.stringify(results));assert.equal(results.state.Frames,2);assert.equal(results.preferences.score,'8');assert.ok(results.preferences.bindings.includes('Interact'));console.log('CSHARP_RUNTIME_BATCHES='+JSON.stringify({passed:true,mode,...results}));
+ assert.equal(results.state.Created,66);assert.ok(results.state.Checks>=46,JSON.stringify(results));assert.equal(results.state.Frames,2);assert.equal(results.preferences.score,'8');assert.ok(results.preferences.bindings.includes('Interact'));console.log('CSHARP_RUNTIME_BATCHES='+JSON.stringify({passed:true,mode,...results}));
 }finally{await browser?.close();if(server)await new Promise(r=>server.close(r));await rm(root,{recursive:true,force:true});}

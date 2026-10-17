@@ -13,7 +13,7 @@ public sealed class Material : Object {
  public double roughness {get=>PresentationData.Read(entity,"material").GetProperty("roughness").GetDouble();set=>PresentationData.Set(entity,"material","roughness",JsonValue.Create(value)!);}
  public Color emissionColor {get=>PresentationData.Color(entity,"material","emissive");set=>PresentationData.Set(entity,"material","emissive",PresentationData.Values(value.R,value.G,value.B));}
 }
-public class Renderer : Component {internal Renderer(Entity e){Entity=e;}public Material material=>new(Entity);public Material sharedMaterial=>material;}
+public class Renderer : Component {internal Renderer(Entity e){Entity=e;}public Material material {get{if(!Context.EntityData[Entity.Id].TryGetProperty("material",out _))Context.Property(Entity,"material",JsonNode.Parse("{\"baseColor\":[1,1,1,1],\"metallic\":0,\"roughness\":0.5,\"emissive\":[0,0,0],\"alphaMode\":\"opaque\",\"alphaCutoff\":0.5,\"unlit\":false,\"castShadow\":true}"));return new(Entity);}}public Material sharedMaterial=>material;}
 public sealed class MeshRenderer : Renderer {internal MeshRenderer(Entity e):base(e){}}
 public sealed class SpriteRenderer : Renderer {
  internal SpriteRenderer(Entity e):base(e){}

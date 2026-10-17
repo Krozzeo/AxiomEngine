@@ -23,7 +23,7 @@ public static class Resources {
 
 public sealed class TextAsset : Object {internal string Path;public string name {get;}public string text {get;}public byte[] bytes=>System.Text.Encoding.UTF8.GetBytes(text);internal TextAsset(string path,string value){Path=path;name=path.Split('/').Last();text=value;}}
 
-public sealed class PrefabAsset : Object {public string name=>Path.Split('/').Last();internal string Path;internal PrefabAsset(string path){Path=path;}}
+public sealed class PrefabAsset : Object {public string path=>Path;public string name=>Path.Split('/').Last();internal string Path;internal PrefabAsset(string path){Path=path;}}
 
-public sealed class SceneAsset : Object {public string name=>Path.Split('/').Last();internal string Path;internal SceneAsset(string path){Path=path;}}
+public sealed class SceneAsset : Object {public string path=>Path;public string name=>Path.Split('/').Last();internal string Path;internal SceneAsset(string path){Path=path;}}
 ```

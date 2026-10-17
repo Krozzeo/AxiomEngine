@@ -1,13 +1,13 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 namespace Axiom.Gameplay;
-public abstract class ProjectAsset : Object {internal string Path {get;}public string name=>Path.Split('/').Last();public string assetId {get;}internal ProjectAsset(string path,string id){Path=path;assetId=id;}}
+public abstract class ProjectAsset : Object {internal string Path {get;}public string path=>Path;public string name=>Path.Split('/').Last();public string assetId {get;}internal ProjectAsset(string path,string id){Path=path;assetId=id;}}
 public sealed class Texture2D(string path,string id) : ProjectAsset(path,id) {}
 public sealed class AudioClip(string path,string id) : ProjectAsset(path,id) {}
 public sealed class Mesh(string path,string id) : ProjectAsset(path,id) {}
 public sealed class TextAsset : Object {internal string Path;public string name {get;}public string text {get;}public byte[] bytes=>System.Text.Encoding.UTF8.GetBytes(text);internal TextAsset(string path,string value){Path=path;name=path.Split('/').Last();text=value;}}
-public sealed class PrefabAsset : Object {public string name=>Path.Split('/').Last();internal string Path;internal PrefabAsset(string path){Path=path;}}
-public sealed class SceneAsset : Object {public string name=>Path.Split('/').Last();internal string Path;internal SceneAsset(string path){Path=path;}}
+public sealed class PrefabAsset : Object {public string path=>Path;public string name=>Path.Split('/').Last();internal string Path;internal PrefabAsset(string path){Path=path;}}
+public sealed class SceneAsset : Object {public string path=>Path;public string name=>Path.Split('/').Last();internal string Path;internal SceneAsset(string path){Path=path;}}
 public sealed class ResourceRequest : AsyncOperation {public Object? asset {get;}internal ResourceRequest(Object? value){asset=value;}}
 public static class Resources {
  public static ResourceRequest LoadAsync<T>(string path) where T:Object=>new(Load<T>(path));

@@ -1,7 +1,8 @@
+import {validateReference} from '../../engine/scripting/references.mjs';
 import {initializeSceneDocuments,syncSceneDocuments,editSceneDocument} from '../../engine/scene/scene-documents.mjs';
 import {playerExamples,createPlayer,playerSilence} from './player-prefabs.mjs';
 import {remapEntityReferences,assertPrefabMutation,prefabPayload,capturePrefab} from '../../engine/scene/prefabs.mjs';
-import {materializeLegacyScripts,reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
+import {materializeLegacyScripts,reconcileScriptComponents,compileSources,setScriptComponent,scriptFields} from '../../engine/scripting/fields.mjs';
 import {meshSettings} from '../../engine/assets/advanced.mjs';
 import {createHash} from 'node:crypto';
 import {revealProjectFiles} from './project-explorer.mjs';
@@ -357,6 +358,7 @@ export class SceneWorkspace {
     if(scene.script?.sources)scene.script.attachments=scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id);
     for(const e of scene.entities)for(const c of e.scriptComponents??[])for(const [key,value]of Object.entries(c.values))if(value?.entityId&&!scene.entities.some(n=>n.id===value.entityId))c.values[key]=null;
     syncImportedFiles(scene,this.project.scene);
+    if(type==='scene.component.remove'||['scene.collider.set','scene.rigidBody.set'].includes(type)||type==='scene.script.edit'&&data.action==='remove')for(const e of scene.entities)for(const c of e.scriptComponents??[])for(const field of scriptFields(scene,c.path).fields)if(field.reference&&c.values[field.name]!=null){try{validateReference(scene,field,c.values[field.name]);}catch{c.values[field.name]=null;}}
     syncSceneDocuments(scene);
     if(data.prefabAction!=='disassemble')try{assertPrefabMutation(this.project.scene,scene,type);}catch(error){fail('AX_PREFAB_0001',error.message);}
     validateProject({ ...this.project, scene });

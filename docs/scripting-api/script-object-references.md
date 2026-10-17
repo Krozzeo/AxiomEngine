@@ -10,7 +10,7 @@ The Inspector lock pins its target independently of app selection. Additional In
 ## Implemented declarations
 
 ```csharp
-public abstract class ProjectAsset : Object {internal string Path {get;}public string name=>Path.Split('/').Last();public string assetId {get;}internal ProjectAsset(string path,string id){Path=path;assetId=id;}}
+public abstract class ProjectAsset : Object {internal string Path {get;}public string path=>Path;public string name=>Path.Split('/').Last();public string assetId {get;}internal ProjectAsset(string path,string id){Path=path;assetId=id;}}
 
 public sealed class Texture2D(string path,string id) : ProjectAsset(path,id) {}
 

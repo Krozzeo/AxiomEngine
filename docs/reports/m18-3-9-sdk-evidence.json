@@ -1,0 +1,131 @@
+{
+  "version": "0.0.47",
+  "sdkVersion": 6,
+  "runId": 39058085678,
+  "commit": "a4530dd976490de4fb7ce90eea7367d16c19d737",
+  "configurations": [
+    {
+      "configuration": "csharp-wasm-spike (ubuntu-latest, aot)",
+      "runtime": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      },
+      "physics": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "inputScenes": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Checks": 36,
+          "Frames": 2,
+          "AsyncReady": true
+        },
+        "preferences": {
+          "score": "8",
+          "name": "Player",
+          "bindings": "{\"buttons\":{\"Interact\":[\"KeyE\",\"Gamepad0/Button1\"]},\"axes\":{\"Climb\":[\"KeyQ\",\"KeyE\"]},\"gamepadAxes\":{\"Steer\":[0,0,-1,0.1]}}"
+        }
+      }
+    },
+    {
+      "configuration": "csharp-wasm-spike (windows-latest, development)",
+      "runtime": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      },
+      "physics": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "inputScenes": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 36,
+          "Frames": 2,
+          "AsyncReady": true
+        },
+        "preferences": {
+          "score": "8",
+          "name": "Player",
+          "bindings": "{\"buttons\":{\"Interact\":[\"KeyE\",\"Gamepad0/Button1\"]},\"axes\":{\"Climb\":[\"KeyQ\",\"KeyE\"]},\"gamepadAxes\":{\"Steer\":[0,0,-1,0.1]}}"
+        }
+      }
+    },
+    {
+      "configuration": "csharp-wasm-spike (ubuntu-latest, development)",
+      "runtime": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      },
+      "physics": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "inputScenes": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 36,
+          "Frames": 2,
+          "AsyncReady": true
+        },
+        "preferences": {
+          "score": "8",
+          "name": "Player",
+          "bindings": "{\"buttons\":{\"Interact\":[\"KeyE\",\"Gamepad0/Button1\"]},\"axes\":{\"Climb\":[\"KeyQ\",\"KeyE\"]},\"gamepadAxes\":{\"Steer\":[0,0,-1,0.1]}}"
+        }
+      }
+    }
+  ]
+}

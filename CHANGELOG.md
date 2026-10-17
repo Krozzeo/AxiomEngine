@@ -4,7 +4,7 @@
 - SDK 6: bounded gamepad/touch/mouse/keyboard snapshots, action/axis remapping with explicit serialized overrides and project-scoped durable PlayerPrefs.
 - SceneManager ownership, create/move, Single/Additive load/unload and persistent roots; physical scene/prefab/text resources, safe runtime imports and remapped entity references.
 - Native damping, moving kinematic bodies, per-axis constraints, explicit sleep/wake, custom gravity, collision exclusions, bounded continuous substeps and pre-impact contact evidence; managed sphere/circle/box casts and limited ContactFilter2D.
-- Five API labs, refreshed addressable reference and recorded compatibility gaps. Cross-platform acceptance is tracked in the current report.
+- Five API labs, refreshed addressable reference and recorded compatibility gaps. Automated acceptance: 395 Node tests, 44 Rust tests and all 40 CI jobs.
 
 # Changelog
 

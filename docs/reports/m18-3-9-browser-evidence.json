@@ -1,0 +1,88 @@
+{
+  "version": "0.0.47",
+  "sdkVersion": 6,
+  "runId": 39058085678,
+  "commit": "a4530dd976490de4fb7ce90eea7367d16c19d737",
+  "provider": "Controlled Responses adapter; no paid calls",
+  "visualReview": "New Input and Scene/Resources screenshots inspected, including M18.3.9 badge, live fields and imported entities.",
+  "reports": {
+    "m18-3-8": {
+      "criteria": [
+        "Runtime clone appears under its parent with exact (clone) name, selects from Hierarchy and Scene, and highlights both views.",
+        "Runtime API Lab compiles and executes hierarchy cloning, component removal, coroutines, Invoke and real fixed phases without a script fault; Stop preserves authoring.",
+        "Repeated Play/Stop during asynchronous worker frames resumes stopped rendering instead of freezing the last Play diagnostic.",
+        "Named Scene, Game and Hierarchy captures return real bounded PNGs without switching active view or Play.",
+        "The Responses adapter receives actual input_image content; More Info keeps bounded metadata without image bytes.",
+        "Apply is immediately durable: close/open preserves the accepted change without an explicit Save.",
+        "Physics 2D API Lab compiles the physical script, falls on its floor, jumps with Space through the native solver and restores authored state on Stop.",
+        "Physics 3D API Lab compiles the physical script, falls on its floor, jumps with Space through the native solver and restores authored state on Stop."
+      ],
+      "errors": [],
+      "provider": "Controlled Responses adapter. Real engine screenshots and .NET/Wasm runtime; no paid requests.",
+      "currentMotion": {
+        "dimension": 3,
+        "restingHeight": -0.3507828983181174
+      },
+      "motion": [
+        {
+          "dimension": 2,
+          "restingHeight": -0.35077430719353614,
+          "samples": [
+            {
+              "y": -0.35077231607200837,
+              "vy": 5.00000090021974,
+              "spin": 6.000005973424101,
+              "frame": 1346,
+              "fault": null
+            },
+            {
+              "y": 0.37054076066515007,
+              "vy": 3.0572382848723043,
+              "spin": 6.000005973424101,
+              "frame": 1348,
+              "fault": null
+            }
+          ]
+        },
+        {
+          "dimension": 3,
+          "restingHeight": -0.3507828983181174,
+          "samples": [
+            {
+              "y": -0.3507757471495066,
+              "vy": 5.87146127654925e-08,
+              "spin": -2.2873169544822667e-07,
+              "frame": 1467,
+              "fault": null
+            },
+            {
+              "y": -0.3507755635790846,
+              "vy": 5.000000058715168,
+              "spin": 11.99999977126899,
+              "frame": 1468,
+              "fault": null
+            },
+            {
+              "y": 0.2167463505523599,
+              "vy": 3.580048686164226,
+              "spin": 11.99999977126899,
+              "frame": 1469,
+              "fault": null
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    "m18-3-9": {
+      "criteria": [
+        "Real keyboard movement, action rebinding and explicit project preferences survive Stop/Play.",
+        "Controlled Gamepad API and browser touch pointer events reach real C# Update.",
+        "PlayerPrefs survives page refresh independently of authored scene saves.",
+        "Additive load/unload, single scene replacement, persistent root and physical prefab import update the live Hierarchy without modifying authoring."
+      ],
+      "errors": [],
+      "passed": true
+    }
+  }
+}

@@ -1,6 +1,8 @@
 # M18.3.9 / 0.0.47 — Input, scenes/resources and physics extension
 
-Status: implementation complete; cross-platform acceptance in progress. Draft PR #38 remains open and unmerged. Do not treat earlier run results as final acceptance.
+Status: automated acceptance complete. Draft PR #38 remains open and unmerged.
+
+[CI 303](https://github.com/Krozzeo/AxiomEngine/actions/runs/39058085678) passes all **40 jobs** at executable commit `a4530dd976490de4fb7ce90eea7367d16c19d737` (tree `268c1509a76d4f0d90b25542a64b7dceb0f9ea77`): **395 Node tests on Linux and Windows**, **44 Rust tests** with fmt/clippy and Wasm checks, real **C# Linux development/AOT and Windows development**, and **31 browser groups**. No paid provider calls.
 
 ## Behavior
 
@@ -19,3 +21,10 @@ Rust native tests and Wasm host acceptance; Node atomic packet/persistence/devic
 See [BATCHES.md](../scripting-api/BATCHES.md). The six expanded batches are not complete Unity compatibility. Advanced shapes/joints/compound physics, automatic sleeping/interpolation, analytic/angular CCD, streaming/Addressables/general save files, Unity Input System/haptics/sensors remain pending. Scene loads consume a lifetime Play creation budget; Async load means already resident data, not background streaming. PlayerPrefs is browser/origin/project storage, not portable project content.
 
 Remaining main SDK batches: presentation; navigation/networking; platform/tooling. Original weighted MVP coverage remains approximately 94% (122/130); expanded SDK scope is not separately weighted. M18.4 GitHub integration and M19 hardening remain roadmap items.
+
+
+## Release identity and human-only check
+
+The final release appends documentation/evidence to the pinned tested executable commit. Both the displayed M18.3.9 badge and Version 0.0.47 belong to that tested source, and a local build also verifies them. Test artifacts correspond to the pinned executable commit. The original weighted MVP estimate remains ~94%; it is not a percentage of the full Unity API.
+
+Physical-controller mapping and actual touchscreen behavior on the user's hardware cannot be certified from this environment. Controlled gamepad snapshots and real browser touch events pass. If those devices are available, the only additional device acceptance is to exercise Input & Persistence API Lab with them; no Player lab repeat is needed. No new AI account call is needed for the SDK changes.

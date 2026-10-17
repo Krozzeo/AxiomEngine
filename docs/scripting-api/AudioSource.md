@@ -27,9 +27,16 @@ Camera.main selects the active camera entity. It does not provide ScreenPointToR
 ## Implemented declarations
 
 ```csharp
-public sealed class AudioSource : Component {
+public sealed partial class AudioSource : Component {
  internal AudioSource(Entity entity){Entity=entity;}
  public void Play()=>Entity.PlayAudio();public void Pause()=>Entity.PauseAudio();public void UnPause()=>Entity.ResumeAudio();public void Stop()=>Entity.StopAudio();
  public double volume {get=>Context.EntityData[Entity.Id].GetProperty("audioSource").GetProperty("volume").GetDouble();set=>Entity.SetAudioVolume(value);}
+}
+
+public sealed partial class AudioSource {
+ public bool loop {get=>PresentationData.Read(Entity,"audioSource").GetProperty("loop").GetBoolean();set=>PresentationData.Set(Entity,"audioSource","loop",JsonValue.Create(value)!);}
+ public double pitch {get=>PresentationData.Read(Entity,"audioSource").GetProperty("playbackRate").GetDouble();set=>PresentationData.Set(Entity,"audioSource","playbackRate",JsonValue.Create(value)!);}
+ public double minDistance {get=>PresentationData.Read(Entity,"audioSource").GetProperty("minDistance").GetDouble();set=>PresentationData.Set(Entity,"audioSource","minDistance",JsonValue.Create(value)!);}
+ public double maxDistance {get=>PresentationData.Read(Entity,"audioSource").GetProperty("maxDistance").GetDouble();set=>PresentationData.Set(Entity,"audioSource","maxDistance",JsonValue.Create(value)!);}
 }
 ```

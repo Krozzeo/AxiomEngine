@@ -1,3 +1,4 @@
+import {initializeSceneDocuments,syncSceneDocuments,editSceneDocument} from '../../engine/scene/scene-documents.mjs';
 import {playerExamples,createPlayer,playerSilence} from './player-prefabs.mjs';
 import {remapEntityReferences,assertPrefabMutation,prefabPayload,capturePrefab} from '../../engine/scene/prefabs.mjs';
 import {materializeLegacyScripts,reconcileScriptComponents,compileSources,setScriptComponent} from '../../engine/scripting/fields.mjs';
@@ -81,8 +82,9 @@ export class SceneWorkspace {
   }
   commitScene(scene) {
     syncImportedFiles(scene,this.project.scene);
+    syncSceneDocuments(scene);
     validateProject({...this.project,scene});
-    if(Buffer.byteLength(JSON.stringify({...this.project,scene},null,2)+"\n")>192*1024)fail("AX_PROJECT_0002","Project size exceeds limit");
+    if(Buffer.byteLength(JSON.stringify({...this.project,scene},null,2)+"\n")>4*1024*1024)fail("AX_PROJECT_0002","Project size exceeds limit");
     this.past.push(copy(this.project.scene));if(this.past.length>64)this.past.shift();
     this.future=[];this.project.scene=scene;this.revision++;
   }
@@ -208,7 +210,7 @@ export class SceneWorkspace {
         if(data.dimension===3){this.project.scene.rendering.environment=[0.12,0.16,0.24];this.project.scene.entities.find(e=>e.light).transform.rotation=cameraRotation([0,6,4],[0,0,0]);}
         await mutate('scene.save',{});this.past=[];this.future=[];return this.snapshot();
       }
-      return snapshot;
+      return type==='project.create'?this.snapshot():snapshot;
     }
     if (type === "project.save") {
       if (this.dirty && data.id === this.project.id) fail("AX_SCENE_0003", "Use scene.save to save the active draft");
@@ -238,6 +240,7 @@ export class SceneWorkspace {
       return this.snapshot();
     }
     if (type === "scene.save") {
+      syncSceneDocuments(this.project.scene);
       const result = await this.store.run("project.save", { id: this.project.id, expectedRevision: this.project.revision, scene: this.project.scene,editor:this.project.editor });
       this.project = result.project;
       this.savedScene = JSON.stringify(this.project.scene);this.pendingEditor=false;
@@ -255,7 +258,8 @@ export class SceneWorkspace {
     }
     const scene = copy(this.project.scene);
     const index = scene.entities.findIndex(entity => entity.id === data.entityId);
-    if(type==='scene.script.edit'){setScriptComponent(scene,data.entityId,data.path,data.action,data.values);if(scene.script)scene.script.attachments=[...new Set([...scene.script.attachments.filter(id=>scene.entities.find(e=>e.id===id)?.scriptComponents?.length),...scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id)])];
+    if(type==='scene.document.edit'){try{editSceneDocument(scene,data);reconcileScriptComponents(scene);}catch(error){fail('AX_SCENE_0001',error.message);}
+    }else if(type==='scene.script.edit'){setScriptComponent(scene,data.entityId,data.path,data.action,data.values);if(scene.script)scene.script.attachments=[...new Set([...scene.script.attachments.filter(id=>scene.entities.find(e=>e.id===id)?.scriptComponents?.length),...scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id)])];
     }else if(type==="asset.import") {
       if((scene.assets?.length??0)>=128) fail("AX_ASSET_0001","Project asset limit is 128");
       const asset=await this.assets.put(this.project.id,data.name,data.base64,bytes=>importInWorker(bytes,undefined,data.settings));if(data.settings&&asset.kind==='mesh')asset.processing=meshSettings(data.settings);
@@ -351,10 +355,11 @@ export class SceneWorkspace {
     if(type==="asset.import")await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
     if(scene.script?.sources)scene.script.attachments=scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id);
     syncImportedFiles(scene,this.project.scene);
+    syncSceneDocuments(scene);
     if(data.prefabAction!=='disassemble')try{assertPrefabMutation(this.project.scene,scene,type);}catch(error){fail('AX_PREFAB_0001',error.message);}
     validateProject({ ...this.project, scene });
     if(["scene.component.paste","scene.audioSource.set","scene.animator.set","scene.sprite2D.set","scene.tilemap.set","scene.asset.place","scene.component.add","scene.lod.set","scene.primitive.create"].includes(type))await this.validateResources(scene);
-    if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 192 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
+    if (Buffer.byteLength(JSON.stringify({ ...this.project, scene }, null, 2) + "\n") > 4 * 1024 * 1024) fail("AX_PROJECT_0002", "Project size exceeds limit");
     this.check(data);
     this.commitScene(scene);
     return this.snapshot();

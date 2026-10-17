@@ -49,6 +49,7 @@ public sealed partial class GameObject {
   if(c.ValueKind==JsonValueKind.Object){var sphere=c.GetProperty("shape").GetString()=="sphere";result.Add(twoD?(sphere?new CircleCollider2D(Entity):new BoxCollider2D(Entity)):(sphere?new SphereCollider(Entity):new BoxCollider(Entity)));}
   if(Context.Bodies.ContainsKey(Entity.Id))result.Add(twoD?new Rigidbody2D(Entity):new Rigidbody(Entity));
   if(Context.Cameras.Contains(Entity.Id))result.Add(new Camera(Entity));if(Context.AudioSources.Contains(Entity.Id))result.Add(new AudioSource(Entity));if(Context.Animators.ContainsKey(Entity.Id))result.Add(new Animator(Entity));if(data.TryGetProperty("audioListener",out _))result.Add(new AudioListener(Entity));
+  if(data.TryGetProperty("renderable",out var renderable))result.Add(data.TryGetProperty("sprite2D",out _)?new SpriteRenderer(Entity):new MeshRenderer(Entity));if(data.TryGetProperty("light",out _))result.Add(new Light(Entity));if(AI.NavMeshAgent.Agents.TryGetValue(Entity.Id,out var agent))result.Add(agent);
   result.AddRange(Context.LiveScripts.Where(s=>s.Entity.Id==Entity.Id));return result.OfType<T>().ToArray();
  }
 

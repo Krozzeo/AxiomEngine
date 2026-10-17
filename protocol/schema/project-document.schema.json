@@ -1432,7 +1432,8 @@
                   "folder",
                   "asset",
                   "script",
-                  "json"
+                  "json",
+                  "scene"
                 ]
               },
               "assetId": {
@@ -1441,7 +1442,7 @@
               },
               "text": {
                 "type": "string",
-                "maxLength": 65536
+                "maxLength": 1048576
               }
             },
             "additionalProperties": false

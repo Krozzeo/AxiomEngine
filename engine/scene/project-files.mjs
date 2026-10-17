@@ -30,26 +30,27 @@ export function projectFiles(scene){
 export function validateFiles(scene,{uniqueScripts=false}={}){
  const files=scene.projectFiles;if(!files)return;
  if(!Array.isArray(files)||files.length>512)throw Error('Project file budget is 512 entries');
- const paths=new Set(),scripts=new Set();let bytes=0;
+ const paths=new Set(),scripts=new Set();let bytes=0,sceneBytes=0;
  for(const f of files){projectPath(f.path);const key=f.path.toLowerCase();if(paths.has(key))throw Error('Duplicate project path');paths.add(key);
   if(uniqueScripts&&f.kind==='script'){const name=leafName(f.path).toLowerCase();if(scripts.has(name))throw Error('C# script names must be unique throughout the project');scripts.add(name);}
-  if(!['folder','asset','script','json'].includes(f.kind))throw Error('Invalid project file kind');
+  if(!['folder','asset','script','json','scene'].includes(f.kind))throw Error('Invalid project file kind');
   if(f.kind==='asset'&&!scene.assets?.some(a=>a.id===f.assetId))throw Error('Project file references a missing asset');
-  if(['script','json'].includes(f.kind)){if(typeof f.text!=='string')throw Error('Project text file needs content');bytes+=new TextEncoder().encode(f.text).length;if(bytes>65536)throw Error('Project text files exceed 64 KiB');}
+  if(['script','json','scene'].includes(f.kind)){if(typeof f.text!=='string')throw Error('Project text file needs content');if(f.kind==='scene'){sceneBytes+=new TextEncoder().encode(f.text).length;if(sceneBytes>2097152)throw Error('Scene document text exceeds 2 MiB');}if(f.kind!=='scene')bytes+=new TextEncoder().encode(f.text).length;if(bytes>65536)throw Error('Project text files exceed 64 KiB');}
  }
  for(const f of files){const parent=parentPath(f.path);if(parent&&!files.some(d=>d.path===parent&&d.kind==='folder'))throw Error('Project file parent directory missing');}
  for(const root of fileRoots)if(!files.some(f=>f.path===root&&f.kind==='folder'))throw Error('Project root folders cannot be removed');
 }
 export function editProjectFiles(scene,data){
+ if(scene.sceneDocuments){const open=scene.sceneDocuments.open;const touches=p=>open.some(path=>path===p||path.startsWith(p+'/'));if(data.action==='delete'&&(data.paths??[]).some(touches)||['move','write'].includes(data.action)&&touches(data.path))throw Error('Close the scene before moving, deleting or editing its file');}
  const files=projectFiles(scene),lookup=path=>files.find(f=>f.path===path),exists=path=>files.some(f=>f.path.toLowerCase()===path.toLowerCase());
  const destination=path=>{projectPath(path);const parent=parentPath(path);if(parent&&lookup(parent)?.kind!=='folder')throw Error('Destination folder does not exist');};
  const roots=paths=>paths.filter(p=>!paths.some(other=>other!==p&&p.startsWith(other+'/')));
  if(data.action==='write'){
-  const file=lookup(data.path);if(!file||!['script','json'].includes(file.kind)||typeof data.text!=='string')throw Error('Select an editable text file');file.text=data.text;
+  const file=lookup(data.path);if(!file||!['script','json','scene'].includes(file.kind)||typeof data.text!=='string')throw Error('Select an editable text file');file.text=data.text;
  }else if(data.action==='create'){
   destination(data.path);if(exists(data.path))throw Error('A file with that name already exists');
-  const kind=data.kind;if(!['folder','script','json'].includes(kind))throw Error('Create folder, C# script or JSON file');
-  files.push({path:data.path,kind,...(kind==='script'?{text:scriptTemplate(leafName(data.path))}:kind==='json'?{text:typeof data.text==='string'?data.text:'{}\n'}:{})});
+  const kind=data.kind;if(!['folder','script','json','scene'].includes(kind))throw Error('Create folder, C# script or JSON file');
+  files.push({path:data.path,kind,...(kind==='script'?{text:scriptTemplate(leafName(data.path))}:['json','scene'].includes(kind)?{text:typeof data.text==='string'?data.text:kind==='scene'?'{"format":"axiom-scene","schemaVersion":1,"entities":[]}\n':'{}\n'}:{})});
  }else if(data.action==='move'){
   const source=lookup(data.path);if(!source||fileRoots.includes(source.path))throw Error('Select a movable file or folder');
   destination(data.to);if(data.to===data.path)return files;if(data.to.startsWith(data.path+'/'))throw Error('Cannot move a folder inside itself');

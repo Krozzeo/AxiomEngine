@@ -143,6 +143,7 @@ public abstract partial class MonoBehaviour : Script {
 }
 [AttributeUsage(AttributeTargets.Field)] public sealed class SerializeFieldAttribute : Attribute {}
 [AttributeUsage(AttributeTargets.Field)] public sealed class HideInInspectorAttribute : Attribute {}
+[AttributeUsage(AttributeTargets.Field)] public sealed class PlayerPrefAttribute(string key) : Attribute {public string Key {get;}=key;}
 [AttributeUsage(AttributeTargets.Field)] public sealed class ReadOnlyAttribute : Attribute {}
 [AttributeUsage(AttributeTargets.Field)] public sealed class TitleAttribute(string text) : Attribute {public string Text {get;}=text;}
 [AttributeUsage(AttributeTargets.Field)] public sealed class HeaderAttribute(string text) : Attribute {public string Text {get;}=text;}
@@ -239,10 +240,12 @@ internal static partial class Context {
   _=Read(entity);if(!Animators.TryGetValue(entity.Id,out var a))throw new InvalidOperationException("AX_ANIMATION_0001: entity has no Animator");
   if(!double.IsFinite(value)||Math.Abs(value)>1000000||!double.IsFinite(duration)||duration<0||duration>5)throw new ArgumentException("AX_ANIMATION_0001: invalid parameter/fade");
   if(action=="state"&&!a.GetProperty("states").EnumerateArray().Any(s=>s.GetProperty("name").GetString()==name)||action=="parameter"&&!a.GetProperty("parameters").EnumerateArray().Any(p=>p.GetProperty("name").GetString()==name))throw new ArgumentException("AX_ANIMATION_0001: unknown state/parameter");
+  if(action=="parameter"){var node=System.Text.Json.Nodes.JsonNode.Parse(EntityData[entity.Id].GetRawText())!.AsObject();foreach(var parameter in node["animator"]!["parameters"]!.AsArray())if(parameter!["name"]!.GetValue<string>()==name)parameter["value"]=value;EntityData[entity.Id]=ParseData(node.ToJsonString());Animators[entity.Id]=EntityData[entity.Id].GetProperty("animator");}
   Add(new("animation",entity.Id,null,default,null,action,name,value,duration));
  }
  internal static void Audio(Entity entity,string action,double value) {
   _=Read(entity);if(!AudioSources.Contains(entity.Id)||!double.IsFinite(value)||value<0||value>1)throw new ArgumentException("AX_AUDIO_0001: invalid source or volume");
+  if(action=="volume"){var node=System.Text.Json.Nodes.JsonNode.Parse(EntityData[entity.Id].GetRawText())!.AsObject();node["audioSource"]!["volume"]=value;EntityData[entity.Id]=ParseData(node.ToJsonString());}
   Add(new("audio",entity.Id,null,default,null,action,null,value));
  }
  internal static void Velocity(Entity entity,Vec3 velocity) {
@@ -269,7 +272,7 @@ internal static partial class Context {
  }
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
-  if(Spawned>=Limits.Spawns||Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
+  if(Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
   var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;SceneManagement.SceneManager.Owners[id]=SceneManagement.SceneManager.Owners.GetValueOrDefault(template.Id,SceneManagement.SceneManager.GetActiveScene().name);if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,new Transform(position,value.Rotation,value.Scale){Entity=new Entity(id,Generation)});if(EntityData.TryGetValue(template.Id,out var data))EntityData[id]=data;if(Cameras.Contains(template.Id))Cameras.Add(id);Parents[id]=null;ActiveStates[id]=ActiveStates.GetValueOrDefault(template.Id,true);if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
  internal static void DispatchContacts(JsonElement request){
@@ -292,6 +295,7 @@ internal static partial class Context {
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
+  Networking.UnityWebRequest.Load(value);if(value.TryGetProperty("runtimeMetrics",out var metrics))RuntimeStats.Data=metrics.Clone();if(value.TryGetProperty("platform",out var platform))Application.Data=platform.Clone();
   Input.Load(value,value.GetProperty("action").GetString() is "start" or "frame" or "step");
   if(value.GetProperty("action").GetString() is "frame" or "step" or "start"){PreviousKeys.Clear();PreviousKeys.UnionWith(Keys);}Entities.Clear();EntityData.Clear();ActiveStates.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {

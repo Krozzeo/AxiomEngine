@@ -27,7 +27,7 @@ public static class Time {
  public static double time {get=>inFixedTimeStep?fixedTime:elapsed;internal set=>elapsed=value;}
  public static double unscaledTime {get=>inFixedTimeStep?fixedUnscaledTime:unscaledElapsed;internal set=>unscaledElapsed=value;}
  public static double realtimeSinceStartup=>unscaledTime;
- public static double timeSinceLevelLoad=>time;
+ internal static double LevelStarted;public static double timeSinceLevelLoad=>time-LevelStarted;public static double timeSinceLevelLoadAsDouble=>timeSinceLevelLoad;public static double realtimeSinceStartupAsDouble=>unscaledTime;public static double fixedTimeAsDouble=>fixedTime;public static double fixedUnscaledTimeAsDouble=>fixedUnscaledTime;public static double smoothDeltaTime {get;internal set;}
  public static double timeAsDouble=>time;
  public static double unscaledTimeAsDouble=>unscaledTime;
  public static double fixedTime {get;internal set;}
@@ -38,7 +38,7 @@ public static class Time {
  public static int frameCount {get;internal set;}
  public const double fixedDeltaTime=1.0/60.0;
  public const double maximumDeltaTime=0.25;
- internal static void Reset(){scale=1;delta=0;time=0;unscaledTime=0;unscaledDeltaTime=0;fixedTime=0;fixedUnscaledTime=0;frameCount=0;inFixedTimeStep=false;}
- internal static void Step(double value){unscaledDeltaTime=value;unscaledTime+=value;delta=Math.Min(value*scale,maximumDeltaTime);time+=delta;frameCount++;}
+ internal static void Reset(){scale=1;delta=0;LevelStarted=0;smoothDeltaTime=0;time=0;unscaledTime=0;unscaledDeltaTime=0;fixedTime=0;fixedUnscaledTime=0;frameCount=0;inFixedTimeStep=false;}
+ internal static void Step(double value){unscaledDeltaTime=value;unscaledTime+=value;delta=Math.Min(value*scale,maximumDeltaTime);time+=delta;smoothDeltaTime=frameCount==0?delta:smoothDeltaTime*.9+delta*.1;frameCount++;}
 }
 ```

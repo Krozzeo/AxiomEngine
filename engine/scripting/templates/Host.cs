@@ -20,7 +20,7 @@ public static partial class Program {
    var action=value.GetProperty("action").GetString();var generation=value.GetProperty("generation").GetInt32();
    if(action=="start") {
     if(Scripts.Count!=0)throw new InvalidOperationException("Runtime already started");
-    Context.ReplaySeed=value.TryGetProperty("seed",out var seed)?seed.GetUInt32():0;Context.DeterministicSpawn=value.TryGetProperty("replay",out var replay)&&replay.GetBoolean();ReplayRandom.Reset(Context.ReplaySeed);Time.Reset();PhysicsWorld.Reset();Physics.queriesHitTriggers=true;Physics2D.queriesHitTriggers=true;RuntimeLifecycle.Reset();Configure();Context.PreviousContacts.Clear();Context.Generation=generation;Context.Spawned=0;Context.Load(value);PlayerPrefs.Load(value);Resources.Data=value.TryGetProperty("projectData",out var project)?project.GetProperty("resources").Clone():Context.ParseData("[]");Axiom.Gameplay.SceneManagement.SceneManager.Reset(value);
+    Context.ReplaySeed=value.TryGetProperty("seed",out var seed)?seed.GetUInt32():0;Context.DeterministicSpawn=value.TryGetProperty("replay",out var replay)&&replay.GetBoolean();ReplayRandom.Reset(Context.ReplaySeed);Axiom.Gameplay.Networking.UnityWebRequest.Reset();Axiom.Gameplay.AI.NavMesh.Reset();Application.Running=true;Time.Reset();PhysicsWorld.Reset();Physics.queriesHitTriggers=true;Physics2D.queriesHitTriggers=true;RuntimeLifecycle.Reset();Configure();Context.PreviousContacts.Clear();Context.Generation=generation;Context.Spawned=0;Context.Load(value);PlayerPrefs.Load(value);Resources.Data=value.TryGetProperty("projectData",out var project)?project.GetProperty("resources").Clone():Context.ParseData("[]");Axiom.Gameplay.SceneManagement.SceneManager.Reset(value);
     foreach(var id in value.GetProperty("attachments").EnumerateArray()) {
      var entity=value.GetProperty("entities").EnumerateArray().First(e=>e.GetProperty("id").GetString()==id.GetString());Attach(entity,generation);
      if(Scripts.Count>Limits.Attachments)throw new ArgumentException("Script attachment limit exceeded");
@@ -36,7 +36,7 @@ public static partial class Program {
     else if(action=="update")RuntimeLifecycle.Update(Time.deltaTime);
     else if(action=="late")RuntimeLifecycle.Late();
     else if(action=="end")RuntimeLifecycle.End();
-    else if(action=="stop") {foreach(var s in Scripts.ToArray())RuntimeLifecycle.Remove(s);Scripts.Clear();RuntimeLifecycle.Reset();}
+    else if(action=="stop") {Application.Running=false;foreach(var s in Scripts.ToArray())RuntimeLifecycle.Remove(s);Scripts.Clear();RuntimeLifecycle.Reset();}
     else throw new ArgumentException("Unknown runtime action");
    }
    return Context.Output(fields:Fields);

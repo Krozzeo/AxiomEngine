@@ -13,6 +13,7 @@ PrefabAsset is an explicit Axiom resource type, rather than Unity's asset-backed
 
 ```csharp
 public static class Resources {
+ public static ResourceRequest LoadAsync<T>(string path) where T:Object=>new(Load<T>(path));
  internal static JsonElement Data=Context.ParseData("[]");
  internal static JsonElement? Find(string path){var all=Data.EnumerateArray().Where(r=>r.GetProperty("path").GetString()==path||r.GetProperty("path").GetString()=="Assets/Resources/"+path||r.GetProperty("path").GetString()=="Assets/Resources/"+path+".json").ToArray();return all.Length==1?all[0]:null;}
  public static T? Load<T>(string path) where T:Object {var resource=Find(path);if(resource==null)return null;var r=resource.Value;Object? value=typeof(T)==typeof(TextAsset)?new TextAsset(path,r.GetProperty("text").GetString()!):typeof(T)==typeof(PrefabAsset)&&r.GetProperty("type").GetString()=="prefab"?new PrefabAsset(r.GetProperty("path").GetString()!):typeof(T)==typeof(SceneAsset)&&r.GetProperty("type").GetString()=="scene"?new SceneAsset(r.GetProperty("path").GetString()!):null;return value as T;}

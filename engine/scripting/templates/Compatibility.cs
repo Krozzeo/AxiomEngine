@@ -47,16 +47,16 @@ public sealed partial class Transform {
  public Vector3 InverseTransformDirection(Vector3 direction)=>Quaternion.Inverse(rotation)*direction;
 }
 public enum ForceMode {Force,Acceleration,Impulse,VelocityChange}
-public sealed class Camera : Component {
+public sealed partial class Camera : Component {
  internal Camera(Entity entity){Entity=entity;}
  public static Camera? main=>Context.Cameras.Where(id=>Context.IsActive(id)&&Context.EntityData.TryGetValue(id,out var data)&&data.GetProperty("camera").GetProperty("active").GetBoolean()).Select(id=>new Camera(new Entity(id,Context.Generation))).FirstOrDefault();
 }
-public sealed class AudioSource : Component {
+public sealed partial class AudioSource : Component {
  internal AudioSource(Entity entity){Entity=entity;}
  public void Play()=>Entity.PlayAudio();public void Pause()=>Entity.PauseAudio();public void UnPause()=>Entity.ResumeAudio();public void Stop()=>Entity.StopAudio();
  public double volume {get=>Context.EntityData[Entity.Id].GetProperty("audioSource").GetProperty("volume").GetDouble();set=>Entity.SetAudioVolume(value);}
 }
-public sealed class Animator : Component {
+public sealed partial class Animator : Component {
  internal Animator(Entity entity){Entity=entity;}
  public void Play(string state)=>Entity.PlayAnimation(state,0);public void CrossFade(string state,double duration)=>Entity.PlayAnimation(state,duration);
  public void SetFloat(string name,double value)=>Entity.SetAnimationParameter(name,value);public void SetBool(string name,bool value)=>Entity.SetAnimationParameter(name,value?1:0);public void SetInteger(string name,int value)=>Entity.SetAnimationParameter(name,value);
@@ -68,7 +68,7 @@ public static class Time {
  public static double time {get=>inFixedTimeStep?fixedTime:elapsed;internal set=>elapsed=value;}
  public static double unscaledTime {get=>inFixedTimeStep?fixedUnscaledTime:unscaledElapsed;internal set=>unscaledElapsed=value;}
  public static double realtimeSinceStartup=>unscaledTime;
- public static double timeSinceLevelLoad=>time;
+ internal static double LevelStarted;public static double timeSinceLevelLoad=>time-LevelStarted;public static double timeSinceLevelLoadAsDouble=>timeSinceLevelLoad;public static double realtimeSinceStartupAsDouble=>unscaledTime;public static double fixedTimeAsDouble=>fixedTime;public static double fixedUnscaledTimeAsDouble=>fixedUnscaledTime;public static double smoothDeltaTime {get;internal set;}
  public static double timeAsDouble=>time;
  public static double unscaledTimeAsDouble=>unscaledTime;
  public static double fixedTime {get;internal set;}
@@ -79,8 +79,8 @@ public static class Time {
  public static int frameCount {get;internal set;}
  public const double fixedDeltaTime=1.0/60.0;
  public const double maximumDeltaTime=0.25;
- internal static void Reset(){scale=1;delta=0;time=0;unscaledTime=0;unscaledDeltaTime=0;fixedTime=0;fixedUnscaledTime=0;frameCount=0;inFixedTimeStep=false;}
- internal static void Step(double value){unscaledDeltaTime=value;unscaledTime+=value;delta=Math.Min(value*scale,maximumDeltaTime);time+=delta;frameCount++;}
+ internal static void Reset(){scale=1;delta=0;LevelStarted=0;smoothDeltaTime=0;time=0;unscaledTime=0;unscaledDeltaTime=0;fixedTime=0;fixedUnscaledTime=0;frameCount=0;inFixedTimeStep=false;}
+ internal static void Step(double value){unscaledDeltaTime=value;unscaledTime+=value;delta=Math.Min(value*scale,maximumDeltaTime);time+=delta;smoothDeltaTime=frameCount==0?delta:smoothDeltaTime*.9+delta*.1;frameCount++;}
 }
 public enum KeyCode {A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Alpha0,Alpha1,Alpha2,Alpha3,Alpha4,Alpha5,Alpha6,Alpha7,Alpha8,Alpha9,UpArrow,DownArrow,LeftArrow,RightArrow,Space,Escape,Return,Tab,Backspace,Delete,LeftShift,RightShift,LeftControl,RightControl,LeftAlt,RightAlt,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12}
 public static partial class Input {

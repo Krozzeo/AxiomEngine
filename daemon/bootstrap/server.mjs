@@ -28,7 +28,7 @@ const SECURITY_HEADERS = {
   "Cross-Origin-Resource-Policy": "same-origin",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "no-referrer",
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self' https: http:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
 };
 
 async function ensureEditorBuild() {

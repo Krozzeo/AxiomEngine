@@ -1,3 +1,4 @@
+import {initializeSceneDocuments,syncSceneDocuments} from '../../engine/scene/scene-documents.mjs';
 import packageData from '../../package.json' with {type:'json'};
 import { randomUUID } from "node:crypto";
 import { constants } from "node:fs";
@@ -5,7 +6,7 @@ import { mkdir, realpath, open, lstat, readdir, rename, rm, cp } from "node:fs/p
 import { basename, join, resolve } from "node:path";
 import { validateProject, preserveExtensions, projectError } from "../../protocol/src/project-document.mjs";
 
-const MAX_BYTES = 192 * 1024;
+const MAX_BYTES = 4 * 1024 * 1024;
 const idPattern = /^project:\/\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/;
 
 export class ProjectStore {
@@ -87,10 +88,12 @@ export class ProjectStore {
         const previous = await this.read(path);
         if (!Number.isSafeInteger(data.expectedRevision) || data.expectedRevision !== previous.revision) throw projectError("AX_PROJECT_0003", "Project revision conflict; reopen before saving");
         if (data.scene?.id !== previous.scene.id) throw projectError("AX_PROJECT_0002", "Scene identity cannot change during save");
+        if(data.scene?.sceneDocuments)syncSceneDocuments(data.scene);
         // Validate supplied known fields before preserving extensions.
         validateProject({ ...previous, scene: data.scene, ...(data.editor?{editor:data.editor}:{}) });
         document = { ...previous, axiom:{...previous.axiom,modifiedAt:new Date().toISOString(),applicationId:previous.axiom?.applicationId??'game-engine',createdWithVersion:previous.axiom?.createdWithVersion??null,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
       }
+      if(type==='project.create')initializeSceneDocuments(document.scene);
       validateProject(document);
       const bytes = JSON.stringify(document, null, 2) + "\n";
       if (Buffer.byteLength(bytes) > MAX_BYTES) throw projectError("AX_PROJECT_0002", "Project size exceeds limit");

@@ -3768,7 +3768,8 @@
             "enum": [
               "folder",
               "script",
-              "json"
+              "json",
+              "scene"
             ]
           },
           "text": {
@@ -4025,6 +4026,60 @@
             "additionalProperties": true
           }
         }
+      }
+    },
+    {
+      "name": "scene.document.edit",
+      "description": "Create, open additively, activate, close or move entities between physical .scene documents. Changes are authored and undoable; scene files stay in the current project.",
+      "mutates": true,
+      "route": "workspace",
+      "mcp": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^project://[0-9a-f-]{36}$"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "workspaceId": {
+            "type": "string",
+            "pattern": "^workspace://[0-9a-f-]{36}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "open",
+              "activate",
+              "close",
+              "move"
+            ]
+          },
+          "entityIds": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "type": "string",
+              "pattern": "^entity://[0-9a-f-]{36}$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "action",
+          "path"
+        ],
+        "additionalProperties": false
       }
     }
   ]

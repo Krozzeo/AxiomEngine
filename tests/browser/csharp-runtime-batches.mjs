@@ -13,6 +13,7 @@ const mode=process.env.AXIOM_CSHARP_MODE??'development';
 let browser,server;
 try {
  const sources={'Scripts/RuntimeBatchProbe.cs':await readFile(new URL('./RuntimeBatchProbe.cs',import.meta.url),'utf8')};
+ for(const name of ['PhysicsStressLab','PresentationLab','NavigationLab','PlatformNetworkLab'])sources['Scripts/'+name+'.cs']=await readFile(new URL('../../demos/scripts/'+name+'.cs',import.meta.url),'utf8');
  const entries=Object.entries(sources).map(([path,text])=>({path,kind:'script',text,metadata:scriptMetadata({path,kind:'script',text})})),source=entries[0].text;
  const build=await compiler.build(projectId,source,mode,undefined,entries);
  server=createServer(async(req,res)=>{try{
@@ -45,5 +46,5 @@ try {
    await phase('stop');return {state,preferences};
   }finally{worker.terminate();}
  },entries.map(({path,text,kind})=>({path,text,kind})));
- assert.ok(results.state.Checks>=26,JSON.stringify(results));assert.equal(results.state.Frames,2);assert.equal(results.preferences.score,'8');assert.ok(results.preferences.bindings.includes('Interact'));console.log('CSHARP_RUNTIME_BATCHES='+JSON.stringify({passed:true,mode,...results}));
+ assert.equal(results.state.Created,68);assert.ok(results.state.Checks>=45,JSON.stringify(results));assert.equal(results.state.Frames,2);assert.equal(results.preferences.score,'8');assert.ok(results.preferences.bindings.includes('Interact'));console.log('CSHARP_RUNTIME_BATCHES='+JSON.stringify({passed:true,mode,...results}));
 }finally{await browser?.close();if(server)await new Promise(r=>server.close(r));await rm(root,{recursive:true,force:true});}

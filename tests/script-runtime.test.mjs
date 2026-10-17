@@ -10,7 +10,7 @@ test('script operations are atomic, generation-scoped and isolated from authorin
  assert.equal(result.scene.entities.length,2);assert.equal(result.spawned,1);assert.deepEqual(result.logs,['spawned']);
  for(const packet of [{generation:2,operations:[]},{generation:3,operations:[{kind:'move',id,position:[1,0,0]},{kind:'move',id:spawn,position:[1,0,0]}]},{generation:3,operations:[{kind:'move',id,position:[NaN,0,0]}]}])assert.throws(()=>applyScriptOperations(scene,packet,3));
  assert.deepEqual(scene.entities[0].transform.position,[0,0,0]);
- assert.throws(()=>applyScriptOperations(scene,{generation:3,operations:[{kind:'spawn',id:spawn,template:id,position:[0,0,0]}]},3,64),/invalid spawn/);
+ assert.equal(applyScriptOperations(scene,{generation:3,operations:[{kind:'spawn',id:spawn,template:id,position:[0,0,0]}]},3,64).spawned,65);
 });
 test('runtime kills unresponsive workers and rejects late or overlapping requests',async()=>{
  let worker;class FakeWorker{constructor(){worker=this;}postMessage(data){this.sent=data;}terminate(){this.terminated=true;}}

@@ -12,6 +12,7 @@
   - Script
   - Time
   - Coroutine
+  - CustomYieldInstruction
 - Mathematics
   - Vector2
   - Vector3
@@ -71,3 +72,16 @@
   - Scene
   - Resources
   - PlayerPrefs
+  - JsonUtility
+  - ResourceRequest and AsyncOperation
+- Presentation
+  - Renderer and Material
+  - Light
+  - Camera
+  - AudioSource and Animator
+- Navigation and networking
+  - NavMesh grid pathfinding
+  - NavMeshAgent
+  - HTTP requests
+- Platform and tools
+  - Application and system information

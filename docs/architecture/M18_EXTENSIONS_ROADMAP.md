@@ -1,3 +1,7 @@
+# Current correction — M18.3.9 / 0.0.47
+
+SDK 6 adds Input (keyboard/mouse/gamepad/touch and remapping), runtime scenes/assets/persistence and feasible native physics extensions. Runtime clone hierarchy/selection is corrected. Coverage, numerical/resource limits and all deferred subsystems are tracked in [BATCHES.md](../scripting-api/BATCHES.md); acceptance in [current report](../reports/M18_3_9_CURRENT_REPORT.md). Three main SDK batches remain: presentation, navigation/networking and platform/tooling. M18.4 GitHub integration and M19 hardening remain pending. Original MVP estimate remains ~94%; extended SDK scope is not separately weighted. Previous roadmap notes below are historical.
+
 # Current correction — M18.3.8 / 0.0.46
 
 Before M18.4: complete named panel vision and real image delivery, automatic durable Apply, and four expanded SDK batches (objects/components; execution/time; Physics 2D; Physics 3D). Scope and remaining compatibility limits are tracked in [BATCHES.md](../scripting-api/BATCHES.md); automated acceptance is tracked in [current report](../reports/M18_3_8_CURRENT_REPORT.md). Automated acceptance is complete in the pinned CI; real-account visual quality/usage remains a user check. M18.4 GitHub integration remains next. Historical notes below retain their original dates and status.

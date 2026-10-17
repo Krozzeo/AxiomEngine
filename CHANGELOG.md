@@ -1,3 +1,11 @@
+# 0.0.47 — M18.3.9
+
+- Runtime-created and cloned entities participate in Hierarchy, Scene picking and bidirectional selection; clone roots use ` (clone)` and runtime topology updates automatically.
+- SDK 6: bounded gamepad/touch/mouse/keyboard snapshots, action/axis remapping with explicit serialized overrides and project-scoped durable PlayerPrefs.
+- SceneManager ownership, create/move, Single/Additive load/unload and persistent roots; physical scene/prefab/text resources, safe runtime imports and remapped entity references.
+- Native damping, moving kinematic bodies, per-axis constraints, explicit sleep/wake, custom gravity, collision exclusions, bounded continuous substeps and pre-impact contact evidence; managed sphere/circle/box casts and limited ContactFilter2D.
+- Five API labs, refreshed addressable reference and recorded compatibility gaps. Cross-platform acceptance is tracked in the current report.
+
 # Changelog
 
 ## 0.0.46 — M18.3.8

@@ -1,3 +1,9 @@
+# M18.3.9 / 0.0.47 — runtime selection and SDK 6
+
+Implementation includes live runtime Hierarchy/selection and `(clone)` naming, browser Input devices/actions/remapping, physical runtime scene/prefab/text resources, project-specific PlayerPrefs, native damping/kinematic motion/constraints/sleep/gravity/exclusions/continuous substeps and managed shape casts. Five labs cover the new behavior; do not repeat Player demos. Read [current report](reports/M18_3_9_CURRENT_REPORT.md), [demo guide](../demos/M18_3_9_GUIDE.md) and [BATCHES.md](scripting-api/BATCHES.md).
+
+Cross-platform acceptance is in progress; do not claim complete Unity compatibility or live-model/device validation. Remaining major API batches are presentation, navigation/networking and platform/tooling, plus tracked extensions. Original weighted MVP remains ~94% (122/130). M18.4 GitHub and M19 hardening remain next. PR #38 stays draft/open/unmerged. Earlier notes below are historical.
+
 # M18.3.8 / 0.0.46 — panel vision, durable Apply and four scripting API batches
 
 Automated acceptance is complete. [CI 295](https://github.com/Krozzeo/AxiomEngine/actions/runs/39001000290) passes all **39 jobs** at executable commit `d7d11fb0dfa07a1d157f8a9779078017f16f4e66` (tree `f22939062469f36bf466bd63b1be227e1bc0f86b`): **388 Node tests on Linux and Windows**, **39 Rust tests** with formatting/clippy/Wasm checks, **C# Linux development/AOT and Windows development**, and **30 browser groups**. The new browser group passes **7 criteria**. No paid provider calls were performed.

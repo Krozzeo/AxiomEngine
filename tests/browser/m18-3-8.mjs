@@ -35,7 +35,8 @@ try{
   await page.waitForTimeout(1700);
   const capture=async()=>{const current=await command('scene.get');for(let i=0;i<100;i++){const status=await command('runtime.status');if(status.editor.projectId===lab.id&&status.editor.sceneRevision===current.sceneRevision)break;await page.waitForTimeout(100);}return command('renderer.capture',{id:lab.id,expectedSceneRevision:current.sceneRevision,panel:'game',width:512,height:320});};
   const resting=await capture(),height=resting.semantic.entities.find(e=>e.id===lab.cubeId).position[1];assert.ok(height<1,'authored physics box did not fall');
-  await page.keyboard.press('Space');await page.waitForTimeout(180);const jumped=await capture();assert.ok(jumped.semantic.entities.find(e=>e.id===lab.cubeId).position[1]>height+.2,'Space impulse did not affect native motion');
+  await page.locator('#panels-menu > summary').click();await page.locator('#panels-menu [data-open-panel="game"]').click();await page.locator('#viewport').focus();
+  await page.keyboard.press('Space',{delay:200});await page.waitForTimeout(180);const jumped=await capture();assert.ok(jumped.semantic.entities.find(e=>e.id===lab.cubeId).position[1]>height+.2,'Space impulse did not affect native motion');
   assert.equal((await command('runtime.status')).editor.fault,null);await writeFile(join(evidence,`physics-${lab.dimension}d.png`),Buffer.from(jumped.base64,'base64'));
   labState=await command('scene.get');await command('play.stop',{id:lab.id,expectedSceneRevision:labState.sceneRevision});assert.deepEqual((await command('scene.get')).project.scene,initialScene);
   report.criteria.push(`Physics ${lab.dimension}D API Lab compiles the physical script, falls on its floor, jumps with Space through the native solver and restores authored state on Stop.`);

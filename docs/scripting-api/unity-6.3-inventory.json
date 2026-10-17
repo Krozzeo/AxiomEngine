@@ -18120,14 +18120,16 @@
       "title": "ContactPoint",
       "parentId": "api-2545",
       "reference": "ContactPoint",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Collision.md"
     },
     {
       "id": "api-2583",
       "title": "ContactPoint2D",
       "parentId": "api-2545",
       "reference": "ContactPoint2D",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Collision2D.md"
     },
     {
       "id": "api-2584",
@@ -18557,7 +18559,7 @@
       "parentId": "api-2545",
       "reference": "Ray",
       "status": "partial",
-      "axiomReference": "./Ray.md"
+      "axiomReference": "./RaycastHit.md"
     },
     {
       "id": "api-2645",
@@ -20234,7 +20236,8 @@
       "title": "QueryTriggerInteraction",
       "parentId": "api-2697",
       "reference": "QueryTriggerInteraction",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Physics.md"
     },
     {
       "id": "api-2883",
@@ -20332,7 +20335,8 @@
       "title": "RigidbodyType2D",
       "parentId": "api-2697",
       "reference": "RigidbodyType2D",
-      "status": "pending"
+      "status": "partial",
+      "axiomReference": "./Rigidbody2D.md"
     },
     {
       "id": "api-2897",

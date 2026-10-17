@@ -1,6 +1,6 @@
 # M18.3.8 / 0.0.46 demos
 
-Run `npm.cmd run demo`, then open **Demo · M18.3.8 Runtime API Lab** from the Hub. New demos preserve existing projects. The project compiles on opening and needs .NET 10 plus wasm-tools.
+Run `npm.cmd run demo`, then open **Demo · M18.3.8 Runtime API Lab** from the Hub. New demos preserve existing projects. The project compiles on opening and needs .NET 10 plus wasm-tools. Save once after the initial compilation before asking the agent for an editing proposal; read-only screenshots do not require a proposal.
 
 ## Runtime API Lab
 

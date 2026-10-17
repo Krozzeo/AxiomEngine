@@ -1,6 +1,6 @@
 # Current correction — M18.3.8 / 0.0.46
 
-Before M18.4: complete named panel vision and real image delivery, automatic durable Apply, and the first two additional SDK batches (objects/components; execution/time). Scope and remaining compatibility limits are tracked in [BATCHES.md](../scripting-api/BATCHES.md); automated acceptance is tracked in [current report](../reports/M18_3_8_CURRENT_REPORT.md). Work is in progress; M18.4 GitHub integration remains next. Historical notes below retain their original dates and status.
+Before M18.4: complete named panel vision and real image delivery, automatic durable Apply, and four expanded SDK batches (objects/components; execution/time; Physics 2D; Physics 3D). Scope and remaining compatibility limits are tracked in [BATCHES.md](../scripting-api/BATCHES.md); automated acceptance is tracked in [current report](../reports/M18_3_8_CURRENT_REPORT.md). Automated acceptance is complete in the pinned CI; real-account visual quality/usage remains a user check. M18.4 GitHub integration remains next. Historical notes below retain their original dates and status.
 
 # M18.3.7 / 0.0.45 — automated correction complete
 
@@ -60,7 +60,7 @@ Scope decision: 2026-10-09. M18 0.0.32 remains complete; its two repair demos ar
 
 Apply replaces the complete authored project state with the pending proposal state. It does **not** merge or resolve field conflicts. Changes made to MAIN after the proposal was created are discarded on Apply, including changes to unrelated objects/files. MAIN X=5 plus proposal X=2 yields X=2. Editing proposal X=2 to X=5 yields X=5 on Apply. Manual authoring changes inside preview survive Apply; Play runtime changes remain transient.
 
-MAIN and proposal edits remain independent. Preview toggles in/out without accepting or discarding. Save is disabled inside preview; outside it MAIN can be saved. After Apply the proposed state is the current draft and can be saved. Discard removes the proposal. Additional chat requests modify the same pending proposal. Keep a clear branch indicator, divergence warning and recoverable pre-Apply state. Review evidence is tied to the current proposal revision. No three-way merge is required for this MVP.
+MAIN and proposal edits remain independent. Preview toggles in/out without accepting or discarding. Save is disabled inside preview; outside it MAIN can be saved. Since 0.0.46, Apply saves the accepted preview automatically before publishing MAIN. Discard removes the proposal. Additional chat requests modify the same pending proposal. Keep a clear branch indicator, divergence warning and recoverable pre-Apply state. Review evidence is tied to the current proposal revision. No three-way merge is required for this MVP.
 
 M18.2 ships this complete-state replacement through a dedicated guarded human Apply route. The legacy workspace.accept API keeps its original stale-source contract for compatibility.
 

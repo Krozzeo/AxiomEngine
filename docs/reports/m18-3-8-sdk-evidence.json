@@ -1,0 +1,92 @@
+{
+  "engineVersion": "0.0.46",
+  "sdkVersion": 5,
+  "commit": "d7d11fb0dfa07a1d157f8a9779078017f16f4e66",
+  "ciRun": 39001000290,
+  "configurations": [
+    {
+      "job": "csharp-wasm-spike (ubuntu-latest, aot)",
+      "jobId": 117303735308,
+      "physics": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "runtime": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      }
+    },
+    {
+      "job": "csharp-wasm-spike (windows-latest, development)",
+      "jobId": 117303735370,
+      "physics": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "runtime": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      }
+    },
+    {
+      "job": "csharp-wasm-spike (ubuntu-latest, development)",
+      "jobId": 117303735405,
+      "physics": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "runtime": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      }
+    }
+  ]
+}

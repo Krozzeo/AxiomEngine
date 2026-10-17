@@ -1,3 +1,9 @@
+# M18.3.8 / 0.0.46 — panel vision, durable Apply and four scripting API batches
+
+Automated acceptance is complete. [CI 295](https://github.com/Krozzeo/AxiomEngine/actions/runs/39001000290) passes all **39 jobs** at executable commit `d7d11fb0dfa07a1d157f8a9779078017f16f4e66` (tree `f22939062469f36bf466bd63b1be227e1bc0f86b`): **388 Node tests on Linux and Windows**, **39 Rust tests** with formatting/clippy/Wasm checks, **C# Linux development/AOT and Windows development**, and **30 browser groups**. The new browser group passes **7 criteria**. No paid provider calls were performed.
+
+Read [current report](reports/M18_3_8_CURRENT_REPORT.md), [demo guide](../demos/M18_3_8_GUIDE.md) and [Scripting API batches](scripting-api/BATCHES.md). Apply saves automatically. The assistant receives real named-panel images. SDK 5 expands objects/components, execution/time and physics 2D/3D. Five main API batches and advanced physics gaps remain. M18.4 GitHub integration and M19 hardening are next. PR #37 stays draft/open/unmerged. Earlier release notes below are historical.
+
 # M18.3.7 / 0.0.45 — automated correction complete
 
 Automated acceptance is complete: [CI 278](https://github.com/Krozzeo/AxiomEngine/actions/runs/38818870923) passes all 38 jobs at executable commit `f3324b9f7396df873c8e161270f88b4728e76089` (tree `238fc50a493b5259a62265e8b8ae21c45b735370`). This includes 378 Node tests on Linux and Windows, 39 Rust tests and native checks, real Linux development/AOT and Windows development C#, and all 29 browser groups. No paid model calls were performed. Live-model quality, the supplied conversational scenarios and actual token usage remain a separate user acceptance gate. Historical MVP coverage remains approximately 94% (122/130 original weights). M18.4 GitHub integration and M19 hardening remain next; PR #36 stays draft/open/unmerged. Read [current report](reports/M18_3_7_CURRENT_REPORT.md).

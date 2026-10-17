@@ -1,11 +1,13 @@
 # Changelog
 
-## 0.0.46 — M18.3.8 (acceptance in progress)
+## 0.0.46 — M18.3.8
 
 - Named Scene/Game and visible editor-panel captures; bounded real image inputs for the assistant.
 - Apply saves accepted preview state automatically and retains recoverable branches on save failure.
-- SDK 4: runtime object/component hierarchy APIs and solver-coordinated lifecycle, time, coroutines and Invoke.
-- New Runtime API Lab and C#/browser acceptance; canonical scripting reference expanded.
+- SDK 5: runtime object/component hierarchy APIs and solver-coordinated lifecycle, time, coroutines and Invoke.
+- Physics 2D/3D scripting bodies, inertia torque/off-center forces, filtered rays/overlaps and contact manifolds; body-only integration and kinematic controls.
+- Runtime API Lab plus Physics 2D/3D API Labs, real C#/Wasm and browser acceptance, mirrored canonical scripting reference with explicit unsupported features.
+- Scene snapshot replacement drains asynchronous frames before disposing their kernel; repeated Play/Stop and prior browser regressions pass.
 
 
 ## 0.0.36 — M18.2

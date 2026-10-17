@@ -12,7 +12,7 @@ Positive infinity is accepted for query distance and bounded to the engine posit
 
 ## Compatibility limits
 
-The native timestep is 1/60 second with at most eight catch-up steps. Box/sphere and box/circle are the actual shapes; no capsule, mesh, compound collider, joint, continuous collision detection, sleep/interpolation, solver material asset, or per-axis constraint system is claimed. Collider dimensions are explicit world-space half-extents in the current engine and are not automatically multiplied by Transform scale. Changes are runtime-only and Stop restores authored state. MovePosition/MoveRotation set the pose immediately; they do not queue interpolated kinematic movement. The NonAlloc overloads bound writes to the caller buffer, but this managed compatibility implementation still allocates temporary query arrays.
+The native timestep is 1/60 second with at most eight catch-up steps. Box/sphere and box/circle are the actual shapes; no capsule, mesh, compound collider, joint, continuous collision detection, sleep/interpolation, solver material asset, or per-axis constraint system is claimed. Collider dimensions are explicit world-space half-extents in the current engine and are not automatically multiplied by Transform scale. Changes are runtime-only and Stop restores authored state. MovePosition/MoveRotation set the pose immediately; they do not queue interpolated kinematic movement. Kinematic bodies are manually posed in this baseline; their stored velocity is not integrated autonomously (including Rigidbody2D). The NonAlloc overloads bound writes to the caller buffer, but this managed compatibility implementation still allocates temporary query arrays.
 
 
 ## Implemented declarations

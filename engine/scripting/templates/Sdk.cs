@@ -295,7 +295,7 @@ internal static partial class Context {
   Add(new("log","",null,default,message));Logs++;
  }
  internal static void Load(JsonElement value) {
-  Networking.UnityWebRequest.Load(value);if(value.TryGetProperty("runtimeMetrics",out var metrics))RuntimeStats.Data=metrics.Clone();if(value.TryGetProperty("platform",out var platform))Application.Data=platform.Clone();
+  if(value.TryGetProperty("runtimeMetrics",out var metrics))RuntimeStats.Data=metrics.Clone();if(value.TryGetProperty("platform",out var platform))Application.Data=platform.Clone();
   Input.Load(value,value.GetProperty("action").GetString() is "start" or "frame" or "step");
   if(value.GetProperty("action").GetString() is "frame" or "step" or "start"){PreviousKeys.Clear();PreviousKeys.UnionWith(Keys);}Entities.Clear();EntityData.Clear();ActiveStates.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
   foreach(var e in value.GetProperty("entities").EnumerateArray()) {
@@ -312,6 +312,7 @@ internal static partial class Context {
   }
   if(value.TryGetProperty("mouseDelta",out var mouse)){var x=mouse[0].GetDouble();var y=mouse[1].GetDouble();if(!double.IsFinite(x)||!double.IsFinite(y)||Math.Abs(x)>10000||Math.Abs(y)>10000)throw new ArgumentException("Invalid mouse delta");MouseDelta=new(x,y);}
   foreach(var key in value.GetProperty("keys").EnumerateArray()) {if(Keys.Count>=64)throw new ArgumentException("Input limit exceeded");Keys.Add(key.GetString()!);}
+  Networking.UnityWebRequest.Load(value);
  }
  internal static string Output(string? error=null,Action<Utf8JsonWriter>? fields=null) {
   using var stream=new MemoryStream();using(var writer=new Utf8JsonWriter(stream)) {

@@ -46,6 +46,6 @@ try {
    const preferences=packets.flatMap(p=>p.operations).filter(o=>o.kind==='preferences').at(-1).data;
    await phase('stop');return {state,preferences};
   }finally{worker.terminate();}
- },entries.map(({path,text,kind})=>({path,text,kind})));
+ },entries.map(({path,text,kind})=>({path,text,kind})).concat([{path:'Assets/Settings.json',kind:'json',text:'{"difficulty":2}'}]));
  assert.equal(results.state.Created,68);assert.ok(results.state.Checks>=46,JSON.stringify(results));assert.equal(results.state.Frames,2);assert.equal(results.preferences.score,'8');assert.ok(results.preferences.bindings.includes('Interact'));console.log('CSHARP_RUNTIME_BATCHES='+JSON.stringify({passed:true,mode,...results}));
 }finally{await browser?.close();if(server)await new Promise(r=>server.close(r));await rm(root,{recursive:true,force:true});}

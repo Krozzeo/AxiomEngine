@@ -403,6 +403,12 @@ impl World {
             || !(0.0..=1.0).contains(&body.restitution)
             || !body.friction.is_finite()
             || !(0.0..=1.0).contains(&body.friction)
+            || body.gravity.iter().any(|v| !v.is_finite() || v.abs() > 1e4)
+            || !body.linear_damping.is_finite()
+            || !(0.0..=1e4).contains(&body.linear_damping)
+            || !body.angular_damping.is_finite()
+            || !(0.0..=1e4).contains(&body.angular_damping)
+            || body.constraints & !126 != 0
             || !body.gravity_scale.is_finite()
             || body.gravity_scale.abs() > 100.0
         {

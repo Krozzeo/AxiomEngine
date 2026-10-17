@@ -28,7 +28,7 @@ try {
    var bodyOnly=new GameObject("2D body");Check(bodyOnly.AddComponent<Rigidbody2D>()!=null,"body-only 2D facade");Check(bodyOnly.AddComponent<BoxCollider2D>()!=null,"2D collider attachment");Object.Destroy(bodyOnly);
    var extra=child.AddComponent<Extra>();extra.Value=7;
    var grandchild=new GameObject("Nested");grandchild.transform.SetParent(child.transform,false);grandchild.transform.localPosition=new Vector3(0,1,0);
-   var clone=Object.Instantiate(child,new Vector3(20,2,0),Quaternion.identity);Check(clone.transform.childCount==1,"hierarchy cloning");Check(clone.GetComponent<Extra>()!.Value==7,"cloned serialized fields");Check(clone.transform.GetChild(0).position.Y==3,"clone child pose");
+   var clone=Object.Instantiate(child,new Vector3(20,2,0),Quaternion.identity);Check(clone.name==child.name+" (clone)","clone root name");Check(clone.transform.childCount==1,"hierarchy cloning");Check(clone.GetComponent<Extra>()!.Value==7,"cloned serialized fields");Check(clone.transform.GetChild(0).position.Y==3,"clone child pose");
    cloned=clone;
    transform.position=new Vector3(12,0,0);Check(child.transform.position.X==13,"live child propagation");
    running=StartCoroutine(ScaledRoutine());StartCoroutine(RealtimeRoutine());Invoke(nameof(Ping),.04);InvokeRepeating(nameof(Repeat),.02,.02);CancelInvoke(nameof(Repeat));

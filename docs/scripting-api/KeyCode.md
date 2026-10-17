@@ -1,31 +1,9 @@
 # KeyCode
 
-Namespace: `Axiom.Gameplay`
-
-## Description
-
-Supported keyboard key identifiers. The current enumeration covers WASD, arrows, Space, Escape and left/right Shift. Unsupported keys are not silently mapped.
-
-## Use cases
-
-Express keyboard controls without browser key-code strings.
-
-## Example
-
-The statements below belong inside a `MonoBehaviour` callback. Add the components/resources mentioned in the use case first.
-
-```csharp
-if (Input.GetKey(KeyCode.W)) Debug.Log("Forward held");
-if (Input.GetKeyUp(KeyCode.Space)) Debug.Log("Space released");
-```
-
-## Compatibility and limitations
-
-GetAxis currently equals GetAxisRaw; no smoothing. Axes: Horizontal, Vertical, Mouse X, Mouse Y. KeyCode currently covers WASD, arrow keys, Space, Escape and both Shift keys. The focused Game view supplies input. Mouse buttons, touch, gamepads, action maps and the Unity Input System remain pending.
-
+Keyboard identifiers for letters A–Z, Alpha0–9, F1–F12, arrows, Space, Escape, Return, Tab, Backspace, Delete, Shift, Control and Alt. GetKey/GetKeyDown/GetKeyUp accept this enum or browser KeyboardEvent.code strings. Keys are captured from Game; editable text fields keep their normal input. See Input for remappable named actions.
 
 ## Implemented declarations
 
 ```csharp
-public enum KeyCode {W,A,S,D,UpArrow,DownArrow,LeftArrow,RightArrow,Space,Escape,LeftShift,RightShift}
+public enum KeyCode {A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Alpha0,Alpha1,Alpha2,Alpha3,Alpha4,Alpha5,Alpha6,Alpha7,Alpha8,Alpha9,UpArrow,DownArrow,LeftArrow,RightArrow,Space,Escape,Return,Tab,Backspace,Delete,LeftShift,RightShift,LeftControl,RightControl,LeftAlt,RightAlt,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12}
 ```

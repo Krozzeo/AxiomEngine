@@ -24,7 +24,7 @@ test('SDK documentation reads remain bounded even when common type names occur t
 
 test('a known SDK type does not imply an invented member is implemented',async()=>{
  const {readScriptingReference}=await import('../engine/scripting/reference.mjs');
- for(const query of ['Transform.DoesNotExist','Physics.SphereCast','Input.GetTouch'])assert.equal((await readScriptingReference(query)).available,false,query);
+ for(const query of ['Transform.DoesNotExist','Physics.CapsuleCast','Input.GetTouch'])assert.equal((await readScriptingReference(query)).available,false,query);
  for(const query of ['Entity.IsGrounded','Transform.position','Transform.GetComponent','Physics.Raycast'])assert.equal((await readScriptingReference(query)).available,true,query);
 });
 

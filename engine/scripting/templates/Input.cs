@@ -11,14 +11,15 @@ public static partial class Input {
  private static JsonElement Array(JsonElement root,string key)=>root.TryGetProperty(key,out var v)&&v.ValueKind==JsonValueKind.Array?v:Context.ParseData("[]");
  private static bool Held(string binding,bool old=false){var state=old?previous:devices;if(binding.StartsWith("Mouse"))return Array(state,"buttons").EnumerateArray().Any(v=>v.GetString()==binding);if(binding.StartsWith("Gamepad")){var parts=binding.Split('/');if(parts.Length!=2||!int.TryParse(parts[0][7..],out var pad)||!parts[1].StartsWith("Button")||!int.TryParse(parts[1][6..],out var button))return false;return Array(state,"gamepads").EnumerateArray().Any(p=>p.GetProperty("index").GetInt32()==pad&&button>=0&&button<p.GetProperty("buttons").GetArrayLength()&&p.GetProperty("buttons")[button].GetDouble()>.5);}return (old?Context.PreviousKeys:Context.Keys).Contains(binding);}
  private static Vector2 Pair(string key){var v=Array(devices,key);return v.GetArrayLength()==2?new(v[0].GetDouble(),v[1].GetDouble()):Vector2.zero;}
- public static bool GetKey(string code)=>Held(code);public static bool GetKeyDown(string code)=>Held(code)&&!Held(code,true);public static bool GetKeyUp(string code)=>!Held(code)&&Held(code,true);
+ private static bool Edge(string code,string edge)=>Array(devices,edge).EnumerateArray().Any(v=>v.GetString()==code);
+ public static bool GetKey(string code)=>Held(code);public static bool GetKeyDown(string code)=>Edge(code,"down")||Held(code)&&!Held(code,true);public static bool GetKeyUp(string code)=>Edge(code,"up")||!Held(code)&&Held(code,true);
  public static Vector3 mousePosition {get{var p=Pair("mousePosition");return new(p.X,p.Y,0);}}
  public static Vector2 mouseScrollDelta=>Pair("mouseScrollDelta");
  public static bool anyKey=>Context.Keys.Count>0||Array(devices,"buttons").GetArrayLength()>0;
  public static bool anyKeyDown=>Context.Keys.Any(k=>!Context.PreviousKeys.Contains(k))||Array(devices,"buttons").EnumerateArray().Any(k=>!Held(k.GetString()!,true));
  public static bool GetMouseButton(int button)=>Held("Mouse"+MouseButton(button));
- public static bool GetMouseButtonDown(int button)=>GetMouseButton(button)&&!Held("Mouse"+button,true);
- public static bool GetMouseButtonUp(int button)=>!GetMouseButton(button)&&Held("Mouse"+button,true);
+ public static bool GetMouseButtonDown(int button)=>GetKeyDown("Mouse"+MouseButton(button));
+ public static bool GetMouseButtonUp(int button)=>GetKeyUp("Mouse"+MouseButton(button));
  private static int MouseButton(int i)=>i is >=0 and <=4?i:throw new ArgumentOutOfRangeException(nameof(i));
  public static int touchCount=>Array(devices,"touches").GetArrayLength();
  public static Touch GetTouch(int index){var a=Array(devices,"touches");if(index<0||index>=a.GetArrayLength())throw new ArgumentOutOfRangeException(nameof(index));var t=a[index];var p=t.GetProperty("position");var d=t.GetProperty("deltaPosition");return new(t.GetProperty("fingerId").GetInt32(),new(p[0].GetDouble(),p[1].GetDouble()),new(d[0].GetDouble(),d[1].GetDouble()),Enum.Parse<TouchPhase>(t.GetProperty("phase").GetString()!),t.GetProperty("pressure").GetDouble());}
@@ -28,8 +29,8 @@ public static partial class Input {
  public static bool GetGamepadButton(int gamepad,int button)=>Held($"Gamepad{gamepad}/Button{button}");
  private static string[] Bindings(string name)=>bindings.TryGetValue(name,out var value)?value:name switch {"Jump"=>new[]{"Space","Gamepad0/Button0"},"Fire1"=>new[]{"Mouse0","Gamepad0/Button7"},"Submit"=>new[]{"Enter","Gamepad0/Button0"},"Cancel"=>new[]{"Escape","Gamepad0/Button1"},_=>throw new ArgumentException("Unknown input action "+name)};
  public static bool GetButton(string name)=>Bindings(name).Any(b=>Held(b));
- public static bool GetButtonDown(string name)=>GetButton(name)&&!Bindings(name).Any(b=>Held(b,true));
- public static bool GetButtonUp(string name)=>!GetButton(name)&&Bindings(name).Any(b=>Held(b,true));
+ public static bool GetButtonDown(string name)=>Bindings(name).Any(b=>Edge(b,"down"))||GetButton(name)&&!Bindings(name).Any(b=>Held(b,true));
+ public static bool GetButtonUp(string name)=>Bindings(name).Any(b=>Edge(b,"up"))||!GetButton(name)&&Bindings(name).Any(b=>Held(b,true));
  public static void RebindButton(string name,params string[] controls){if(string.IsNullOrWhiteSpace(name)||name.Length>64||controls.Length is <1 or >8||controls.Any(c=>c.Length>64||string.IsNullOrWhiteSpace(c))||!bindings.ContainsKey(name)&&bindings.Count>=64)throw new ArgumentException("Invalid action binding");bindings[name]=controls.ToArray();}
  public static void RebindAxis(string name,string negative,string positive){if(string.IsNullOrWhiteSpace(name)||name.Length>64||negative.Length>64||positive.Length>64||!axes.ContainsKey(name)&&axes.Count>=32)throw new ArgumentException("Invalid axis binding");axes[name]=(negative,positive);}
  public static string SaveBindingOverridesAsJson(){var b=new JsonObject();foreach(var (name,controls) in bindings){var array=new JsonArray();foreach(var control in controls)array.Add(control);b[name]=array;}var a=new JsonObject();foreach(var (name,pair) in axes)a[name]=new JsonArray(pair.Negative,pair.Positive);return new JsonObject{["buttons"]=b,["axes"]=a}.ToJsonString();}

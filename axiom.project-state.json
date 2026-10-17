@@ -2,7 +2,7 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-17",
-  "engineVersion": "0.0.46",
+  "engineVersion": "0.0.47",
   "activeMilestone": 18.3,
   "milestoneStatus": "complete",
   "completion": {
@@ -129,8 +129,8 @@
     "csharpGameplay": "verified_physical_multiple_components_typed_fields_linux_dev_aot_windows_dev",
     "aiControl": "verified_named_panel_png_actual_responses_input_image_controlled_provider",
     "transactionalWorkspaces": "verified_preview_full_state_replacement_apply_autosave_failure_retention_reopen",
-    "physics": "verified_native_wasm_boxes_spheres_body_only_angular_kinematic_and_managed_queries",
-    "editableDemos": "verified_runtime_api_and_physics_2d_3d_labs",
+    "physics": "verified_native_wasm_damping_kinematic_velocity_constraints_sleep_gravity_exclusions_continuous_managed_shape_casts",
+    "editableDemos": "verified_runtime_clone_selection_input_persistence_scene_resources_physics_labs",
     "causalDiagnostics": "verified_four_queries_ten_faults_scoped_graph_and_deep_trace",
     "productionRenderer": "verified_bounded_hdr_pbr_forward_plus_software_webgpu",
     "production2D": "verified_atlas_batching_tilemaps_rust_animation_particles_pixel_camera_lights_ui",
@@ -153,13 +153,13 @@
     "runtimeInspector": "verified_transient_attached_components_transform_typed_csharp_scrub_and_detached_focus",
     "scriptCompilation": "verified_stopped_only_shared_explicit_auto_after_stop_open_play_source_hash_sdk_identity_and_cached_valid_recovery",
     "openAiAssistant": "live_workshop_confirmed; grouped_tools_compact_checkpoints; per_request_cache_reasoning_usage; task_history_requests_xy",
-    "scriptingApi": "verified_sdk5_objects_execution_physics2d_physics3d_partial_unity_surface"
+    "scriptingApi": "verified_sdk6_objects_execution_physics2d_physics3d_input_scene_resources_playerprefs_partial_unity_surface"
   },
   "verified": {
     "nodeTests": {
-      "passed": 388,
+      "passed": 395,
       "failed": 0,
-      "evidenceEnvironment": "GitHub CI 295, Linux and Windows"
+      "evidenceEnvironment": "GitHub CI 303, Linux and Windows"
     },
     "schemaDocuments": 18,
     "architectureRules": 3,
@@ -171,27 +171,27 @@
       "passed": true,
       "toolchain": "rustc 1.90.0",
       "target": "wasm32-unknown-unknown",
-      "evidenceEnvironment": "GitHub CI 295, 0.0.46"
+      "evidenceEnvironment": "GitHub CI 303, 0.0.47"
     },
     "csharpWasmPublish": {
       "passed": true,
-      "sdkVersion": 5,
+      "sdkVersion": 6,
       "configurations": [
         "Linux development",
         "Linux AOT",
         "Windows development"
       ],
-      "evidenceEnvironment": "GitHub CI 295",
+      "evidenceEnvironment": "GitHub CI 303",
       "note": "Runtime, gameplay and physics SDK checked in actual Wasm; trimming diagnostics may remain and are not claimed as zero warnings."
     },
     "nativeRustGate": {
       "passed": true,
       "format": "passed",
       "clippyWarnings": 0,
-      "testsPassed": 39,
+      "testsPassed": 44,
       "testsFailed": 0,
       "toolchain": "rustc 1.90.0",
-      "evidenceEnvironment": "GitHub CI 295, rustc 1.90.0, 0.0.46"
+      "evidenceEnvironment": "GitHub CI 303, rustc 1.90.0, 0.0.47"
     },
     "nativeBrowserSmoke": {
       "passed": true,
@@ -207,30 +207,18 @@
     "remoteCi": {
       "passed": true,
       "status": "completed",
-      "version": "0.0.46",
-      "commit": "d7d11fb0dfa07a1d157f8a9779078017f16f4e66",
-      "tree": "f22939062469f36bf466bd63b1be227e1bc0f86b",
-      "run": 295,
-      "runId": 39001000290,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/39001000290",
-      "jobCount": 39,
-      "jobsPassed": 39,
+      "version": "0.0.47",
+      "commit": "a4530dd976490de4fb7ce90eea7367d16c19d737",
+      "tree": "268c1509a76d4f0d90b25542a64b7dceb0f9ea77",
+      "run": 303,
+      "runId": 39058085678,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/39058085678",
+      "jobCount": 40,
+      "jobsPassed": 40,
       "pendingJobs": [],
       "jobs": [
         {
           "name": "rust",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-5)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-7)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-8)",
           "conclusion": "success"
         },
         {
@@ -242,27 +230,19 @@
           "conclusion": "success"
         },
         {
-          "name": "script-boundaries (macos-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m2)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-2-1)",
-          "conclusion": "success"
-        },
-        {
-          "name": "script-boundaries (ubuntu-latest)",
-          "conclusion": "success"
-        },
-        {
           "name": "csharp-wasm-spike (windows-latest, development)",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m18-3-6)",
+          "name": "bootstrap (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "script-boundaries (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "script-boundaries (ubuntu-latest)",
           "conclusion": "success"
         },
         {
@@ -274,15 +254,15 @@
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m18-3)",
+          "name": "browser-milestones (m18-3-8)",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m18-3-3)",
+          "name": "browser-milestones (m18-3-9)",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m17)",
+          "name": "browser-milestones (m18-3-6)",
           "conclusion": "success"
         },
         {
@@ -290,31 +270,11 @@
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m14)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m16-1)",
-          "conclusion": "success"
-        },
-        {
-          "name": "bootstrap (windows-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m15)",
-          "conclusion": "success"
-        },
-        {
           "name": "browser-milestones (m18-2)",
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m16)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m3)",
+          "name": "browser-milestones (m2)",
           "conclusion": "success"
         },
         {
@@ -322,11 +282,75 @@
           "conclusion": "success"
         },
         {
+          "name": "browser-milestones (m18-2-1)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m3)",
+          "conclusion": "success"
+        },
+        {
           "name": "browser-milestones (m18-3-4)",
           "conclusion": "success"
         },
         {
+          "name": "browser-milestones (m15)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m16-1)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-7)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m16)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-5)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m17)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-3)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m14)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m12)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (corrections)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m11)",
+          "conclusion": "success"
+        },
+        {
           "name": "browser-milestones (m9)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m13-1)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m10)",
           "conclusion": "success"
         },
         {
@@ -342,27 +366,7 @@
           "conclusion": "success"
         },
         {
-          "name": "browser-milestones (m13-1)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m10)",
-          "conclusion": "success"
-        },
-        {
           "name": "browser-milestones (m6)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m12)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m11)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (corrections)",
           "conclusion": "success"
         },
         {
@@ -373,7 +377,8 @@
           "name": "browser-milestones (m8)",
           "conclusion": "success"
         }
-      ]
+      ],
+      "releaseIdentityNote": "Final docs/evidence commit follows the tested executable commit; no runtime logic changed."
     },
     "browserWasmIntegration": {
       "passed": true,
@@ -961,6 +966,7 @@
     "mcp": 1
   },
   "canonicalDocs": [
+    "docs/reports/M18_3_9_CURRENT_REPORT.md",
     "docs/AI_HANDOFF.md",
     "docs/architecture/AXIOM_MASTER_SPEC.md",
     "docs/architecture/NATIVE_DAEMON.md",
@@ -1112,5 +1118,5 @@
     "docs/scripting-api/INDEX.md",
     "docs/reports/m18-3-8-sdk-evidence.json"
   ],
-  "nextTask": "M18.4 GitHub integration, then M19 hardening; five main scripting API batches and advanced physics gaps remain in BATCHES.md. Keep PR #37 draft/unmerged."
+  "nextTask": "M18.4 GitHub integration and M19 hardening. Remaining SDK batches: presentation; navigation/networking; platform/tooling; advanced physics/input/resource extensions are tracked in docs/scripting-api/BATCHES.md."
 }

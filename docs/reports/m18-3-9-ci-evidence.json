@@ -1,0 +1,297 @@
+{
+  "version": "0.0.47",
+  "sdkVersion": 6,
+  "commit": "a4530dd976490de4fb7ce90eea7367d16c19d737",
+  "tree": "268c1509a76d4f0d90b25542a64b7dceb0f9ea77",
+  "runId": 39058085678,
+  "runNumber": 303,
+  "nodeTests": 395,
+  "rustTests": 44,
+  "jobs": [
+    {
+      "name": "rust",
+      "conclusion": "success"
+    },
+    {
+      "name": "csharp-wasm-spike (ubuntu-latest, aot)",
+      "conclusion": "success"
+    },
+    {
+      "name": "bootstrap (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "name": "csharp-wasm-spike (windows-latest, development)",
+      "conclusion": "success"
+    },
+    {
+      "name": "bootstrap (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "name": "script-boundaries (macos-latest)",
+      "conclusion": "success"
+    },
+    {
+      "name": "script-boundaries (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "name": "script-boundaries (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "name": "csharp-wasm-spike (ubuntu-latest, development)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3-8)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3-9)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3-6)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-1)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-2)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m2)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-2-1)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m3)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3-4)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m15)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m16-1)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3-7)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m16)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3-5)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m17)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m18-3-3)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m14)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m12)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (corrections)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m11)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m9)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m13-1)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m10)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m13)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m4)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m5)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m6)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m7)",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser-milestones (m8)",
+      "conclusion": "success"
+    }
+  ],
+  "sdk": [
+    {
+      "configuration": "csharp-wasm-spike (ubuntu-latest, aot)",
+      "runtime": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      },
+      "physics": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "inputScenes": {
+        "passed": true,
+        "mode": "aot",
+        "state": {
+          "Checks": 36,
+          "Frames": 2,
+          "AsyncReady": true
+        },
+        "preferences": {
+          "score": "8",
+          "name": "Player",
+          "bindings": "{\"buttons\":{\"Interact\":[\"KeyE\",\"Gamepad0/Button1\"]},\"axes\":{\"Climb\":[\"KeyQ\",\"KeyE\"]},\"gamepadAxes\":{\"Steer\":[0,0,-1,0.1]}}"
+        }
+      }
+    },
+    {
+      "configuration": "csharp-wasm-spike (windows-latest, development)",
+      "runtime": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      },
+      "physics": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "inputScenes": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 36,
+          "Frames": 2,
+          "AsyncReady": true
+        },
+        "preferences": {
+          "score": "8",
+          "name": "Player",
+          "bindings": "{\"buttons\":{\"Interact\":[\"KeyE\",\"Gamepad0/Button1\"]},\"axes\":{\"Climb\":[\"KeyQ\",\"KeyE\"]},\"gamepadAxes\":{\"Steer\":[0,0,-1,0.1]}}"
+        }
+      }
+    },
+    {
+      "configuration": "csharp-wasm-spike (ubuntu-latest, development)",
+      "runtime": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Paused": false,
+          "Updates": 6,
+          "Fixed": 7,
+          "Scaled": 1,
+          "Unscaled": 1,
+          "Invoked": 1
+        }
+      },
+      "physics": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 28,
+          "Contacts": 0
+        },
+        "contactState": {
+          "Checks": 31,
+          "Contacts": 1
+        }
+      },
+      "inputScenes": {
+        "passed": true,
+        "mode": "development",
+        "state": {
+          "Checks": 36,
+          "Frames": 2,
+          "AsyncReady": true
+        },
+        "preferences": {
+          "score": "8",
+          "name": "Player",
+          "bindings": "{\"buttons\":{\"Interact\":[\"KeyE\",\"Gamepad0/Button1\"]},\"axes\":{\"Climb\":[\"KeyQ\",\"KeyE\"]},\"gamepadAxes\":{\"Steer\":[0,0,-1,0.1]}}"
+        }
+      }
+    }
+  ]
+}

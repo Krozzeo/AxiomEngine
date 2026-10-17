@@ -1,4 +1,4 @@
-import {validateRuntimeComponent} from '../scene/runtime-edit.mjs';
+import {validateRuntimeComponent,validateRuntimeEntity} from '../scene/runtime-edit.mjs';
 import {scriptFields,scriptValue} from './fields.mjs';
 import {SCRIPT_CONTRACT as LIMIT} from './contract.mjs';
 const fail=message=>{throw new Error('AX_SCRIPT_0003: '+message);};
@@ -8,9 +8,12 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
  if(!packet||packet.generation!==generation)fail('stale runtime generation');
  if(packet.error)throw new Error('AX_SCRIPT_0004: '+String(packet.error).slice(0,4096));
  if(!Array.isArray(packet.operations)||packet.operations.length>LIMIT.operations)fail('operation limit exceeded');
- const candidate=structuredClone(scene),logs=[],audio=[] ,animations=[],positions=new Map(),rotations=new Map(),velocities=new Map(),angularVelocities=new Map();let changedTopology=false;
+ const candidate=structuredClone(scene),preferences=[],logs=[],audio=[] ,animations=[],positions=new Map(),rotations=new Map(),velocities=new Map(),angularVelocities=new Map();let changedTopology=false;
  const entities=new Map(candidate.entities.map(e=>[e.id,e]));
  for(const op of packet.operations) {
+  if(op.kind==='physicsSettings'){const data=op.data;if(!data||typeof data!=='object'||Array.isArray(data)||Object.keys(data).some(k=>!['gravity','gravity2D','ignoredPairs','ignoredLayers2','ignoredLayers3'].includes(k)))fail('Invalid physics settings');for(const k of ['gravity','gravity2D'])if(data[k]&&(!Array.isArray(data[k])||data[k].length!==3||data[k].some(v=>!Number.isFinite(v)||Math.abs(v)>10000)))fail('Invalid gravity');for(const k of ['ignoredPairs','ignoredLayers2','ignoredLayers3'])if(data[k]&&(!Array.isArray(data[k])||data[k].length>1024||data[k].some(v=>typeof v!=='string'||v.length>100)))fail('Invalid physics exclusions');candidate.runtimePhysics=structuredClone(data);changedTopology=true;continue;}
+  if(op.kind==='preferences'){if(!op.data||typeof op.data!=='object'||Array.isArray(op.data)||Object.keys(op.data).length>256||Object.entries(op.data).some(([k,v])=>!k||k.length>128||typeof v!=='string'||v.length>4096)||new TextEncoder().encode(JSON.stringify(op.data)).length>65536)fail('Invalid preferences');preferences.push(structuredClone(op.data));continue;}
+  if(op.kind==='import'){if(!Array.isArray(op.data)||op.data.length+spawned>LIMIT.spawns||op.data.length+entities.size>LIMIT.entities)fail('Resource spawn budget exceeded');const imported=new Set();for(const e of op.data){const authored={...e};delete authored.runtimeParentId;validateRuntimeEntity(authored);if(!entityId.test(e.id)||entities.has(e.id)||imported.has(e.id))fail('Invalid resource identity');imported.add(e.id);for(const c of e.scriptComponents??[]){const meta=scriptFields(candidate,c.path);if(!meta.typeName)fail('Uncompiled resource script');}for(const ref of [e.renderable?.assetId,e.audioSource?.assetId,e.tilemap?.assetId])if(ref&&!candidate.assets?.some(a=>a.id===ref))fail('Resource asset unavailable');}for(const e of op.data){if(e.runtimeParentId&&!imported.has(e.runtimeParentId))fail('Missing resource parent');let parent=e.runtimeParentId;const visited=new Set([e.id]);while(parent){if(visited.has(parent))fail('Resource hierarchy cycle');visited.add(parent);parent=op.data.find(item=>item.id===parent)?.runtimeParentId;}candidate.entities.push(structuredClone(e));entities.set(e.id,candidate.entities.at(-1));}spawned+=op.data.length;changedTopology=true;continue;}
   if(op.kind==='log') {if(typeof op.message!=='string'||op.message.length>2048||logs.length>=LIMIT.logs)fail('invalid log');logs.push(op.message);continue;}
   if(op.kind==='audio'){if(!entities.get(op.id)?.audioSource||!['play','pause','resume','stop','volume'].includes(op.action)||op.action==='volume'&&(!Number.isFinite(op.value)||op.value<0||op.value>1))fail('invalid audio source/action/volume');audio.push({entityId:op.id,action:op.action,value:op.value});continue;}
   if(op.kind==='animation'){const e=entities.get(op.id),a=e?.animator;if(!a||!['pause','resume','state','parameter'].includes(op.action))fail('invalid Animator target/action');if(op.action==='state'&&(!a.states.some(s=>s.name===op.name)||!Number.isFinite(op.duration)||op.duration<0||op.duration>5))fail('invalid animation state/fade');if(op.action==='parameter'&&(!a.parameters.some(p=>p.name===op.name)||!Number.isFinite(op.value)||Math.abs(op.value)>1e6))fail('invalid animation parameter');animations.push({entityId:op.id,action:op.action,name:op.name,value:op.value,duration:op.duration});continue;}
@@ -19,7 +22,7 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
   if(op.kind==='parent'){const e=entities.get(op.id);if(!e||op.name!=null&&!entities.has(op.name))fail('Invalid runtime parent');let id=op.name;for(let depth=0;id!=null;depth++){if(id===op.id||depth>=LIMIT.entities)fail('Runtime hierarchy cycle');const p=entities.get(id);id=Object.hasOwn(p,'runtimeParentId')?p.runtimeParentId:p.parentId;}e.runtimeParentId=op.name??null;delete e.parentId;changedTopology=true;continue;}
   if(op.kind==='property'){const e=entities.get(op.id);if(!e)fail('Stale property target');const key=op.name,value=op.data;
    if(key==='runtimeTag'||key==='name'){if(typeof value!=='string'||!value.trim()||value.length>128)fail('Invalid runtime name/tag');e[key]=value;}
-   else if(key==='runtimeKinematic'||key==='runtimeColliderEnabled'){if(typeof value!=='boolean')fail('Invalid runtime physics flag');e[key]=value;changedTopology=true;}
+   else if(key==='runtimeKinematic'||key==='runtimeColliderEnabled'||key==='runtimeStatic'||key==='runtimeSimulated'){if(typeof value!=='boolean')fail('Invalid runtime physics flag');e[key]=value;changedTopology=true;}
    else if(key==='runtimeBodyEpoch'){if(!Number.isSafeInteger(value)||value<0||value>1000000)fail('Invalid body epoch');e[key]=value;}
    else if(key==='runtimePhysicsDimension'){if(![2,3].includes(value))fail('Invalid physics dimension');e[key]=value;}
    else if(key==='runtimeLayer'){if(!Number.isInteger(value)||value<0||value>31)fail('Invalid layer');e[key]=value;}
@@ -35,7 +38,7 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
   if(op.kind==='spawn') {
    const template=entities.get(op.template);
    if(!template||!entityId.test(op.id)||entities.has(op.id)||spawned>=LIMIT.spawns||entities.size>=LIMIT.entities)fail('invalid spawn');
-   const entity={...structuredClone(template),id:op.id,name:template.name+' (runtime)',runtimeParentId:null};delete entity.parentId;
+   const entity={...structuredClone(template),id:op.id,name:template.name.slice(0,120)+' (clone)',runtimeParentId:null};delete entity.parentId;
    entity.transform.position=[...op.position];candidate.entities.push(entity);entities.set(op.id,entity);spawned++;changedTopology=true;
   }else if(op.kind==='angularVelocity'){const entity=entities.get(op.id);if(!entity?.rigidBody||op.position.some(v=>Math.abs(v)>10000))fail('invalid angular velocity');entity.rigidBody.angularVelocity=[...op.position];angularVelocities.set(op.id,[...op.position]);
   }else if(op.kind==='velocity') {
@@ -48,7 +51,7 @@ export function applyScriptOperations(scene,packet,generation,spawned=0) {
  if(packet.scriptValues!==undefined){if(!Array.isArray(packet.scriptValues)||packet.scriptValues.length>32)fail('Invalid script field snapshots');const seen=new Set();for(const snapshot of packet.scriptValues){const key=snapshot.entityId+'|'+snapshot.path,component=entities.get(snapshot.entityId)?.scriptComponents?.find(c=>c.path===snapshot.path);if(!component||seen.has(key)||!snapshot.values||typeof snapshot.values!=='object'||Array.isArray(snapshot.values))fail('Invalid script component snapshot');seen.add(key);const meta=scriptFields(candidate,snapshot.path);for(const[name,value]of Object.entries(snapshot.values)){const f=meta.fields.find(f=>f.name===name);if(!f)fail('Unknown runtime field');component.values[name]=scriptValue({...f,minimum:undefined,maximum:undefined},value);}}}
  if(candidate.entities.filter(e=>e.collider||e.rigidBody).length>256)fail("physics body capacity exceeded");
  if(candidate.entities.filter(e=>e.audioSource).length>32)fail('audio voice capacity exceeded');
- return {scene:candidate,logs,audio,animations,positions,rotations,velocities,angularVelocities,spawned,changedTopology};
+ return {scene:candidate,preferences,logs,audio,animations,positions,rotations,velocities,angularVelocities,spawned,changedTopology};
 }
 
 // Runtime transforms are world-space; SDK child lookup still needs authored parent identities.

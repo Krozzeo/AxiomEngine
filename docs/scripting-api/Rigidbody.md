@@ -1,23 +1,24 @@
 # Rigidbody
 
-Linear/angular velocity, mass, useGravity, kinematic mode, full freezeRotation, world pose, point velocity and force/torque APIs. Use AddForce/AddTorque in FixedUpdate. Force/Acceleration use fixedDeltaTime; Impulse/VelocityChange do not. Torque uses oriented box/sphere inertia. AddForceAtPosition generates both linear and angular change. Forces on inactive or kinematic objects have no effect. Forces accumulate into the runtime velocity immediately and are integrated on the next native step; getters can see that accumulated velocity before simulation.
+A live 3D body facade with mass, linear/angular velocity, gravity, dynamic/kinematic state, pose, force/impulse/torque and off-center forces. Angular units are radians/second. Collider dimensions use world units. Read a body with GetComponent<Rigidbody>(); add one dynamically or author one before Play.
 
-```csharp
-public override void FixedUpdate() {
- var body = GetComponent<Rigidbody>();
- if (body != null) body.AddRelativeForce(Vector3.forward * 10);
-}
-```
+## Expanded in 0.0.47
 
-## Compatibility limits
+Native 2D/3D body integration supports custom gravity, stable damping v/(1+damping*dt), moving kinematic bodies without gravity, per-axis position/rotation constraints, explicit Sleep/WakeUp and impact wake-up. Automatic sleep thresholds and interpolation remain pending. Rigidbody2D includes Static bodyType and simulated toggles. Pair/layer collision exclusions are honored by native resolution and triggers; query layer masks are separate. Collision relativeVelocity uses native pre-solver point velocity (including spin), with self-minus-other receiver convention; native diagnostics also expose normal impulse per contact.
 
-The native timestep is 1/60 second with at most eight catch-up steps. Box/sphere and box/circle are the actual shapes; no capsule, mesh, compound collider, joint, continuous collision detection, sleep/interpolation, solver material asset, or per-axis constraint system is claimed. Collider dimensions are explicit world-space half-extents in the current engine and are not automatically multiplied by Transform scale. Changes are runtime-only and Stop restores authored state. MovePosition/MoveRotation set the pose immediately; they do not queue interpolated kinematic movement. Kinematic bodies are manually posed in this baseline; their stored velocity is not integrated autonomously (including Rigidbody2D). The NonAlloc overloads bound writes to the caller buffer, but this managed compatibility implementation still allocates temporary query arrays.
+Continuous mode uses adaptive fixed-step subdivision up to 64 samples (sized by smallest collider extent and linear travel), retains first-hit contact evidence, and reports one logical fixed step. It is bounded anti-tunneling, not unrestricted analytic TOI or angular CCD. ContinuousDynamic/Speculative throw a documented unsupported error. Maximum velocity remains 10000 world units/s; extreme thin/high-speed cases may exceed the sampling budget.
+
+Sphere/Circle casts use exact closest points with conservative advancement capped at 128 iterations and 1e-7 tolerance. Translating box casts use swept oriented SAT against boxes and reverse sphere casts against spheres. All/nearest/buffer variants preserve deterministic distance order and trigger/layer filters. Very grazing contacts can exhaust the iteration limit and miss; no capsule/mesh casts are claimed. NonAlloc overloads bound output writes but allocate temporary managed arrays. ContactFilter2D currently supports trigger, layer and depth inclusion/exclusion for ray and circle overlap buffers, not normal-angle filtering.
+
+Still pending: capsule/edge/polygon/mesh/compound colliders, joints, terrain, arbitrary center/inertia overrides, contact modification and solver tuning. Collider extents are world units, independent of Transform scale; MovePosition/MoveRotation set immediate poses.
+
+
 
 
 ## Implemented declarations
 
 ```csharp
-public sealed class Rigidbody : Component {
+public sealed partial class Rigidbody : Component {
  internal Rigidbody(Entity entity){Entity=entity;}
  public Vector3 linearVelocity {get=>Entity.RigidBody.Velocity;set=>Entity.SetVelocity(value);}
  public Vector3 velocity {get=>linearVelocity;set=>linearVelocity=value;}
@@ -41,5 +42,20 @@ public sealed class Rigidbody : Component {
  public void AddForceAtPosition(Vector3 force,Vector3 position,ForceMode mode=ForceMode.Force){PhysicsData.Finite(position);AddForce(force,mode);AddTorque(Vector3.Cross(position-this.position,force),mode);}
 }
 
+public sealed partial class Rigidbody {
+ public double linearDamping {get=>PhysicsData.Number(Entity,"linearDamping");set=>PhysicsData.Number(Entity,"linearDamping",value,0,10000);}
+ public double angularDamping {get=>PhysicsData.Number(Entity,"angularDamping");set=>PhysicsData.Number(Entity,"angularDamping",value,0,10000);}
+ public double drag {get=>linearDamping;set=>linearDamping=value;}public double angularDrag {get=>angularDamping;set=>angularDamping=value;}
+ public RigidbodyConstraints constraints {get=>(RigidbodyConstraints)(int)PhysicsData.Number(Entity,"constraints");set{if(((int)value&~126)!=0)throw new ArgumentException("Invalid constraints");PhysicsData.Number(Entity,"constraints",(int)value,0,126);}}
+ public CollisionDetectionMode collisionDetectionMode {get=>PhysicsData.Body(Entity).TryGetProperty("continuous",out var v)&&v.GetBoolean()?CollisionDetectionMode.Continuous:CollisionDetectionMode.Discrete;set{if(value is not CollisionDetectionMode.Discrete and not CollisionDetectionMode.Continuous)throw new NotSupportedException("Only bounded substep Continuous and Discrete are implemented");PhysicsData.Set(Entity,"rigidBody","continuous",JsonValue.Create(value==CollisionDetectionMode.Continuous)!);}}
+ public bool IsSleeping()=>PhysicsData.Body(Entity).TryGetProperty("sleeping",out var v)&&v.GetBoolean();
+ public void Sleep(){linearVelocity=Vector3.zero;angularVelocity=Vector3.zero;PhysicsData.Set(Entity,"rigidBody","sleeping",JsonValue.Create(true)!);}
+ public void WakeUp()=>PhysicsData.Set(Entity,"rigidBody","sleeping",JsonValue.Create(false)!);
+}
+
 public enum ForceMode {Force,Acceleration,Impulse,VelocityChange}
+
+public enum RigidbodyConstraints {None=0,FreezePositionX=2,FreezePositionY=4,FreezePositionZ=8,FreezeRotationX=16,FreezeRotationY=32,FreezeRotationZ=64,FreezePosition=14,FreezeRotation=112,FreezeAll=126}
+
+public enum CollisionDetectionMode {Discrete,Continuous,ContinuousDynamic,ContinuousSpeculative}
 ```

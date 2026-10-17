@@ -82,13 +82,13 @@ public static class Time {
  internal static void Reset(){scale=1;delta=0;time=0;unscaledTime=0;unscaledDeltaTime=0;fixedTime=0;fixedUnscaledTime=0;frameCount=0;inFixedTimeStep=false;}
  internal static void Step(double value){unscaledDeltaTime=value;unscaledTime+=value;delta=Math.Min(value*scale,maximumDeltaTime);time+=delta;frameCount++;}
 }
-public enum KeyCode {W,A,S,D,UpArrow,DownArrow,LeftArrow,RightArrow,Space,Escape,LeftShift,RightShift}
+public enum KeyCode {A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Alpha0,Alpha1,Alpha2,Alpha3,Alpha4,Alpha5,Alpha6,Alpha7,Alpha8,Alpha9,UpArrow,DownArrow,LeftArrow,RightArrow,Space,Escape,Return,Tab,Backspace,Delete,LeftShift,RightShift,LeftControl,RightControl,LeftAlt,RightAlt,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12}
 public static partial class Input {
- private static string Code(KeyCode key)=>key switch {KeyCode.UpArrow=>"ArrowUp",KeyCode.DownArrow=>"ArrowDown",KeyCode.LeftArrow=>"ArrowLeft",KeyCode.RightArrow=>"ArrowRight",KeyCode.Space=>"Space",KeyCode.Escape=>"Escape",KeyCode.LeftShift=>"ShiftLeft",KeyCode.RightShift=>"ShiftRight",_=>"Key"+key};
+ private static string Code(KeyCode key)=>key switch {KeyCode.UpArrow=>"ArrowUp",KeyCode.DownArrow=>"ArrowDown",KeyCode.LeftArrow=>"ArrowLeft",KeyCode.RightArrow=>"ArrowRight",KeyCode.Space=>"Space",KeyCode.Escape=>"Escape",KeyCode.LeftShift=>"ShiftLeft",KeyCode.RightShift=>"ShiftRight",KeyCode.Return=>"Enter",KeyCode.LeftControl=>"ControlLeft",KeyCode.RightControl=>"ControlRight",KeyCode.LeftAlt=>"AltLeft",KeyCode.RightAlt=>"AltRight",_=>key.ToString().StartsWith("Alpha")?"Digit"+key.ToString()[5..]:key.ToString().Length==1?"Key"+key:key.ToString()};
  public static bool GetKey(KeyCode key)=>IsDown(Code(key));
- public static bool GetKeyDown(KeyCode key)=>IsDown(Code(key))&&!Context.PreviousKeys.Contains(Code(key));
- public static bool GetKeyUp(KeyCode key)=>!IsDown(Code(key))&&Context.PreviousKeys.Contains(Code(key));
- public static double GetAxisRaw(string axis)=>axis switch {"Horizontal"=>Math.Clamp(Axis("KeyA","KeyD")+Axis("ArrowLeft","ArrowRight"),-1,1),"Vertical"=>Math.Clamp(Axis("KeyS","KeyW")+Axis("ArrowDown","ArrowUp"),-1,1),"Mouse X"=>MouseDelta.X,"Mouse Y"=>MouseDelta.Y,_=>throw new ArgumentException("Unknown input axis "+axis)};
+ public static bool GetKeyDown(KeyCode key)=>GetKeyDown(Code(key));
+ public static bool GetKeyUp(KeyCode key)=>GetKeyUp(Code(key));
+ public static double GetAxisRaw(string axis)=>NamedAxis(axis);
  public static double GetAxis(string axis)=>GetAxisRaw(axis);
 }
 public static partial class Mathf {

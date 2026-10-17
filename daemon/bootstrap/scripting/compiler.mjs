@@ -13,7 +13,7 @@ export const GAME_PROJECT=`<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
   <EnableDefaultCompileItems>false</EnableDefaultCompileItems><WasmEnableHotReload>false</WasmEnableHotReload>
   <InvariantGlobalization>false</InvariantGlobalization><WasmBuildNative>false</WasmBuildNative>
  </PropertyGroup>
- <ItemGroup><Compile Include="Sdk.cs"/><Compile Include="Compatibility.cs"/><Compile Include="RuntimeObjects.cs"/><Compile Include="Scheduling.cs"/><Compile Include="Physics.cs"/><Compile Include="GeneratedComponents.cs"/><Compile Include="Host.cs"/><Compile Include="Inspector.cs"/><Compile Include="Sources/*.cs"/><Compile Include="Game.cs"/></ItemGroup>
+ <ItemGroup><Compile Include="Sdk.cs"/><Compile Include="Compatibility.cs"/><Compile Include="RuntimeObjects.cs"/><Compile Include="Scheduling.cs"/><Compile Include="Physics.cs"/><Compile Include="PhysicsAdvanced.cs"/><Compile Include="ShapeCasts.cs"/><Compile Include="Input.cs"/><Compile Include="ProjectRuntime.cs"/><Compile Include="SceneManagement.cs"/><Compile Include="GeneratedComponents.cs"/><Compile Include="Host.cs"/><Compile Include="Inspector.cs"/><Compile Include="Sources/*.cs"/><Compile Include="Game.cs"/></ItemGroup>
 </Project>\n`;
 export class ScriptCompiler {
  constructor(projects){this.projects=projects;}
@@ -21,7 +21,7 @@ export class ScriptCompiler {
   if(typeof source!=='string'||Buffer.byteLength(source)>CSHARP_COMPILER.sourceBytes)fail('C# source exceeds 64 KiB');
   const args=compilerArguments(mode),id=randomUUID(),root=await scriptDirectory(this.projects,projectId,id);
   const entry=source.match(/public\s+(?:sealed\s+)?class\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(?:Axiom\.Gameplay\.)?Script\b/)?.[1]??'GameScript';
-  for(const name of ['Sdk.cs','Compatibility.cs','RuntimeObjects.cs','Scheduling.cs','Physics.cs','GeneratedComponents.cs','Host.cs','Inspector.cs']){let text=await readFile(new URL('../../../engine/scripting/templates/'+name,import.meta.url),'utf8');if(name==='Host.cs'){
+  for(const name of ['Sdk.cs','Compatibility.cs','RuntimeObjects.cs','Scheduling.cs','Physics.cs','PhysicsAdvanced.cs','ShapeCasts.cs','Input.cs','ProjectRuntime.cs','SceneManagement.cs','GeneratedComponents.cs','Host.cs','Inspector.cs']){let text=await readFile(new URL('../../../engine/scripting/templates/'+name,import.meta.url),'utf8');if(name==='Host.cs'){
     text=generateHost(text,entries,entry);
    }await writeNew(join(root,name),text);}
   if(entries){await mkdir(join(root,'Sources'),{recursive:true});for(const[i,file]of entries.entries())await writeNew(join(root,'Sources',i+'.cs'),file.text);await writeNew(join(root,'Game.cs'),'// Project sources compiled from Sources/*.cs\n');}else await writeNew(join(root,'Game.cs'),source);await writeNew(join(root,'Axiom.Game.csproj'),GAME_PROJECT);

@@ -1,3 +1,7 @@
+# Current revision — 0.0.47 / M18.3.9
+
+SDK 6 expands Input, scenes/resources/PlayerPrefs and native physics, and fixes runtime clone Hierarchy/Scene selection. Five API labs: `npm.cmd run demo`. Read the [demo guide](demos/M18_3_9_GUIDE.md), [current report](docs/reports/M18_3_9_CURRENT_REPORT.md) and [API coverage/remaining batches](docs/scripting-api/BATCHES.md). [CI 303](https://github.com/Krozzeo/AxiomEngine/actions/runs/39058085678) passes all **40 jobs** at executable commit `a4530dd976490de4fb7ce90eea7367d16c19d737` (tree `268c1509a76d4f0d90b25542a64b7dceb0f9ea77`): **395 Node tests on Linux and Windows**, **44 Rust tests** with fmt/clippy and Wasm checks, real **C# Linux development/AOT and Windows development**, and **31 browser groups**. No paid provider calls. Earlier pinned releases below are historical.
+
 # M18.3.8 / 0.0.46 — panel vision, durable Apply and four scripting API batches
 
 Automated acceptance is complete. [CI 295](https://github.com/Krozzeo/AxiomEngine/actions/runs/39001000290) passes all **39 jobs** at executable commit `d7d11fb0dfa07a1d157f8a9779078017f16f4e66` (tree `f22939062469f36bf466bd63b1be227e1bc0f86b`): **388 Node tests on Linux and Windows**, **39 Rust tests** with formatting/clippy/Wasm checks, **C# Linux development/AOT and Windows development**, and **30 browser groups**. The new browser group passes **7 criteria**. No paid provider calls were performed.

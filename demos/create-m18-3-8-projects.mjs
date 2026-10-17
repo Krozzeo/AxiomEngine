@@ -3,16 +3,16 @@ import {fileURLToPath} from 'node:url';
 import {HubSettings} from '../daemon/bootstrap/hub-settings.mjs';
 import {SceneWorkspace} from '../daemon/bootstrap/scene-workspace.mjs';
 import {ProjectStore} from '../daemon/bootstrap/project-store.mjs';
-export async function createRuntimeApiProject(root,{folders=false}={}){
- const w=new SceneWorkspace(new ProjectStore(root,{folders}));await w.run('project.create',{name:'Demo · M18.3.8 Runtime API Lab',dimension:3});
+export async function createRuntimeApiProject(root,{folders=false,label='M18.3.8'}={}){
+ const w=new SceneWorkspace(new ProjectStore(root,{folders}));await w.run('project.create',{name:`Demo · ${label} Runtime API Lab`,dimension:3});
  const run=(type,data={})=>w.run(type,{id:w.project.id,expectedSceneRevision:w.revision,...data}),cube=w.project.scene.entities.find(e=>e.renderable);
  await run('scene.entity.update',{entityId:cube.id,name:'Runtime API Probe',transform:{position:[0,1,0]}});
  const path='Scripts/RuntimeApiLab.cs';await run('project.files.edit',{action:'create',kind:'script',path});await run('project.files.edit',{action:'write',path,text:await readFile(new URL('./scripts/RuntimeApiLab.cs',import.meta.url),'utf8')});await run('scene.script.edit',{entityId:cube.id,path,action:'attach'});await run('scene.save');return {id:w.project.id,cubeId:cube.id,name:w.project.name,scriptPath:path};
 }
-export async function createPhysicsApiProjects(root,{folders=false}={}){
+export async function createPhysicsApiProjects(root,{folders=false,label='M18.3.8'}={}){
  const projects=[];
  for(const dimension of [2,3]){
-  const w=new SceneWorkspace(new ProjectStore(root,{folders}));await w.run('project.create',{name:`Demo · M18.3.8 Physics ${dimension}D API Lab`,dimension});
+  const w=new SceneWorkspace(new ProjectStore(root,{folders}));await w.run('project.create',{name:`Demo · ${label} Physics ${dimension}D API Lab`,dimension});
   const run=(type,data={})=>w.run(type,{id:w.project.id,expectedSceneRevision:w.revision,...data});
   const cube=w.project.scene.entities.find(e=>e.renderable||e.sprite2D);
   if(!cube)throw Error('New scene has no visible primitive');

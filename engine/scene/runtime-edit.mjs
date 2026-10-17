@@ -17,3 +17,5 @@ export function applyRuntimeEdit(scene,{type,data}) {
 }
 
 export function validateRuntimeComponent(key,value){if(!Object.hasOwn(entitySchema.properties,key))fail("Unknown runtime component");check(value,entitySchema.properties[key]);}
+
+export function validateRuntimeEntity(value){check(value,entitySchema);}

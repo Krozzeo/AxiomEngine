@@ -27,4 +27,10 @@ public partial class Object {
  private static bool Exists(Object? value){if(value==null)return false;if(value.Handle is not Entity e)return true;if(e.Generation!=Context.Generation||!Context.Entities.ContainsKey(e.Id))return false;if(value is Script script)return Context.LiveScripts.Contains(script);if(value is Component c&&Context.ComponentKey(c.GetType()) is string key)return Context.EntityData[e.Id].TryGetProperty(key,out _);return true;}
  public static implicit operator bool(Object? value)=>Exists(value);
 }
+
+public partial class Object {
+ public static GameObject Instantiate(PrefabAsset original)=>Context.ImportResource(original.Path,true).First();
+ public static GameObject Instantiate(PrefabAsset original,Vector3 position,Quaternion rotation){var root=Instantiate(original);root.transform.position=position;root.transform.rotation=rotation;return root;}
+ public static void DontDestroyOnLoad(GameObject target){_=Context.Read(target.Entity);var root=target.transform;while(root.parent!=null)root=root.parent;SceneManagement.SceneManager.Persistent.Add(root.Entity.Id);}
+}
 ```

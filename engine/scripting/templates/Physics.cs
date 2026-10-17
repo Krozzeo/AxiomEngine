@@ -7,17 +7,17 @@ internal static class PhysicsData {
  internal static JsonElement Body(Entity e){_=Context.Read(e);return Context.EntityData[e.Id].GetProperty("rigidBody");}
  internal static double Number(Entity e,string key,double fallback=0)=>Body(e).TryGetProperty(key,out var v)?v.GetDouble():fallback;
  internal static bool Kinematic(Entity e)=>Context.EntityData[e.Id].TryGetProperty("runtimeKinematic",out var v)&&v.GetBoolean();
- internal static void Set(Entity e,string component,string key,JsonNode value){var data=JsonNode.Parse(Context.EntityData[e.Id].GetProperty(component).GetRawText())!.AsObject();data[key]=value;Context.Property(e,component,data);}
+ internal static void Set(Entity e,string component,string key,JsonNode value){var data=JsonNode.Parse(Context.EntityData[e.Id].GetProperty(component).GetRawText())!.AsObject();if(JsonNode.DeepEquals(data[key],value))return;data[key]=value;Context.Property(e,component,data);}
  internal static void Number(Entity e,string key,double value,double min,double max){if(!double.IsFinite(value)||value<min||value>max)throw new ArgumentOutOfRangeException(key);Set(e,"rigidBody",key,JsonValue.Create(value)!);}
  internal static Vector3 Half(Entity e)=>Vector3.Read(Context.EntityData[e.Id].GetProperty("collider").GetProperty("halfExtents"));
  internal static void Half(Entity e,Vector3 value){Finite(value);if(value.X<=0||value.Y<=0||value.Z<=0||Math.Max(value.X,Math.Max(value.Y,value.Z))>10000)throw new ArgumentOutOfRangeException(nameof(value));Set(e,"collider","halfExtents",new JsonArray(value.X,value.Y,value.Z));}
  internal static void Finite(Vector3 v){if(!double.IsFinite(v.X)||!double.IsFinite(v.Y)||!double.IsFinite(v.Z))throw new ArgumentException("Physics vector must be finite");}
- internal static bool CanForce(Entity e)=>Context.IsActive(e.Id)&&!Kinematic(e);
+ internal static bool CanForce(Entity e){if(!Context.IsActive(e.Id)||Context.EntityData[e.Id].TryGetProperty("runtimeSimulated",out var sim)&&!sim.GetBoolean()||Kinematic(e)||Context.EntityData[e.Id].TryGetProperty("runtimeStatic",out var s)&&s.GetBoolean())return false;if(Body(e).TryGetProperty("sleeping",out var sleep)&&sleep.GetBoolean())Set(e,"rigidBody","sleeping",JsonValue.Create(false)!);return true;}
  internal static Vector3 Angular(Entity e)=>Body(e).TryGetProperty("angularVelocity",out var v)?Vector3.Read(v):Vector3.zero;
- internal static void Angular(Entity e,Vector3 v){Finite(v);if(Math.Max(Math.Abs(v.X),Math.Max(Math.Abs(v.Y),Math.Abs(v.Z)))>10000)throw new ArgumentOutOfRangeException(nameof(v));var data=JsonNode.Parse(Body(e).GetRawText())!.AsObject();data["angularVelocity"]=new JsonArray(v.X,v.Y,v.Z);var node=JsonNode.Parse(Context.EntityData[e.Id].GetRawText())!.AsObject();node["rigidBody"]=data;Context.EntityData[e.Id]=Context.ParseData(node.ToJsonString());Context.Add(new("angularVelocity",e.Id,null,v,null));}
+ internal static void Angular(Entity e,Vector3 v){Finite(v);if(Context.EntityData[e.Id].TryGetProperty("runtimeStatic",out var fixedBody)&&fixedBody.GetBoolean()&&v.sqrMagnitude>0)return;if(v.sqrMagnitude>0&&Body(e).TryGetProperty("sleeping",out var sleep)&&sleep.GetBoolean())Set(e,"rigidBody","sleeping",JsonValue.Create(false)!);if(Math.Max(Math.Abs(v.X),Math.Max(Math.Abs(v.Y),Math.Abs(v.Z)))>10000)throw new ArgumentOutOfRangeException(nameof(v));var data=JsonNode.Parse(Body(e).GetRawText())!.AsObject();data["angularVelocity"]=new JsonArray(v.X,v.Y,v.Z);var node=JsonNode.Parse(Context.EntityData[e.Id].GetRawText())!.AsObject();node["rigidBody"]=data;Context.EntityData[e.Id]=Context.ParseData(node.ToJsonString());Context.Add(new("angularVelocity",e.Id,null,v,null));}
  internal static Vector3 InverseInertia(Entity e,Vector3 torque){var data=Body(e);if(data.TryGetProperty("freezeRotation",out var frozen)&&frozen.GetBoolean())return Vector3.zero;var activeCollider=!Context.EntityData[e.Id].TryGetProperty("runtimeColliderEnabled",out var enabled)||enabled.GetBoolean();var h=activeCollider&&Context.EntityData[e.Id].TryGetProperty("collider",out _)?Half(e):new Vector3(.5,.5,.5);var collider=activeCollider&&Context.EntityData[e.Id].TryGetProperty("collider",out var c)?c:default;var twoD=collider.ValueKind==JsonValueKind.Object?collider.GetProperty("dimension").GetInt32()==2:Context.EntityData[e.Id].TryGetProperty("runtimePhysicsDimension",out var dim)&&dim.GetInt32()==2;var sphere=collider.ValueKind==JsonValueKind.Object&&collider.GetProperty("shape").GetString()=="sphere";var mass=Number(e,"mass",1);var r=e.Transform.Rotation;var local=Quaternion.Inverse(r)*torque;Vector3 inverse;if(twoD)inverse=new(0,0,sphere?2/(mass*h.X*h.X):3/(mass*(h.X*h.X+h.Y*h.Y)));else if(sphere)inverse=Vector3.one*(2.5/(mass*h.X*h.X));else inverse=new(3/(mass*(h.Y*h.Y+h.Z*h.Z)),3/(mass*(h.X*h.X+h.Z*h.Z)),3/(mass*(h.X*h.X+h.Y*h.Y)));return r*new Vector3(local.X*inverse.X,local.Y*inverse.Y,local.Z*inverse.Z);}
 }
-public sealed class Rigidbody : Component {
+public sealed partial class Rigidbody : Component {
  internal Rigidbody(Entity entity){Entity=entity;}
  public Vector3 linearVelocity {get=>Entity.RigidBody.Velocity;set=>Entity.SetVelocity(value);}
  public Vector3 velocity {get=>linearVelocity;set=>linearVelocity=value;}
@@ -42,7 +42,7 @@ public sealed class Rigidbody : Component {
 }
 public enum ForceMode2D {Force,Impulse}
 public enum RigidbodyType2D {Dynamic,Kinematic,Static}
-public sealed class Rigidbody2D : Component {
+public sealed partial class Rigidbody2D : Component {
  internal Rigidbody2D(Entity entity){Entity=entity;}
  private Rigidbody Body=>new(Entity);
  public Vector2 linearVelocity {get{var v=Body.linearVelocity;return new(v.X,v.Y);}set=>Body.linearVelocity=new(value.X,value.Y,0);}
@@ -51,8 +51,8 @@ public sealed class Rigidbody2D : Component {
  public double mass {get=>Body.mass;set=>Body.mass=value;}
  public double gravityScale {get=>PhysicsData.Number(Entity,"gravityScale",1);set=>PhysicsData.Number(Entity,"gravityScale",value,-100,100);}
  public bool freezeRotation {get=>Body.freezeRotation;set=>Body.freezeRotation=value;}
- public RigidbodyType2D bodyType {get=>Body.isKinematic?RigidbodyType2D.Kinematic:RigidbodyType2D.Dynamic;set{if(value==RigidbodyType2D.Static)throw new NotSupportedException("Static 2D bodies use a Collider2D without Rigidbody2D");if(!Enum.IsDefined(value))throw new ArgumentException("Invalid body type");Body.isKinematic=value==RigidbodyType2D.Kinematic;}}
- public bool isKinematic {get=>Body.isKinematic;set=>Body.isKinematic=value;}
+ public RigidbodyType2D bodyType {get=>Context.EntityData[Entity.Id].TryGetProperty("runtimeStatic",out var s)&&s.GetBoolean()?RigidbodyType2D.Static:Body.isKinematic?RigidbodyType2D.Kinematic:RigidbodyType2D.Dynamic;set{if(!Enum.IsDefined(value))throw new ArgumentException("Invalid body type");Context.Property(Entity,"runtimeStatic",JsonValue.Create(value==RigidbodyType2D.Static));Body.isKinematic=value==RigidbodyType2D.Kinematic;if(value==RigidbodyType2D.Static){Body.linearVelocity=Vector3.zero;Body.angularVelocity=Vector3.zero;}}}
+ public bool isKinematic {get=>Body.isKinematic;set=>bodyType=value?RigidbodyType2D.Kinematic:RigidbodyType2D.Dynamic;}
  public Vector2 position {get{var p=transform.position;return new(p.X,p.Y);}set=>transform.position=new(value.X,value.Y,transform.position.Z);}
  public double rotation {get{var q=transform.rotation;return 2*Math.Atan2(q.Z,q.W)*180/Math.PI;}set=>transform.rotation=Quaternion.Euler(0,0,value);}
  public void MovePosition(Vector2 value)=>position=value;
@@ -95,7 +95,7 @@ public readonly record struct RaycastHit(Collider collider,double distance,Vecto
 public readonly record struct RaycastHit2D(Collider2D? collider,double distance,Vector2 point,Vector2 normal){public static implicit operator bool(RaycastHit2D hit)=>hit.collider!=null;public Transform? transform=>collider?.transform;public Rigidbody2D? rigidbody=>collider?.attachedRigidbody;}
 public enum QueryTriggerInteraction {UseGlobal,Ignore,Collide}
 internal static class PhysicsQueries {
- internal static Collider[] Candidates(int dimension,int mask,bool triggers)=>Context.EntityData.OrderBy(p=>p.Key,StringComparer.Ordinal).Where(p=>Context.IsActive(p.Key)&&p.Value.TryGetProperty("collider",out var c)&&c.GetProperty("dimension").GetInt32()==dimension&&(c.GetProperty("layer").GetUInt32()&unchecked((uint)mask))!=0&&(triggers||!c.GetProperty("trigger").GetBoolean())&&(!p.Value.TryGetProperty("runtimeColliderEnabled",out var on)||on.GetBoolean())).Select(p=>new GameObject(new Entity(p.Key,Context.Generation)).GetComponent<Collider>()!).ToArray();
+ internal static Collider[] Candidates(int dimension,int mask,bool triggers)=>Context.EntityData.OrderBy(p=>p.Key,StringComparer.Ordinal).Where(p=>Context.IsActive(p.Key)&&(!p.Value.TryGetProperty("runtimeSimulated",out var simulated)||simulated.GetBoolean())&&p.Value.TryGetProperty("collider",out var c)&&c.GetProperty("dimension").GetInt32()==dimension&&(c.GetProperty("layer").GetUInt32()&unchecked((uint)mask))!=0&&(triggers||!c.GetProperty("trigger").GetBoolean())&&(!p.Value.TryGetProperty("runtimeColliderEnabled",out var on)||on.GetBoolean())).Select(p=>new GameObject(new Entity(p.Key,Context.Generation)).GetComponent<Collider>()!).ToArray();
  internal static bool Triggers(QueryTriggerInteraction value)=>value switch {QueryTriggerInteraction.UseGlobal=>Physics.queriesHitTriggers,QueryTriggerInteraction.Ignore=>false,QueryTriggerInteraction.Collide=>true,_=>throw new ArgumentException("Invalid trigger policy")};
  internal static Vector3 Closest(Collider c,Vector3 point){PhysicsData.Finite(point);var t=c.Entity.Transform;var half=PhysicsData.Half(c.Entity);var offset=point-t.Position;var dim=c.Data.GetProperty("dimension").GetInt32();if(dim==2)offset.Z=0;if(c.Data.GetProperty("shape").GetString()=="sphere"){var length=offset.magnitude;return t.Position+(length<=half.X?offset:offset*(half.X/length));}var p=Quaternion.Inverse(t.Rotation)*offset;return t.Position+t.Rotation*new Vector3(Math.Clamp(p.X,-half.X,half.X),Math.Clamp(p.Y,-half.Y,half.Y),dim==2?0:Math.Clamp(p.Z,-half.Z,half.Z));}
  internal static double Distance(double value){if(double.IsPositiveInfinity(value))return 4000000;if(!double.IsFinite(value)||value<0)throw new ArgumentException("Invalid query distance");return value;}
@@ -111,7 +111,7 @@ internal static class PhysicsQueries {
  internal static int Fill<T>(T[] source,T[] buffer){ArgumentNullException.ThrowIfNull(buffer);var count=Math.Min(source.Length,buffer.Length);Array.Copy(source,buffer,count);return count;}
  internal static RaycastHit2D Hit2D(RaycastHit hit)=>new(new Collider2D(hit.collider.Entity),hit.distance,new(hit.point.X,hit.point.Y),new(hit.normal.X,hit.normal.Y));
 }
-public static class Physics {
+public static partial class Physics {
  public const int AllLayers=-1;public const int IgnoreRaycastLayer=4;public const int DefaultRaycastLayers=~IgnoreRaycastLayer;
  public static bool queriesHitTriggers {get;set;}=true;
  public static bool Raycast(Vector3 origin,Vector3 direction,out RaycastHit hit,double maxDistance=double.PositiveInfinity,int layerMask=DefaultRaycastLayers,QueryTriggerInteraction queryTriggerInteraction=QueryTriggerInteraction.UseGlobal){var all=RaycastAll(origin,direction,maxDistance,layerMask,queryTriggerInteraction);hit=all.FirstOrDefault();return all.Length>0;}
@@ -129,7 +129,7 @@ public static class Physics {
  public static int OverlapBoxNonAlloc(Vector3 center,Vector3 halfExtents,Collider[] results,Quaternion orientation=default,int layerMask=AllLayers,QueryTriggerInteraction queryTriggerInteraction=QueryTriggerInteraction.UseGlobal)=>PhysicsQueries.Fill(OverlapBox(center,halfExtents,orientation,layerMask,queryTriggerInteraction),results);
  public static bool CheckBox(Vector3 center,Vector3 halfExtents,Quaternion orientation=default,int layerMask=DefaultRaycastLayers,QueryTriggerInteraction queryTriggerInteraction=QueryTriggerInteraction.UseGlobal)=>OverlapBox(center,halfExtents,orientation,layerMask,queryTriggerInteraction).Length>0;
 }
-public static class Physics2D {
+public static partial class Physics2D {
  public const int AllLayers=-1;public const int DefaultRaycastLayers=Physics.DefaultRaycastLayers;public static bool queriesHitTriggers {get;set;}=true;
  public static RaycastHit2D Raycast(Vector2 origin,Vector2 direction,double distance=double.PositiveInfinity,int layerMask=DefaultRaycastLayers)=>RaycastAll(origin,direction,distance,layerMask).FirstOrDefault();
  public static RaycastHit2D[] RaycastAll(Vector2 origin,Vector2 direction,double distance=double.PositiveInfinity,int layerMask=DefaultRaycastLayers)=>PhysicsQueries.Rays(new(origin.X,origin.Y,0),new(direction.X,direction.Y,0),distance,layerMask,2,queriesHitTriggers).Select(PhysicsQueries.Hit2D).ToArray();

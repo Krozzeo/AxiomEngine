@@ -29,6 +29,7 @@
 - Input
   - Input
   - KeyCode
+  - Touch
 - Physics
   - RigidBody
   - ForceMode
@@ -65,3 +66,8 @@
   - RangeAttribute
   - Debug
   - Log
+- Scenes, assets and persistence
+  - SceneManager
+  - Scene
+  - Resources
+  - PlayerPrefs

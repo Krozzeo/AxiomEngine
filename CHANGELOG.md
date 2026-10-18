@@ -1,3 +1,14 @@
+# 0.0.48 — M18.3.10
+
+- Physical scenes with Main Scene, additive authoring, active cameras and undoable close/reopen.
+- Typed component/custom-script/project-file references, compatible drag/drop, lockable independent Inspectors, duplicate and Close Tab actions.
+- SDK 7 bounded presentation, grid A*/route following, asynchronous browser HTTP, platform metadata and limited JSON; explicit PlayerPref Inspector bindings.
+- Cumulative creation quota removed; live entity/physics/attachment/dispatch budgets retained; 2D/3D stress demos.
+- Hub-only project creation/opening, reliable Save during background scene updates; transient audio volume no longer mutates authored scene.
+- Eight editable demos, generated reference and explicit remaining gaps; [CI 312](https://github.com/Krozzeo/AxiomEngine/actions/runs/39167566684) passes all **41 jobs** at executable commit `5eb5ecbf9408975b202651cae62eab3e5e80ac8c` (tree `0a3bcae34aca9731c1fd80e15ff5bbfa037456e3`): **411 Node tests on Linux and Windows**, **44 Rust tests** with fmt/clippy and Wasm checks, real **C# Linux development/AOT and Windows development**, and **32 browser groups**. SDK 7 passes **51 assertions** in each C# configuration. The new browser acceptance passes **11 criteria**. No paid model calls.
+
+Earlier entries below are historical.
+
 # 0.0.47 — M18.3.9
 
 - Runtime-created and cloned entities participate in Hierarchy, Scene picking and bidirectional selection; clone roots use ` (clone)` and runtime topology updates automatically.

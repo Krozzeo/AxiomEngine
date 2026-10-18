@@ -1,3 +1,15 @@
+# M18.3.10 / 0.0.48 — scenes, services and typed references
+
+Physical .scene authoring, active/additive editor scenes, explicit saved-pref Inspector bindings, typed component/custom-script/file references, independent lockable Inspectors and SDK 7 presentation, grid navigation, HTTP and platform services are implemented. Runtime creation no longer has a cumulative 64-object quota. Hub Save waits for pending scene work; audio controls preserve authored values.
+
+[CI 312](https://github.com/Krozzeo/AxiomEngine/actions/runs/39167566684) passes all **41 jobs** at executable commit `5eb5ecbf9408975b202651cae62eab3e5e80ac8c` (tree `0a3bcae34aca9731c1fd80e15ff5bbfa037456e3`): **411 Node tests on Linux and Windows**, **44 Rust tests** with fmt/clippy and Wasm checks, real **C# Linux development/AOT and Windows development**, and **32 browser groups**. SDK 7 passes **51 assertions** in each C# configuration. The new browser acceptance passes **11 criteria**. No paid model calls.
+
+Generate eight editable labs with `npm.cmd run demo`; start with `npm.cmd run dev`. [Demo guide](demos/M18_3_10_GUIDE.md), [current report](docs/reports/M18_3_10_CURRENT_REPORT.md), [remaining API work](docs/scripting-api/STATUS_0_0_48.md).
+
+This correction is complete (100% of its scoped acceptance). All nine scripting API areas remain partial against their full Unity categories; no whole-Unity compatibility percentage is claimed. Historical weighted MVP remains approximately **94% (122/130)**; expanded SDK/Hub scope is unweighted. M18.4 GitHub integration and M19 hardening have not started. PR #39 remains draft/open/unmerged, stacked on #38; do not merge automatically. Live-account model quality/actual usage remains a separate acceptance gate.
+
+Earlier entries below are historical.
+
 # Current revision — 0.0.47 / M18.3.9
 
 SDK 6 expands Input, scenes/resources/PlayerPrefs and native physics, and fixes runtime clone Hierarchy/Scene selection. Five API labs: `npm.cmd run demo`. Read the [demo guide](demos/M18_3_9_GUIDE.md), [current report](docs/reports/M18_3_9_CURRENT_REPORT.md) and [API coverage/remaining batches](docs/scripting-api/BATCHES.md). [CI 303](https://github.com/Krozzeo/AxiomEngine/actions/runs/39058085678) passes all **40 jobs** at executable commit `a4530dd976490de4fb7ce90eea7367d16c19d737` (tree `268c1509a76d4f0d90b25542a64b7dceb0f9ea77`): **395 Node tests on Linux and Windows**, **44 Rust tests** with fmt/clippy and Wasm checks, real **C# Linux development/AOT and Windows development**, and **31 browser groups**. No paid provider calls. Earlier pinned releases below are historical.

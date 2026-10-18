@@ -1,3 +1,15 @@
+# M18.3.10 / 0.0.48 — scenes, services and typed references
+
+Physical .scene authoring, active/additive editor scenes, explicit saved-pref Inspector bindings, typed component/custom-script/file references, independent lockable Inspectors and SDK 7 presentation, grid navigation, HTTP and platform services are implemented. Runtime creation no longer has a cumulative 64-object quota. Hub Save waits for pending scene work; audio controls preserve authored values.
+
+[CI 312](https://github.com/Krozzeo/AxiomEngine/actions/runs/39167566684) passes all **41 jobs** at executable commit `5eb5ecbf9408975b202651cae62eab3e5e80ac8c` (tree `0a3bcae34aca9731c1fd80e15ff5bbfa037456e3`): **411 Node tests on Linux and Windows**, **44 Rust tests** with fmt/clippy and Wasm checks, real **C# Linux development/AOT and Windows development**, and **32 browser groups**. SDK 7 passes **51 assertions** in each C# configuration. The new browser acceptance passes **11 criteria**. No paid model calls.
+
+This correction is complete (100% of its scoped acceptance). All nine scripting API areas remain partial against their full Unity categories; no whole-Unity compatibility percentage is claimed. Historical weighted MVP remains approximately **94% (122/130)**; expanded SDK/Hub scope is unweighted. M18.4 GitHub integration and M19 hardening have not started. PR #39 remains draft/open/unmerged, stacked on #38; do not merge automatically. Live-account model quality/actual usage remains a separate acceptance gate.
+
+[Report](../reports/M18_3_10_CURRENT_REPORT.md) · [API status](../scripting-api/STATUS_0_0_48.md).
+
+Earlier entries below are historical.
+
 # Implementation status
 
 M18.2 (0.0.36) is complete: 8/8 acceptance groups, 100%; expanded MVP progress approximately 88% (111/126 roadmap points). CI 215 passes all 31 jobs at executable commit `4435c3790cac78caef692a2db755f5af14c22827` (tree `3568c51bdf9b3d4fe1caf525dffc402188ac49ae`): 262 Node tests, 39 Rust tests and 14 new browser criteria, with no page errors. M18.1's live Workshop gate is closed by the user's confirmed successful task.

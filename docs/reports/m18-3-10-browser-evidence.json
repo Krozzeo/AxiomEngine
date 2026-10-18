@@ -1,0 +1,43 @@
+{
+  "milestone": "M18.3.10",
+  "criteria": [
+    "Hub opens projects and closes automatically; File has no project create/open menu and AI has no Autonomy diagnostics menu",
+    "Locked Inspector edits its pinned entity; independent duplicated Inspector accepts Transform, MonoBehaviour and physical file references without drag changing app selection",
+    "Actual C# resolves component and asset references during Play",
+    "Inspector duplication and common tab Close Tab context action work",
+    "Physical scenes open additively in Hierarchy, titles activate, collapse leaves header-only height and Close Scene retains its document",
+    "Explicit PlayerPref Inspector binding preserves SavedVisits display across Stop without retaining arbitrary runtime state",
+    "Actual C# coroutine HTTP request reaches a separate controlled server, completes through the browser bridge and omits cookies/authorization",
+    "C# presentation facade creates a default instance material when needed, updates actual rendering and live Inspector without runtime fault",
+    "Actual runtime NavMeshAgent follows the computed obstacle-detour path and publishes its moving transform",
+    "Physics 2D stress lab spawns its initial batch with 17 active bodies and no runtime fault",
+    "Physics stress lab creates 96 dynamic blocks across frames with 97 active bodies and no former lifetime-64 blocker"
+  ],
+  "errors": [],
+  "stress2D": {
+    "dynamicBodies": 16,
+    "physics": {
+      "backend": "cpu-wasm",
+      "reason": "AX_PHYSICS_CPU_BASELINE",
+      "steps": 17,
+      "bodyCount": 17,
+      "contactCount": 17,
+      "candidates": 33
+    },
+    "fps": null
+  },
+  "stress": {
+    "dynamicBodies": 96,
+    "physics": {
+      "backend": "cpu-wasm",
+      "reason": "AX_PHYSICS_CPU_BASELINE",
+      "steps": 0,
+      "bodyCount": 97,
+      "contactCount": 0,
+      "candidates": 0
+    },
+    "fps": null
+  },
+  "passed": true,
+  "environment": "Local Windows browser; physical GPU performance is not claimed. Pinned CI is authoritative for software-WebGPU acceptance."
+}

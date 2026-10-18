@@ -1,3 +1,17 @@
+# M18.3.10 / 0.0.48 — scenes, services and typed references
+
+Physical .scene authoring, active/additive editor scenes, explicit saved-pref Inspector bindings, typed component/custom-script/file references, independent lockable Inspectors and SDK 7 presentation, grid navigation, HTTP and platform services are implemented. Runtime creation no longer has a cumulative 64-object quota. Hub Save waits for pending scene work; audio controls preserve authored values.
+
+[CI 312](https://github.com/Krozzeo/AxiomEngine/actions/runs/39167566684) passes all **41 jobs** at executable commit `5eb5ecbf9408975b202651cae62eab3e5e80ac8c` (tree `0a3bcae34aca9731c1fd80e15ff5bbfa037456e3`): **411 Node tests on Linux and Windows**, **44 Rust tests** with fmt/clippy and Wasm checks, real **C# Linux development/AOT and Windows development**, and **32 browser groups**. SDK 7 passes **51 assertions** in each C# configuration. The new browser acceptance passes **11 criteria**. No paid model calls.
+
+This correction is complete (100% of its scoped acceptance). All nine scripting API areas remain partial against their full Unity categories; no whole-Unity compatibility percentage is claimed. Historical weighted MVP remains approximately **94% (122/130)**; expanded SDK/Hub scope is unweighted. M18.4 GitHub integration and M19 hardening have not started. PR #39 remains draft/open/unmerged, stacked on #38; do not merge automatically. Live-account model quality/actual usage remains a separate acceptance gate.
+
+Read the [current report](reports/M18_3_10_CURRENT_REPORT.md), [demo guide](../demos/M18_3_10_GUIDE.md) and [API compatibility status](scripting-api/STATUS_0_0_48.md).
+
+Resume from codex/m18-3-10-scenes-api. Preserve user projects and retained proposals. Use the pinned executable evidence above; documentation closure changes no runtime source. Select the next exact member-level API acceptance scope before claiming a whole batch complete. AI Master remains planned.
+
+Earlier entries below are historical.
+
 # M18.3.9 / 0.0.47 — runtime selection and SDK 6
 
 Implementation includes live runtime Hierarchy/selection and `(clone)` naming, browser Input devices/actions/remapping, physical runtime scene/prefab/text resources, project-specific PlayerPrefs, native damping/kinematic motion/constraints/sleep/gravity/exclusions/continuous substeps and managed shape casts. Five labs cover the new behavior; do not repeat Player demos. Read [current report](reports/M18_3_9_CURRENT_REPORT.md), [demo guide](../demos/M18_3_9_GUIDE.md) and [BATCHES.md](scripting-api/BATCHES.md).

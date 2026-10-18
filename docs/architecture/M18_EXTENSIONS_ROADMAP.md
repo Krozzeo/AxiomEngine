@@ -1,3 +1,11 @@
+# M18.3.10 / 0.0.48 — scenes, services and typed references
+
+This correction is complete (100% of its scoped acceptance). All nine scripting API areas remain partial against their full Unity categories; no whole-Unity compatibility percentage is claimed. Historical weighted MVP remains approximately **94% (122/130)**; expanded SDK/Hub scope is unweighted. M18.4 GitHub integration and M19 hardening have not started. PR #39 remains draft/open/unmerged, stacked on #38; do not merge automatically. Live-account model quality/actual usage remains a separate acceptance gate.
+
+The next API work must enumerate exact members, distinguish feasible gaps from subsystem dependencies, and verify real C#/Wasm behavior. Scheduler/lifecycle, resource ownership/serialization, presentation gaps and native physics shapes/joints remain candidate clusters. [Compatibility matrix](../scripting-api/STATUS_0_0_48.md) and [release evidence](../reports/M18_3_10_CURRENT_REPORT.md) are current.
+
+Earlier entries below are historical.
+
 # Current correction — M18.3.9 / 0.0.47
 
 SDK 6 adds Input (keyboard/mouse/gamepad/touch and remapping), runtime scenes/assets/persistence and feasible native physics extensions. Runtime clone hierarchy/selection is corrected. Coverage, numerical/resource limits and all deferred subsystems are tracked in [BATCHES.md](../scripting-api/BATCHES.md); acceptance in [current report](../reports/M18_3_9_CURRENT_REPORT.md). Three main SDK batches remain: presentation, navigation/networking and platform/tooling. M18.4 GitHub integration and M19 hardening remain pending. Original MVP estimate remains ~94%; extended SDK scope is not separately weighted. Previous roadmap notes below are historical.

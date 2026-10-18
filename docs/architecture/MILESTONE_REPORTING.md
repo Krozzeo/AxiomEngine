@@ -83,9 +83,10 @@ Report both values:
 | M18.1 OpenAI connection and multistep assistant | 6 points |
 | M18.2 Integrated chat and editable preview | 6 points |
 | M18.3 Assisted PMD | 7 points |
+| M18.3 added linked prefabs and Players | 4 points |
 | M18.4 GitHub integration | 3 points |
 | M19 MVP Hardening | 5 points |
-| **Total** | **126 points** |
+| **Total** | **130 points** |
 
 Partial milestone credit is allowed only for acceptance points with executable
 evidence. Documentation-only scaffolding does not count as functional credit.
@@ -136,3 +137,7 @@ Earlier closure reports preserve their historical nominal estimates.
 ## 2026-10-09 approved scope extension
 
 M18_EXTENSIONS_ROADMAP.md adds 22 points for M18.1–18.4 before M19. Completed baseline remains 99 points: 99/126 ≈ 79%. The prior 104-point table and 95% M18 estimate are historical; do not reuse them for expanded scope.
+
+## Current scope denominator
+
+The accepted prefab/Player extension adds four points to the 126-point extended roadmap: 130 total, with 122 closed points (approximately 94%). Hub, later corrections and the expanded Unity-style scripting API have not been reweighted. Do not interpret 94% as full Unity compatibility, a percentage of the industrial vision or measured live-agent reliability. Historical 104/126-point reports retain their original denominators.

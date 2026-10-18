@@ -1,6 +1,6 @@
 # Axiom Scripting API
 
-Baseline: Unity 6.3 LTS (6000.3). Axiom 0.0.46 is a partial compatibility layer, not a Unity runtime.
+Baseline: Unity 6.3 LTS (6000.3). Axiom 0.0.48 / SDK 7 is a partial compatibility layer, not a Unity runtime.
 
 Start with [INDEX.md](INDEX.md), which contains only ordered titles and hierarchy. Each leaf has a matching Markdown page; the legacy RigidBody snapshot uses legacy-RigidBody.md to avoid a Windows path collision with Rigidbody.md. The editor's Help → Scripting API panel presents the same canonical content as the repository mirror. `script.sdk.read {query:"index"}` returns its addressable section index; a type/member query retrieves focused documentation and actual SDK source. Unknown queries explicitly report no matching implementation.
 
@@ -10,7 +10,7 @@ Canonical content: `engine/scripting/reference/catalog.json`. `node scripts/gene
 
 [unity-6.3-inventory.json](unity-6.3-inventory.json) records all 5,429 navigation nodes in the official baseline TOC, including namespaces, groups and types. It records the source URL and SHA-256. `pending` means unimplemented; `partial` points to an Axiom page whose declarations and limitations define the actual supported surface. This is a complete TOC inventory, **not** a completed audit or implementation of every member page. Documentation prose, examples, layout code and icons in Axiom are original; Unity's navigation taxonomy and API signatures guide compatibility.
 
-Four batches now have an expanded implemented surface: **Objects and components**, **Execution and time**, **Physics 2D** and **Physics 3D**. See [BATCHES.md](BATCHES.md) for exact limits, five remaining main batches and advanced physics work. This is not full Unity compatibility.
+All nine areas now have executable coverage, including presentation, grid navigation/browser HTTP and platform/tooling. **All nine remain partial compared with their full Unity categories.** See [BATCHES.md](BATCHES.md) for exact scope and [the 0.0.48 status](STATUS_0_0_48.md) for remaining work, dependencies and migration boundaries. Release acceptance is not full-category completion.
 
 ## Important migration boundaries
 

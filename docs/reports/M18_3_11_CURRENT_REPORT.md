@@ -2,6 +2,8 @@
 
 Corrección solicitada antes de M18.4 y del roadmap M19–M40. No cambia las 23 milestones principales pendientes ni atribuye cobertura de Unity a etapas futuras.
 
+Estado: correcciones funcionales verificadas; rendimiento con miles de cuerpos densos todavía parcial. [PR #42](https://github.com/Krozzeo/AxiomEngine/pull/42), sin fusionar. La documentación final referencia el commit de código validado y conserva el bloqueo de rendimiento.
+
 ## Entregables
 
 - Referencias: valida el tipo durante hover (incluye el modo protegido del drag), rechaza un componente incompatible y resuelve un componente al soltar su GameObject. Conserva referencias por proyecto y metadatos tipados, incluyendo 2D y scripts propios.
@@ -21,7 +23,7 @@ Corrección solicitada antes de M18.4 y del roadmap M19–M40. No cambia las 23 
 - `npm run check`: 415 tests Node, esquemas, catálogo de herramientas, bindings y reglas de arquitectura/paridad pasan.
 - `npm run check:native`: formato, clippy sin warnings y tests Rust pasan.
 - `tests/browser/m18-3-11.mjs`: siete grupos reales, con C# publicado y ejecutado: hover protegido y referencias tipadas, ciclo de ocho Inspectors, breadcrumb/IDE, Play activo, checkbox live, Managers persistente y FPS en Game separado.
-- Regresión M18.3.10: 11 grupos aprobados, incluyendo física 2D, 1.024 cuerpos dinámicos 3D, referencias, escenas, HTTP real, presentación y navegación. CI 313 sobre aa225712b6b5922a550cbe1049a6b622d92656b4 detectó etiquetas WebGPU mal codificadas en la regresión antigua; se corrigieron y se añadió una comprobación explícita de la etiqueta. También hubo un timeout de preview M18.2, no reproducido en su ejecución local completa. La regresión M9 detectó también que el botón X de tarjetas sin checkbox quedaba en el centro del encabezado; se restauró su alineación a la derecha, se unificó el estado de plegado de DETAILS con el botón y se añadió una prueba de ubicación/plegado que conserva el componente. Nueva validación remota pendiente.
+- Regresión M18.3.10: 11 grupos aprobados, incluyendo física 2D, 1.024 cuerpos dinámicos 3D, referencias, escenas, HTTP real, presentación y navegación. CI 313 sobre aa225712b6b5922a550cbe1049a6b622d92656b4 detectó etiquetas WebGPU mal codificadas en la regresión antigua; se corrigieron y se añadió una comprobación explícita de la etiqueta. También hubo un timeout de preview M18.2, no reproducido en su ejecución local completa. La regresión M9 detectó también que el botón X de tarjetas sin checkbox quedaba en el centro del encabezado; se restauró su alineación a la derecha, se unificó el estado de plegado de DETAILS con el botón y se añadió una prueba de ubicación/plegado que conserva el componente. CI 314 quedó sustituida al subir la revisión final (16 verificaciones aprobadas y 26 canceladas). La revisión final de código 2cf8fa7284c1520f64b1c36d2fe82ccd4a19ce8c quedó aprobada en [CI 315](https://github.com/Krozzeo/AxiomEngine/actions/runs/39324017306), también 42/42: 415 tests Node en Linux/Windows, 44 tests Rust, 33 grupos de navegador y C# Wasm Linux development/AOT y Windows development. La prueba M18.2 pasó en CI 315, después del timeout de CI 313. Esto valida comportamiento y regresión; el objetivo de fluidez densa sigue abierto.
 - El navegador local usó Null por falta de adaptador WebGPU. Prueba lógica/C#/Wasm; no demuestra renderizado en GPU física. CI conserva su ruta de WebGPU de software.
 
 ## Rendimiento medido

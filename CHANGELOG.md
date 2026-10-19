@@ -6,6 +6,7 @@
 - Escenas: abrir expande; No active scene; orden por arrastre; escenas nuevas con cubo/cámara/luz. Play usa activa + Always active. Managers sobrevive a LoadScene Single; GameObject.scene y controles de modo en SDK.
 - Checkbox de activación antes de X, títulos uniformes, Transform compacto y campos de solo lectura sin cajas negras. `.enabled` compartido por código e Inspector, restaurado en Stop.
 - Física: poses por lote, índices de entidades, broadphase con AABB precalculado y eje adaptativo, grounded por contactos reales y presupuestos de 65.536 cuerpos/entidades/draws; FPS también en Game separado.
+- Validación: CI 315, 42/42 verificaciones, sobre código 2cf8fa7. La fluidez con miles de cuerpos densos sigue pendiente (editor local Null: ~5–6 FPS con 1.024 dinámicos).
 - Evidencia y limitaciones en docs/reports/M18_3_11_CURRENT_REPORT.md. Roadmap M18.4→M19–M39→M40 sin cambios de aceptación.
 
 # Planificación — 2026-10-19 (sin nueva versión ejecutable)

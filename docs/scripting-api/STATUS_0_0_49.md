@@ -14,3 +14,5 @@ Los cambios de Play se descartan en Stop. Se ejecuta la escena activa más las m
 Capacidad: 65.536 entidades/cuerpos/draws, combinada con presupuestos de geometría, proyecto, mensajes y tiempo. 32 scripts y 128 operaciones por respuesta se conservan. Implementar y comprobar por tandas: M19 debe fijar el denominador y las pruebas de conformidad antes de publicar porcentajes precisos.
 
 [Informe y evidencia](../reports/M18_3_11_CURRENT_REPORT.md). Referencias oficiales: [Behaviour.enabled](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Behaviour-enabled.html) y [LoadScene](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.LoadScene.html). El modo Always active es deliberadamente específico de Axiom.
+
+Validación funcional del código 2cf8fa7: [CI 315, 42/42 verificaciones](https://github.com/Krozzeo/AxiomEngine/actions/runs/39324017306). La aceptación de rendimiento con física densa sigue abierta.

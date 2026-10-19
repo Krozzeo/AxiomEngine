@@ -4095,6 +4095,76 @@
         ],
         "additionalProperties": false
       }
+    },
+    {
+      "name": "github.status",
+      "description": "Read GitHub connection, selected game repository, pending state and last publication. No credentials.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "route": "agent",
+      "mcp": true
+    },
+    {
+      "name": "github.preview",
+      "description": "Prepare a review of persistently saved MAIN in the explicitly selected game repository; pending previews and Play are rejected.",
+      "mutates": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision"
+        ],
+        "additionalProperties": false
+      },
+      "route": "agent",
+      "mcp": true
+    },
+    {
+      "name": "github.publish",
+      "description": "Publish the previously reviewed saved MAIN plan only when the human explicitly enabled publication by agent request. Never connect, select repositories or alter that preference.",
+      "mutates": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expectedSceneRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "planId": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "id",
+          "expectedSceneRevision",
+          "planId"
+        ],
+        "additionalProperties": false
+      },
+      "route": "agent",
+      "mcp": true
     }
   ]
 }

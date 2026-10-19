@@ -1,3 +1,11 @@
+# Corte vigente — M18.4 / 0.0.50 / SDK 8
+
+GitHub de proyectos de juegos implementado para revisión: MAIN guardado, destino humano explícito, commits condicionados a cabecera y recuperación sin duplicados. Preferencias de automatización y solicitud del agente separadas. **M18.4: 90% (9/10 grupos automatizados); cuenta real y repositorio de juego elegido pendientes. M18 no se declara cerrada.** Se conservan pendientes previos de interfaz, render inicial, fluidez física densa y modelo real; roadmap Unity/GPU/shaders M19–M40 intacto.
+
+[Informe actual](../reports/M18_4_CURRENT_REPORT.md) · [Plan](M18_4_PLAN.md). Los cortes siguientes son antecedentes.
+
+---
+
 # Planificación vigente — 2026-10-19
 
 El roadmap se amplía con **M19–M39** para compatibilidad funcional de la Scripting API y traslada el antiguo **M19 Hardening a M40**, al final. **M18.4 GitHub** conserva su alcance; quedan **23 milestones principales pendientes**. Las nuevas etapas están planificadas, no implementadas. La release ejecutable sigue siendo **0.0.48 / SDK 7**, verificada en CI 312.

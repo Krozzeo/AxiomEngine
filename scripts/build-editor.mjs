@@ -70,6 +70,7 @@ export async function buildEditor({buildKernel=true}={}) {
   await cp(resolve(root,'protocol/schema/game-test.schema.json'),resolve(destination,'game-test.schema.json'));
   await cp(resolve(root,'engine/project/pmd.mjs'),resolve(destination,'pmd.mjs'));
   await cp(resolve(root,'engine/project/ai-history.mjs'),resolve(destination,'ai-history.mjs'));
+  await cp(resolve(root,'apps/editor/src/github-editor.mjs'),resolve(destination,'github-editor.mjs'));
   await writeFile(resolve(destination,'pmd-editor.mjs'),(await readFile(resolve(root,'apps/editor/src/pmd-editor.mjs'),'utf8')).replace('../../../engine/project/','./'));
   await cp(resolve(root,'engine/scene/prefabs.mjs'),resolve(destination,'prefabs.mjs'));
   const source = await readFile(resolve(root, "apps/editor/src/main.ts"), "utf8");

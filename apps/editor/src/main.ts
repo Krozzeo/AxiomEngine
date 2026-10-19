@@ -1,3 +1,4 @@
+import {mountGitHubEditor} from './github-editor.mjs';
 import {mountPmdEditor} from './pmd-editor.mjs';
 import {mountAiAssistant} from './ai-assistant.mjs';
 import {mountAutonomyEditor} from './autonomy-editor.mjs';
@@ -89,11 +90,12 @@ async function sendCommand(type, data = {}) {
 async function execute(type, data = {}) {
   try { return await sendCommand(type, data); } catch (error) { reportError(error); }
 }
+const githubEditor=mountGitHubEditor({document,api,reportError});
 const proposalEditor=mountProposalEditor({document,send:sendCommand,reportError});
 let unsavedScene = false;
 const projectEditor = mountProjectEditor({ getRenderer:()=>renderer,document, api, send: sendCommand, reportError,onLocate:id=>sceneTools?.locate(id),onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
   const changed=!pendingSnapshot||(pendingSnapshot.workspaceId??null)!==(snapshot.workspaceId??null)||pendingSnapshot.sceneRevision!==snapshot.sceneRevision||pendingSnapshot.project?.id!==snapshot.project?.id;
-  pendingSnapshot=snapshot;
+  pendingSnapshot=snapshot;githubEditor.setSnapshot(snapshot);
   if(renderer&&changed) await renderer.setSnapshot(snapshot);
 } });
 addEventListener("beforeunload", event => {

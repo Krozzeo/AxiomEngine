@@ -1,3 +1,11 @@
+# 0.0.50 — M18.4 GitHub publication (en revisión)
+
+- Panel GitHub independiente de IA, token temporal en memoria, selección/creación humana de repositorio y rama de juego y estado de cambios pendientes separado de autenticación.
+- Publica fuentes canónicas de MAIN guardado, assets originales y PMD sin conversaciones ni cachés; reapertura y reconstrucción comprobadas con adaptador controlado.
+- Revisión previa, commits condicionados a la cabecera, detección de divergencia y diario de recuperación sin duplicados tras reinicio/respuesta perdida.
+- Dos permisos separados: auto-publicar nuevas milestones guardadas y permitir publicación solicitada por agente. Herramientas `github.status`, `github.preview`, `github.publish`; ninguna recibe tokens ni configura repositorios.
+- Demo M18.4 y aceptación automatizada. Gate con cuenta real pendiente: M18.4 y M18 no se declaran cerradas. SDK permanece en 8; planificación de Unity/GPU/shaders sin cambios.
+
 # Planificación — físicas GPU y shaders (2026-10-19)
 
 - Concreta la intención CPU/GPU de ADR-0009 en nueve subtandas de M25/M26/M28/M30/M39 y amplía aceptación M19/M27/M40. M40 sigue al final; 45 principales y 23 pendientes.

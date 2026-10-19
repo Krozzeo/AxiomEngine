@@ -1,3 +1,13 @@
+# M18.4 — GitHub de proyectos de juegos · 0.0.50 / SDK 8
+
+Implementación en revisión: conexión independiente de IA, selección/creación explícita de repositorio y rama, revisión de archivos y publicación de MAIN guardado, con enlace al commit. Tokens solo en memoria del daemon; preferencias/recibos fuera del proyecto. Publicación automática al guardar nuevas entregas del PMD y publicación por solicitud del agente son preferencias distintas, desactivadas por defecto. Un identificador persistente y `expectedHeadOid` permiten recuperar respuestas perdidas sin force-push ni commits duplicados; la divergencia remota detiene el envío.
+
+**M18.4 sigue en progreso:** falta la aceptación con una cuenta real y repositorio de juego elegido por el usuario. Las pruebas usan adaptadores controlados y no acreditan esa conexión externa. No se ha publicado ningún proyecto de juego en GitHub real durante esta entrega. M18 tampoco se cierra: siguen los pendientes anteriores de interfaz, primer render, rendimiento denso y verificación del modelo real. El roadmap Unity + GPU + shaders M19–M40 se conserva íntegro.
+
+[Informe y gates](reports/M18_4_CURRENT_REPORT.md) · [Demo y validación con cuenta real](../demos/M18_4_GUIDE.md). No fusionar automáticamente. Las entradas siguientes describen cortes anteriores.
+
+---
+
 # Ampliación planificada — físicas GPU y shaders
 
 La aceleración opcional pasa de intención general a entregas requeridas: M25.0 (compute WGSL y sincronización), M26.4–26.6 (3D), M28.4–28.6 (2D), M30.4 (sistema de shaders), M39.4 (conformidad CPU/GPU) y M40.2 (hardening). M19 fija contratos, hardware y umbrales. Se conserva CPU/Wasm, con selección medida y fallback explícito. **No implementado; aceptación nueva 0%.**

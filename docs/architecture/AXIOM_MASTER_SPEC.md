@@ -1,3 +1,11 @@
+# Corte vigente — M18.4 / 0.0.50 / SDK 8
+
+GitHub de proyectos de juegos implementado para revisión: MAIN guardado, destino humano explícito, commits condicionados a cabecera y recuperación sin duplicados. Preferencias de automatización y solicitud del agente separadas. **M18.4: 90% (9/10 grupos automatizados); cuenta real y repositorio de juego elegido pendientes. M18 no se declara cerrada.** Se conservan pendientes previos de interfaz, render inicial, fluidez física densa y modelo real; roadmap Unity/GPU/shaders M19–M40 intacto.
+
+[Informe actual](../reports/M18_4_CURRENT_REPORT.md) · [Plan](M18_4_PLAN.md). Los cortes siguientes son antecedentes.
+
+---
+
 # Ampliación planificada — físicas GPU y shaders
 
 La aceleración opcional pasa de intención general a entregas requeridas: M25.0 (compute WGSL y sincronización), M26.4–26.6 (3D), M28.4–28.6 (2D), M30.4 (sistema de shaders), M39.4 (conformidad CPU/GPU) y M40.2 (hardening). M19 fija contratos, hardware y umbrales. Se conserva CPU/Wasm, con selección medida y fallback explícito. **No implementado; aceptación nueva 0%.**

@@ -7,6 +7,9 @@ export class AgentService {
  has(type){return toolMap.get(type)?.route==='agent';}
  async run(type,data,context){
   const tool=toolMap.get(type);validate(tool.inputSchema,data);
+  if(type==='github.status')return this.github.status();
+  if(type==='github.preview')return this.github.prepare(data);
+  if(type==='github.publish')return this.github.publish(data,{...context,actor:{kind:'agent',id:context.actor?.id??'tool'}});
   if(type==='autonomy.control'){if(data.action==='run'&&this.assistant?.active)throw agentError('AX_AUTONOMY_0001','Finish or cancel the connected assistant task first');this.autonomy??=new AutonomyController({bus:this.bus,workspace:this.workspace,proposals:this.proposals,bridge:this.bridge});return this.autonomy.control(data,context);}
   if(type.startsWith('workspace.'))return this.proposals.run(type,data,context);
   const w=data.workspaceId?this.proposals.get(data.workspaceId).child:this.workspace,project=w.project,summary={project:project?{id:project.id,name:project.name,revision:project.revision}:null,sceneRevision:w.revision,dirty:w.dirty,playing:w.playing};

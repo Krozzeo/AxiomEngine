@@ -137,6 +137,15 @@ export class OpenAiAssistant {
   // Discovery is the bootstrap contract: a tool name unambiguously defaults to kind=tool.
   if(name==='api.describe'&&args.kind===undefined&&(names.has(args.name)||privateToolSchemas[args.name]))args.kind='tool';
   if(!privateToolSchemas[name]&&!names.has(name))fail('Tool is outside the assistant capability boundary');
+  // Publication targets applied MAIN. It must never create an authoring proposal
+  // or substitute a proposal revision; its own persistent human opt-in is enforced by the publication service.
+  if(name.startsWith('github.')){
+   if(name==='github.publish'&&s.plan?.mode==='discussion')throw workError('Discussion mode cannot publish; start an explicit publication request from saved MAIN');
+   if(name!=='github.status'&&s.public.workspaceId)throw workError('Apply the proposal and start a publication request from saved MAIN first','AX_AI_SOURCE_BLOCKED');
+   if(tool.inputSchema.properties.id)args.id=s.sourceId;
+   if(tool.inputSchema.properties.expectedSceneRevision)args.expectedSceneRevision=this.workspace.revision;
+   validate(tool.inputSchema,args);return (await this.command(s,name,args)).payload.data;
+  }
   const editing=tool?.mutates||name==='gameTest.control'&&!['query','cancel'].includes(args.action)||['project.master.edit','project.master.transition','project.file.patch'].includes(name)||name==='scene.dimension.convert'&&!args.dryRun;if(s.public.channel!=='pmd'&&editing&&!s.plan&&call.legacy===false)throw workError('Record a typed work plan before authoring; discussion remains read-only');if(s.public.channel!=='pmd'&&editing&&s.plan?.mode==='discussion')throw workError('Discussion mode cannot edit; record an authoring work plan first');if(s.public.channel!=='pmd'&&editing&&s.requiresMilestone&&s.plan?.mode!=='milestone')throw workError('Milestone implementation requires a recorded milestone work plan before edits');
   if(editing&&!s.taskPlan)throw workError('Before any mutation call work.propose with a detailed numbered task plan. Reads are allowed.','AX_AI_PLAN_REQUIRED');if(editing&&s.requireConfirmation&&!s.approvalGranted)throw workError('The displayed task plan needs human approval.','AX_AI_APPROVAL_REQUIRED');
   let item=s.public.workspaceId?this.proposals.get(s.public.workspaceId):null;

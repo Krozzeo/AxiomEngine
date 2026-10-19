@@ -596,6 +596,42 @@
       "severity": "error",
       "retryable": true,
       "relatedTools": []
+    },
+    {
+      "code": "AX_GITHUB_0001",
+      "meaning": "Invalid GitHub publication state or input",
+      "inspect": [
+        "GitHub panel",
+        "selected repository and branch",
+        "last publication receipt"
+      ]
+    },
+    {
+      "code": "AX_GITHUB_0002",
+      "meaning": "GitHub connection or permissions unavailable",
+      "inspect": [
+        "GitHub panel",
+        "selected repository and branch",
+        "last publication receipt"
+      ]
+    },
+    {
+      "code": "AX_GITHUB_0003",
+      "meaning": "GitHub publication outcome requires verification",
+      "inspect": [
+        "GitHub panel",
+        "selected repository and branch",
+        "last publication receipt"
+      ]
+    },
+    {
+      "code": "AX_GITHUB_0004",
+      "meaning": "Remote branch or owned files diverged",
+      "inspect": [
+        "GitHub panel",
+        "selected repository and branch",
+        "last publication receipt"
+      ]
     }
   ]
 }

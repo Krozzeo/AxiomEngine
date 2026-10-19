@@ -7,6 +7,7 @@ import {GameTestSession,testError} from '../engine/testing/session.mjs';
 import {parallelView} from '../apps/editor/src/parallel-view.mjs';
 import {readSessionToken} from '../apps/editor/src/session-token.mjs';
 import {createEditorDocument} from '../apps/editor/src/dock-layout.mjs';
+import {mountGitHubEditor} from '../apps/editor/src/github-editor.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import vm from "node:vm";
@@ -39,7 +40,7 @@ for (const mode of ["forced", "unavailable"]) {
       return { dataset:{},style:{}, width: 960, height: 540, textContent: "", append() {}, prepend() {}, setAttribute() {},addEventListener() {}, replaceChildren() {}, classList: { add() {} } };
     }
     const context = vm.createContext({createRuntimeNetwork,runtimePlatform,createRuntimeInput,runtimeProjectData,runtimePreferences,activeGameCamera,legacyDirectionalUniforms,
-      setInterval:()=>0,clearInterval:()=>{},mountEditorMenu:()=>{},ReplaySession,replayError,GameTestSession,testError,parallelView,mountReplayEditor:()=>()=>{},mountAiMenu:()=>()=>{},mountAiAssistant:()=>()=>{},mountPmdEditor:()=>()=>{},mountAutonomyEditor:()=>()=>{},mountGameTestEditor:()=>()=>{},readSessionToken,createEditorDocument,createGpuProfiler,mountProfilerEditor:()=>()=>{},createAudioSession,worldScene,renderPlan,createProductionGPU,FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor,DecisionEvidence,cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry,mountSceneTools:()=>({select(){},dispose(){}}), URLSearchParams, TextEncoder, crypto: webcrypto, performance, structuredClone,
+      setInterval:()=>0,clearInterval:()=>{},mountGitHubEditor,mountEditorMenu:()=>{},ReplaySession,replayError,GameTestSession,testError,parallelView,mountReplayEditor:()=>()=>{},mountAiMenu:()=>()=>{},mountAiAssistant:()=>()=>{},mountPmdEditor:()=>()=>{},mountAutonomyEditor:()=>()=>{},mountGameTestEditor:()=>()=>{},readSessionToken,createEditorDocument,createGpuProfiler,mountProfilerEditor:()=>()=>{},createAudioSession,worldScene,renderPlan,createProductionGPU,FrameProfiler, loadKernel, mountProjectEditor, mountProposalEditor,DecisionEvidence,cameraMatrix,matrixMultiply,modelMatrix,clipVisible,collapsedGeometry,mountSceneTools:()=>({select(){},dispose(){}}), URLSearchParams, TextEncoder, crypto: webcrypto, performance, structuredClone,
       location: { hash: "#token=test", pathname: "/", search: mode === "forced" ? "?renderer=null" : "" },
       history: { replaceState(_state, _title, url) { replacedUrl = url; } },
       navigator: mode === "forced" ? { gpu: { requestAdapter() { throw new Error("forced Null must bypass GPU"); } } } : {},

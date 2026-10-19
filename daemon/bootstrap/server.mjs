@@ -1,3 +1,4 @@
+import {GitHubPublication} from './github/publication.mjs';
 import {spawn} from 'node:child_process';
 import packageData from '../../package.json' with {type:'json'};
 import {HubSettings,axiomApplications} from './hub-settings.mjs';
@@ -84,9 +85,11 @@ export async function startServer(options = {}) {
   const workspace = new SceneWorkspace(new ProjectStore(configured.projectRoot,{folders:!options.projectRoot||options.projectFolders===true}));
   const bus = new CommandBus({ projects: workspace });
   const proposals=new ProposalManager(workspace);await proposals.initialize();
+  const github=new GitHubPublication({workspace,proposals,...(!options.projectRoot?{statePath:join(hubSettings.settingsRoot,'github-session.json')}:{}) ,...(options.githubOptions??{})});await github.ready;
+  bus.onCommitted=()=>void bus.transaction(()=>github.observeSaved()).catch(error=>bus.recordError(error));
   const view={get project(){return proposals.active.project;},get revision(){return proposals.active.revision;},get workspaceId(){return proposals.previewId;},snapshot:()=>proposals.view()};
   const bridge=new EditorBridge(view,error=>bus.recordError(error));
-  bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;
+  bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;bus.agentService.github=github;
   const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,...(!options.projectRoot?{sessionPath:join(hubSettings.settingsRoot,'assistant-session.json')}:{}) ,...(options.assistantOptions??{})});await assistant.ready;bus.agentService.assistant=assistant;
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
@@ -149,6 +152,17 @@ export async function startServer(options = {}) {
         });
       }
 
+      if(url.pathname.startsWith('/v1/github/')){
+        const action=url.pathname.slice('/v1/github/'.length);
+        if(request.method==='GET'&&action==='status')return json(response,200,github.status());
+        if(request.method==='GET'&&action==='repositories')return json(response,200,{items:await github.client.repositories()});
+        if(request.method==='POST'){
+          const data=await readJson(request);
+          const operations={connect:()=>github.connect(data.token),disconnect:()=>github.disconnect(),create:()=>github.client.create(data.name,data.private),configure:()=>github.configure(data),preferences:()=>github.preferences(data),preview:()=>github.prepare(data),publish:()=>github.publish(data),reconcile:()=>github.reconcile(data),retry:()=>github.retry(data)};
+          if(Object.hasOwn(operations,action))return json(response,200,await bus.transaction(operations[action]));
+        }
+        return json(response,404,{code:'AX_HTTP_0002',cause:'Unknown GitHub operation'});
+      }
       if(request.method==='POST'&&url.pathname==='/v1/pmd/import')return json(response,200,await extractPmdImport(await readJson(request)));
       if(request.method==='POST'&&url.pathname==='/v1/pmd/export'){const data=await readJson(request);return json(response,200,{base64:Buffer.from(exportPmd(data.pmd)).toString('base64')});}
       if(request.method==='POST'&&url.pathname==='/v1/ai/attachments')return json(response,200,await assistant.attach(await readJson(request)));
@@ -170,7 +184,7 @@ export async function startServer(options = {}) {
       if(request.method==='GET'&&url.pathname==='/v1/ai/proposals')return json(response,200,url.searchParams.has('id')?proposals.review(url.searchParams.get('id')):{items:proposals.list()});
       if(request.method==='POST'&&url.pathname==='/v1/ai/preview'){const data=await readJson(request);if(!['preview','continue','reject'].includes(data.action))throw Error('Invalid preview action');return json(response,200,await bus.transaction(async()=>{await proposals.run('workspace.'+data.action,data,{actor:{kind:'human',id:'editor'}});return {snapshot:proposals.view()};}));}
       if(request.method==='GET'&&url.pathname==='/v1/ai/recoveries')return json(response,200,{items:await proposals.recoveries()});
-      if(request.method==='POST'&&url.pathname==='/v1/ai/apply'){const data=await readJson(request);return json(response,200,await bus.transaction(()=>proposals.apply(data,{actor:{kind:'human',id:'editor'}})));}
+      if(request.method==='POST'&&url.pathname==='/v1/ai/apply'){const data=await readJson(request);return json(response,200,await bus.transaction(async()=>{const result=await proposals.apply(data,{actor:{kind:'human',id:'editor'}});await github.observeSaved();return result;}));}
       if(request.method==='POST'&&url.pathname==='/v1/ai/recover'){const data=await readJson(request);return json(response,200,await bus.transaction(()=>proposals.recover(data,{actor:{kind:'human',id:'editor'}})));}
       if(request.method==='POST'&&url.pathname==='/v1/ai/cancel'){const data=await readJson(request);return json(response,200,assistant.cancel(data.id));}
       if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
@@ -232,7 +246,7 @@ export async function startServer(options = {}) {
 
       return json(response, 404, { code: "AX_HTTP_0002", cause: "Route not found" });
     } catch (error) {
-      const known=typeof error.code==='string'&&/^(AX_AI_|AX_AGENT_|AX_SCENE_|AX_WORKSPACE_)/.test(error.code);
+      const known=typeof error.code==='string'&&/^(AX_AI_|AX_AGENT_|AX_SCENE_|AX_WORKSPACE_|AX_GITHUB_)/.test(error.code);
       if(known)bus.recordError({code:error.code,cause:error.message});
       return json(response, error.status ?? (known?422:500), { code: known?error.code:error.status === 413 ? "AX_HTTP_0003" : "AX_SYSTEM_0002", cause: error.message });
     }
@@ -252,7 +266,7 @@ export async function startServer(options = {}) {
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
     close: () => closing??=(async()=>{
       const httpClosed=new Promise((resolveClose,reject)=>{server.close(error=>error&&error.code!=='ERR_SERVER_NOT_RUNNING'?reject(error):resolveClose());server.closeAllConnections();});
-      await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await bus.transaction(async()=>{});
+      github.disconnect();await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await bus.transaction(async()=>{});
       workspace.activeJob?.controller.abort();workspace.activeScriptJob?.controller.abort();
       const deadline=Date.now()+10000;while((workspace.activeJob||workspace.activeScriptJob)&&Date.now()<deadline)await new Promise(r=>setTimeout(r,20));
       if(workspace.activeJob||workspace.activeScriptJob)throw Error('Owned compiler/import job did not stop during shutdown');

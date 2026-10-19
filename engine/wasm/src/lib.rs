@@ -197,7 +197,7 @@ mod exports {
                 return u32::MAX;
             };
             let qlen = qx * qx + qy * qy + qz * qz + qw * qw;
-            if scene.meshes.len() >= 1024
+            if scene.meshes.len() >= 65536
                 || count == 0
                 || count > 150000
                 || ![px, py, pz, qx, qy, qz, qw, sx, sy, sz]

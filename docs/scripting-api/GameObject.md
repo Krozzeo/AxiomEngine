@@ -35,6 +35,7 @@ public sealed partial class GameObject : Object {
 }
 
 public sealed partial class GameObject {
+ public SceneManagement.Scene scene=>SceneManagement.SceneManager.GetSceneByName(SceneManagement.SceneManager.Owners.GetValueOrDefault(Entity.Id,SceneManagement.SceneManager.GetActiveScene().name));
  public GameObject(string name="New GameObject"){if(string.IsNullOrWhiteSpace(name)||name.Length>128)throw new ArgumentException("Invalid object name");Entity=Context.CreateObject(name);}
  public string tag {get=>Context.Metadata(Entity,"runtimeTag","Untagged");set{if(string.IsNullOrWhiteSpace(value)||value.Length>128)throw new ArgumentException("Invalid tag");Context.Property(Entity,"runtimeTag",JsonValue.Create(value));}}
  public int layer {get{var data=Context.EntityData[Entity.Id];if(data.TryGetProperty("runtimeLayer",out var layer))return layer.GetInt32();if(data.TryGetProperty("collider",out var collider)){var mask=collider.GetProperty("layer").GetUInt32();for(var i=0;i<32;i++)if((mask&(1u<<i))!=0)return i;}return 0;}set{if(value<0||value>31)throw new ArgumentOutOfRangeException(nameof(value));Context.Property(Entity,"runtimeLayer",JsonValue.Create(value));if(Context.EntityData[Entity.Id].TryGetProperty("collider",out var c)){var node=JsonNode.Parse(c.GetRawText())!;node["layer"]=1u<<value;Context.Property(Entity,"collider",node);}}}

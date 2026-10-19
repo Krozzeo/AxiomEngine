@@ -242,3 +242,14 @@ pub extern "C" fn axiom_physics_ignore_pair(id: u32, a: u32, b: u32, ignore: u32
         0
     })
 }
+
+#[unsafe(no_mangle)]
+pub extern "C" fn axiom_physics_grounded(id: u32, index: u32) -> u32 {
+    REGISTRY.with_borrow(|r| {
+        r.physics
+            .get(&id)
+            .and_then(|w| w.grounded.get(index as usize))
+            .copied()
+            .unwrap_or(false) as u32
+    })
+}

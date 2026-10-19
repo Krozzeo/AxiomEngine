@@ -43,7 +43,7 @@
         },
         "entities": {
           "type": "array",
-          "maxItems": 1024,
+          "maxItems": 65536,
           "items": {
             "type": "object",
             "required": [
@@ -1001,6 +1001,10 @@
                     "pattern": "^entity://[0-9a-f-]{36}$"
                   }
                 }
+              },
+              "componentEnabled": {
+                "type": "object",
+                "additionalProperties": true
               }
             }
           }

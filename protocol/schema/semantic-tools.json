@@ -241,6 +241,10 @@
             "enum": [
               "disassemble"
             ]
+          },
+          "componentEnabled": {
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "required": [
@@ -4061,7 +4065,9 @@
               "open",
               "activate",
               "close",
-              "move"
+              "move",
+              "persistent",
+              "order"
             ]
           },
           "entityIds": {
@@ -4071,6 +4077,14 @@
               "type": "string",
               "pattern": "^entity://[0-9a-f-]{36}$"
             }
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "beforePath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
           }
         },
         "required": [

@@ -27,12 +27,14 @@ if (camera != null) {
 Camera.main selects the active camera entity. It does not provide ScreenPointToRay or camera creation. AudioSource and Animator wrap existing imported resources and authored animation states/parameters; this batch does not add audio decoding, new media formats, root motion or Mecanim compatibility. Audio and animator actions are applied by the runtime bridge.
 
 
+SDK 8: `.enabled` and the Inspector component checkbox control this component in Edit and Play. Runtime changes do not modify authored data.
+
 ## Implemented declarations
 
 ```csharp
-public sealed partial class Camera : Component {
+public sealed partial class Camera : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"camera");set=>ComponentActivation.Write(Entity,"camera",value);}
  internal Camera(Entity entity){Entity=entity;}
- public static Camera? main=>Context.Cameras.Where(id=>Context.IsActive(id)&&Context.EntityData.TryGetValue(id,out var data)&&data.GetProperty("camera").GetProperty("active").GetBoolean()).Select(id=>new Camera(new Entity(id,Context.Generation))).FirstOrDefault();
+ public static Camera? main=>Context.Cameras.Where(id=>ComponentActivation.Read(new Entity(id,Context.Generation),"camera")&&Context.IsActive(id)&&Context.EntityData.TryGetValue(id,out var data)&&data.GetProperty("camera").GetProperty("active").GetBoolean()).Select(id=>new Camera(new Entity(id,Context.Generation))).FirstOrDefault();
 }
 
 public sealed partial class Camera {

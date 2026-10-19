@@ -65,6 +65,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
   let controlledPixels=null;
   let network=createRuntimeNetwork();
   let runtimeScene={entities:[]},scriptRuntime=null,scriptFlight=null,spawned=0,scriptFault=null;
+  let scriptNeedsPhysics=true,scriptNeedsFixed=true,managedSyncNeeded=true;
   let measuredFps=null,fpsStart=null,fpsCount=0,traceDisplayAt=-Infinity;
   let workspaceId=null,sceneRevision=-1,lastFrame=null,captureRequest=null,scriptTimeScale=1,pendingEndPacket=null;
   let authoredHierarchy={entities:[]};
@@ -111,12 +112,12 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       depth=device.createTexture({size:[canvas.width,canvas.height],format:"depth24plus",usage:GPUTextureUsage.RENDER_ATTACHMENT});
       skinGPU=await createSkinGPU(device);
       const currentDevice=device;
-      device.lost.then(info=>{if(disposed)return;reportError(new Error(`AX_RENDERER_0003: GPU device lost (${info.reason}): ${info.message}`));skinGPU?.dispose();skinGPU=null;production?.dispose();production=null;twoDGPU?.dispose();twoDGPU=null;gpuProfiler?.dispose();gpuProfiler=createGpuProfiler(null,()=>{},()=>{});const parallelTarget=parallel?.get();parallel?.dispose();device=null;parallel=parallelView({device:null,gpu,pipeline,textureFor,getTexture:()=>null,reportError});parallel.set(parallelTarget,runtimeScene,assets,geometry);stateElement.textContent=`Null Renderer · GPU device lost (${info.reason})`;destroyResources(resources);resources=[];clearTextures();currentDevice.destroy();});
-      stateElement.textContent=`WebGPU · project scene${timestamps?" · GPU timestamps":""}`;
+      device.lost.then(info=>{if(disposed)return;reportError(new Error(`AX_RENDERER_0003: GPU device lost (${info.reason}): ${info.message}`));skinGPU?.dispose();skinGPU=null;production?.dispose();production=null;twoDGPU?.dispose();twoDGPU=null;gpuProfiler?.dispose();gpuProfiler=createGpuProfiler(null,()=>{},()=>{});const parallelTarget=parallel?.get();parallel?.dispose();device=null;parallel=parallelView({device:null,gpu,pipeline,textureFor,getTexture:()=>null,reportError});parallel.set(parallelTarget,runtimeScene,assets,geometry);stateElement.textContent=`Null Renderer Ãƒâ€šÃ‚Â· GPU device lost (${info.reason})`;destroyResources(resources);resources=[];clearTextures();currentDevice.destroy();});
+      stateElement.textContent=`WebGPU Ãƒâ€šÃ‚Â· project scene${timestamps?" Ãƒâ€šÃ‚Â· GPU timestamps":""}`;
       stateElement.classList.add("success");
     } catch(error) {reportError(error);device?.destroy();device=null;}
   }
-  if(!device) stateElement.textContent=`Null Renderer · ${forceNull?"selected explicitly":"WebGPU unavailable"}`;
+  if(!device) stateElement.textContent=`Null Renderer Ãƒâ€šÃ‚Â· ${forceNull?"selected explicitly":"WebGPU unavailable"}`;
   gpuProfiler=createGpuProfiler(device,(sequence,ms,scopes,ticket)=>{if(profiler.attachGpuTiming(sequence,ms,scopes,ticket))gpuSample={frameSequence:sequence,milliseconds:ms};},(sequence,reason,ticket)=>profiler.gpuUnavailable(sequence,reason,ticket));
   parallel=parallelView({onInput:(event,target)=>inputPointer(event,target?.canvas,target?.view),device,gpu,pipeline,textureFor,getTexture:url=>textures.get(url??'white'),reportError,onMouseMove:(event,target)=>playerMouse(event,target?.canvas,target?.view),onPointer:(event,target,plan)=>{if(playing&&!testing&&target?.view==='game'&&hasPlayer())void Promise.resolve(target.canvas.requestPointerLock?.()).catch(()=>{});if(testing||!playing||target?.view!=='game'||!plan)return;const c=target.canvas,r=c.getBoundingClientRect(),hit=uiHit(runtimeScene,(event.clientX-r.left)*c.width/r.width,(event.clientY-r.top)*c.height/r.height,plan.pixel.viewport);if(hit){event.preventDefault();keys.clear();if(hit.ui2D.action==='togglePause')twoDPaused=!twoDPaused;}}});
   async function textureFor(url) {
@@ -161,7 +162,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       if(edit.type==='scene.script.edit'&&scriptRuntime){const packet=await scriptRuntime.execute({action:'fields',generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities),keys:[],edits:[{entityId:edit.data.entityId,path:edit.data.path,values:edit.data.values}]});if(packet.error)throw Error(packet.error);}
       const previous=runtimeScene;
       try {if(edit.type!=='scene.script.edit'){geometry=kernel.compileScene(next,assets,true);kernel.configurePhysics(next,true);}}catch(error){kernel.compileScene(previous,assets,true);kernel.configurePhysics(previous,true);throw error;}
-      runtimeScene=next;audio.reconcile(next);return {scene:structuredClone(next),generation:ticket};
+      runtimeScene=next;managedSyncNeeded=true;audio.reconcile(next);return {scene:structuredClone(next),generation:ticket};
     } finally {runtimeEditing=false;}
   }
   async function setSnapshot(snapshot,internalTest=false) {
@@ -195,7 +196,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     if(nextWidth!==canvas.width||nextHeight!==canvas.height){canvas.width=nextWidth;canvas.height=nextHeight;production?.dispose();production=null;productionLoading=null;twoDGPU?.dispose();twoDGPU=null;if(device){depth?.destroy();depth=device.createTexture({size:[nextWidth,nextHeight],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}}
 
     lineage=snapshot.commandLineage??null;assetFailures.clear();authoredHierarchy=structuredClone(project?.scene??{entities:[]});
-    const authoredScene=structuredClone(project?.scene??{entities:[]});if(!snapshot.playing&&authoredScene.sceneDocuments){const d=authoredScene.sceneDocuments;authoredScene.entities=authoredScene.entities.filter(e=>d.owners[e.id]===d.active);}
+    const authoredScene=structuredClone(project?.scene??{entities:[]});if(authoredScene.sceneDocuments){const d=authoredScene.sceneDocuments,loaded=new Set([d.active,...(snapshot.playing?d.alwaysActive??[]:[])]);authoredScene.entities=authoredScene.entities.filter(e=>loaded.has(d.owners[e.id]));if(snapshot.playing){d.open=d.open.filter(p=>loaded.has(p));if(authoredScene.script)authoredScene.script.attachments=authoredScene.script.attachments.filter(id=>authoredScene.entities.some(e=>e.id===id));}}
     let scene=worldScene(authoredScene);if(testing&&replaySeeded)for(const e of scene.entities)if(e.particles2D)e.particles2D.seed=replaySeed;for(const e of scene.entities){e.runtimeParentId=authoredHierarchy.entities.find(a=>a.id===e.id)?.parentId??null;delete e.parentId;}
     if(currentProject!==project?.id) { assets=new Map();assetKeys=new Map(); }
     const localAssets=new Map();
@@ -206,7 +207,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       let asset=assetKeys.get(metadata.id)===(metadata.buildKey??metadata.id)?assets.get(metadata.id):null;
       if(!asset) {try{asset=await loadAsset(project.id,metadata.id,snapshot.workspaceId);}catch(error){assetFailures.set(metadata.id,error.message);reportError(error);continue;}if(ticket!==generation||disposed)return;assets.set(metadata.id,asset);assetKeys.set(metadata.id,metadata.buildKey??metadata.id);}
       if(asset.kind!=="audio")totalVertices+=(asset.kind==="sprite"?6:asset.vertexCount)*(drawableCounts.get(metadata.id)??0);
-      if(totalVertices>300000)throw new Error("AX_SCENE_0006: scene exceeds 300000 vertices");
+      if(totalVertices>4000000)throw new Error("AX_SCENE_0006: scene exceeds 4000000 vertices");
       localAssets.set(metadata.id,asset);
     }
     const replacement=await loadKernel(bytes);let pending=[],nextRuntime=null;
@@ -216,8 +217,8 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
        try{
         nextRuntime=new ScriptRuntime();
         await nextRuntime.initialize(`/script-runtime/${project.id.slice(10)}/${scene.script.build.id}/dotnet.js`);
-        const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:runtimeScriptEntities(scene.entities,authoredHierarchy.entities),keys:[],attachments:scene.script.attachments,platform:runtimePlatform(canvas,{project,renderer:device?"webgpu":"null"}),projectData:runtimeProjectData(project),preferences:runtimePreferences(project.id).read(),seed:testing?replaySeed:0,replay:testing});
-        scriptTimeScale=packet.time?.scale??1;const result=applyScriptOperations(scene,packet,ticket);network.dispatch(result.network);for(const prefs of result.preferences)runtimePreferences(project.id).write(prefs);scene=result.scene;nextSpawned=result.spawned;startAnimationControls=result.animations;startAudioControls=result.audio;
+        const packet=await nextRuntime.execute({action:"start",generation:ticket,entities:runtimeScriptEntities(scene.entities,authoredHierarchy.entities),keys:[],attachments:scene.script.attachments,platform:runtimePlatform(canvas,{project,renderer:device?"webgpu":"null"}),projectData:runtimeProjectData({...project,scene:{...project.scene,sceneDocuments:scene.sceneDocuments}}),preferences:runtimePreferences(project.id).read(),seed:testing?replaySeed:0,replay:testing});
+        managedSyncNeeded=false;scriptNeedsFixed=packet.phases?.fixed??true;scriptNeedsPhysics=packet.phases?.physics??true;scriptTimeScale=packet.time?.scale??1;const result=applyScriptOperations(scene,packet,ticket);network.dispatch(result.network);for(const prefs of result.preferences)runtimePreferences(project.id).write(prefs);scene=result.scene;nextSpawned=result.spawned;startAnimationControls=result.animations;startAudioControls=result.audio;
         for(const message of result.logs)reportScriptLog(message,{generation:ticket,phase:"start",buildId:scene.script.build.id});
        }catch(error){nextRuntime?.dispose();nextRuntime=null;nextScriptFault=error.message;reportError(error);}
       }
@@ -252,19 +253,20 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
     frameInProgress=true;let frameFault=false;
     const ticket=generation,presentFrame=manual?.present!==false;
     try {
-      const delta=manual?.delta??(previousTime===null?0:Math.min((now-previousTime)/1000,0.25));previousTime=now;
+      const elapsedDelta=manual?.delta??(previousTime===null?0:(now-previousTime)/1000),delta=Math.min(elapsedDelta,.25);previousTime=now;
       const diagnostic=profiler.begin(performance.now(),crypto.randomUUID(),{view,playing,route:runtimeScene.twoD?'2d':runtimeScene.rendering?'hdr':'legacy'});
       const timing=presentFrame?gpuProfiler.begin(diagnostic.frameSequence,ticket):{reason:'Controlled simulation frame not presented',writes:()=>undefined,resolve(){},submitted(){}};diagnostic.gpuReason=timing.reason;
       const inputKeys=[...keys],inputMouseDelta=[...mouseDelta],inputDevices=manual?.input??runtimeInput.sample();if(playing&&!twoDPaused&&scriptRuntime)mouseDelta=[0,0];
       const scriptScopes=new Map(),scriptScope=(name,start,end,kind='main')=>{const key=name+'|'+kind;scriptScopes.set(key,(scriptScopes.get(key)??0)+end-start);};
-      const runScriptPhase=async action=>{if(!scriptRuntime)return;
+      const runScriptPhase=async (action,fixedSteps=0)=>{if(!scriptRuntime)return;
         const active=scriptRuntime;
         try {
           const scriptStart=performance.now();
-          const animationStates=new Map(kernel.animationStatus().map(a=>[a.entityId,a]));
-          scriptFlight=action==='end-apply'?Promise.resolve(pendingEndPacket):active.execute({action,generation:ticket,entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>{let grounded=false;if(e.collider&&e.rigidBody){try{const hit=kernel.raycast({origin:[e.transform.position[0],e.transform.position[1]-e.collider.halfExtents[1]*Math.abs(e.transform.scale[1])-.02,e.transform.position[2]],direction:[0,-1,0],maxDistance:.12,dimension:e.collider.dimension,mask:e.collider.mask});grounded=!!hit&&hit.entityId!==e.id;}catch{}}return {...e,grounded,animationState:animationStates.get(e.id)};}),contacts:kernel.physicsSnapshot()?.contacts??[],keys:inputKeys,input:inputDevices,networkResults:action==='frame'?network.take():[],runtimeMetrics:{fps:lastFrame?.fps??0,bodies:lastFrame?.physics?.bodyCount??0,contacts:lastFrame?.physics?.contactCount??0,frameMs:delta*1000},platform:runtimePlatform(canvas,{project:currentSnapshot?.project,renderer:device?"webgpu":"null"}),mouseDelta:inputMouseDelta,delta});
+          const reuseEntities=action==='frame'?!managedSyncNeeded:action==='fixed'?!scriptNeedsFixed:['fixed-batch','late','end'].includes(action);
+          const animationStates=new Map((reuseEntities?[]:kernel.animationStatus()).map(a=>[a.entityId,a]));const physical=kernel.physicsSnapshot(),groundedBodies=new Map(reuseEntities?[]:physical?.bodies.map(b=>[b.id,b.grounded])??[]);
+          scriptFlight=action==='end-apply'?Promise.resolve(pendingEndPacket):active.execute({action,fixedSteps,generation:ticket,...(reuseEntities?{reuseEntities:true}:{entities:runtimeScriptEntities(runtimeScene.entities,authoredHierarchy.entities).map(e=>({...e,grounded:groundedBodies.get(e.id)??false,animationState:animationStates.get(e.id)}))}),contacts:action==='physics'?physical?.contacts??[]:[],keys:inputKeys,input:inputDevices,networkResults:action==='frame'?network.take():[],runtimeMetrics:{fps:lastFrame?.fps??0,bodies:lastFrame?.physics?.bodyCount??0,contacts:lastFrame?.physics?.contactCount??0,frameMs:elapsedDelta*1000},platform:runtimePlatform(canvas,{project:currentSnapshot?.project,renderer:device?"webgpu":"null"}),mouseDelta:inputMouseDelta,delta});
           scriptScope('script.prepare',scriptStart,performance.now());
-          const packet=await scriptFlight;if(action==='end-apply')pendingEndPacket=null;if(action==='end'){if(packet.error)throw Error(packet.error);if(ticket===generation&&!disposed)pendingEndPacket=packet;const elapsed=performance.now()-scriptStart;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+elapsed;scriptScope('script.roundtrip',0,elapsed,'wall');return;}scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+performance.now()-scriptStart;
+          const packet=await scriptFlight;if(action==='end-apply')pendingEndPacket=null;if(action==='end'){if(packet.error)throw Error(packet.error);if(ticket===generation&&!disposed)pendingEndPacket=packet;const elapsed=performance.now()-scriptStart;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+elapsed;scriptScope('script.roundtrip',0,elapsed,'wall');return;}if(action!=='end-apply'&&!reuseEntities)managedSyncNeeded=false;scriptNeedsFixed=packet.phases?.fixed??true;scriptNeedsPhysics=packet.phases?.physics??true;scriptTimeScale=packet.time?.scale??scriptTimeScale;diagnostic.scriptRoundTripMs=(diagnostic.scriptRoundTripMs??0)+performance.now()-scriptStart;
           if(ticket!==generation||disposed){return;}
           scriptScope('script.roundtrip',scriptStart,performance.now(),'wall');
           if(Number.isFinite(packet.metrics?.workerDispatchMs)&&packet.metrics.workerDispatchMs>=0&&packet.metrics.workerDispatchMs<=2000)scriptScope('worker.dispatch',0,packet.metrics.workerDispatchMs,'worker');
@@ -286,11 +288,12 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
         }catch(error){if(ticket===generation&&!disposed){scriptFault=error.message;reportError(error);active.dispose();scriptRuntime=null;}}
         finally{scriptFlight=null;}
       };
-      const syncRuntime=packet=>{if(packet.transforms)for(const item of packet.transforms){const e=runtimeScene.entities.find(e=>e.id===item.id);if(e)e.transform=item.transform;}if(packet.physics)for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);if(e?.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;e.rigidBody.sleeping=b.sleeping;}}};
+      const syncRuntime=packet=>{const byId=new Map(runtimeScene.entities.map(e=>[e.id,e]));if(packet.transforms)for(const item of packet.transforms){const e=byId.get(item.id);if(e)e.transform=item.transform;}if(packet.physics)for(const b of packet.physics.bodies){const e=byId.get(b.id);if(e?.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;e.rigidBody.sleeping=b.sleeping;}}};
       const phased=playing&&!twoDPaused&&!!scriptRuntime;
       if(phased){
        if(pendingEndPacket)await runScriptPhase('end-apply');await runScriptPhase('frame');const fixed=kernel.beginFixedFrame(Math.min(delta*scriptTimeScale,.25),trace+1n);
-       for(let i=0;i<fixed;i++){await runScriptPhase('fixed');if(ticket!==generation||disposed)return;kernel.stepPhysics(1);syncRuntime(kernel.stepScene(0,trace+1n,canvas.width/canvas.height,{advanceClock:false,stepPhysics:false}));await runScriptPhase('physics');}
+       const batchedFixed=fixed>0&&!scriptNeedsFixed&&!scriptNeedsPhysics;if(batchedFixed)await runScriptPhase('fixed-batch',fixed);
+       for(let i=0;i<fixed;i++){if(!batchedFixed)await runScriptPhase('fixed');if(ticket!==generation||disposed)return;const fixedStart=performance.now();kernel.stepPhysics(1);syncRuntime(kernel.stepScene(0,trace+1n,canvas.width/canvas.height,{advanceClock:false,stepPhysics:false,draw:false}));scriptScope('physics.fixed',fixedStart,performance.now());if(scriptNeedsPhysics)await runScriptPhase('physics');}
        await runScriptPhase('update');await runScriptPhase('late');
       }
       if(ticket!==generation||disposed){return;}
@@ -303,8 +306,9 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       geometry=geometry.map((d,i)=>({...d,...(animatedDraws[i]?.skinPalette?{vertices:animatedDraws[i].vertices,skinSource:animatedDraws[i].skinSource,skinInfluences:animatedDraws[i].skinInfluences,skinPalette:animatedDraws[i].skinPalette}:{} )}));
       profiler.scope(diagnostic,'animation.evaluate',stageStart,performance.now());stageStart=performance.now();
       lastPacket=packet;lastTraceId=diagnostic.traceId;
-      if(packet.transforms)for(const item of packet.transforms){const e=runtimeScene.entities.find(e=>e.id===item.id);if(e)e.transform=item.transform;}
-      if(packet.physics){for(const b of packet.physics.bodies){const e=runtimeScene.entities.find(e=>e.id===b.id);if(!e)continue;if(!packet.transforms){e.transform.position=b.position;e.transform.rotation=b.rotation;}if(e.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;e.rigidBody.sleeping=b.sleeping;}}diagnostic.physics=packet.physics;}
+      const byId=new Map(runtimeScene.entities.map(e=>[e.id,e]));
+      if(packet.transforms)for(const item of packet.transforms){const e=byId.get(item.id);if(e)e.transform=item.transform;}
+      if(packet.physics){for(const b of packet.physics.bodies){const e=byId.get(b.id);if(!e)continue;if(!packet.transforms){e.transform.position=b.position;e.transform.rotation=b.rotation;}if(e.rigidBody){e.rigidBody.velocity=b.velocity;e.rigidBody.angularVelocity=b.angularVelocity;e.rigidBody.sleeping=b.sleeping;}}diagnostic.physics=packet.physics;}
       let previewScene=null;
       if(transformPreview){const draft=structuredClone(authoredHierarchy);draft.entities=updateTransforms(draft.entities,transformPreview.updates??[{entityId:transformPreview.entityId,transform:transformPreview.transform}],'world');previewScene=worldScene(draft);}
       const gameCamera=activeGameCamera(previewScene??runtimeScene),missingCamera=view==='game'&&!gameCamera;
@@ -388,7 +392,7 @@ export async function createSceneRenderer({ canvas, stateElement, traceOutput, b
       // Bound queued GPU work on slow adapters; manual test/replay pixels must
       // also complete before their next controlled frame. Device loss owns fallback.
       if(device&&presentFrame){const submittedDevice=device;await submittedDevice.queue.onSubmittedWorkDone().catch(()=>submittedDevice.lost);}
-    } catch(error) {if(ticket!==generation||disposed)return;frameFault=true;audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped · inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;if(!manual&&!frameFault)scheduleFrame();}
+    } catch(error) {if(ticket!==generation||disposed)return;frameFault=true;audio.clear();lastFrame={...lastFrame,audio:audio.status(),audioFault:error.message.slice(0,2048),animationFault:error.message.slice(0,2048)};reportError(error);stateElement.textContent="Rendering stopped Ãƒâ€šÃ‚Â· inspect the console";if(manual)throw error;return;}finally{frameInProgress=false;if(!manual&&!frameFault)scheduleFrame();}
   }
   const isolatedAdapter={
     async begin({seed}={}){replaySeed=seed??0;replaySeeded=seed!==undefined;if(!currentSnapshot?.project||playing)throw testError('Open a stopped project first');testSource=currentSnapshot;testing=true;keys.clear();while(frameInProgress)await new Promise(r=>setTimeout(r,1));await setSnapshot({...testSource,playing:true},true);if(currentSnapshot!==testSource)throw testError('Project changed','AX_TEST_0002');testGeneration=generation;view='game';audio.clear();},

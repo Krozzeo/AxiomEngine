@@ -7,7 +7,7 @@ function restoreSceneDevices(scene){const d=scene.sceneDocuments;for(const e of 
 const settings=['camera','cameraMode','rendering','twoD','audio'];
 export function readSceneFile(file){
  if(!isSceneFile(file))throw Error('Select a .scene file');let value;try{value=JSON.parse(file.text);}catch{throw Error('Scene is not valid JSON: '+file.path);}
- if(!value||!Array.isArray(value.entities)||value.entities.length>1024)throw Error('Scene must contain at most 1024 entities');
+ if(!value||!Array.isArray(value.entities)||value.entities.length>65536)throw Error('Scene must contain at most 65536 entities');
  const ids=new Set();for(const entity of value.entities){validateRuntimeEntity(entity);if(ids.has(entity.id))throw Error('Duplicate scene entity');ids.add(entity.id);}for(const entity of value.entities)if(entity.parentId&&!ids.has(entity.parentId))throw Error('Missing scene parent');worldTransforms(value.entities);return value;
 }
 export function initializeSceneDocuments(scene){
@@ -25,17 +25,21 @@ export function editSceneDocument(scene,data){
  initializeSceneDocuments(scene);syncSceneDocuments(scene);const state=scene.sceneDocuments,path=projectPath(data.path),file=()=>scene.projectFiles.find(f=>f.path===path);
  function activate(){if(!state.open.includes(path))throw Error('Scene is not open');state.active=path;const value=readSceneFile(file());for(const key of settings){if(value[key]!==undefined)scene[key]=structuredClone(value[key]);else delete scene[key];}restoreSceneDevices(scene);}
  if(data.action==='create'){
-  if(!path.endsWith('.scene')||scene.projectFiles.some(f=>f.path.toLowerCase()===path.toLowerCase()))throw Error('Create a unique .scene file');const parent=path.slice(0,path.lastIndexOf('/'));if(path.includes('/')&&!scene.projectFiles.some(f=>f.kind==='folder'&&f.path===parent))throw Error('Destination folder does not exist');scene.projectFiles.push({path,kind:'scene',text:JSON.stringify({format:'axiom-scene',schemaVersion:1,entities:[]},null,2)+'\n'});
+  if(!path.endsWith('.scene')||scene.projectFiles.some(f=>f.path.toLowerCase()===path.toLowerCase()))throw Error('Create a unique .scene file');const parent=path.slice(0,path.lastIndexOf('/'));if(path.includes('/')&&!scene.projectFiles.some(f=>f.kind==='folder'&&f.path===parent))throw Error('Destination folder does not exist');scene.projectFiles.push({path,kind:'scene',text:data.text??JSON.stringify({format:'axiom-scene',schemaVersion:1,entities:[]},null,2)+'\n'});
  }else if(data.action==='open'){
   if(state.open.includes(path)){activate();return;}if(state.open.length>=16)throw Error('At most 16 scenes may be open');if(state.open.some(p=>sceneTitle(p)===sceneTitle(path)))throw Error('Open scenes must have distinct names');
   const value=readSceneFile(file()),ids=new Set(scene.entities.map(e=>e.id));if(value.entities.some(e=>ids.has(e.id)))throw Error('Scene shares entity IDs with an open scene; close it before opening this copy');
-  if(scene.entities.length+value.entities.length>1024)throw Error('Open scenes exceed 1024 live entities');
+  if(scene.entities.length+value.entities.length>65536)throw Error('Open scenes exceed 65536 live entities');
   state.cameras[path]=value.entities.find(e=>e.camera?.active)?.id??null;state.listeners[path]=value.entities.find(e=>e.audioListener?.enabled)?.id??null;
   scene.entities.push(...structuredClone(value.entities));for(const e of value.entities)state.owners[e.id]=path;state.open.push(path);activate();
  }else if(data.action==='activate')activate();
  else if(data.action==='close'){
-  if(!state.open.includes(path))throw Error('Scene is not open');scene.entities=scene.entities.filter(e=>state.owners[e.id]!==path);state.open=state.open.filter(p=>p!==path);if(state.active===path){state.active=state.open[0]??null;if(state.active){data={...data,path:state.active};const value=readSceneFile(scene.projectFiles.find(f=>f.path===state.active));for(const k of settings){if(value[k]!==undefined)scene[k]=structuredClone(value[k]);else delete scene[k];}}}
+  if(!state.open.includes(path))throw Error('Scene is not open');scene.entities=scene.entities.filter(e=>state.owners[e.id]!==path);if(state.alwaysActive)state.alwaysActive=state.alwaysActive.filter(p=>p!==path);state.open=state.open.filter(p=>p!==path);if(state.active===path){state.active=state.open[0]??null;if(state.active){data={...data,path:state.active};const value=readSceneFile(scene.projectFiles.find(f=>f.path===state.active));for(const k of settings){if(value[k]!==undefined)scene[k]=structuredClone(value[k]);else delete scene[k];}}}
   restoreSceneDevices(scene);
+ }else if(data.action==='persistent'){
+  if(!state.open.includes(path)||typeof data.enabled!=='boolean')throw Error('Select an open scene and a boolean mode');state.alwaysActive??=[];state.alwaysActive=state.alwaysActive.filter(p=>p!==path);if(data.enabled)state.alwaysActive.push(path);
+ }else if(data.action==='order'){
+  if(!state.open.includes(path)||!state.open.includes(data.beforePath)||path===data.beforePath)throw Error('Reorder two open scenes');state.open=state.open.filter(p=>p!==path);state.open.splice(state.open.indexOf(data.beforePath),0,path);
  }else if(data.action==='move'){
   if(!state.open.includes(path))throw Error('Scene is not open');const selected=new Set(data.entityIds??[]);for(const id of selected){const e=scene.entities.find(e=>e.id===id);if(!e)throw Error('Entity is missing');delete e.parentId;state.owners[id]=path;}
  }else throw Error('Unknown scene document operation');

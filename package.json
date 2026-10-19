@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -70,7 +70,10 @@
     "check:scripting-api": "node scripts/generate-scripting-reference.mjs --check",
     "test:browser:m18-3-7": "node tests/browser/m18-3-7.mjs",
     "test:browser:m18-3-9": "node tests/browser/m18-3-9.mjs",
-    "test:browser:m18-3-10": "node tests/browser/m18-3-10.mjs"
+    "test:browser:m18-3-10": "node tests/browser/m18-3-10.mjs",
+    "test:browser:m18-3-11": "node tests/browser/m18-3-11.mjs",
+    "benchmark:m18-3-11": "node scripts/benchmarks/m18-3-11.mjs",
+    "test:browser:m18-3-11-stress": "node tests/browser/m18-3-11-stress.mjs"
   },
   "dependencies": {
     "fflate": "0.8.3",

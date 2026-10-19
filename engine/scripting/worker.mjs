@@ -16,7 +16,7 @@ addEventListener('message',async ({data})=>{
    if(!dispatch)throw new Error('Runtime is not ready');
    const started=performance.now();
    const output=dispatch(JSON.stringify(data.request));
-   if(output.length>256*1024)throw new Error('Script response exceeds limit');
+   if(output.length>16*1024*1024)throw new Error('Script response exceeds limit');
    const workerDispatchMs=performance.now()-started;
    postMessage({id:data.id,result:{...JSON.parse(output),metrics:{workerDispatchMs}}});
   }

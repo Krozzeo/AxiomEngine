@@ -6,7 +6,7 @@ Existing authored lights expose color, intensity, range, type and None/Hard shad
 ## Implemented declarations
 
 ```csharp
-public sealed class Light : Component {
+public sealed class Light : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"light");set=>ComponentActivation.Write(Entity,"light",value);}
  internal Light(Entity e){Entity=e;}
  public Color color {get=>PresentationData.Color(Entity,"light","color");set=>PresentationData.Set(Entity,"light","color",PresentationData.Values(value.R,value.G,value.B));}
  public double intensity {get=>PresentationData.Read(Entity,"light").GetProperty("intensity").GetDouble();set=>PresentationData.Set(Entity,"light","intensity",JsonValue.Create(value)!);}

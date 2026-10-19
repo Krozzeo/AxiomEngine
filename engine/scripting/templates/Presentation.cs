@@ -13,7 +13,7 @@ public sealed class Material : Object {
  public double roughness {get=>PresentationData.Read(entity,"material").GetProperty("roughness").GetDouble();set=>PresentationData.Set(entity,"material","roughness",JsonValue.Create(value)!);}
  public Color emissionColor {get=>PresentationData.Color(entity,"material","emissive");set=>PresentationData.Set(entity,"material","emissive",PresentationData.Values(value.R,value.G,value.B));}
 }
-public class Renderer : Component {internal Renderer(Entity e){Entity=e;}public Material material {get{if(!Context.EntityData[Entity.Id].TryGetProperty("material",out _))Context.Property(Entity,"material",JsonNode.Parse("{\"baseColor\":[1,1,1,1],\"metallic\":0,\"roughness\":0.5,\"emissive\":[0,0,0],\"alphaMode\":\"opaque\",\"alphaCutoff\":0.5,\"unlit\":false,\"castShadow\":true}"));return new(Entity);}}public Material sharedMaterial=>material;}
+public class Renderer : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"renderable");set=>ComponentActivation.Write(Entity,"renderable",value);}internal Renderer(Entity e){Entity=e;}public Material material {get{if(!Context.EntityData[Entity.Id].TryGetProperty("material",out _))Context.Property(Entity,"material",JsonNode.Parse("{\"baseColor\":[1,1,1,1],\"metallic\":0,\"roughness\":0.5,\"emissive\":[0,0,0],\"alphaMode\":\"opaque\",\"alphaCutoff\":0.5,\"unlit\":false,\"castShadow\":true}"));return new(Entity);}}public Material sharedMaterial=>material;}
 public sealed class MeshRenderer : Renderer {internal MeshRenderer(Entity e):base(e){}}
 public sealed class SpriteRenderer : Renderer {
  internal SpriteRenderer(Entity e):base(e){}
@@ -24,7 +24,7 @@ public sealed class SpriteRenderer : Renderer {
 }
 public enum LightType {Directional,Point,Spot}
 public enum LightShadows {None,Hard,Soft}
-public sealed class Light : Component {
+public sealed class Light : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"light");set=>ComponentActivation.Write(Entity,"light",value);}
  internal Light(Entity e){Entity=e;}
  public Color color {get=>PresentationData.Color(Entity,"light","color");set=>PresentationData.Set(Entity,"light","color",PresentationData.Values(value.R,value.G,value.B));}
  public double intensity {get=>PresentationData.Read(Entity,"light").GetProperty("intensity").GetDouble();set=>PresentationData.Set(Entity,"light","intensity",JsonValue.Create(value)!);}

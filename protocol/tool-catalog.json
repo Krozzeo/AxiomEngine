@@ -140,7 +140,7 @@
               },
               "entities": {
                 "type": "array",
-                "maxItems": 1024,
+                "maxItems": 65536,
                 "items": {
                   "type": "object",
                   "required": [
@@ -1118,6 +1118,10 @@
                           "pattern": "^entity://[0-9a-f-]{36}$"
                         }
                       }
+                    },
+                    "componentEnabled": {
+                      "type": "object",
+                      "additionalProperties": true
                     }
                   },
                   "additionalProperties": false
@@ -1725,6 +1729,10 @@
             "enum": [
               "disassemble"
             ]
+          },
+          "componentEnabled": {
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "required": [
@@ -7567,6 +7575,10 @@
                       "pattern": "^entity://[0-9a-f-]{36}$"
                     }
                   }
+                },
+                "componentEnabled": {
+                  "type": "object",
+                  "additionalProperties": true
                 }
               },
               "additionalProperties": false
@@ -7815,7 +7827,9 @@
               "open",
               "activate",
               "close",
-              "move"
+              "move",
+              "persistent",
+              "order"
             ]
           },
           "entityIds": {
@@ -7825,6 +7839,14 @@
               "type": "string",
               "pattern": "^entity://[0-9a-f-]{36}$"
             }
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "beforePath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
           }
         },
         "required": [

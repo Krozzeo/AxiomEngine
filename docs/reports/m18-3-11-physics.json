@@ -1,0 +1,220 @@
+{
+  "revision": "M18.3.11",
+  "environment": "Windows, Node 24.21, local CPU/Wasm; hardware GPU not measured",
+  "workload": {
+    "frames": 20,
+    "warmupFrames": 3,
+    "bodies": "separated boxes falling without contacts",
+    "scripts": false,
+    "draws": false,
+    "editor": false
+  },
+  "baselineRevision": "52147a3dd3b18cc07e3b3c7a3c24a3abaa9a45df",
+  "baseline": [
+    {
+      "dimension": 2,
+      "bodies": 16,
+      "meanFrameMs": 0.2846149999999998
+    },
+    {
+      "dimension": 2,
+      "bodies": 32,
+      "meanFrameMs": 0.7138700000000003
+    },
+    {
+      "dimension": 2,
+      "bodies": 64,
+      "meanFrameMs": 2.2498999999999993
+    },
+    {
+      "dimension": 2,
+      "bodies": 128,
+      "meanFrameMs": 8.41739
+    },
+    {
+      "dimension": 2,
+      "bodies": 255,
+      "meanFrameMs": 31.06301
+    },
+    {
+      "dimension": 3,
+      "bodies": 16,
+      "meanFrameMs": 0.1464650000000006
+    },
+    {
+      "dimension": 3,
+      "bodies": 32,
+      "meanFrameMs": 0.5515800000000013
+    },
+    {
+      "dimension": 3,
+      "bodies": 64,
+      "meanFrameMs": 2.093259999999998
+    },
+    {
+      "dimension": 3,
+      "bodies": 128,
+      "meanFrameMs": 7.900369999999998
+    },
+    {
+      "dimension": 3,
+      "bodies": 255,
+      "meanFrameMs": 31.124555000000008
+    }
+  ],
+  "after": [
+    {
+      "dimension": 2,
+      "bodies": 16,
+      "meanFrameMs": 0.11873999999999967
+    },
+    {
+      "dimension": 2,
+      "bodies": 32,
+      "meanFrameMs": 0.15945000000000037
+    },
+    {
+      "dimension": 2,
+      "bodies": 64,
+      "meanFrameMs": 0.21781500000000023
+    },
+    {
+      "dimension": 2,
+      "bodies": 128,
+      "meanFrameMs": 0.3115949999999998
+    },
+    {
+      "dimension": 2,
+      "bodies": 255,
+      "meanFrameMs": 0.6923000000000001
+    },
+    {
+      "dimension": 2,
+      "bodies": 512,
+      "meanFrameMs": 1.3999400000000009
+    },
+    {
+      "dimension": 2,
+      "bodies": 1024,
+      "meanFrameMs": 2.7798450000000003
+    },
+    {
+      "dimension": 2,
+      "bodies": 2048,
+      "meanFrameMs": 5.379650000000001
+    },
+    {
+      "dimension": 3,
+      "bodies": 16,
+      "meanFrameMs": 0.031674999999998475
+    },
+    {
+      "dimension": 3,
+      "bodies": 32,
+      "meanFrameMs": 0.05885999999999854
+    },
+    {
+      "dimension": 3,
+      "bodies": 64,
+      "meanFrameMs": 0.12489500000000078
+    },
+    {
+      "dimension": 3,
+      "bodies": 128,
+      "meanFrameMs": 0.219874999999999
+    },
+    {
+      "dimension": 3,
+      "bodies": 255,
+      "meanFrameMs": 0.4824999999999989
+    },
+    {
+      "dimension": 3,
+      "bodies": 512,
+      "meanFrameMs": 1.1448199999999986
+    },
+    {
+      "dimension": 3,
+      "bodies": 1024,
+      "meanFrameMs": 2.2735299999999996
+    },
+    {
+      "dimension": 3,
+      "bodies": 2048,
+      "meanFrameMs": 4.8403499999999955
+    }
+  ],
+  "interpretation": "Mean physics/host frame cost only, not editor FPS. Different system load can affect timings. High capacity remains finite and constrained by combined budgets.",
+  "editorDenseStress": {
+    "errors": [],
+    "spawnMilliseconds": 17176,
+    "physics": {
+      "backend": "cpu-wasm",
+      "reason": "AX_PHYSICS_CPU_BASELINE",
+      "steps": 72,
+      "bodyCount": 1025,
+      "contactCount": 3493,
+      "candidates": 5409
+    },
+    "fpsText": "5.1 FPS",
+    "fpsScript": 5.143062865371778,
+    "fixedSeconds": 14.466666666666653,
+    "frameMsScript": 183.33000000000175,
+    "renderer": "null",
+    "scopes": [
+      {
+        "name": "kernel.world-physics",
+        "kind": "main",
+        "milliseconds": 6.334999993443489
+      },
+      {
+        "name": "animation.evaluate",
+        "kind": "main",
+        "milliseconds": 0.0949999988079071
+      },
+      {
+        "name": "render.prepare",
+        "kind": "main",
+        "milliseconds": 9.200000002980232
+      },
+      {
+        "name": "render.submit",
+        "kind": "main",
+        "milliseconds": 0.019999995827674866
+      },
+      {
+        "name": "script.prepare",
+        "kind": "main",
+        "milliseconds": 5.8599999994039536
+      },
+      {
+        "name": "script.roundtrip",
+        "kind": "wall",
+        "milliseconds": 86.98499998450279
+      },
+      {
+        "name": "worker.dispatch",
+        "kind": "worker",
+        "milliseconds": 75.78999999165535
+      },
+      {
+        "name": "script.apply",
+        "kind": "main",
+        "milliseconds": 4.170000031590462
+      },
+      {
+        "name": "physics.fixed",
+        "kind": "main",
+        "milliseconds": 76.80000001192093
+      },
+      {
+        "name": "audio.update",
+        "kind": "main",
+        "milliseconds": 0.9750000089406967
+      }
+    ],
+    "elapsedMs": 184.73499999940395,
+    "passed": true,
+    "acceptance": "functional capacity verified; smooth real-time performance remains pending"
+  }
+}

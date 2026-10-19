@@ -68,7 +68,7 @@ test("invalid scene, unsupported versions and traversal cannot alter a project",
     { ...project.scene, entities: [item, item] },
     { ...project.scene, schemaVersion: 2 },
     { ...project.scene, plugin: "x".repeat(4 * 1024 * 1024) },
-    { ...project.scene, entities: Array.from({ length: 1025 }, entity) },
+    { ...project.scene, entities: Array.from({ length: 65537 }, entity) },
     { ...project.scene, id: `scene://${randomUUID()}` },
     { ...project.scene, entities: [{ ...item, transform: { ...item.transform, position: [NaN, 0, 0] } }] },
     { ...project.scene, extension: JSON.parse('{"__proto__":{"polluted":true}}') }

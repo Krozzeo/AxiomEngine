@@ -6,7 +6,7 @@ GetComponent<MeshRenderer>().material exposes live instance color, metallic, rou
 ## Implemented declarations
 
 ```csharp
-public class Renderer : Component {internal Renderer(Entity e){Entity=e;}public Material material {get{if(!Context.EntityData[Entity.Id].TryGetProperty("material",out _))Context.Property(Entity,"material",JsonNode.Parse("{\"baseColor\":[1,1,1,1],\"metallic\":0,\"roughness\":0.5,\"emissive\":[0,0,0],\"alphaMode\":\"opaque\",\"alphaCutoff\":0.5,\"unlit\":false,\"castShadow\":true}"));return new(Entity);}}public Material sharedMaterial=>material;}
+public class Renderer : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"renderable");set=>ComponentActivation.Write(Entity,"renderable",value);}internal Renderer(Entity e){Entity=e;}public Material material {get{if(!Context.EntityData[Entity.Id].TryGetProperty("material",out _))Context.Property(Entity,"material",JsonNode.Parse("{\"baseColor\":[1,1,1,1],\"metallic\":0,\"roughness\":0.5,\"emissive\":[0,0,0],\"alphaMode\":\"opaque\",\"alphaCutoff\":0.5,\"unlit\":false,\"castShadow\":true}"));return new(Entity);}}public Material sharedMaterial=>material;}
 
 public sealed class MeshRenderer : Renderer {internal MeshRenderer(Entity e):base(e){}}
 

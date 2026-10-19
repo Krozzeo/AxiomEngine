@@ -39,6 +39,7 @@ pub struct Contact {
 pub struct World {
     pub bodies: Vec<Body>,
     pub contacts: Vec<Contact>,
+    pub grounded: Vec<bool>,
     pub candidates: usize,
     pub steps: u64,
     pub ignored_pairs: std::collections::BTreeSet<(usize, usize)>,
@@ -83,24 +84,23 @@ fn axes(b: &Body) -> [[f64; 3]; 3] {
         )
     })
 }
-fn extent(b: &Body, i: usize) -> f64 {
+fn extent(b: &Body, i: usize, ax: [[f64; 3]; 3]) -> f64 {
     if b.sphere {
         b.half[0]
     } else {
-        axes(b)
-            .iter()
+        ax.iter()
             .enumerate()
             .take(b.dimension as usize)
             .map(|(j, a)| a[i].abs() * b.half[j])
             .sum()
     }
 }
-fn support(b: &Body, n: [f64; 3]) -> [f64; 3] {
+fn support(b: &Body, n: [f64; 3], ax: [[f64; 3]; 3]) -> [f64; 3] {
     if b.sphere {
         return add(b.position, mul(n, b.half[0]));
     }
     let mut p = b.position;
-    for (i, a) in axes(b).iter().enumerate().take(b.dimension as usize) {
+    for (i, a) in ax.iter().enumerate().take(b.dimension as usize) {
         let d = dot(*a, n);
         if d.abs() > 1e-8 {
             p = add(p, mul(*a, b.half[i] * d.signum()));
@@ -108,8 +108,7 @@ fn support(b: &Body, n: [f64; 3]) -> [f64; 3] {
     }
     p
 }
-fn face(b: &Body, n: [f64; 3]) -> Vec<[f64; 3]> {
-    let ax = axes(b);
+fn face(b: &Body, n: [f64; 3], ax: [[f64; 3]; 3]) -> Vec<[f64; 3]> {
     let count = b.dimension as usize;
     let i = (0..count)
         .max_by(|&i, &j| dot(ax[i], n).abs().total_cmp(&dot(ax[j], n).abs()))
@@ -154,7 +153,7 @@ fn clip(poly: Vec<[f64; 3]>, n: [f64; 3], limit: f64) -> Vec<[f64; 3]> {
     out
 }
 type Manifold = ([f64; 3], f64, Vec<[f64; 3]>);
-fn collision(a: &Body, b: &Body) -> Option<Manifold> {
+fn collision(a: &Body, b: &Body, aa: [[f64; 3]; 3], ba: [[f64; 3]; 3]) -> Option<Manifold> {
     let dim = a.dimension as usize;
     if a.sphere && b.sphere {
         let mut d = sub(b.position, a.position);
@@ -179,7 +178,7 @@ fn collision(a: &Body, b: &Body) -> Option<Manifold> {
     }
     if a.sphere || b.sphere {
         let (s, bx, sign) = if a.sphere { (a, b, 1.0) } else { (b, a, -1.0) };
-        let ax = axes(bx);
+        let ax = if a.sphere { ba } else { aa };
         let offset = sub(s.position, bx.position);
         let local: [f64; 3] = std::array::from_fn(|i| dot(offset, ax[i]));
         let mut closest = bx.position;
@@ -207,19 +206,22 @@ fn collision(a: &Body, b: &Body) -> Option<Manifold> {
             vec![add(s.position, mul(outward, bx.half[i] - local[i].abs()))],
         ));
     }
-    let aa = axes(a);
-    let ba = axes(b);
-    let mut tests = Vec::new();
+    let mut tests = [([0.0; 3], 0usize, 0usize); 15];
+    let mut test_count = 0;
+    let mut add_test = |v| {
+        tests[test_count] = v;
+        test_count += 1;
+    };
     for i in 0..dim {
-        tests.push((aa[i], 0, i));
-        tests.push((ba[i], 1, i));
+        add_test((aa[i], 0, i));
+        add_test((ba[i], 1, i));
     }
     if dim == 3 {
         for x in aa {
             for y in ba {
                 let n = cross(x, y);
                 if dot(n, n) > 1e-12 {
-                    tests.push((unit(n), 2, 0));
+                    add_test((unit(n), 2, 0));
                 }
             }
         }
@@ -228,7 +230,7 @@ fn collision(a: &Body, b: &Body) -> Option<Manifold> {
     let mut depth = f64::INFINITY;
     let mut normal = [0.0; 3];
     let mut reference = (0, 0);
-    for (n, owner, index) in tests {
+    for (n, owner, index) in tests.into_iter().take(test_count) {
         let ra: f64 = (0..dim).map(|i| a.half[i] * dot(aa[i], n).abs()).sum();
         let rb: f64 = (0..dim).map(|i| b.half[i] * dot(ba[i], n).abs()).sum();
         let overlap = ra + rb - dot(offset, n).abs();
@@ -248,8 +250,9 @@ fn collision(a: &Body, b: &Body) -> Option<Manifold> {
         } else {
             (b, a, mul(normal, -1.0))
         };
-        let mut poly = face(incident, mul(rn, -1.0));
-        let ax = axes(r);
+        let ax = if reference.0 == 0 { aa } else { ba };
+        let incident_axes = if reference.0 == 0 { ba } else { aa };
+        let mut poly = face(incident, mul(rn, -1.0), incident_axes);
         for (i, n) in ax.iter().enumerate().take(dim) {
             if i == reference.1 {
                 continue;
@@ -257,7 +260,7 @@ fn collision(a: &Body, b: &Body) -> Option<Manifold> {
             poly = clip(poly, *n, dot(r.position, *n) + r.half[i]);
             poly = clip(poly, mul(*n, -1.0), -dot(r.position, *n) + r.half[i]);
         }
-        let plane = dot(support(r, rn), rn);
+        let plane = dot(support(r, rn, ax), rn);
         for p in poly {
             let separation = dot(p, rn) - plane;
             if separation <= 1e-7 {
@@ -273,45 +276,65 @@ fn collision(a: &Body, b: &Body) -> Option<Manifold> {
     }
     if points.is_empty() {
         points.push(mul(
-            add(support(a, normal), support(b, mul(normal, -1.0))),
+            add(support(a, normal, aa), support(b, mul(normal, -1.0), ba)),
             0.5,
         ));
     }
     points.truncate(4);
     Some((normal, depth, points))
 }
-fn inverse_inertia(b: &Body, v: [f64; 3]) -> [f64; 3] {
-    if b.freeze_rotation || b.inverse_mass == 0.0 {
-        return [0.0; 3];
-    }
-    let h = b.half;
-    let inertia = if b.dimension == 2 {
-        [
-            0.0,
-            0.0,
-            if b.sphere {
-                2.0 * b.inverse_mass / (h[0] * h[0])
-            } else {
-                3.0 * b.inverse_mass / (h[0] * h[0] + h[1] * h[1])
-            },
-        ]
-    } else if b.sphere {
-        [2.5 * b.inverse_mass / (h[0] * h[0]); 3]
-    } else {
-        std::array::from_fn(|i| {
-            3.0 * b.inverse_mass / (h[(i + 1) % 3].powi(2) + h[(i + 2) % 3].powi(2))
-        })
-    };
-    let ax = axes(b);
-    let local: [f64; 3] = std::array::from_fn(|i| dot(v, ax[i]) * inertia[i]);
-    let result = (0..3).fold([0.0; 3], |sum, i| add(sum, mul(ax[i], local[i])));
-    std::array::from_fn(|i| {
-        if b.constraints & (16 << i) != 0 {
-            0.0
-        } else {
-            result[i]
+struct Inertia {
+    diagonal: [f64; 3],
+    axes: [[f64; 3]; 3],
+    constraints: u32,
+}
+impl Inertia {
+    fn new(b: &Body) -> Self {
+        if b.freeze_rotation || b.inverse_mass == 0.0 {
+            return Self {
+                diagonal: [0.0; 3],
+                axes: [[0.0; 3]; 3],
+                constraints: b.constraints,
+            };
         }
-    })
+        let h = b.half;
+        let inertia = if b.dimension == 2 {
+            [
+                0.0,
+                0.0,
+                if b.sphere {
+                    2.0 * b.inverse_mass / (h[0] * h[0])
+                } else {
+                    3.0 * b.inverse_mass / (h[0] * h[0] + h[1] * h[1])
+                },
+            ]
+        } else if b.sphere {
+            [2.5 * b.inverse_mass / (h[0] * h[0]); 3]
+        } else {
+            std::array::from_fn(|i| {
+                3.0 * b.inverse_mass / (h[(i + 1) % 3].powi(2) + h[(i + 2) % 3].powi(2))
+            })
+        };
+        Self {
+            diagonal: inertia,
+            axes: axes(b),
+            constraints: b.constraints,
+        }
+    }
+    fn apply(&self, v: [f64; 3]) -> [f64; 3] {
+        let ax = self.axes;
+        let inertia = self.diagonal;
+
+        let local: [f64; 3] = std::array::from_fn(|i| dot(v, ax[i]) * inertia[i]);
+        let result = (0..3).fold([0.0; 3], |sum, i| add(sum, mul(ax[i], local[i])));
+        std::array::from_fn(|i| {
+            if self.constraints & (16 << i) != 0 {
+                0.0
+            } else {
+                result[i]
+            }
+        })
+    }
 }
 fn point_velocity(b: &Body, p: [f64; 3]) -> [f64; 3] {
     add(b.velocity, cross(b.angular_velocity, sub(p, b.position)))
@@ -325,28 +348,66 @@ fn linear_mass(b: &Body, vector: [f64; 3]) -> [f64; 3] {
         }
     })
 }
-fn effective_mass(a: &Body, b: &Body, p: [f64; 3], n: [f64; 3]) -> f64 {
-    let ra = sub(p, a.position);
-    let rb = sub(p, b.position);
-    dot(n, linear_mass(a, n))
-        + dot(n, linear_mass(b, n))
-        + dot(
-            n,
-            add(
-                cross(inverse_inertia(a, cross(ra, n)), ra),
-                cross(inverse_inertia(b, cross(rb, n)), rb),
-            ),
-        )
+fn matrix_vector(columns: &[[f64; 3]; 3], vector: [f64; 3]) -> [f64; 3] {
+    std::array::from_fn(|i| {
+        columns[0][i] * vector[0] + columns[1][i] * vector[1] + columns[2][i] * vector[2]
+    })
 }
-fn apply(b: &mut Body, p: [f64; 3], impulse: [f64; 3]) {
-    b.velocity = add(b.velocity, linear_mass(b, impulse));
+struct ContactMass {
+    linear_a: [f64; 3],
+    linear_b: [f64; 3],
+    angular_a: [[f64; 3]; 3],
+    angular_b: [[f64; 3]; 3],
+    response: [[f64; 3]; 3],
+}
+impl ContactMass {
+    fn new(a: &Body, b: &Body, point: [f64; 3], ia: &Inertia, ib: &Inertia) -> Self {
+        let ra = sub(point, a.position);
+        let rb = sub(point, b.position);
+        let linear_a = linear_mass(a, [1.0; 3]);
+        let linear_b = linear_mass(b, [1.0; 3]);
+        let angular_a = std::array::from_fn(|i| {
+            ia.apply(cross(
+                ra,
+                std::array::from_fn(|j| if i == j { 1.0 } else { 0.0 }),
+            ))
+        });
+        let angular_b = std::array::from_fn(|i| {
+            ib.apply(cross(
+                rb,
+                std::array::from_fn(|j| if i == j { 1.0 } else { 0.0 }),
+            ))
+        });
+        let response = std::array::from_fn(|i| {
+            add(
+                std::array::from_fn(|j| {
+                    if i == j {
+                        linear_a[j] + linear_b[j]
+                    } else {
+                        0.0
+                    }
+                }),
+                add(cross(angular_a[i], ra), cross(angular_b[i], rb)),
+            )
+        });
+        Self {
+            linear_a,
+            linear_b,
+            angular_a,
+            angular_b,
+            response,
+        }
+    }
+    fn effective(&self, direction: [f64; 3]) -> f64 {
+        dot(direction, matrix_vector(&self.response, direction))
+    }
+}
+fn apply(b: &mut Body, impulse: [f64; 3], linear: &[f64; 3], angular: &[[f64; 3]; 3]) {
+    b.velocity = add(b.velocity, std::array::from_fn(|i| linear[i] * impulse[i]));
     if dot(impulse, impulse) > 1e-12 && b.inverse_mass > 0.0 {
         b.sleeping = false;
     }
-    b.angular_velocity = add(
-        b.angular_velocity,
-        inverse_inertia(b, cross(sub(p, b.position), impulse)),
-    );
+    b.angular_velocity = add(b.angular_velocity, matrix_vector(angular, impulse));
     if b.dimension == 2 {
         b.velocity[2] = 0.0;
         b.angular_velocity[0] = 0.0;
@@ -380,7 +441,7 @@ fn integrate_rotation(b: &mut Body, dt: f64) {
 }
 impl World {
     pub fn add(&mut self, mut body: Body) -> Result<usize, &'static str> {
-        if self.bodies.len() >= 256
+        if self.bodies.len() >= 65536
             || ![2, 3].contains(&body.dimension)
             || body
                 .position
@@ -444,6 +505,11 @@ impl World {
             })
             .max()
             .unwrap_or(1);
+        if samples == 1 {
+            self.step_dt(1.0 / 60.0);
+            self.update_grounded();
+            return;
+        }
         let mut contacts = std::collections::BTreeMap::new();
         let mut candidates = 0;
         for _ in 0..samples {
@@ -462,6 +528,21 @@ impl World {
             .collect();
         self.candidates = candidates;
         self.steps = before + 1;
+        self.update_grounded();
+    }
+    fn update_grounded(&mut self) {
+        self.grounded = vec![false; self.bodies.len()];
+        for c in &self.contacts {
+            if c.trigger {
+                continue;
+            }
+            if c.normal[1] < -0.5 {
+                self.grounded[c.a] = true;
+            }
+            if c.normal[1] > 0.5 {
+                self.grounded[c.b] = true;
+            }
+        }
     }
     fn step_dt(&mut self, dt: f64) {
         for b in &mut self.bodies {
@@ -488,9 +569,41 @@ impl World {
             }
         }
         let mut order: Vec<usize> = (0..self.bodies.len()).collect();
+        let geometry: Vec<[[f64; 3]; 3]> = self.bodies.iter().map(axes).collect();
+        let bounds: Vec<([f64; 3], [f64; 3])> = self
+            .bodies
+            .iter()
+            .enumerate()
+            .map(|(index, b)| {
+                let extents: [f64; 3] = std::array::from_fn(|i| extent(b, i, geometry[index]));
+                (
+                    std::array::from_fn(|i| b.position[i] - extents[i]),
+                    std::array::from_fn(|i| b.position[i] + extents[i]),
+                )
+            })
+            .collect();
+        let spread: [f64; 3] = std::array::from_fn(|a| {
+            self.bodies
+                .iter()
+                .map(|b| b.position[a])
+                .fold(f64::NEG_INFINITY, f64::max)
+                - self
+                    .bodies
+                    .iter()
+                    .map(|b| b.position[a])
+                    .fold(f64::INFINITY, f64::min)
+        });
+        let axes = if self.bodies.iter().any(|b| b.dimension == 2) {
+            2
+        } else {
+            3
+        };
+        let axis = (0..axes)
+            .max_by(|&a, &b| spread[a].total_cmp(&spread[b]).then(b.cmp(&a)))
+            .unwrap_or(0);
         order.sort_by(|&i, &j| {
-            (self.bodies[i].position[0] - extent(&self.bodies[i], 0))
-                .total_cmp(&(self.bodies[j].position[0] - extent(&self.bodies[j], 0)))
+            bounds[i].0[axis]
+                .total_cmp(&bounds[j].0[axis])
                 .then(i.cmp(&j))
         });
         self.contacts.clear();
@@ -499,10 +612,12 @@ impl World {
             for &j in &order[offset + 1..] {
                 let a = &self.bodies[i];
                 let b = &self.bodies[j];
-                if b.position[0] - extent(b, 0) > a.position[0] + extent(a, 0) {
+                if bounds[j].0[axis] > bounds[i].1[axis] {
                     break;
                 }
-                if self.ignored_pairs.contains(&(i.min(j), i.max(j)))
+                if (0..a.dimension as usize)
+                    .any(|k| bounds[i].0[k] > bounds[j].1[k] || bounds[j].0[k] > bounds[i].1[k])
+                    || self.ignored_pairs.contains(&(i.min(j), i.max(j)))
                     || a.dimension != b.dimension
                     || a.layer & b.mask == 0
                     || b.layer & a.mask == 0
@@ -510,7 +625,7 @@ impl World {
                     continue;
                 }
                 self.candidates += 1;
-                if let Some((normal, depth, points)) = collision(a, b) {
+                if let Some((normal, depth, points)) = collision(a, b, geometry[i], geometry[j]) {
                     for point in points {
                         self.contacts.push(Contact {
                             a: i,
@@ -529,12 +644,17 @@ impl World {
                 }
             }
         }
+        if self.contacts.is_empty() {
+            self.steps += 1;
+            return;
+        }
         // One positional correction per pair, independent of manifold point count.
-        let mut corrected = std::collections::BTreeSet::new();
+        let mut corrected = None;
         for c in &self.contacts {
-            if c.trigger || !corrected.insert((c.a, c.b)) {
+            if c.trigger || corrected == Some((c.a, c.b)) {
                 continue;
             }
+            corrected = Some((c.a, c.b));
             let mass = dot(c.normal, linear_mass(&self.bodies[c.a], c.normal))
                 + dot(c.normal, linear_mass(&self.bodies[c.b], c.normal));
             if mass <= 0.0 {
@@ -567,6 +687,32 @@ impl World {
                 }
             })
             .collect();
+        // Body orientation/shape and contact positions do not change during velocity iterations.
+        let inertia: Vec<Inertia> = self.bodies.iter().map(Inertia::new).collect();
+        let mass: Vec<ContactMass> = self
+            .contacts
+            .iter()
+            .map(|c| {
+                ContactMass::new(
+                    &self.bodies[c.a],
+                    &self.bodies[c.b],
+                    c.point,
+                    &inertia[c.a],
+                    &inertia[c.b],
+                )
+            })
+            .collect();
+        let normal_mass: Vec<f64> = self
+            .contacts
+            .iter()
+            .zip(&mass)
+            .map(|(c, m)| m.effective(c.normal))
+            .collect();
+        let friction: Vec<f64> = self
+            .contacts
+            .iter()
+            .map(|c| (self.bodies[c.a].friction * self.bodies[c.b].friction).sqrt())
+            .collect();
         let mut accumulated = vec![0.0; self.contacts.len()];
         for _ in 0..12 {
             for (i, c) in self.contacts.iter().enumerate() {
@@ -575,17 +721,27 @@ impl World {
                 }
                 let a = &self.bodies[c.a];
                 let b = &self.bodies[c.b];
-                let mass = effective_mass(a, b, c.point, c.normal);
-                if mass < 1e-12 {
+                let normal_mass = normal_mass[i];
+                if normal_mass < 1e-12 {
                     continue;
                 }
                 let relative = sub(point_velocity(b, c.point), point_velocity(a, c.point));
                 let speed = dot(relative, c.normal);
-                let next = (accumulated[i] + (bounce[i] - speed) / mass).max(0.0);
+                let next = (accumulated[i] + (bounce[i] - speed) / normal_mass).max(0.0);
                 let impulse = mul(c.normal, next - accumulated[i]);
                 accumulated[i] = next;
-                apply(&mut self.bodies[c.a], c.point, mul(impulse, -1.0));
-                apply(&mut self.bodies[c.b], c.point, impulse);
+                apply(
+                    &mut self.bodies[c.a],
+                    mul(impulse, -1.0),
+                    &mass[i].linear_a,
+                    &mass[i].angular_a,
+                );
+                apply(
+                    &mut self.bodies[c.b],
+                    impulse,
+                    &mass[i].linear_b,
+                    &mass[i].angular_b,
+                );
                 let a = &self.bodies[c.a];
                 let b = &self.bodies[c.b];
                 let relative = sub(point_velocity(b, c.point), point_velocity(a, c.point));
@@ -593,12 +749,22 @@ impl World {
                 let len = dot(tangent, tangent).sqrt();
                 if len > 1e-12 {
                     let tangent = mul(tangent, 1.0 / len);
-                    let mass = effective_mass(a, b, c.point, tangent);
-                    if mass > 1e-12 {
-                        let limit = (a.friction * b.friction).sqrt() * accumulated[i];
-                        let impulse = mul(tangent, (-len / mass).clamp(-limit, limit));
-                        apply(&mut self.bodies[c.a], c.point, mul(impulse, -1.0));
-                        apply(&mut self.bodies[c.b], c.point, impulse);
+                    let tangent_mass = mass[i].effective(tangent);
+                    if tangent_mass > 1e-12 {
+                        let limit = friction[i] * accumulated[i];
+                        let impulse = mul(tangent, (-len / tangent_mass).clamp(-limit, limit));
+                        apply(
+                            &mut self.bodies[c.a],
+                            mul(impulse, -1.0),
+                            &mass[i].linear_a,
+                            &mass[i].angular_a,
+                        );
+                        apply(
+                            &mut self.bodies[c.b],
+                            impulse,
+                            &mass[i].linear_b,
+                            &mass[i].angular_b,
+                        );
                     }
                 }
             }
@@ -799,11 +965,11 @@ mod tests {
     #[test]
     fn broad_phase_prunes_separated_bodies_and_rejects_bad_inputs() {
         let mut w = World::default();
-        for i in 0..256 {
+        for i in 0..2048 {
             w.add(body([f64::from(i) * 2.0, 0.0, 0.0], false, 3, false))
                 .unwrap();
         }
-        assert!(w.add(body([0.0; 3], true, 3, false)).is_err());
+        assert!(w.add(body([5000.0, 0.0, 0.0], true, 3, false)).is_ok());
         w.step();
         assert_eq!(w.candidates, 0);
         let mut w = World::default();

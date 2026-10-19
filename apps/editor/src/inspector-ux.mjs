@@ -1,11 +1,12 @@
-export function mountInspectorUX({document,getSelection}) {
+import {componentToggle} from './component-activation.mjs';
+export function mountInspectorUX({document,getSelection,getEntity,onToggle}) {
  if(!document.defaultView)return {draw(){}};
  const collapsed=new Set();let drag=null;
  function draw(){for(const title of document.querySelectorAll('.inspector p')){const values=title.nextElementSibling;if(values?.classList.contains('vector-inputs')&&!title.parentElement.classList.contains('inspector-vector-row')&&title.textContent.length<40){const row=document.createElement('div');row.className='inspector-vector-row';title.before(row);row.append(title,values);}}for(const label of document.querySelectorAll('.inspector label[for]')){const input=label.ownerDocument.getElementById(label.htmlFor);if(input&&input.previousElementSibling===label&&!label.parentElement.classList.contains('inspector-row')){const row=document.createElement('div');row.className='inspector-row';label.before(row);row.append(label,input);}}for(const card of document.querySelectorAll('.inspector .inspector-property')){
   const heading=card.querySelector(':scope > .property-heading,:scope > h3,:scope > h2,:scope > summary');if(!heading)continue;heading.classList.add('property-heading');
   const key=getSelection()+':'+(card.dataset.scriptPath??card.dataset.inspectorComponent??card.id??heading.textContent);card.dataset.foldKey=key;
   if(!heading.querySelector('.component-fold')){const button=document.createElement('button');button.type='button';button.className='icon-button component-fold';button.innerHTML='<img src="/icons/open-tabs.svg" alt="">';button.title='Expand or collapse component';button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(collapsed.has(card.dataset.foldKey))collapsed.delete(card.dataset.foldKey);else collapsed.add(card.dataset.foldKey);paint(card);});heading.prepend(button);}
-  paint(card);
+  componentToggle({document,card,heading,type:card.dataset.inspectorComponent,path:card.dataset.scriptPath,getEntity,onChange:onToggle});paint(card);
  }
  for(const label of document.querySelectorAll('.inspector label')){if(!label.querySelector('input,select,textarea'))continue;label.classList.add('inspector-row');if(!label.querySelector(':scope > .field-label')){const texts=[...label.childNodes].filter(n=>n.nodeType===3&&n.textContent.trim());if(texts.length){const span=document.createElement('span');span.className='field-label';for(const text of texts)span.append(text);label.prepend(span);}}
   const input=label.querySelector(':scope > input[type="number"]'),name=label.querySelector(':scope > .field-label,:scope > span');if(input&&name){name.classList.add('numeric-label');name.dataset.scrub='true';}

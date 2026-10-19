@@ -1,3 +1,17 @@
+# M18.3.11 — 0.0.49 / SDK 8 (corrección previa al roadmap)
+
+Implementa las correcciones solicitadas de referencias, navegación, Inspectors, escenas, activación de componentes y rendimiento físico. **M18.4 y M19–M40 conservan su orden y sus criterios**; esta corrección no cierra ninguna de esas etapas.
+
+Play carga la escena activa y las escenas marcadas **Always active**. Managers persiste al cambiar de escena; los encabezados se conservan separados. Los componentes aplicables y los scripts comparten el checkbox con `.enabled` en C#. Los Inspectors adicionales se destruyen al cerrarlos y liberan su plaza (máximo 8).
+
+Se elimina el recorrido cuadrático de actualización de poses, se precalculan límites de colisión y se amplía la capacidad a 65.536 entidades/cuerpos/draws, con presupuestos independientes de geometría, mensajes y memoria. Es una capacidad finita: no garantiza 60 FPS con cualquier escena. Benchmark CPU reproducible: 2.048 cuerpos separados, alrededor de 4,8–5,4 ms por actualización física en esta máquina; no representa FPS del editor ni renderizado.
+
+**Pendiente de rendimiento:** 1.024 cuerpos dinámicos densos funcionan sin errores, pero la prueba local completa del editor (Null) mide ~5,1 FPS. El objetivo de fluidez con miles de cuerpos todavía no está cumplido.
+
+Validación y límites: [informe M18.3.11](../reports/M18_3_11_CURRENT_REPORT.md). Publicación como rama/PR para revisión; no fusionar automáticamente.
+
+---
+
 # Planificación vigente — 2026-10-19
 
 El roadmap se amplía con **M19–M39** para compatibilidad funcional de la Scripting API y traslada el antiguo **M19 Hardening a M40**, al final. **M18.4 GitHub** conserva su alcance; quedan **23 milestones principales pendientes**. Las nuevas etapas están planificadas, no implementadas. La release ejecutable sigue siendo **0.0.48 / SDK 7**, verificada en CI 312.

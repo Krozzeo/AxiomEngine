@@ -21,6 +21,8 @@ public sealed class Pulse : MonoBehaviour {
 
 Limits: 256 active coroutines, 256 pending invocations, 32 nested enumerators and 128 immediate advances per resume. A bad callback/yield fails visibly; unsupported yields are never treated as successful asynchronous work.
 
+SDK 8: `enabled` is shared by C# and the live Inspector checkbox. Disabling suppresses regular Update/FixedUpdate/LateUpdate, invokes OnDisable; enabling invokes OnEnable and resumes updates. Runtime activation is discarded on Stop. This toggles the component, not the GameObject subtree. Rigidbody and Transform have no enabled checkbox.
+
 ## Implemented declarations
 
 ```csharp

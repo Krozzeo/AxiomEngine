@@ -6,7 +6,7 @@ AudioSource supports play/pause/unpause/stop, live volume, loop, pitch (positive
 ## Implemented declarations
 
 ```csharp
-public sealed partial class AudioSource : Component {
+public sealed partial class AudioSource : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"audioSource");set=>ComponentActivation.Write(Entity,"audioSource",value);}
  internal AudioSource(Entity entity){Entity=entity;}
  public void Play()=>Entity.PlayAudio();public void Pause()=>Entity.PauseAudio();public void UnPause()=>Entity.ResumeAudio();public void Stop()=>Entity.StopAudio();
  public double volume {get=>Context.EntityData[Entity.Id].GetProperty("audioSource").GetProperty("volume").GetDouble();set=>Entity.SetAudioVolume(value);}
@@ -19,7 +19,7 @@ public sealed partial class AudioSource {
  public double maxDistance {get=>PresentationData.Read(Entity,"audioSource").GetProperty("maxDistance").GetDouble();set=>PresentationData.Set(Entity,"audioSource","maxDistance",JsonValue.Create(value)!);}
 }
 
-public sealed partial class Animator : Component {
+public sealed partial class Animator : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"animator");set=>ComponentActivation.Write(Entity,"animator",value);}
  internal Animator(Entity entity){Entity=entity;}
  public void Play(string state)=>Entity.PlayAnimation(state,0);public void CrossFade(string state,double duration)=>Entity.PlayAnimation(state,duration);
  public void SetFloat(string name,double value)=>Entity.SetAnimationParameter(name,value);public void SetBool(string name,bool value)=>Entity.SetAnimationParameter(name,value?1:0);public void SetInteger(string name,int value)=>Entity.SetAnimationParameter(name,value);

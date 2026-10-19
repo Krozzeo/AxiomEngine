@@ -1,5 +1,5 @@
 import {activeGameCamera} from '../scene/camera.mjs';
-import {worldScene,localTransform,worldTransforms,reparent} from '../scene/hierarchy.mjs';
+import {worldScene,localTransform,applyWorldOverrides,activeEntities,reparent} from '../scene/hierarchy.mjs';
 const compiledModules=new WeakMap();
 const sharedVertices=new WeakMap();
 function verticesFor(primitive){let value=sharedVertices.get(primitive);if(!value){value=new Float32Array(primitive.vertices);sharedVertices.set(primitive,value);}return value;}
@@ -89,22 +89,21 @@ export async function loadKernel(bytes) {
     stepScene(delta, trace, aspect,options={}) {
       if(disposed||!compiled) throw new Error("AX_WASM_0003: missing compiled scene");
       if(typeof trace!=="bigint"||trace<0n||trace>0xffffffffffffffffn) throw new Error("AX_WASM_0005: invalid trace");
-      const c=activeGameCamera(compiled.scene)??{position:[0,0,6],target:[0,0,0],projection:"perspective",fov:60,orthoHeight:6};
-      if(api.axiom_scene_camera(id,...c.position,...c.target,aspect,c.projection==="orthographic"?1:0,c.projection==="orthographic"?c.orthoHeight:c.fov)!==0) throw new Error("AX_WASM_0004: invalid camera");
+      if(options.draw!==false){const c=activeGameCamera(compiled.scene)??{position:[0,0,6],target:[0,0,0],projection:"perspective",fov:60,orthoHeight:6};
+      if(api.axiom_scene_camera(id,...c.position,...c.target,aspect,c.projection==="orthographic"?1:0,c.projection==="orthographic"?c.orthoHeight:c.fov)!==0) throw new Error("AX_WASM_0004: invalid camera");}
       if(options.advanceClock!==false&&api.axiom_tick(id,delta,trace)!==0) throw new Error("AX_TIME_0001: invalid kernel tick");
       const physical=options.stepPhysics===false?physics.snapshot():physics.step(api.axiom_fixed_steps(id));
       if(physical){
-        const overrides=new Map(physical.bodies.filter(b=>compiled.localScene.entities.find(e=>e.id===b.id)?.rigidBody).map(b=>[b.id,b]));
-        const pending=new Set(compiled.localScene.entities.map(e=>e.id));
-        while(pending.size){let progress=false;for(const e of compiled.localScene.entities){if(!pending.has(e.id)||pending.has(e.parentId))continue;const b=overrides.get(e.id);if(b){e.transform=localTransform(compiled.localScene.entities,e.id,{...worldTransforms(compiled.localScene.entities).get(e.id),position:b.position,rotation:b.rotation});}pending.delete(e.id);progress=true;}if(!progress)throw Error('AX_SCENE_0001: Runtime hierarchy cycle');}
-        compiled.scene=worldScene(compiled.localScene);
-        const transforms=new Map(compiled.scene.entities.map(e=>[e.id,e.transform]));
-        for(const draw of compiled.draws){const t=transforms.get(draw.entityId);api.axiom_scene_position(id,draw.handle,...t.position);api.axiom_scene_rotation(id,draw.handle,...t.rotation);}
+        const dynamic=new Set(compiled.localScene.entities.filter(e=>e.rigidBody).map(e=>e.id));
+        const overrides=new Map(physical.bodies.filter(b=>dynamic.has(b.id)).map(b=>[b.id,b]));
+        const transforms=applyWorldOverrides(compiled.localScene.entities,overrides);
+        compiled.scene={...compiled.localScene,entities:activeEntities(compiled.localScene.entities).map(e=>{const item={...e,transform:transforms.get(e.id)};delete item.parentId;return item;})};
+        if(options.draw!==false)for(const draw of compiled.draws){const t=transforms.get(draw.entityId);api.axiom_scene_position(id,draw.handle,...t.position);api.axiom_scene_rotation(id,draw.handle,...t.rotation);}
         // Child static colliders follow their parent for the next fixed step.
         physics.transforms(compiled.scene.entities.filter(e=>e.collider&&!e.rigidBody).map(e=>[e.id,e.transform]));
       }
-      const draws=compiled.draws.map(draw=>({handle:draw.handle,mvp:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,1)),model:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,0))}));
-      return {transforms:compiled.scene.entities.map(e=>({id:e.id,transform:e.transform})),physics:physical,draws,frame:Number(api.axiom_frame(id)),trace:api.axiom_trace(id).toString(),fixedSteps:api.axiom_fixed_steps(id),nullProcessedMeshes:api.axiom_scene_null(id)};
+      const draws=options.draw===false?[]:compiled.draws.map(draw=>({handle:draw.handle,mvp:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,1)),model:Float32Array.from({length:16},(_,i)=>api.axiom_scene_matrix(id,draw.handle,i,0))}));
+      return {transforms:compiled.scene.entities.map(e=>({id:e.id,transform:e.transform})),physics:physical,draws,frame:Number(api.axiom_frame(id)),trace:api.axiom_trace(id).toString(),fixedSteps:api.axiom_fixed_steps(id),nullProcessedMeshes:options.draw===false?0:api.axiom_scene_null(id)};
     },
     dispose() {
       if (!disposed) api.axiom_destroy(id);
@@ -118,7 +117,7 @@ export function scenePrimitives(scene, assets) {
   scene=worldScene(scene);
   const draws=[];
   for(const entity of scene.entities) {
-    if(!entity.renderable) continue;
+    if(!entity.renderable||entity.componentEnabled?.renderable===false) continue;
     const asset=assets.get(entity.renderable.assetId);
     if(!asset || asset.kind!==entity.renderable.kind) throw new Error("AX_ASSET_0001: missing runtime asset");
     let primitives=asset.primitives;
@@ -128,6 +127,6 @@ export function scenePrimitives(scene, assets) {
     }
     for(const [primitiveIndex,primitive] of primitives.entries()) draws.push({...primitive,primitiveIndex,assetId:entity.renderable.assetId,entityId:entity.id,transform:entity.transform,vertices:verticesFor(primitive)});
   }
-  if(draws.length>1024||draws.reduce((sum,d)=>sum+d.vertices.length/8,0)>300000) throw new Error("AX_SCENE_0006: scene exceeds 1024 draw items or 300000 vertices");
+  if(draws.length>65536||draws.reduce((sum,d)=>sum+d.vertices.length/8,0)>4000000) throw new Error("AX_SCENE_0006: scene exceeds 65536 draw items or 4000000 vertices");
   return draws;
 }

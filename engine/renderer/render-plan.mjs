@@ -7,7 +7,7 @@ const boundsCache=new WeakMap();
 export function bounds(vertices){let b=boundsCache.get(vertices);if(b)return b;b={minimum:[Infinity,Infinity,Infinity],maximum:[-Infinity,-Infinity,-Infinity]};for(let i=0;i<vertices.length;i+=8)for(let j=0;j<3;j++){b.minimum[j]=Math.min(b.minimum[j],vertices[i+j]);b.maximum[j]=Math.max(b.maximum[j],vertices[i+j]);}boundsCache.set(vertices,b);return b;}
 export function visibleBounds(b,mvp){const corners=[];for(let k=0;k<8;k++)corners.push(transform(mvp,[0,1,2].map(j=>(k&(1<<j))?b.maximum[j]:b.minimum[j])));return ![v=>v[0]<-v[3],v=>v[0]>v[3],v=>v[1]<-v[3],v=>v[1]>v[3],v=>v[2]<0,v=>v[2]>v[3]].some(test=>corners.every(test));}
 export function renderPlan(scene,draws,camera,aspect,assets=new Map(),capabilities={gpuCulling:true}){
- if(draws.length>1024)throw Error('AX_RENDERER_0005: more than 1024 instances');
+ if(draws.length>65536)throw Error('AX_RENDERER_0005: more than 65536 instances');
  const settings={...renderingDefaults,...scene.rendering},budget=tierBudgets[settings.tier],fallbacks=[];
  if(settings.culling==='gpu'&&!capabilities.gpuCulling){settings.culling='cpu';fallbacks.push('GPU culling unavailable; CPU bounds culling selected');}
  if(settings.bloom&&!budget.bloom){settings.bloom=0;fallbacks.push('Bloom disabled by low tier budget');}
@@ -21,8 +21,8 @@ export function renderPlan(scene,draws,camera,aspect,assets=new Map(),capabiliti
  }
  const opaque=items.filter(i=>i.material.alphaMode!=='blend').sort((a,b)=>a.key.localeCompare(b.key)),blend=items.filter(i=>i.material.alphaMode==='blend').sort((a,b)=>b.distance-a.distance),ordered=[...opaque,...blend],batches=[];
  for(let i=0;i<ordered.length;i++){const item=ordered[i],last=batches.at(-1);if(last&&last.key===item.key&&item.material.alphaMode!=='blend')last.count++;else batches.push({key:item.key,first:i,count:1,vertices:item.vertices,texture:item.texture,alphaMode:item.material.alphaMode});}
- if(items.reduce((n,i)=>n+i.vertices.length/8,0)>300000)throw Error('AX_RENDERER_0005: selected LOD exceeds 300000 vertices');
- const allLights=scene.entities.filter(e=>e.light),lights=allLights.slice(0,budget.lights).map(e=>({...e.light,entityId:e.id,position:e.transform.position,direction:unit(transform(modelMatrix({...e.transform,scale:[1,1,1]}),e.light.direction,0).slice(0,3))}));
+ if(items.reduce((n,i)=>n+i.vertices.length/8,0)>4000000)throw Error('AX_RENDERER_0005: selected LOD exceeds 4000000 vertices');
+ const allLights=scene.entities.filter(e=>e.light&&e.componentEnabled?.light!==false),lights=allLights.slice(0,budget.lights).map(e=>({...e.light,entityId:e.id,position:e.transform.position,direction:unit(transform(modelMatrix({...e.transform,scale:[1,1,1]}),e.light.direction,0).slice(0,3))}));
  if(allLights.length>lights.length)fallbacks.push(`${allLights.length-lights.length} lights omitted by ${settings.tier} tier budget`);
  const shadowIndex=settings.shadows?lights.findIndex(l=>l.shadow&&l.kind!=='point'):-1;
  if(settings.shadows&&lights.some(l=>l.shadow&&l.kind==='point'))fallbacks.push('Point light shadows unavailable; direct light remains active');

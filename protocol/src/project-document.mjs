@@ -57,6 +57,7 @@ export function validateProject(document) {
       }
     }
   };
+  for(const e of document.scene?.entities??[])if(e.componentEnabled&&(Object.keys(e.componentEnabled).length>32||Object.entries(e.componentEnabled).some(([k,v])=>typeof v!=='boolean'||!['camera','audioSource','audioListener','animator','light','renderable','collider','sprite2D','spriteAnimation','tilemap','light2D','particles2D','ui2D'].includes(k)&&!e.scriptComponents?.some(c=>'script:'+c.path===k))))throw projectError('AX_PROJECT_0002','Invalid component activation');
   inspect(document);
   validate(document, schema, "project");
   for(const e of document.scene.entities.filter(e=>e.prefab)){const root=document.scene.entities.find(r=>r.id===e.prefab.rootId);if(!root?.prefab||root.prefab.rootId!==root.id||root.prefab.path!==e.prefab.path||!document.scene.projectFiles?.some(f=>f.path===e.prefab.path&&f.kind==='json'))throw projectError('AX_PROJECT_0002','Broken prefab root or Project file');let current=e;const seen=new Set();while(current.id!==root.id){if(seen.has(current.id)||!current.parentId)throw projectError('AX_PROJECT_0002','Prefab child must remain under its linked root');seen.add(current.id);current=document.scene.entities.find(r=>r.id===current.parentId);if(!current)throw projectError('AX_PROJECT_0002','Missing prefab parent');}}
@@ -72,7 +73,7 @@ export function validateProject(document) {
   if(new Set(assets.map(asset=>asset.id)).size!==assets.length) throw projectError("AX_PROJECT_0002","Duplicate asset ID");
   for(const a of assets)if(a.variant){if(a.kind!=='mesh'||!assets.some(b=>b.id===a.variant.assetId&&b.kind==='mesh'))throw projectError('AX_PROJECT_0002','Missing LOD base mesh');const seen=new Set([a.id]);let current=a;while(current.variant){if(seen.has(current.variant.assetId))throw projectError('AX_PROJECT_0002','Cyclic LOD dependency');seen.add(current.variant.assetId);current=assets.find(b=>b.id===current.variant.assetId);if(!current)throw projectError('AX_PROJECT_0002','Missing LOD dependency');}}
   for(const asset of assets) if(asset.textureId && (asset.kind!=="mesh"||!assets.some(a=>a.id===asset.textureId&&a.kind==="sprite"))) throw projectError("AX_PROJECT_0002","Invalid mesh texture dependency");
-  if(document.scene.entities.filter(e=>e.collider).length>256)throw projectError("AX_PROJECT_0002","Physics supports at most 256 colliders");
+  if(document.scene.entities.filter(e=>e.collider).length>65536)throw projectError("AX_PROJECT_0002","Physics supports at most 65536 colliders");
   for(const entity of document.scene.entities) {
     if(entity.rigidBody&&!entity.collider)throw projectError("AX_PROJECT_0002","RigidBody requires Collider");
     if(Math.hypot(...entity.transform.rotation)<1e-8) throw projectError("AX_PROJECT_0002","Quaternion must not be zero");
@@ -102,7 +103,7 @@ export function validateProject(document) {
     if(twoD.pixelPerfect&&gameCamera){const c=gameCamera;if(Math.abs(c.position[0]-c.target[0])>1e-6||Math.abs(c.position[1]-c.target[1])>1e-6||c.position[2]<=c.target[2])throw projectError('AX_PROJECT_0002','Pixel-perfect Game camera must face the XY plane from positive Z');}
     const entities=document.scene.entities;
     if(entities.filter(e=>e.light2D).length>16||entities.filter(e=>e.particles2D).length>32||entities.filter(e=>e.ui2D).length>128||entities.reduce((n,e)=>n+(e.tilemap?.cells.length??0),0)>4096||entities.reduce((n,e)=>n+(e.particles2D?.capacity??0),0)>2048)throw projectError('AX_PROJECT_0002','2D component budget exceeded');
-    if(entities.reduce((n,e)=>n+Number(!!e.renderable)+Number(!!e.tilemap)+Number(!!e.particles2D)+Number(!!e.ui2D),0)>1024)throw projectError('AX_PROJECT_0002','2D batch admission budget exceeded');
+    if(entities.reduce((n,e)=>n+Number(!!e.renderable)+Number(!!e.tilemap)+Number(!!e.particles2D)+Number(!!e.ui2D),0)>65536)throw projectError('AX_PROJECT_0002','2D batch admission budget exceeded');
     for(const e of entities){
       if(e.sprite2D&&(e.renderable?.kind!=='sprite'||e.sprite2D.frame>=e.sprite2D.columns*e.sprite2D.rows))throw projectError('AX_PROJECT_0002','Sprite2D requires sprite Renderable and valid atlas frame');
       if(e.spriteAnimation&&(!e.sprite2D||e.spriteAnimation.frames.some(f=>f>=e.sprite2D.columns*e.sprite2D.rows)))throw projectError('AX_PROJECT_0002','SpriteAnimation requires Sprite2D and valid atlas frames');

@@ -15,7 +15,7 @@ public static partial class Program {
  [JSExport]
  public static string Dispatch(string request) {
   try {
-   if(request.Length>4*1024*1024)throw new ArgumentException("Script request too large");
+   if(request.Length>32*1024*1024)throw new ArgumentException("Script request too large");
    using var document=JsonDocument.Parse(request);var value=document.RootElement;
    var action=value.GetProperty("action").GetString();var generation=value.GetProperty("generation").GetInt32();
    if(action=="start") {
@@ -29,9 +29,10 @@ public static partial class Program {
     RuntimeLifecycle.StartAll();
    } else {
     if(generation!=Context.Generation)throw new InvalidOperationException("Stale runtime generation");
-    Context.Load(value);
+    Context.Load(value);RuntimeLifecycle.Activation();
     if(action=="fields") {foreach(var edit in value.GetProperty("edits").EnumerateArray())foreach(var s in Scripts.ToArray())if(s.Entity.Id==edit.GetProperty("entityId").GetString()&&RuntimeLifecycle.PathOf(s)==edit.GetProperty("path").GetString())RuntimeLifecycle.Factories[s.GetType()].Apply(s,edit.GetProperty("values"));}
     else if(action=="frame"||action=="step") {var delta=value.GetProperty("delta").GetDouble();if(!double.IsFinite(delta)||delta<0||delta>0.25)throw new ArgumentException("Invalid delta");Time.Step(delta);if(action=="step"){Context.DispatchContacts(value);RuntimeLifecycle.Update(Time.deltaTime);RuntimeLifecycle.Late();RuntimeLifecycle.End();}}
+    else if(action=="fixed-batch"){var count=value.GetProperty("fixedSteps").GetInt32();if(count<0||count>8||RuntimeLifecycle.NeedsFixed||RuntimeLifecycle.NeedsPhysics)throw new ArgumentException("Only an idle fixed phase can batch its clock");Time.fixedTime+=Time.fixedDeltaTime*count;Time.fixedUnscaledTime+=Time.fixedUnscaledDeltaTime*count;}
     else if(action=="fixed") {Time.fixedTime+=Time.fixedDeltaTime;Time.fixedUnscaledTime+=Time.fixedUnscaledDeltaTime;RuntimeLifecycle.Fixed();}
     else if(action=="physics") {Time.inFixedTimeStep=true;try{Context.DispatchContacts(value);RuntimeLifecycle.Physics();}finally{Time.inFixedTimeStep=false;}}
     else if(action=="update")RuntimeLifecycle.Update(Time.deltaTime);

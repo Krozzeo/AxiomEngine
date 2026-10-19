@@ -36,7 +36,7 @@ export function validateFiles(scene,{uniqueScripts=false}={}){
   if(!['folder','asset','script','json','scene'].includes(f.kind))throw Error('Invalid project file kind');
   if(f.kind==='scene'&&!/\.scene$/i.test(f.path))throw Error('Scene documents require a .scene extension');
   if(f.kind==='asset'&&!scene.assets?.some(a=>a.id===f.assetId))throw Error('Project file references a missing asset');
-  if(['script','json','scene'].includes(f.kind)){if(typeof f.text!=='string')throw Error('Project text file needs content');if(f.kind==='scene'){sceneBytes+=new TextEncoder().encode(f.text).length;if(sceneBytes>2097152)throw Error('Scene document text exceeds 2 MiB');}if(f.kind!=='scene')bytes+=new TextEncoder().encode(f.text).length;if(bytes>65536)throw Error('Project text files exceed 64 KiB');}
+  if(['script','json','scene'].includes(f.kind)){if(typeof f.text!=='string')throw Error('Project text file needs content');if(f.kind==='scene'){sceneBytes+=new TextEncoder().encode(f.text).length;if(sceneBytes>33554432)throw Error('Scene document text exceeds 32 MiB');}if(f.kind!=='scene')bytes+=new TextEncoder().encode(f.text).length;if(bytes>65536)throw Error('Project text files exceed 64 KiB');}
  }
  for(const f of files){const parent=parentPath(f.path);if(parent&&!files.some(d=>d.path===parent&&d.kind==='folder'))throw Error('Project file parent directory missing');}
  for(const root of fileRoots)if(!files.some(f=>f.path===root&&f.kind==='folder'))throw Error('Project root folders cannot be removed');

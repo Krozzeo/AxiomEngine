@@ -1,6 +1,6 @@
 # KeyCode
 
-Keyboard identifiers for letters A–Z, Alpha0–9, F1–F12, arrows, Space, Escape, Return, Tab, Backspace, Delete, Shift, Control and Alt. GetKey/GetKeyDown/GetKeyUp accept this enum or browser KeyboardEvent.code strings. Keys are captured from Game; editable text fields keep their normal input. See Input for remappable named actions.
+Keyboard identifiers for letters AÃ¢â‚¬â€œZ, Alpha0Ã¢â‚¬â€œ9, F1Ã¢â‚¬â€œF12, arrows, Space, Escape, Return, Tab, Backspace, Delete, Shift, Control and Alt. GetKey/GetKeyDown/GetKeyUp accept this enum or browser KeyboardEvent.code strings. Keys are captured from Game; editable text fields keep their normal input. See Input for remappable named actions.
 
 ## Implemented declarations
 

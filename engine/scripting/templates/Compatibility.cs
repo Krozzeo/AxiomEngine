@@ -47,16 +47,16 @@ public sealed partial class Transform {
  public Vector3 InverseTransformDirection(Vector3 direction)=>Quaternion.Inverse(rotation)*direction;
 }
 public enum ForceMode {Force,Acceleration,Impulse,VelocityChange}
-public sealed partial class Camera : Component {
+public sealed partial class Camera : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"camera");set=>ComponentActivation.Write(Entity,"camera",value);}
  internal Camera(Entity entity){Entity=entity;}
- public static Camera? main=>Context.Cameras.Where(id=>Context.IsActive(id)&&Context.EntityData.TryGetValue(id,out var data)&&data.GetProperty("camera").GetProperty("active").GetBoolean()).Select(id=>new Camera(new Entity(id,Context.Generation))).FirstOrDefault();
+ public static Camera? main=>Context.Cameras.Where(id=>ComponentActivation.Read(new Entity(id,Context.Generation),"camera")&&Context.IsActive(id)&&Context.EntityData.TryGetValue(id,out var data)&&data.GetProperty("camera").GetProperty("active").GetBoolean()).Select(id=>new Camera(new Entity(id,Context.Generation))).FirstOrDefault();
 }
-public sealed partial class AudioSource : Component {
+public sealed partial class AudioSource : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"audioSource");set=>ComponentActivation.Write(Entity,"audioSource",value);}
  internal AudioSource(Entity entity){Entity=entity;}
  public void Play()=>Entity.PlayAudio();public void Pause()=>Entity.PauseAudio();public void UnPause()=>Entity.ResumeAudio();public void Stop()=>Entity.StopAudio();
  public double volume {get=>Context.EntityData[Entity.Id].GetProperty("audioSource").GetProperty("volume").GetDouble();set=>Entity.SetAudioVolume(value);}
 }
-public sealed partial class Animator : Component {
+public sealed partial class Animator : Component {public bool enabled {get=>ComponentActivation.Read(Entity,"animator");set=>ComponentActivation.Write(Entity,"animator",value);}
  internal Animator(Entity entity){Entity=entity;}
  public void Play(string state)=>Entity.PlayAnimation(state,0);public void CrossFade(string state,double duration)=>Entity.PlayAnimation(state,duration);
  public void SetFloat(string name,double value)=>Entity.SetAnimationParameter(name,value);public void SetBool(string name,bool value)=>Entity.SetAnimationParameter(name,value?1:0);public void SetInteger(string name,int value)=>Entity.SetAnimationParameter(name,value);

@@ -30,7 +30,7 @@ export function runCompiler(args,{cwd,signal,timeoutMs=180000,executable='dotnet
     const env=compilerEnvironment(),command=resolveCompiler(executable,env);
     const child=spawn(command,args,{cwd,shell:false,windowsHide:true,detached:process.platform!=='win32',env,stdio:['ignore','pipe','pipe']});
     let output='',bytes=0,reason=null,settled=false;
-    const stop=message=>{reason=message;if(child.pid){if(process.platform==='win32'){const killer=spawn('taskkill',['/pid',String(child.pid),'/T','/F'],{windowsHide:true,stdio:'ignore',shell:false});killer.on('error',()=>child.kill());}else{try{process.kill(-child.pid,'SIGKILL');}catch{child.kill('SIGKILL');}}}};
+    const stop=message=>{if(reason)return;reason=message;if(child.pid){if(process.platform==='win32'){const killer=spawn('taskkill',['/pid',String(child.pid),'/T','/F'],{windowsHide:true,stdio:'ignore',shell:false});killer.on('error',()=>child.kill('SIGKILL'));killer.on('exit',code=>{if(code!==0)child.kill('SIGKILL');});}else{try{process.kill(-child.pid,'SIGKILL');}catch{child.kill('SIGKILL');}}}};
     const abort=()=>stop('Compilation cancelled');
     const timer=setTimeout(()=>stop('Compilation timed out'),timeoutMs);
     signal?.addEventListener('abort',abort,{once:true});

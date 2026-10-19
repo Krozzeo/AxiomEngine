@@ -2,9 +2,9 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-19",
-  "engineVersion": "0.0.48",
+  "engineVersion": "0.0.49",
   "activeMilestone": 18.3,
-  "milestoneStatus": "complete",
+  "milestoneStatus": "in_progress",
   "completion": {
     "activeMilestonePercent": 100,
     "wholeProjectPercent": null,
@@ -94,7 +94,7 @@
     "19": {
       "status": "not_started",
       "percent": 0,
-      "title": "Auditoría completa y contrato de compatibilidad",
+      "title": "AuditorÃ­a completa y contrato de compatibilidad",
       "plan": "docs/architecture/M19_PLAN.md"
     },
     "13.1": {
@@ -125,55 +125,55 @@
     "20": {
       "status": "not_started",
       "percent": 0,
-      "title": "Objetos, componentes y jerarquías compatibles",
+      "title": "Objetos, componentes y jerarquÃ­as compatibles",
       "plan": "docs/architecture/M20_PLAN.md"
     },
     "21": {
       "status": "not_started",
       "percent": 0,
-      "title": "Matemáticas, geometría y utilidades",
+      "title": "MatemÃ¡ticas, geometrÃ­a y utilidades",
       "plan": "docs/architecture/M21_PLAN.md"
     },
     "22": {
       "status": "not_started",
       "percent": 0,
-      "title": "Ciclo de vida, tiempo, eventos y asincronía",
+      "title": "Ciclo de vida, tiempo, eventos y asincronÃ­a",
       "plan": "docs/architecture/M22_PLAN.md"
     },
     "23": {
       "status": "not_started",
       "percent": 0,
-      "title": "Serialización, ScriptableObject y prefabs",
+      "title": "SerializaciÃ³n, ScriptableObject y prefabs",
       "plan": "docs/architecture/M23_PLAN.md"
     },
     "24": {
       "status": "not_started",
       "percent": 0,
-      "title": "Escenas, recursos, carga asíncrona y memoria",
+      "title": "Escenas, recursos, carga asÃ­ncrona y memoria",
       "plan": "docs/architecture/M24_PLAN.md"
     },
     "25": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 3D: geometrías y consultas",
+      "title": "FÃ­sica 3D: geometrÃ­as y consultas",
       "plan": "docs/architecture/M25_PLAN.md"
     },
     "26": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 3D: solver avanzado y controladores",
+      "title": "FÃ­sica 3D: solver avanzado y controladores",
       "plan": "docs/architecture/M26_PLAN.md"
     },
     "27": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 2D: geometrías y consultas",
+      "title": "FÃ­sica 2D: geometrÃ­as y consultas",
       "plan": "docs/architecture/M27_PLAN.md"
     },
     "28": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 2D: joints y simulación avanzada",
+      "title": "FÃ­sica 2D: joints y simulaciÃ³n avanzada",
       "plan": "docs/architecture/M28_PLAN.md"
     },
     "29": {
@@ -185,13 +185,13 @@
     "30": {
       "status": "not_started",
       "percent": 0,
-      "title": "Gráficos, cámaras, materiales y recursos GPU",
+      "title": "GrÃ¡ficos, cÃ¡maras, materiales y recursos GPU",
       "plan": "docs/architecture/M30_PLAN.md"
     },
     "31": {
       "status": "not_started",
       "percent": 0,
-      "title": "Animación, rigging y Playables",
+      "title": "AnimaciÃ³n, rigging y Playables",
       "plan": "docs/architecture/M31_PLAN.md"
     },
     "32": {
@@ -209,13 +209,13 @@
     "34": {
       "status": "not_started",
       "percent": 0,
-      "title": "Mundos 2D/3D, partículas, terreno y vídeo",
+      "title": "Mundos 2D/3D, partÃ­culas, terreno y vÃ­deo",
       "plan": "docs/architecture/M34_PLAN.md"
     },
     "35": {
       "status": "not_started",
       "percent": 0,
-      "title": "NavMesh y navegación completa",
+      "title": "NavMesh y navegaciÃ³n completa",
       "plan": "docs/architecture/M35_PLAN.md"
     },
     "36": {
@@ -239,13 +239,13 @@
     "39": {
       "status": "not_started",
       "percent": 0,
-      "title": "Módulos restantes, paquetes y conformidad integral",
+      "title": "MÃ³dulos restantes, paquetes y conformidad integral",
       "plan": "docs/architecture/M39_PLAN.md"
     },
     "40": {
       "status": "not_started",
       "percent": 0,
-      "title": "Estabilización final, producto y aceptación integral",
+      "title": "EstabilizaciÃ³n final, producto y aceptaciÃ³n integral",
       "plan": "docs/architecture/M40_PLAN.md"
     }
   },
@@ -289,7 +289,19 @@
     "runtimeInspector": "verified_transient_attached_components_transform_typed_csharp_scrub_and_detached_focus",
     "scriptCompilation": "verified_stopped_only_shared_explicit_auto_after_stop_open_play_source_hash_sdk_identity_and_cached_valid_recovery",
     "openAiAssistant": "live_workshop_confirmed; grouped_tools_compact_checkpoints; per_request_cache_reasoning_usage; task_history_requests_xy",
-    "scriptingApi": "verified_sdk7_nine_partial_families_typed_references_presentation_grid_http_platform"
+    "scriptingApi": "verified_sdk7_nine_partial_families_typed_references_presentation_grid_http_platform",
+    "editorRuntimeCorrections": {
+      "revision": "M18.3.11",
+      "sdkVersion": 8,
+      "status": "functional corrections locally verified; dense physics fluency and remote acceptance pending",
+      "maxInspectors": 8,
+      "maxEntities": 65536,
+      "maxPhysicsBodies": 65536,
+      "maxDrawItems": 65536,
+      "alwaysActiveScenes": true,
+      "sharedComponentEnabled": true,
+      "benchmark": "docs/reports/m18-3-11-physics.json"
+    }
   },
   "verified": {
     "nodeTests": {
@@ -1136,6 +1148,19 @@
       "sdkAssertions": 51,
       "stressDynamicBodies3D": 96,
       "stressDynamicBodies2D": 16
+    },
+    "m18_3_11Local": {
+      "nodeTests": 415,
+      "newNodeTests": 4,
+      "nativeGate": true,
+      "browserCriteria": 7,
+      "browserCsharp": true,
+      "browserBackend": "Null; local hardware WebGPU unavailable",
+      "remoteCi": "pending",
+      "benchmarkBodies": 2048,
+      "stressDynamicBodies3D": 1024,
+      "stressFpsNull": 5.1,
+      "smoothDensePhysics": "pending"
     }
   },
   "blockedChecks": [
@@ -1327,10 +1352,12 @@
     "docs/architecture/M37_PLAN.md",
     "docs/architecture/M38_PLAN.md",
     "docs/architecture/M39_PLAN.md",
-    "docs/architecture/M40_PLAN.md"
+    "docs/architecture/M40_PLAN.md",
+    "docs/reports/M18_3_11_CURRENT_REPORT.md",
+    "docs/scripting-api/STATUS_0_0_49.md"
   ],
-  "nextTask": "Implement M18.4 GitHub project integration, retaining live-account acceptance gates; then start M19 inventory/contract/conformance audit and M20–M39 compatibility expansion. Original M19 hardening is now M40 and remains last. M19 audit preparation may proceed while external M18.4 checks are pending. Do not merge stacked PRs automatically.",
-  "activeRevision": "M18.3.10",
+  "nextTask": "Finish M18.3.11 acceptance/CI publication; then M18.4 GitHub integration → M19 audit → M20–M39 → M40. No automatic merge.",
+  "activeRevision": "M18.3.11",
   "roadmap": {
     "version": 2,
     "manifest": "docs/architecture/roadmap-v2.json",

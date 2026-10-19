@@ -7,7 +7,7 @@
     "rigid-body.component.json"
   ],
   "limits": {
-    "entities": 1024,
+    "entities": 65536,
     "attachments": 32,
     "operations": 128,
     "logs": 32,

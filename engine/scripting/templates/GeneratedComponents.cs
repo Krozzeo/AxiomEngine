@@ -12,7 +12,7 @@ public readonly record struct RigidBody(Vector3 Velocity) {
  internal static RigidBody Read(JsonElement value) => new(Vector3.Read(value.GetProperty("velocity")));
 }
 internal static class Limits {
- internal const int Entities = 1024;
+ internal const int Entities = 65536;
  internal const int Attachments = 32;
  internal const int Operations = 128;
  internal const int Logs = 32;

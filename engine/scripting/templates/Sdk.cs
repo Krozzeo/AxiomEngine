@@ -273,7 +273,7 @@ internal static partial class Context {
  internal static Entity Spawn(Entity template,Vec3 position) {
   var value=Read(template);Position(position);
   if(Entities.Count>=Limits.Entities)throw new InvalidOperationException("AX_SCRIPT_0003: spawn limit exceeded");
-  var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;SceneManagement.SceneManager.Owners[id]=SceneManagement.SceneManager.Owners.GetValueOrDefault(template.Id,SceneManagement.SceneManager.GetActiveScene().name);if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,new Transform(position,value.Rotation,value.Scale){Entity=new Entity(id,Generation)});if(EntityData.TryGetValue(template.Id,out var data))EntityData[id]=data;if(Cameras.Contains(template.Id))Cameras.Add(id);Parents[id]=null;ActiveStates[id]=ActiveStates.GetValueOrDefault(template.Id,true);if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
+  var id="entity://"+(DeterministicSpawn?$"{ReplaySeed:x8}-0000-4000-8000-{Spawned:x12}":Guid.NewGuid().ToString());if(Entities.ContainsKey(id))throw new InvalidOperationException("Deterministic spawn ID collision");Add(new("spawn",id,template.Id,position,null));Spawned++;SceneManagement.SceneManager.SetOwner(id,SceneManagement.SceneManager.Owners.GetValueOrDefault(template.Id,SceneManagement.SceneManager.GetActiveScene().name));if(AudioSources.Contains(template.Id))AudioSources.Add(id);Entities.Add(id,new Transform(position,value.Rotation,value.Scale){Entity=new Entity(id,Generation)});if(EntityData.TryGetValue(template.Id,out var data))EntityData[id]=data;if(Cameras.Contains(template.Id))Cameras.Add(id);Parents[id]=null;ActiveStates[id]=ActiveStates.GetValueOrDefault(template.Id,true);if(Bodies.TryGetValue(template.Id,out var body))Bodies.Add(id,body);if(Animators.TryGetValue(template.Id,out var animator))Animators.Add(id,animator);if(AnimationStates.TryGetValue(template.Id,out var animationState))AnimationStates.Add(id,animationState);return new(id,Generation);
  }
  internal static void DispatchContacts(JsonElement request){
   var current=new Dictionary<string,List<JsonElement>>();
@@ -289,7 +289,7 @@ internal static partial class Context {
  }
  internal static bool IsActive(string id){for(var depth=0;id!=null&&depth<64;depth++){if(!ActiveStates.GetValueOrDefault(id,true))return false;id=Parents.GetValueOrDefault(id)!;}return true;}
  internal static void Activate(Entity entity,bool active){_=Read(entity);ActiveStates[entity.Id]=active;Add(new("active",entity.Id,null,default,null,active?"true":"false"));RuntimeLifecycle.Activation();}
- internal static void Destroy(Entity entity){_=Read(entity);var ids=new HashSet<string>{entity.Id};bool changed=true;while(changed){changed=false;foreach(var pair in Parents)if(pair.Value!=null&&ids.Contains(pair.Value)&&ids.Add(pair.Key))changed=true;}Add(new("destroy",entity.Id,null,default,null));foreach(var script in LiveScripts.Where(script=>ids.Contains(script.Entity.Id)).ToArray()){RuntimeLifecycle.Remove(script);LiveScripts.Remove(script);ScriptPaths.Remove(script);}foreach(var id in ids){Entities.Remove(id);EntityData.Remove(id);Parents.Remove(id);ActiveStates.Remove(id);Bodies.Remove(id);Cameras.Remove(id);AudioSources.Remove(id);Animators.Remove(id);AnimationStates.Remove(id);Grounded.Remove(id);SceneManagement.SceneManager.Owners.Remove(id);SceneManagement.SceneManager.Persistent.Remove(id);AI.NavMeshAgent.Agents.Remove(id);}}
+ internal static void Destroy(Entity entity){_=Read(entity);var ids=new HashSet<string>{entity.Id};bool changed=true;while(changed){changed=false;foreach(var pair in Parents)if(pair.Value!=null&&ids.Contains(pair.Value)&&ids.Add(pair.Key))changed=true;}Add(new("destroy",entity.Id,null,default,null));foreach(var script in LiveScripts.Where(script=>ids.Contains(script.Entity.Id)).ToArray()){RuntimeLifecycle.Remove(script);LiveScripts.Remove(script);ScriptPaths.Remove(script);}foreach(var id in ids){Entities.Remove(id);EntityData.Remove(id);Parents.Remove(id);ActiveStates.Remove(id);Bodies.Remove(id);Cameras.Remove(id);AudioSources.Remove(id);Animators.Remove(id);AnimationStates.Remove(id);Grounded.Remove(id);SceneManagement.SceneManager.Owners.Remove(id);SceneManagement.SceneManager.MetadataDirty=true;SceneManagement.SceneManager.Persistent.Remove(id);AI.NavMeshAgent.Agents.Remove(id);}}
  internal static void Log(string message) {
   if(message.Length>2048||Logs>=Limits.Logs)throw new InvalidOperationException("AX_SCRIPT_0003: log limit exceeded");
   Add(new("log","",null,default,message));Logs++;
@@ -297,18 +297,21 @@ internal static partial class Context {
  internal static void Load(JsonElement value) {
   if(value.TryGetProperty("runtimeMetrics",out var metrics))RuntimeStats.Data=metrics.Clone();if(value.TryGetProperty("platform",out var platform))Application.Data=platform.Clone();
   Input.Load(value,value.GetProperty("action").GetString() is "start" or "frame" or "step");
-  if(value.GetProperty("action").GetString() is "frame" or "step" or "start"){PreviousKeys.Clear();PreviousKeys.UnionWith(Keys);}Entities.Clear();EntityData.Clear();ActiveStates.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Keys.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
-  foreach(var e in value.GetProperty("entities").EnumerateArray()) {
+  if(value.GetProperty("action").GetString() is "frame" or "step" or "start"){PreviousKeys.Clear();PreviousKeys.UnionWith(Keys);}Keys.Clear();MouseDelta=new(0,0);Operations.Clear();Logs=0;
+  if(!value.TryGetProperty("reuseEntities",out var reuse)||!reuse.GetBoolean()){Entities.Clear();EntityData.Clear();ActiveStates.Clear();Bodies.Clear();AudioSources.Clear();Animators.Clear();AnimationStates.Clear();Grounded.Clear();Parents.Clear();Cameras.Clear();
+  var entitySnapshot=value.GetProperty("entities").Clone();
+  foreach(var e in entitySnapshot.EnumerateArray()) {var id=e.GetProperty("id").GetString()!;
    if(Entities.Count>=Limits.Entities)throw new ArgumentException("Entity limit exceeded");
-   if(e.TryGetProperty("grounded",out var grounded)&&grounded.ValueKind==JsonValueKind.True)Grounded.Add(e.GetProperty("id").GetString()!);
-   EntityData[e.GetProperty("id").GetString()!]=e.Clone();ActiveStates[e.GetProperty("id").GetString()!]=!e.TryGetProperty("runtimeActive",out var active)||active.GetBoolean();
-   Parents[e.GetProperty("id").GetString()!]=e.TryGetProperty("parentId",out var parent)?parent.GetString():null;
-   if(e.TryGetProperty("camera",out _))Cameras.Add(e.GetProperty("id").GetString()!);
-   if(e.TryGetProperty("audioSource",out _))AudioSources.Add(e.GetProperty("id").GetString()!);
-   if(e.TryGetProperty("animator",out var animator))Animators.Add(e.GetProperty("id").GetString()!,animator.Clone());
-   if(e.TryGetProperty("animationState",out var animationState))AnimationStates.Add(e.GetProperty("id").GetString()!,animationState.Clone());
-   if(e.TryGetProperty("rigidBody",out var body))Bodies.Add(e.GetProperty("id").GetString()!,RigidBody.Read(body));
-   Entities.Add(e.GetProperty("id").GetString()!,Transform.Read(e.GetProperty("transform")));
+   if(e.TryGetProperty("grounded",out var grounded)&&grounded.ValueKind==JsonValueKind.True)Grounded.Add(id);
+   EntityData[id]=e;ActiveStates[id]=!e.TryGetProperty("runtimeActive",out var active)||active.GetBoolean();
+   Parents[id]=e.TryGetProperty("parentId",out var parent)?parent.GetString():null;
+   if(e.TryGetProperty("camera",out _))Cameras.Add(id);
+   if(e.TryGetProperty("audioSource",out _))AudioSources.Add(id);
+   if(e.TryGetProperty("animator",out var animator))Animators.Add(id,animator);
+   if(e.TryGetProperty("animationState",out var animationState))AnimationStates.Add(id,animationState);
+   if(e.TryGetProperty("rigidBody",out var body))Bodies.Add(id,RigidBody.Read(body));
+   Entities.Add(id,Transform.Read(e.GetProperty("transform")));
+  }
   }
   if(value.TryGetProperty("mouseDelta",out var mouse)){var x=mouse[0].GetDouble();var y=mouse[1].GetDouble();if(!double.IsFinite(x)||!double.IsFinite(y)||Math.Abs(x)>10000||Math.Abs(y)>10000)throw new ArgumentException("Invalid mouse delta");MouseDelta=new(x,y);}
   foreach(var key in value.GetProperty("keys").EnumerateArray()) {if(Keys.Count>=64)throw new ArgumentException("Input limit exceeded");Keys.Add(key.GetString()!);}
@@ -318,6 +321,8 @@ internal static partial class Context {
   using var stream=new MemoryStream();using(var writer=new Utf8JsonWriter(stream)) {
    writer.WriteStartObject();writer.WriteNumber("generation",Generation);writer.WriteStartObject("time");writer.WriteNumber("scale",Time.timeScale);writer.WriteNumber("delta",Time.deltaTime);writer.WriteNumber("unscaledDelta",Time.unscaledDeltaTime);writer.WriteEndObject();
    if(error!=null)writer.WriteString("error",error.Length>4096?error[..4096]:error);
+   writer.WriteStartObject("phases");writer.WriteBoolean("physics",RuntimeLifecycle.NeedsPhysics);writer.WriteBoolean("fixed",RuntimeLifecycle.NeedsFixed);writer.WriteEndObject();
+   if(SceneManagement.SceneManager.MetadataDirty){SceneManagement.SceneManager.MetadataDirty=false;writer.WriteStartObject("sceneDocuments");var activeScene=SceneManagement.SceneManager.GetActiveScene();writer.WriteString("active",string.IsNullOrEmpty(activeScene.path)?activeScene.name:activeScene.path);foreach(var key in new[]{"open","alwaysActive"}){writer.WriteStartArray(key);foreach(var scene in SceneManagement.SceneManager.Loaded)if(key=="open"||SceneManagement.SceneManager.IsSceneAlwaysActive(scene))writer.WriteStringValue(string.IsNullOrEmpty(scene.path)?scene.name:scene.path);writer.WriteEndArray();}writer.WriteStartObject("owners");foreach(var pair in SceneManagement.SceneManager.Owners){var scene=SceneManagement.SceneManager.GetSceneByName(pair.Value);if(scene.IsValid())writer.WriteString(pair.Key,string.IsNullOrEmpty(scene.path)?pair.Value:scene.path);else if(activeScene.IsValid())writer.WriteString(pair.Key,string.IsNullOrEmpty(activeScene.path)?activeScene.name:activeScene.path);}writer.WriteEndObject();writer.WriteEndObject();}
    writer.WriteStartArray("operations");
    if(error==null)foreach(var op in Operations) {
     writer.WriteStartObject();writer.WriteString("kind",op.Kind);writer.WriteString("id",op.Id);

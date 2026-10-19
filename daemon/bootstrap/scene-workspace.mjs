@@ -61,7 +61,7 @@ export class SceneWorkspace {
       if(resource.kind!==entity.renderable.kind)fail("AX_ASSET_0001","Asset kind does not match the entity component");
       vertices+=resource.kind==="sprite"?6:resource.vertexCount;
       draws+=resource.kind==="sprite"?1:resource.primitives.length;
-      if(vertices>300000||draws>1024)fail("AX_SCENE_0006","Scene exceeds 300000 vertices or 1024 draw items");
+      if(vertices>4000000||draws>65536)fail("AX_SCENE_0006","Scene exceeds 4000000 vertices or 65536 draw items");
     }
   }
   get dirty() { return this.project !== null && (JSON.stringify(this.project.scene) !== this.savedScene || !!this.pendingEditor); }
@@ -259,6 +259,10 @@ export class SceneWorkspace {
       return this.snapshot();
     }
     const scene = copy(this.project.scene);
+    if((type==='project.files.edit'&&data.action==='create'&&data.kind==='scene'&&data.text===undefined)||(type==='scene.document.edit'&&data.action==='create'&&data.text===undefined)){
+      const asset=await this.assets.put(this.project.id,'3D-cube.glb',primitiveGlb(3,'cube').toString('base64'),importInWorker);scene.assets??=[];if(!scene.assets.some(a=>a.id===asset.id))scene.assets.push(asset);
+      const starter={entities:[{id:'entity://'+randomUUID(),name:'3D cube',transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},renderable:{kind:'mesh',assetId:asset.id}}]};addExample(starter,'Camera','entity://'+randomUUID());addExample(starter,'Directional Light','entity://'+randomUUID());starter.rendering.environment=[0.12,0.16,0.24];starter.entities.find(e=>e.light).transform.rotation=cameraRotation([0,6,4],[0,0,0]);data={...data,text:JSON.stringify({format:'axiom-scene',schemaVersion:1,...starter},null,2)+'\n'};await this.pipeline.build(this.project.id,scene,this.project.scene.assets??[]);
+    }
     const index = scene.entities.findIndex(entity => entity.id === data.entityId);
     if(type==='scene.document.edit'){try{editSceneDocument(scene,data);reconcileScriptComponents(scene);}catch(error){fail('AX_SCENE_0001',error.message);}
     }else if(type==='scene.script.edit'){setScriptComponent(scene,data.entityId,data.path,data.action,data.values);if(scene.script)scene.script.attachments=[...new Set([...scene.script.attachments.filter(id=>scene.entities.find(e=>e.id===id)?.scriptComponents?.length),...scene.entities.filter(e=>e.scriptComponents?.length).map(e=>e.id)])];
@@ -346,6 +350,7 @@ export class SceneWorkspace {
       if (type === "scene.entity.delete") {const removed=new Set([data.entityId]);let changed=true;while(changed){changed=false;for(const e of scene.entities)if(removed.has(e.parentId)&&!removed.has(e.id)){removed.add(e.id);changed=true;}}scene.entities=scene.entities.filter(e=>!removed.has(e.id));if(scene.script)scene.script.attachments=scene.script.attachments.filter(id=>!removed.has(id));}
       else {
         if(data.prefabAction==='disassemble'){if(data.name!==undefined||data.transform!==undefined)fail('AX_PREFAB_0001','Desassemble cannot include other edits');const root=scene.entities[index].prefab?.rootId;if(!root)fail('AX_PREFAB_0001','Select a linked prefab');for(const e of scene.entities)if(e.prefab?.rootId===root)delete e.prefab;}
+        if(data.componentEnabled!==undefined)scene.entities[index].componentEnabled=copy(data.componentEnabled);
         if (data.name !== undefined) scene.entities[index].name = data.name;
         if (data.transform !== undefined) {
           if (!data.transform || typeof data.transform !== "object" || Array.isArray(data.transform)) fail("AX_PROJECT_0002", "Transform must be an object");

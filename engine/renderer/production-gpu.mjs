@@ -6,12 +6,12 @@ const vertexBuffers=[{arrayStride:32,attributes:[{shaderLocation:0,offset:0,form
 export async function createProductionGPU({device,format,width,height,textureFor,getTexture,reportError}){
  const B=GPUBufferUsage,T=GPUTextureUsage,S=GPUShaderStage;let disposed=false,pending=false,sample=null,frameNumber=0,epoch=0;
  const skinGPU=await createSkinGPU(device);
- const scratch={instanceData:new Float32Array(1024*52),lightData:new Float32Array(64*16),groupData:new Uint32Array(1024*4),cpuVisible:new Uint32Array(1024),args:new Uint32Array(1024*4)};
+ const scratch={instanceData:new Float32Array(65536*52),lightData:new Float32Array(64*16),groupData:new Uint32Array(65536*4),cpuVisible:new Uint32Array(65536),args:new Uint32Array(65536*4)};
  const owned=[],vertices=new Map(),bindings=new Map(),pipelineCache=new Map();
  const buffer=(size,usage)=>{const b=device.createBuffer({size,usage});owned.push(b);return b;};
  const texture=(w,h,fmt,usage)=>{const t=device.createTexture({size:[w,h],format:fmt,usage});owned.push(t);return t;};
- const frame=buffer(208,B.UNIFORM|B.COPY_DST),instances=buffer(1024*208,B.STORAGE|B.COPY_DST),visible=buffer(1024*4,B.STORAGE|B.COPY_DST),groups=buffer(1024*16,B.STORAGE|B.COPY_DST),indirect=buffer(1024*16,B.STORAGE|B.INDIRECT|B.COPY_SRC|B.COPY_DST),lights=buffer(64*64,B.STORAGE|B.COPY_DST);
- const nx=Math.ceil(width/16),ny=Math.ceil(height/16),tiles=buffer(nx*ny*65*4,B.STORAGE|B.COPY_DST),readback=buffer(1024*16,B.COPY_DST|B.MAP_READ);
+ const frame=buffer(208,B.UNIFORM|B.COPY_DST),instances=buffer(65536*208,B.STORAGE|B.COPY_DST),visible=buffer(65536*4,B.STORAGE|B.COPY_DST),groups=buffer(65536*16,B.STORAGE|B.COPY_DST),indirect=buffer(65536*16,B.STORAGE|B.INDIRECT|B.COPY_SRC|B.COPY_DST),lights=buffer(64*64,B.STORAGE|B.COPY_DST);
+ const nx=Math.ceil(width/16),ny=Math.ceil(height/16),tiles=buffer(nx*ny*65*4,B.STORAGE|B.COPY_DST),readback=buffer(65536*16,B.COPY_DST|B.MAP_READ);
  const hdr=texture(width,height,'rgba16float',T.RENDER_ATTACHMENT|T.TEXTURE_BINDING),depth=texture(width,height,'depth24plus',T.RENDER_ATTACHMENT),bloom=texture(Math.max(1,Math.ceil(width/2)),Math.max(1,Math.ceil(height/2)),'rgba16float',T.RENDER_ATTACHMENT|T.TEXTURE_BINDING);
  let shadow=null,shadowSize=0,mainBind=null;
  const sampler=device.createSampler({magFilter:'linear',minFilter:'linear'}),comparison=device.createSampler({compare:'less-equal',magFilter:'linear',minFilter:'linear'});

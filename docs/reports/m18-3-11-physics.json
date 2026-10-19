@@ -216,5 +216,555 @@
     "elapsedMs": 184.73499999940395,
     "passed": true,
     "acceptance": "functional capacity verified; smooth real-time performance remains pending"
+  },
+  "editorLoadSamples": {
+    "2": {
+      "errors": [],
+      "samples": [
+        {
+          "dynamicBodies": 16,
+          "fps": 60.00251623455172,
+          "frameMs": 16.665000000000873,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 122,
+            "bodyCount": 17,
+            "contactCount": 35,
+            "candidates": 20
+          },
+          "elapsedMs": 6.729999989271164,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.17000000178813934
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.009999990463256836
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.2800000011920929
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.015000000596046448
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.3050000071525574
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 5.33500000834465
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 3.9400000274181366
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.6500000059604645
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 0.17000000178813934
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.030000001192092896
+            }
+          ]
+        },
+        {
+          "dynamicBodies": 64,
+          "fps": 56.131386154903616,
+          "frameMs": 16.665000000000873,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 123,
+            "bodyCount": 65,
+            "contactCount": 169,
+            "candidates": 126
+          },
+          "elapsedMs": 11.930000007152557,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.5699999928474426
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.015000000596046448
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.7849999964237213
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.019999995827674866
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.7150000035762787
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 8.780000001192093
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 7.055000022053719
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 1.094999998807907
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 0.4949999898672104
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.08499999344348907
+            }
+          ]
+        },
+        {
+          "dynamicBodies": 256,
+          "fps": 20.00072729917453,
+          "frameMs": 50,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 116,
+            "bodyCount": 257,
+            "contactCount": 779,
+            "candidates": 678
+          },
+          "elapsedMs": 36.04000000655651,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 1.6799999922513962
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.04999999701976776
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 2.1400000005960464
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.015000000596046448
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 1.9749999940395355
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 25.349999994039536
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 21.515000000596046
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 1.6850000023841858
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 4.814999997615814
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.2199999988079071
+            }
+          ]
+        },
+        {
+          "dynamicBodies": 1024,
+          "fps": 6.154082849340373,
+          "frameMs": 149.99500000000262,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 104,
+            "bodyCount": 1025,
+            "contactCount": 1700,
+            "candidates": 1589
+          },
+          "elapsedMs": 149.04999999701977,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 6.74499998986721
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.1599999964237213
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 7.174999997019768
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.025000005960464478
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 6.520000010728836
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 91.91000002622604
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 78.54499998688698
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 4.174999997019768
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 37.75999999046326
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.9699999988079071
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    "3": {
+      "errors": [],
+      "samples": [
+        {
+          "dynamicBodies": 16,
+          "fps": 60.0019355463082,
+          "frameMs": 16.669999999998254,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 123,
+            "bodyCount": 17,
+            "contactCount": 64,
+            "candidates": 16
+          },
+          "elapsedMs": 6.509999990463257,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.14500001072883606
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.004999995231628418
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.27000001072883606
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.015000000596046448
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.3149999976158142
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 5.030000001192093
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 4.1099999994039536
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.75
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 0.20999999344348907
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.024999991059303284
+            }
+          ]
+        },
+        {
+          "dynamicBodies": 64,
+          "fps": 58.06695119472747,
+          "frameMs": 16.665000000000873,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 121,
+            "bodyCount": 65,
+            "contactCount": 254,
+            "candidates": 88
+          },
+          "elapsedMs": 10.625,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 0.4450000077486038
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.019999995827674866
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 0.5750000029802322
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.01000000536441803
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 0.5949999988079071
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 7.9649999886751175
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 6.700000017881393
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 0.8849999904632568
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 0.5999999940395355
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.06000000238418579
+            }
+          ]
+        },
+        {
+          "dynamicBodies": 256,
+          "fps": 20.000909132233335,
+          "frameMs": 50,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 121,
+            "bodyCount": 257,
+            "contactCount": 756,
+            "candidates": 821
+          },
+          "elapsedMs": 38.28500001132488,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 1.6950000077486038
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.040000006556510925
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 2.179999992251396
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.025000005960464478
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 2.060000002384186
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 26.484999999403954
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 21.849999979138374
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 1.9449999928474426
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 5.5250000059604645
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 0.23499999940395355
+            }
+          ]
+        },
+        {
+          "dynamicBodies": 1024,
+          "fps": 5.4547438088658176,
+          "frameMs": 199.98500000000058,
+          "renderer": "null",
+          "physics": {
+            "backend": "cpu-wasm",
+            "reason": "AX_PHYSICS_CPU_BASELINE",
+            "steps": 88,
+            "bodyCount": 1025,
+            "contactCount": 3585,
+            "candidates": 5646
+          },
+          "elapsedMs": 185.23999999463558,
+          "scopes": [
+            {
+              "name": "kernel.world-physics",
+              "kind": "main",
+              "milliseconds": 6.405000001192093
+            },
+            {
+              "name": "animation.evaluate",
+              "kind": "main",
+              "milliseconds": 0.0949999988079071
+            },
+            {
+              "name": "render.prepare",
+              "kind": "main",
+              "milliseconds": 8.259999990463257
+            },
+            {
+              "name": "render.submit",
+              "kind": "main",
+              "milliseconds": 0.024999991059303284
+            },
+            {
+              "name": "script.prepare",
+              "kind": "main",
+              "milliseconds": 5.4549999833106995
+            },
+            {
+              "name": "script.roundtrip",
+              "kind": "wall",
+              "milliseconds": 88.5799999833107
+            },
+            {
+              "name": "worker.dispatch",
+              "kind": "worker",
+              "milliseconds": 75.67999997735023
+            },
+            {
+              "name": "script.apply",
+              "kind": "main",
+              "milliseconds": 4.155000016093254
+            },
+            {
+              "name": "physics.fixed",
+              "kind": "main",
+              "milliseconds": 76.53500001132488
+            },
+            {
+              "name": "audio.update",
+              "kind": "main",
+              "milliseconds": 1.0450000017881393
+            }
+          ]
+        }
+      ],
+      "passed": true
+    }
   }
 }

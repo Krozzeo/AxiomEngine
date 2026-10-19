@@ -21,7 +21,7 @@ Corrección solicitada antes de M18.4 y del roadmap M19–M40. No cambia las 23 
 - `npm run check`: 415 tests Node, esquemas, catálogo de herramientas, bindings y reglas de arquitectura/paridad pasan.
 - `npm run check:native`: formato, clippy sin warnings y tests Rust pasan.
 - `tests/browser/m18-3-11.mjs`: siete grupos reales, con C# publicado y ejecutado: hover protegido y referencias tipadas, ciclo de ocho Inspectors, breadcrumb/IDE, Play activo, checkbox live, Managers persistente y FPS en Game separado.
-- Regresión M18.3.10: ejecución final pendiente. CI remoto: pendiente; no se da por aprobada una ejecución pendiente.
+- Regresión M18.3.10: 11 grupos aprobados, incluyendo física 2D, 1.024 cuerpos dinámicos 3D, referencias, escenas, HTTP real, presentación y navegación. CI 313 sobre aa225712b6b5922a550cbe1049a6b622d92656b4 detectó etiquetas WebGPU mal codificadas en la regresión antigua; se corrigieron y se añadió una comprobación explícita de la etiqueta. También hubo un timeout de preview M18.2, no reproducido en su ejecución local completa. Nueva validación remota pendiente.
 - El navegador local usó Null por falta de adaptador WebGPU. Prueba lógica/C#/Wasm; no demuestra renderizado en GPU física. CI conserva su ruta de WebGPU de software.
 
 ## Rendimiento medido
@@ -33,6 +33,17 @@ Con 255 cuerpos: antes ~31 ms por actualización; después ~0,69 ms (2D) y ~0,48
 Prueba completa del editor: `npm run test:browser:m18-3-11-stress`. C# crea 1.024 cuerpos dinámicos (1.025 con el suelo) en 17,18 s, sin errores ni bloqueo por el antiguo tope. A los 1,5 s de completar la creación se midieron 5,1 FPS, ~185 ms de trabajo por frame, ~77 ms en pasos fijos de física y ~87 ms de ida/vuelta de scripts; son ámbitos anidados, no deben sumarse entre sí. Backend local Null, sin GPU física. **La fluidez de miles de cuerpos densos sigue pendiente**: el aumento de capacidad y el benchmark aislado no cumplen por sí solos ese objetivo. Faltan optimizaciones del intercambio C#/JS y del solver con muchos contactos; medir nuevamente en GPU y CI. Se conservan las 12 iteraciones del solver y el reloj fijo (verificado mediante FixedSeconds), sin rebajar precisión para aparentar FPS.
 
 Además del cambio de barrido, se reutilizan inercia, ejes y matrices de respuesta por contacto; se evita sincronizar entidades repetidas en fases sin cambios y se agrupan ticks fijos sin observadores conservando el tiempo acumulado.
+
+Tabla adicional del editor, con C# real, midiendo después de 2 s en cada carga. Son muestras locales con FPS suavizado, no percentiles ni una garantía entre equipos. Reproducir: `npm run benchmark:editor:m18-3-11 -- 2` y `-- 3`.
+
+| Objetos dinámicos | FPS 2D (Null) | FPS 3D (Null) |
+| --- | ---: | ---: |
+| 16 | 60,0 | 60,0 |
+| 64 | 56,1 | 58,1 |
+| 256 | 20,0 | 20,0 |
+| 1.024 | 6,2 | 5,5 |
+
+Siguiente trabajo de rendimiento, antes de aceptar esta corrección como cerrada: perfilar cada fase del puente C#/JS y reducir snapshots/asignaciones; optimizar el solver con muchos contactos sin perder estabilidad; repetir el mismo escenario con GPU y registrar medianas/P95. El aumento del máximo no sustituye estos criterios.
 
 ## Continuidad
 

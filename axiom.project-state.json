@@ -94,7 +94,7 @@
     "19": {
       "status": "not_started",
       "percent": 0,
-      "title": "AuditorÃ­a completa y contrato de compatibilidad",
+      "title": "Auditoría completa y contrato de compatibilidad",
       "plan": "docs/architecture/M19_PLAN.md"
     },
     "13.1": {
@@ -125,55 +125,55 @@
     "20": {
       "status": "not_started",
       "percent": 0,
-      "title": "Objetos, componentes y jerarquÃ­as compatibles",
+      "title": "Objetos, componentes y jerarquías compatibles",
       "plan": "docs/architecture/M20_PLAN.md"
     },
     "21": {
       "status": "not_started",
       "percent": 0,
-      "title": "MatemÃ¡ticas, geometrÃ­a y utilidades",
+      "title": "Matemáticas, geometría y utilidades",
       "plan": "docs/architecture/M21_PLAN.md"
     },
     "22": {
       "status": "not_started",
       "percent": 0,
-      "title": "Ciclo de vida, tiempo, eventos y asincronÃ­a",
+      "title": "Ciclo de vida, tiempo, eventos y asincronía",
       "plan": "docs/architecture/M22_PLAN.md"
     },
     "23": {
       "status": "not_started",
       "percent": 0,
-      "title": "SerializaciÃ³n, ScriptableObject y prefabs",
+      "title": "Serialización, ScriptableObject y prefabs",
       "plan": "docs/architecture/M23_PLAN.md"
     },
     "24": {
       "status": "not_started",
       "percent": 0,
-      "title": "Escenas, recursos, carga asÃ­ncrona y memoria",
+      "title": "Escenas, recursos, carga asíncrona y memoria",
       "plan": "docs/architecture/M24_PLAN.md"
     },
     "25": {
       "status": "not_started",
       "percent": 0,
-      "title": "FÃ­sica 3D: geometrÃ­as y consultas",
+      "title": "Física 3D: geometrías y consultas",
       "plan": "docs/architecture/M25_PLAN.md"
     },
     "26": {
       "status": "not_started",
       "percent": 0,
-      "title": "FÃ­sica 3D: solver avanzado y controladores",
+      "title": "Física 3D: solver avanzado y controladores",
       "plan": "docs/architecture/M26_PLAN.md"
     },
     "27": {
       "status": "not_started",
       "percent": 0,
-      "title": "FÃ­sica 2D: geometrÃ­as y consultas",
+      "title": "Física 2D: geometrías y consultas",
       "plan": "docs/architecture/M27_PLAN.md"
     },
     "28": {
       "status": "not_started",
       "percent": 0,
-      "title": "FÃ­sica 2D: joints y simulaciÃ³n avanzada",
+      "title": "Física 2D: joints y simulación avanzada",
       "plan": "docs/architecture/M28_PLAN.md"
     },
     "29": {
@@ -185,13 +185,13 @@
     "30": {
       "status": "not_started",
       "percent": 0,
-      "title": "GrÃ¡ficos, cÃ¡maras, materiales y recursos GPU",
+      "title": "Gráficos, cámaras, materiales y recursos GPU",
       "plan": "docs/architecture/M30_PLAN.md"
     },
     "31": {
       "status": "not_started",
       "percent": 0,
-      "title": "AnimaciÃ³n, rigging y Playables",
+      "title": "Animación, rigging y Playables",
       "plan": "docs/architecture/M31_PLAN.md"
     },
     "32": {
@@ -209,13 +209,13 @@
     "34": {
       "status": "not_started",
       "percent": 0,
-      "title": "Mundos 2D/3D, partÃ­culas, terreno y vÃ­deo",
+      "title": "Mundos 2D/3D, partículas, terreno y vídeo",
       "plan": "docs/architecture/M34_PLAN.md"
     },
     "35": {
       "status": "not_started",
       "percent": 0,
-      "title": "NavMesh y navegaciÃ³n completa",
+      "title": "NavMesh y navegación completa",
       "plan": "docs/architecture/M35_PLAN.md"
     },
     "36": {
@@ -239,13 +239,13 @@
     "39": {
       "status": "not_started",
       "percent": 0,
-      "title": "MÃ³dulos restantes, paquetes y conformidad integral",
+      "title": "Módulos restantes, paquetes y conformidad integral",
       "plan": "docs/architecture/M39_PLAN.md"
     },
     "40": {
       "status": "not_started",
       "percent": 0,
-      "title": "EstabilizaciÃ³n final, producto y aceptaciÃ³n integral",
+      "title": "Estabilización final, producto y aceptación integral",
       "plan": "docs/architecture/M40_PLAN.md"
     }
   },
@@ -1160,7 +1160,30 @@
       "benchmarkBodies": 2048,
       "stressDynamicBodies3D": 1024,
       "stressFpsNull": 5.1,
-      "smoothDensePhysics": "pending"
+      "smoothDensePhysics": "pending",
+      "regressionBrowserCriteria": 11,
+      "remoteCiRun": 313,
+      "codeCommit": "aa225712b6b5922a550cbe1049a6b622d92656b4",
+      "editorLoadSamples": {
+        "bodies": [
+          16,
+          64,
+          256,
+          1024
+        ],
+        "fps2DNull": [
+          60,
+          56.1,
+          20,
+          6.2
+        ],
+        "fps3DNull": [
+          60,
+          58.1,
+          20,
+          5.5
+        ]
+      }
     }
   },
   "blockedChecks": [

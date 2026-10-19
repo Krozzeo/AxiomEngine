@@ -1,3 +1,13 @@
+# Planificación vigente — 2026-10-19
+
+El roadmap se amplía con **M19–M39** para compatibilidad funcional de la Scripting API y traslada el antiguo **M19 Hardening a M40**, al final. **M18.4 GitHub** conserva su alcance; quedan **23 milestones principales pendientes**. Las nuevas etapas están planificadas, no implementadas. La release ejecutable sigue siendo **0.0.48 / SDK 7**, verificada en CI 312.
+
+[Plan completo, entregables y dependencias](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json). Meta futura: >=95% del inventario core fijado en M19 y 100% P0, sin ocultar parciales/bloqueos; paquetes y plataformas se miden por separado. El 94% es solo MVP histórico; el porcentaje global ampliado se definirá con la auditoría M19. AI Master permanece planificado fuera de esta ampliación. No fusionar PRs automáticamente.
+
+Las notas de releases y hojas de ruta anteriores que siguen a continuación son históricas. El nuevo M19 significa auditoría; la estabilización final corresponde a M40.
+
+---
+
 # M18.3.10 / 0.0.48 — scenes, services and typed references
 
 This correction is complete (100% of its scoped acceptance). All nine scripting API areas remain partial against their full Unity categories; no whole-Unity compatibility percentage is claimed. Historical weighted MVP remains approximately **94% (122/130)**; expanded SDK/Hub scope is unweighted. M18.4 GitHub integration and M19 hardening have not started. PR #39 remains draft/open/unmerged, stacked on #38; do not merge automatically. Live-account model quality/actual usage remains a separate acceptance gate.

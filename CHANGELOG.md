@@ -1,3 +1,10 @@
+# Planificación — 2026-10-19 (sin nueva versión ejecutable)
+
+- Amplía roadmap con 21 milestones de compatibilidad M19–M39; traslada el antiguo M19 Hardening a M40; mantiene M18.4.
+- Define 23 milestones pendientes con alcance, dependencias, demos, subtandas y aceptación.
+- Fija auditoría 6.3 LTS, métricas separadas y meta futura >=95% core/100% P0, sin atribuir implementación a la planificación.
+- Sincroniza documento maestro, handoff, estado y reporting; esquema permite milestone final 40. El 94% se conserva como MVP histórico.
+
 # 0.0.48 — M18.3.10
 
 - Physical scenes with Main Scene, additive authoring, active cameras and undoable close/reopen.

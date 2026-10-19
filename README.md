@@ -1,3 +1,15 @@
+# Planificación vigente — 2026-10-19
+
+El roadmap se amplía con **M19–M39** para compatibilidad funcional de la Scripting API y traslada el antiguo **M19 Hardening a M40**, al final. **M18.4 GitHub** conserva su alcance; quedan **23 milestones principales pendientes**. Las nuevas etapas están planificadas, no implementadas. La release ejecutable sigue siendo **0.0.48 / SDK 7**, verificada en CI 312.
+
+[Plan completo, entregables y dependencias](docs/architecture/ROADMAP_M19_M40.md) · [Manifest](docs/architecture/roadmap-v2.json). Meta futura: >=95% del inventario core fijado en M19 y 100% P0, sin ocultar parciales/bloqueos; paquetes y plataformas se miden por separado. El 94% es solo MVP histórico; el porcentaje global ampliado se definirá con la auditoría M19. AI Master permanece planificado fuera de esta ampliación. No fusionar PRs automáticamente.
+
+Seguimiento en GitHub: [issue #40](https://github.com/Krozzeo/AxiomEngine/issues/40).
+
+Las notas de releases y hojas de ruta anteriores que siguen a continuación son históricas. El nuevo M19 significa auditoría; la estabilización final corresponde a M40.
+
+---
+
 # M18.3.10 / 0.0.48 — scenes, services and typed references
 
 Physical .scene authoring, active/additive editor scenes, explicit saved-pref Inspector bindings, typed component/custom-script/file references, independent lockable Inspectors and SDK 7 presentation, grid navigation, HTTP and platform services are implemented. Runtime creation no longer has a cumulative 64-object quota. Hub Save waits for pending scene work; audio controls preserve authored values.

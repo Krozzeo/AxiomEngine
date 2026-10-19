@@ -1,3 +1,7 @@
+# Plan de expansión vigente
+
+[Roadmap M19–M40](../architecture/ROADMAP_M19_M40.md): auditoría, implementación por familias, conformidad integral y estabilización final. Este documento conserva la descripción de SDK 7; las milestones nuevas siguen planificadas y no amplían por sí mismas su cobertura ejecutable.
+
 # Scripting API compatibility — 0.0.48 / SDK 7
 
 The compatibility reference is Unity 6.3 LTS (6000.3). Axiom provides its own implementation under `Axiom.Gameplay`; it does not embed the Unity runtime. The source of truth for executable members is the SDK, the generated type pages and their tests. Start with INDEX.md and BATCHES.md.

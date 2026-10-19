@@ -1,3 +1,7 @@
+# Plan de expansión vigente
+
+[Roadmap M19–M40](../architecture/ROADMAP_M19_M40.md): auditoría, implementación por familias, conformidad integral y estabilización final. Este documento conserva la descripción de SDK 7; las milestones nuevas siguen planificadas y no amplían por sí mismas su cobertura ejecutable.
+
 # Scripting API batches — 0.0.48 / SDK 7
 
 Coverage means executable Axiom behavior, not complete Unity compatibility. [Release status and remaining dependencies](STATUS_0_0_48.md) distinguish scoped acceptance from full-category completion. Start with [INDEX.md](INDEX.md); per-type pages contain actual declarations, examples and limits.

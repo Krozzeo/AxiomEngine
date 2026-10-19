@@ -1,3 +1,13 @@
+# Planificación vigente — 2026-10-19
+
+El roadmap se amplía con **M19–M39** para compatibilidad funcional de la Scripting API y traslada el antiguo **M19 Hardening a M40**, al final. **M18.4 GitHub** conserva su alcance; quedan **23 milestones principales pendientes**. Las nuevas etapas están planificadas, no implementadas. La release ejecutable sigue siendo **0.0.48 / SDK 7**, verificada en CI 312.
+
+[Plan completo, entregables y dependencias](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json). Meta futura: >=95% del inventario core fijado en M19 y 100% P0, sin ocultar parciales/bloqueos; paquetes y plataformas se miden por separado. El 94% es solo MVP histórico; el porcentaje global ampliado se definirá con la auditoría M19. AI Master permanece planificado fuera de esta ampliación. No fusionar PRs automáticamente.
+
+Las notas de releases y hojas de ruta anteriores que siguen a continuación son históricas. El nuevo M19 significa auditoría; la estabilización final corresponde a M40.
+
+---
+
 # AXIOM ENGINE
 
 ## Documento maestro de producto, arquitectura e implementación
@@ -3573,7 +3583,9 @@ Este milestone demuestra la tesis completa de Axiom.
 
 ---
 
-# 138. MILESTONE 19 — MVP Hardening
+# 138. MILESTONE 40 — MVP Hardening (antes M19)
+
+La decisión de alcance de 2026-10-19 traslada esta aceptación al cierre M40. M19–M39 desarrollan la compatibilidad de API. Véase [ROADMAP_M19_M40.md](ROADMAP_M19_M40.md).
 
 ## Objetivo
 

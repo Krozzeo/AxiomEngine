@@ -1,15 +1,18 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-18",
+  "updatedAt": "2026-10-19",
   "engineVersion": "0.0.48",
   "activeMilestone": 18.3,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
-    "wholeProjectPercent": 94,
+    "wholeProjectPercent": null,
     "method": "docs/architecture/MILESTONE_REPORTING.md",
-    "scopeNote": "Historical original weighted MVP 122/130; expanded API compatibility is additional unweighted scope."
+    "scopeNote": "Roadmap expanded 2026-10-19. 94% is historical MVP only; expanded total and member-level API coverage remain unmeasured until M19. Planning earns no functional credit.",
+    "historicalMvpPercent": 94,
+    "historicalMvpCompletedWeight": 122,
+    "historicalMvpTotalWeight": 130
   },
   "milestones": {
     "0": {
@@ -90,7 +93,9 @@
     },
     "19": {
       "status": "not_started",
-      "percent": 0
+      "percent": 0,
+      "title": "Auditoría completa y contrato de compatibilidad",
+      "plan": "docs/architecture/M19_PLAN.md"
     },
     "13.1": {
       "status": "complete",
@@ -116,6 +121,132 @@
       "status": "complete",
       "percent": 100,
       "scope": "Correction acceptance only; Unity API categories remain partial"
+    },
+    "20": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Objetos, componentes y jerarquías compatibles",
+      "plan": "docs/architecture/M20_PLAN.md"
+    },
+    "21": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Matemáticas, geometría y utilidades",
+      "plan": "docs/architecture/M21_PLAN.md"
+    },
+    "22": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Ciclo de vida, tiempo, eventos y asincronía",
+      "plan": "docs/architecture/M22_PLAN.md"
+    },
+    "23": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Serialización, ScriptableObject y prefabs",
+      "plan": "docs/architecture/M23_PLAN.md"
+    },
+    "24": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Escenas, recursos, carga asíncrona y memoria",
+      "plan": "docs/architecture/M24_PLAN.md"
+    },
+    "25": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Física 3D: geometrías y consultas",
+      "plan": "docs/architecture/M25_PLAN.md"
+    },
+    "26": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Física 3D: solver avanzado y controladores",
+      "plan": "docs/architecture/M26_PLAN.md"
+    },
+    "27": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Física 2D: geometrías y consultas",
+      "plan": "docs/architecture/M27_PLAN.md"
+    },
+    "28": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Física 2D: joints y simulación avanzada",
+      "plan": "docs/architecture/M28_PLAN.md"
+    },
+    "29": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Input y dispositivos",
+      "plan": "docs/architecture/M29_PLAN.md"
+    },
+    "30": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Gráficos, cámaras, materiales y recursos GPU",
+      "plan": "docs/architecture/M30_PLAN.md"
+    },
+    "31": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Animación, rigging y Playables",
+      "plan": "docs/architecture/M31_PLAN.md"
+    },
+    "32": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Audio, mezcla y procesamiento",
+      "plan": "docs/architecture/M32_PLAN.md"
+    },
+    "33": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "UI, texto, layout y eventos",
+      "plan": "docs/architecture/M33_PLAN.md"
+    },
+    "34": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Mundos 2D/3D, partículas, terreno y vídeo",
+      "plan": "docs/architecture/M34_PLAN.md"
+    },
+    "35": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "NavMesh y navegación completa",
+      "plan": "docs/architecture/M35_PLAN.md"
+    },
+    "36": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Networking, HTTP y multijugador",
+      "plan": "docs/architecture/M36_PLAN.md"
+    },
+    "37": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Plataformas, APIs nativas y dispositivos especializados",
+      "plan": "docs/architecture/M37_PLAN.md"
+    },
+    "38": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "API de editor, assets, extensiones y builds",
+      "plan": "docs/architecture/M38_PLAN.md"
+    },
+    "39": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Módulos restantes, paquetes y conformidad integral",
+      "plan": "docs/architecture/M39_PLAN.md"
+    },
+    "40": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Estabilización final, producto y aceptación integral",
+      "plan": "docs/architecture/M40_PLAN.md"
     }
   },
   "implementation": {
@@ -1173,8 +1304,45 @@
     "docs/reports/M18_3_10_CURRENT_REPORT.md",
     "docs/scripting-api/STATUS_0_0_48.md",
     "demos/M18_3_10_GUIDE.md",
-    "docs/reports/m18-3-10-browser-evidence.json"
+    "docs/reports/m18-3-10-browser-evidence.json",
+    "docs/architecture/ROADMAP_M19_M40.md",
+    "docs/architecture/roadmap-v2.json",
+    "docs/architecture/M20_PLAN.md",
+    "docs/architecture/M21_PLAN.md",
+    "docs/architecture/M22_PLAN.md",
+    "docs/architecture/M23_PLAN.md",
+    "docs/architecture/M24_PLAN.md",
+    "docs/architecture/M25_PLAN.md",
+    "docs/architecture/M26_PLAN.md",
+    "docs/architecture/M27_PLAN.md",
+    "docs/architecture/M28_PLAN.md",
+    "docs/architecture/M29_PLAN.md",
+    "docs/architecture/M30_PLAN.md",
+    "docs/architecture/M31_PLAN.md",
+    "docs/architecture/M32_PLAN.md",
+    "docs/architecture/M33_PLAN.md",
+    "docs/architecture/M34_PLAN.md",
+    "docs/architecture/M35_PLAN.md",
+    "docs/architecture/M36_PLAN.md",
+    "docs/architecture/M37_PLAN.md",
+    "docs/architecture/M38_PLAN.md",
+    "docs/architecture/M39_PLAN.md",
+    "docs/architecture/M40_PLAN.md"
   ],
-  "nextTask": "Choose exact member-level scope for the next Unity-style API batch; retain all nine partial-category gaps. M18.4 GitHub integration and M19 hardening remain pending after applicable acceptance gates; do not merge stacked PRs automatically.",
-  "activeRevision": "M18.3.10"
+  "nextTask": "Implement M18.4 GitHub project integration, retaining live-account acceptance gates; then start M19 inventory/contract/conformance audit and M20–M39 compatibility expansion. Original M19 hardening is now M40 and remains last. M19 audit preparation may proceed while external M18.4 checks are pending. Do not merge stacked PRs automatically.",
+  "activeRevision": "M18.3.10",
+  "roadmap": {
+    "version": 2,
+    "manifest": "docs/architecture/roadmap-v2.json",
+    "document": "docs/architecture/ROADMAP_M19_M40.md",
+    "nextPlannedMilestone": "M18.4",
+    "compatibilityAudit": "M19",
+    "finalMilestone": "M40",
+    "pendingMainMilestones": 23,
+    "totalMainMilestones": 45,
+    "decisionDate": "2026-10-19",
+    "formerM19MovedTo": "M40",
+    "status": "planned",
+    "trackingIssue": "https://github.com/Krozzeo/AxiomEngine/issues/40"
+  }
 }

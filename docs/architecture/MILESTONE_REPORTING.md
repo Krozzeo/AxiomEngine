@@ -1,3 +1,18 @@
+# Reporting vigente — roadmap ampliado 2026-10-19
+
+[Roadmap M19–M40](ROADMAP_M19_M40.md) es la decisión de alcance vigente. El antiguo M19 se traslada a M40; M19–M39 son 21 milestones nuevas, todas inicialmente planificadas y sin crédito funcional. M18.4 permanece pendiente.
+
+- Progreso de milestone: aceptación requerida aprobada / aceptación requerida total; no contar documentos como implementación.
+- Cobertura API: firmas objetivo con comportamiento verificado / firmas objetivo del snapshot M19. Declarar parciales, bloqueos, plataformas, paquetes y exclusiones por separado; no deduplicar sobrecargas diferentes ni sumar miembros heredados varias veces.
+- Meta futura M39: >=95% del inventario core objetivo completo y 100% P0; no se reduce el denominador completo por capacidades no soportadas.
+- Progreso global ampliado: no cuantificado hasta que M19 publique la ponderación de alcance/esfuerzo y la auditoría. El 94% (122/130) es una métrica histórica del MVP y no se presenta como progreso de la expansión.
+- Los porcentajes orientativos por áreas discutidos en planificación no son una medición auditada y no alimentan el avance funcional.
+- Toda nueva aceptación conserva las obligaciones de evidencia, demos, handoff y revisión descritas abajo. M40 hereda íntegro el cierre anterior.
+
+La tabla de 130 puntos de abajo se conserva como referencia histórica; no incorpora los pesos todavía desconocidos de M19–M39.
+
+---
+
 # Milestone completion reports
 
 Every milestone closes with one report containing the following sections.
@@ -85,7 +100,7 @@ Report both values:
 | M18.3 Assisted PMD | 7 points |
 | M18.3 added linked prefabs and Players | 4 points |
 | M18.4 GitHub integration | 3 points |
-| M19 MVP Hardening | 5 points |
+| M40 MVP Hardening (former M19; historical scope weight) | 5 points |
 | **Total** | **130 points** |
 
 Partial milestone credit is allowed only for acceptance points with executable
@@ -138,6 +153,6 @@ Earlier closure reports preserve their historical nominal estimates.
 
 M18_EXTENSIONS_ROADMAP.md adds 22 points for M18.1–18.4 before M19. Completed baseline remains 99 points: 99/126 ≈ 79%. The prior 104-point table and 95% M18 estimate are historical; do not reuse them for expanded scope.
 
-## Current scope denominator
+## Historical MVP denominator (superseded for expanded scope)
 
 The accepted prefab/Player extension adds four points to the 126-point extended roadmap: 130 total, with 122 closed points (approximately 94%). Hub, later corrections and the expanded Unity-style scripting API have not been reweighted. Do not interpret 94% as full Unity compatibility, a percentage of the industrial vision or measured live-agent reliability. Historical 104/126-point reports retain their original denominators.

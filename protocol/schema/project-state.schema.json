@@ -30,7 +30,7 @@
     "activeMilestone": {
       "type": "number",
       "minimum": 0,
-      "maximum": 19
+      "maximum": 40
     },
     "milestoneStatus": {
       "enum": [

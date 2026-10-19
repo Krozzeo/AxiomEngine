@@ -1,3 +1,7 @@
+# Orden vigente — 2026-10-19
+
+M18.4 mantiene íntegro su alcance. Continúa pendiente y precede a la expansión M19–M39 en el orden recomendado; estabilización final se traslada a M40. [Roadmap](ROADMAP_M19_M40.md). La auditoría M19 puede prepararse sin dar por cerrados los gates externos de M18.4.
+
 # M18.4 — GitHub integration
 
 Status: not started. Depends on M18.1–M18.3. Integration concerns the user's game project, not automatic publication or modification of the Axiom engine repository.

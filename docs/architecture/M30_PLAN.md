@@ -1,28 +1,31 @@
-# M30 — Gráficos, cámaras, materiales y recursos GPU
+# M30 — Gráficos, shaders y recursos GPU
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Plan vigente desde 2026-10-19; ampliación explícita de físicas GPU/shaders. **No iniciada; 0% de aceptación nueva.**
 
-Dependencias mínimas: M21, M23, M24.
+Dependencias mínimas: M21, M23, M24, M25.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [Plan GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
 ## Alcance requerido
 
 - Completar Renderer, Mesh, Material, Shader, Texture/RenderTexture, cámaras y conversiones de coordenadas.
 - Luces, sombras, command buffers, dibujo y compute/readback asignados; decidir compatibilidad de shaders/pipelines mediante ADR y corpus.
 - Propiedad y liberación GPU, layouts/formatos, capacidades/tier y comportamiento Null explícito.
+- Consolidar la infraestructura WGSL compartida iniciada en M25.0: fuentes, layouts/reflexión necesaria, variantes/caché, validación/diagnóstico, recompilación segura y recursos render/compute; shaders físicos productivos y APIs Shader/ComputeShader del inventario, sin prometer traducción universal de HLSL/ShaderLab.
 
 ## Subtandas previstas
 
 - 30.1 Mesh/texturas/materiales y cámaras.
 - 30.2 Shaders, dibujo, luces y render targets.
 - 30.3 Compute/readback, recursos y tiers.
+- 30.4 Sistema compartido de shaders gráficos/compute, integración física/render, variantes, diagnóstico y corpus de API.
 
 ## Criterios de cierre
 
 - [ ] Pruebas visuales y de datos comprueban resultados del render y no solo propiedades del Inspector.
 - [ ] Crear/reemplazar/liberar recursos y perder capacidades no producen fugas ni éxito ficticio.
 - [ ] Cada modo de shader/pipeline tiene soporte, traducción o bloqueo declarado; las diferencias impiden contar equivalencia completa.
+- [ ] Las rutas de shaders gráficos y físicos reutilizan recursos y diagnóstico verificables; las APIs Shader/ComputeShader asignadas ejecutan resultados observables, con tests de recompilación, invalidación, límites y fallos.
 
 ## Demo editable requerida
 
@@ -30,7 +33,7 @@ Rendering Conformance Lab con materiales, cámaras, render textures y compute.
 
 ## Reglas comunes de ejecución y cierre
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
+- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 8 conserva su cobertura parcial; este plan no implementa las APIs.
 - Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
 - Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
 - Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.

@@ -15,3 +15,5 @@ Consequences and Status.
 - [ADR-0025: bounded Web Audio and PCM streaming](0025-bounded-web-audio-and-pcm-streaming.md).
 
 - [ADR-0026: bounded measured frame profiler](0026-bounded-measured-frame-profiler.md).
+
+- [ADR-0033: planificación de físicas GPU y shaders](0033-gpu-physics-and-shader-roadmap.md).

@@ -1,3 +1,9 @@
+# Planificación — físicas GPU y shaders (2026-10-19)
+
+- Concreta la intención CPU/GPU de ADR-0009 en nueve subtandas de M25/M26/M28/M30/M39 y amplía aceptación M19/M27/M40. M40 sigue al final; 45 principales y 23 pendientes.
+- Requiere kernels WGSL de producción, CPU fallback, integración C#/render/replay y evidencia física de GPU; no equivale a GPU implementada.
+- Sin nueva versión ejecutable, sin cambios de motor/interfaz y sin crédito de cobertura. Plan en docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md.
+
 # 0.0.49 — M18.3.11 / SDK 8
 
 - Referencias: hover compatible, resolución de componentes al arrastrar GameObjects y rechazo del componente equivocado.

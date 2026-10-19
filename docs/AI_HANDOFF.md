@@ -1,3 +1,17 @@
+# Ampliación planificada — físicas GPU y shaders
+
+La aceleración opcional pasa de intención general a entregas requeridas: M25.0 (compute WGSL y sincronización), M26.4–26.6 (3D), M28.4–28.6 (2D), M30.4 (sistema de shaders), M39.4 (conformidad CPU/GPU) y M40.2 (hardening). M19 fija contratos, hardware y umbrales. Se conserva CPU/Wasm, con selección medida y fallback explícito. **No implementado; aceptación nueva 0%.**
+
+Se mantienen 45 milestones principales, 23 pendientes y M40 final. La base ejecutable sigue siendo 0.0.49 / SDK 8, CI 315; planificar no cierra el rendimiento actual ni suma paridad con Unity.
+
+[Plan de físicas GPU y shaders](architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md)
+
+---
+
+## Solicitudes pendientes del editor, anteriores a esta ampliación
+
+No se implementan en este cambio de planificación: Always active a la izquierda del candado; título de escena de ancho ajustado al texto; retirar de Hierarchy la ayuda de selección/arrastre y el resumen de nombre/guardado/revisión; resaltar todos los campos compatibles al iniciar un drag y aumentar el resaltado al hacer hover; crear nuevas instancias de Inspector desde una única entrada Panels > Inspector, quitando Create > Inspector y el submenú por instancia. Investigar y corregir el primer render de escena con fondo/colores/iluminación incorrectos que se corrige al cambiar de escena y volver: la causa sigue sin confirmar. Conservar el pendiente de rendimiento CPU/puente M18.3.11. El desarrollo de GPU queda planificado para las etapas indicadas, sin empezar ahora.
+
 # M18.3.11 — 0.0.49 / SDK 8 (corrección previa al roadmap)
 
 Implementa las correcciones solicitadas de referencias, navegación, Inspectors, escenas, activación de componentes y rendimiento físico. **M18.4 y M19–M40 conservan su orden y sus criterios**; esta corrección no cierra ninguna de esas etapas.

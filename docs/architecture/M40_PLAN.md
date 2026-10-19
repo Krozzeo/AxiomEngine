@@ -1,21 +1,22 @@
 # M40 — Estabilización final, producto y aceptación integral
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Plan vigente desde 2026-10-19; ampliación explícita de físicas GPU/shaders. **No iniciada; 0% de aceptación nueva.**
 
 Dependencias mínimas: M18.4, M19, M20, M21, M22, M23, M24, M25, M26, M27, M28, M29, M30, M31, M32, M33, M34, M35, M36, M37, M38, M39.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [Plan GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
 ## Alcance requerido
 
 - Trasladar íntegramente el antiguo M19: estabilidad, performance, documentación, ejemplos, onboarding, safe mode, crash recovery, migraciones, project health y tiers.
 - Cerrar regresiones de toda la expansión, incluyendo el timeout intermitente de Apply observado en M18.2; instalaciones limpias, datos dañados/interrumpidos y recuperación.
 - Ejecutar la aceptación integral del documento maestro: sample 2D/3D y propuesta IA revisada de enemigo que sigue/recibe daño/emite feedback, con tests y evidencia de principio a fin.
+- Hardening CPU/GPU: ausencia/pérdida de dispositivo, recursos y memoria, sesiones prolongadas, migración segura de backend y replay; rendimiento físico/editor completo en integrada y dedicada de fabricantes diferentes según perfiles M19.
 
 ## Subtandas previstas
 
 - 40.1 Instalación, recuperación y migraciones.
-- 40.2 Rendimiento, estabilidad y matriz multiplataforma.
+- 40.2 Rendimiento, estabilidad y matriz multiplataforma. Incluye física CPU/GPU, shaders, device loss y transferencia/readback.
 - 40.3 Sample integral, flujo IA, documentación y release.
 
 ## Criterios de cierre
@@ -23,6 +24,7 @@ Dependencias mínimas: M18.4, M19, M20, M21, M22, M23, M24, M25, M26, M27, M28, 
 - [ ] M18.4 y M19–M39 están aceptadas con evidencia; ninguna exclusión pendiente se disfraza de prueba aprobada.
 - [ ] El sample completo funciona en capacidades/tiers declarados, con builds reproducibles, estabilidad y mediciones representativas.
 - [ ] El agente inspecciona/edita/compila/ejecuta/verifica/repara/mide y presenta una propuesta revisable; las verificaciones de cuenta/hardware necesarias tienen evidencia real.
+- [ ] Los gates físicos GPU, shaders y alternativa CPU tienen evidencia real por tier; WebGPU de software/Null no sustituyen GPU física ni permiten cerrar un bloqueo de hardware.
 
 ## Demo editable requerida
 
@@ -30,7 +32,7 @@ Axiom End-to-End Sample original de las secciones 138–139 del documento maestr
 
 ## Reglas comunes de ejecución y cierre
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
+- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 8 conserva su cobertura parcial; este plan no implementa las APIs.
 - Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
 - Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
 - Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.

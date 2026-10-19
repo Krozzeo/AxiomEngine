@@ -15,3 +15,7 @@ Backend selection emits reason codes and remains queryable per workload.
 ## Status
 Accepted.
 
+
+## Ampliación de alcance — 2026-10-19
+
+[ADR-0033](0033-gpu-physics-and-shader-roadmap.md) convierte la promoción medida a GPU en subtandas requeridas del roadmap. Conserva la alternativa CPU/Wasm y el rechazo de GPU obligatoria. El backend GPU sigue planificado, sin implementación ni aceptación atribuida a esta decisión.

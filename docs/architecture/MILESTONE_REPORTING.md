@@ -9,6 +9,8 @@
 - Los porcentajes orientativos por áreas discutidos en planificación no son una medición auditada y no alimentan el avance funcional.
 - Toda nueva aceptación conserva las obligaciones de evidencia, demos, handoff y revisión descritas abajo. M40 hereda íntegro el cierre anterior.
 
+La ampliación de [físicas GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md) añade nueve subtandas requeridas dentro de las milestones existentes. No cambia el total de principales ni suma aceptación; exigir evidencia CPU/GPU separada, rendimiento completo y hardware físico para los gates de aceleración. M26/M28/M30/M39/M40 permanecen abiertas si sus nuevos criterios no pasan.
+
 La tabla de 130 puntos de abajo se conserva como referencia histórica; no incorpora los pesos todavía desconocidos de M19–M39.
 
 ---

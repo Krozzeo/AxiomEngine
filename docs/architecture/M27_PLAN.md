@@ -1,16 +1,17 @@
 # M27 — Física 2D: geometrías y consultas
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Plan vigente desde 2026-10-19; ampliación explícita de físicas GPU/shaders. **No iniciada; 0% de aceptación nueva.**
 
 Dependencias mínimas: M20, M21, M22.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [Plan GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
 ## Alcance requerido
 
 - Capsule, Polygon, Edge, Composite y demás Collider2D asignados; materiales y geometría de TilemapCollider coordinada con M34.
 - Completar Physics2D, ContactFilter2D, casts, overlaps, distancias, contactos y escenas físicas.
 - Alinear escala, rotación, profundidad, normales y unidades; representación nativa y puente C#.
+- Preparar el corpus CPU 2D que servirá como referencia del backend GPU M28: plano, geometrías, filtros, triggers y consultas; documentar los contratos de snapshot/readback sin devolver datos atrasados ocultos.
 
 ## Subtandas previstas
 
@@ -23,6 +24,7 @@ Dependencias mínimas: M20, M21, M22.
 - [ ] Polígonos, bordes y cápsulas colisionan y se consultan con resultados medidos.
 - [ ] Filtros de capa/profundidad/normal/triggers y sobrecargas tienen cobertura.
 - [ ] Casos degenerados y límites preservan el estado y reportan errores útiles.
+- [ ] El corpus de consultas/contactos 2D y sus tolerancias queda reutilizable para comparación CPU/GPU en M28; esto no equivale a implementar el backend GPU.
 
 ## Demo editable requerida
 
@@ -30,7 +32,7 @@ Dependencias mínimas: M20, M21, M22.
 
 ## Reglas comunes de ejecución y cierre
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
+- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 8 conserva su cobertura parcial; este plan no implementa las APIs.
 - Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
 - Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
 - Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.

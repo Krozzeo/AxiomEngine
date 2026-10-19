@@ -155,13 +155,13 @@
     "25": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 3D: geometrías y consultas",
+      "title": "Física 3D: geometrías, consultas e infraestructura compute",
       "plan": "docs/architecture/M25_PLAN.md"
     },
     "26": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 3D: solver avanzado y controladores",
+      "title": "Física 3D CPU/GPU: solver avanzado y controladores",
       "plan": "docs/architecture/M26_PLAN.md"
     },
     "27": {
@@ -173,7 +173,7 @@
     "28": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 2D: joints y simulación avanzada",
+      "title": "Física 2D CPU/GPU: joints y simulación avanzada",
       "plan": "docs/architecture/M28_PLAN.md"
     },
     "29": {
@@ -185,7 +185,7 @@
     "30": {
       "status": "not_started",
       "percent": 0,
-      "title": "Gráficos, cámaras, materiales y recursos GPU",
+      "title": "Gráficos, shaders y recursos GPU",
       "plan": "docs/architecture/M30_PLAN.md"
     },
     "31": {
@@ -302,6 +302,15 @@
       "sharedComponentEnabled": true,
       "benchmark": "docs/reports/m18-3-11-physics.json",
       "performanceAccepted": false
+    },
+    "gpuPhysics": {
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "implemented": false,
+      "plannedBackend": "WebGPU compute / WGSL",
+      "currentPhysicsBackend": "CPU/Wasm",
+      "plan": "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
+      "adr": "docs/adr/0033-gpu-physics-and-shader-roadmap.md"
     }
   },
   "verified": {
@@ -1561,9 +1570,11 @@
     "docs/architecture/M39_PLAN.md",
     "docs/architecture/M40_PLAN.md",
     "docs/reports/M18_3_11_CURRENT_REPORT.md",
-    "docs/scripting-api/STATUS_0_0_49.md"
+    "docs/scripting-api/STATUS_0_0_49.md",
+    "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
+    "docs/adr/0033-gpu-physics-and-shader-roadmap.md"
   ],
-  "nextTask": "M18.3.11: optimize dense 2D/3D physics and C#/JS synchronization, measure GPU load and accept remaining performance criteria; then M18.4 GitHub integration -> M19 audit -> M20-M39 -> M40. No automatic merge.",
+  "nextTask": "Finish requested Hierarchy/Inspector/drag-feedback changes and investigate first-load rendering bug; retain M18.3.11 CPU/bridge performance work. Then M18.4 -> M19 audit -> roadmap including planned GPU/WGSL stages M25/M26/M28/M30 -> M39 -> M40. GPU physics is not implemented by this planning update. No automatic merge.",
   "activeRevision": "M18.3.11",
   "roadmap": {
     "version": 2,
@@ -1577,6 +1588,20 @@
     "decisionDate": "2026-10-19",
     "formerM19MovedTo": "M40",
     "status": "planned",
-    "trackingIssue": "https://github.com/Krozzeo/AxiomEngine/issues/40"
+    "trackingIssue": "https://github.com/Krozzeo/AxiomEngine/issues/40",
+    "scopeRevision": "2026-10-19-gpu-physics",
+    "gpuPhysicsPlan": "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
+    "gpuPhysicsStatus": "not_started",
+    "gpuPhysicsNewBatches": [
+      "M25.0",
+      "M26.4",
+      "M26.5",
+      "M26.6",
+      "M28.4",
+      "M28.5",
+      "M28.6",
+      "M30.4",
+      "M39.4"
+    ]
   }
 }

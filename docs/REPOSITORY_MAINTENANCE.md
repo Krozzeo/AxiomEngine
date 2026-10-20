@@ -63,3 +63,9 @@ Los diagnósticos de CI 326 confirman renderer WebGPU detenido en MAIN/revisión
 El bridge ahora solo adopta una respuesta si el snapshot que la pidió sigue siendo el actual, y descarta respuestas posteriores al cierre. El próximo poll reconcilia cambios externos con el estado actual. Tres pruebas deterministas: dos fallaban con el código anterior, las tres pasan con el corregido. `npm run check` completo: **441/441 Node**. La atribución final del fallo CI M18.2 exige aprobar su recorrido remoto; no se cierra solo por la reproducción unitaria.
 
 Referencias administrativas verificadas: [regla main](https://github.com/Krozzeo/AxiomEngine/rules/25508502), [regla recovery](https://github.com/Krozzeo/AxiomEngine/rules/25508420), [milestones](https://github.com/Krozzeo/AxiomEngine/milestones), [etiquetas](https://github.com/Krozzeo/AxiomEngine/labels), [release fija](https://github.com/Krozzeo/AxiomEngine/releases/tag/recovery%2Fpre-restructure-0.0.52). Se usó la sesión de navegador iniciada por el usuario; no se extrajeron credenciales internas de Git.
+
+## Sincronización del recorrido M18.2
+
+CI 328 mantuvo el fallo de preview aun después del guard del bridge; ese defecto real no se presenta como causa suficiente del fallo de navegador. El recorrido histórico usaba la visibilidad de la barra para inferir preview activo, pero desde M18.2.1 esa barra también está visible en MAIN. La espera podía resolver antes del cambio de vista y encadenar clicks sobre estados equivocados.
+
+El recorrido ahora espera `Exit preview`/`Preview` y que termine la acción. Edita primero X=6 y verifica el valor real en el workspace antes de volver a X=5; exige que Play esté activo en ese workspace antes de Stop. Tras descartar, espera que desaparezca la barra. Conserva la comprobación de `profileContext.workspaceId` y el timeout original. Las 36 milestones de navegador se conservan; M18.2/M18/M7 se ejecutan primero para obtener antes evidencia de las regresiones.

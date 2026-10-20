@@ -1,0 +1,22 @@
+name: Reportar un problema
+description: Registrar una falla reproducible con evidencia.
+title: "Bug: "
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Pasos y versión
+      description: Versión o commit, sistema y pasos concretos.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Resultado esperado y observado
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidencia y límites
+      description: Logs sin credenciales, captura, CI, renderer y servicio real o controlado. Separar hechos de hipótesis.

@@ -1,0 +1,16 @@
+name: Trabajo planificado
+description: Definir un cambio acotado y verificable.
+body:
+  - type: textarea
+    id: scope
+    attributes:
+      label: Objetivo y alcance
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceptación
+      description: Incluir dependencia o milestone y pruebas necesarias.
+    validations:
+      required: true

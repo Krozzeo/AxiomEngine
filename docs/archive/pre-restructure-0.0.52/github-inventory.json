@@ -1,0 +1,734 @@
+{
+  "date": "2026-10-20",
+  "baseline": "e264ca835de14daf4fe964be6a78be5e4646ad14",
+  "oldMain": "16c065c88f51780d489bf60082c73873a60db31d",
+  "pullRequests": [
+    {
+      "number": 46,
+      "title": "Renew Hub and autosaved, project-scoped GitHub workflow (0.0.52)",
+      "base": "codex/m18-inspector-scene-corrections",
+      "head": "codex/hub-github-workflow",
+      "sha": "e264ca835de14daf4fe964be6a78be5e4646ad14",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/46",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 45,
+      "title": "Complete requested Inspector/Hierarchy corrections and fix first-open scene rendering",
+      "base": "codex/m18-4-github-publication",
+      "head": "codex/m18-inspector-scene-corrections",
+      "sha": "1dea1d85d6f54d28c52d1b04945759e088ea2c2a",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/45",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 44,
+      "title": "M18.4: GitHub publication, two demos and agreed functional closure",
+      "base": "codex/gpu-physics-shader-plan",
+      "head": "codex/m18-4-github-publication",
+      "sha": "74261599ff7336a229d4827a4ba3c8fc18c5f20a",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/44",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 43,
+      "title": "Planificar físicas GPU 2D/3D y desarrollo de shaders WGSL",
+      "base": "codex/m18-3-11-editor-runtime-performance",
+      "head": "codex/gpu-physics-shader-plan",
+      "sha": "bda29c19cee169a34442e0a4a6ef2cb58b19d4e8",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/43",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 42,
+      "title": "M18.3.11: editor, escenas, SDK 8 y escalabilidad de física",
+      "base": "codex/m19-m40-api-roadmap",
+      "head": "codex/m18-3-11-editor-runtime-performance",
+      "sha": "b471f2a935b05a7517c9887c44aa8569edb5312e",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/42",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 41,
+      "title": "Plan ampliado M19–M40: Scripting API funcional y estabilización final",
+      "base": "codex/m18-3-10-scenes-api",
+      "head": "codex/m19-m40-api-roadmap",
+      "sha": "52147a3dd3b18cc07e3b3c7a3c24a3abaa9a45df",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/41",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 39,
+      "title": "0.0.48 · SDK 7, physical scenes, typed references and independent Inspectors",
+      "base": "codex/m18-3-9-input-scenes-physics",
+      "head": "codex/m18-3-10-scenes-api",
+      "sha": "023e1383857cf7c3cc6523f6a16e0078cd23c621",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/39",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 38,
+      "title": "0.0.47: runtime clone selection, Input, scenes/resources and physics",
+      "base": "codex/m18-3-8-captures-runtime",
+      "head": "codex/m18-3-9-input-scenes-physics",
+      "sha": "92132e92cc8a8708f28e7dff3a81a93e7c032f35",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/38",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 37,
+      "title": "0.0.46: panel vision, durable Apply and runtime/2D/3D physics APIs",
+      "base": "codex/m18-3-7-api-context",
+      "head": "codex/m18-3-8-captures-runtime",
+      "sha": "267065ce1eaa9a2402498b2e9e130a3c9423f766",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/37",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 36,
+      "title": "M18.3.7 / 0.0.45: task approval, context, PMD sections and scripting API",
+      "base": "codex/m18-3-6-hub-pmd",
+      "head": "codex/m18-3-7-api-context",
+      "sha": "e94543835ff8616985db07d21c5377f625cf7f57",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/36",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 35,
+      "title": "M18.3.6 / 0.0.44: repair PMD scope loops, project Hub and budgets",
+      "base": "codex/m18-3-5-agent-hub",
+      "head": "codex/m18-3-6-hub-pmd",
+      "sha": "94619f8d0345f33d79685cc0e6b2eaa4835e6157",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/35",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 34,
+      "title": "M18.3.5: validated agent workflow, progressive PMD and persistent Hub",
+      "base": "codex/m18-3-4-pmd-recovery",
+      "head": "codex/m18-3-5-agent-hub",
+      "sha": "d836b8aceca6e8ddf113ea27634852a3993f9b0a",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/34",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 33,
+      "title": "M18.3.4: repair live PMD transitions, recovery and workflow plan failures",
+      "base": "codex/m18-3-3-agent-workflow",
+      "head": "codex/m18-3-4-pmd-recovery",
+      "sha": "cf851ffeecf619fe7f78fa36af278d478c8fd784",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/33",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 32,
+      "title": "M18.3.3: persistent verified agent workflow and PMD history",
+      "base": "codex/m18-3-agent-workflow-research",
+      "head": "codex/m18-3-3-agent-workflow",
+      "sha": "f1c2f887cbecad4ef53f36e30311a0ededb3ab92",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/32",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 31,
+      "title": "Investigate agent workflow failure and patch fflate ZIP64 vulnerability",
+      "base": "codex/m18-3-2-pmd-conversation",
+      "head": "codex/m18-3-agent-workflow-research",
+      "sha": "e8669422f2a7e4a33f185ad4750c96690f56b24f",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/31",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 30,
+      "title": "M18.3.2: PMD continuity, shared chat feedback and live direction guides",
+      "base": "codex/m18-3-1-player-runtime-repair",
+      "head": "codex/m18-3-2-pmd-conversation",
+      "sha": "08f7005879bd6e5a942eee9051aadd271dbb0d8d",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/30",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 29,
+      "title": "M18.3.1: repair Create, editable Players, detached input and assistant recovery",
+      "base": "codex/m18-3-pmd-prefab-players",
+      "head": "codex/m18-3-1-player-runtime-repair",
+      "sha": "398bf94bb681e84d27c6428fd541354fbe75a238",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/29",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 28,
+      "title": "M18.3: assisted PMD, linked prefabs and four Player controllers",
+      "base": "codex/m18-2-1-script-efficiency",
+      "head": "codex/m18-3-pmd-prefab-players",
+      "sha": "21bcd97bf8e0bfba9161129d92f8808e24b05dd1",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/28",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 27,
+      "title": "M18.2.1: Fix assistant C# compilation loops and preview UX",
+      "base": "codex/m18-2-preview-efficiency",
+      "head": "codex/m18-2-1-script-efficiency",
+      "sha": "9cb2afefa0c3eae8df939e6f703b838feed09157",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/27",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 26,
+      "title": "M18.2: editable AI preview, grouped tools and request history",
+      "base": "codex/m18-1-2-session-budget",
+      "head": "codex/m18-2-preview-efficiency",
+      "sha": "bd32e28339cf438b1d835241f25db99bc165f833",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/26",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 25,
+      "title": "M18.1.2: persistent AI session tokens and interrupted task continuation",
+      "base": "codex/m18-1-1-fixes",
+      "head": "codex/m18-1-2-session-budget",
+      "sha": "8b6ff7b1eba39dfc054ef6f4ab9ba1937979e029",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/25",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 24,
+      "title": "M18.1.1: repair assistant discovery and configuration/chat UX",
+      "base": "codex/m18-1-openai",
+      "head": "codex/m18-1-1-fixes",
+      "sha": "6a2fa5376e1e2ebd6c1e53a30054c9ada9679fd0",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/24",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 23,
+      "title": "M18.1: OpenAI connection and bounded multistep project assistant",
+      "base": "codex/m18-autonomy",
+      "head": "codex/m18-1-openai",
+      "sha": "e137b01b219c393b6c5b111866b8170e345cd2d6",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/23",
+      "state": "open",
+      "draft": true,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 22,
+      "title": "M18: bounded autonomy, live Inspector and compilation after Stop",
+      "base": "codex/m17-assets",
+      "head": "codex/m18-autonomy",
+      "sha": "5ec491da85df094fe16f87fbf3f6143e9d55ac6b",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/22",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 21,
+      "title": "M17: advanced CAD assets, reusable C# components and multi-tab IDE",
+      "base": "codex/m16-1-editor",
+      "head": "codex/m17-assets",
+      "sha": "aeedda541ebf054fad857ce5c5ac33938382a9e9",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/21",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 20,
+      "title": "M16.1: source IDE, ambient fill and editor UX corrections",
+      "base": "codex/m16-performance",
+      "head": "codex/m16-1-editor",
+      "sha": "b5b1757cf41a49e9c89f186b62e1742714bdf357",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/20",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 19,
+      "title": "M16: Project authoring, contextual editing and bounded low-end performance",
+      "base": "codex/m15-replay",
+      "head": "codex/m16-performance",
+      "sha": "cbcfc67695543bebe50dcb500fcfb30defdef013",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/19",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 18,
+      "title": "M15: verified replay, entity cameras and AI project context",
+      "base": "codex/m14-game-testing",
+      "head": "codex/m15-replay",
+      "sha": "f2a11bffd853e1bf9d085f81095ebfb1d5a3a879",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/18",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 17,
+      "title": "M14: isolated game testing and parallel editor workspace",
+      "base": "codex/m13-1-editor-workspace",
+      "head": "codex/m14-game-testing",
+      "sha": "5324901a6dec2238bfe9290b76b84d3b5dce370c",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/17",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 16,
+      "title": "M13.1: draggable editor panels, retained profiler captures and reload-safe sessions",
+      "base": "codex/m13-profiler",
+      "head": "codex/m13-1-editor-workspace",
+      "sha": "901ce4715b6f3b899aa499a0483f3765364f8549",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/16",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 15,
+      "title": "M13: measured frame profiler and explainFrameSpike",
+      "base": "codex/m12-audio",
+      "head": "codex/m13-profiler",
+      "sha": "0223e912320e199bc45e6c6173eebdc7c3b0c5de",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/15",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 14,
+      "title": "M12: bounded audio sources, spatial mixer and PCM streaming",
+      "base": "codex/m11-animation",
+      "head": "codex/m12-audio",
+      "sha": "7ba5aaba645108121f9397b2808341feeb5d1fc9",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/14",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 13,
+      "title": "M11: general animation and pixel-art Scene clarity",
+      "base": "codex/m10-2d-production",
+      "head": "codex/m11-animation",
+      "sha": "ff10b1a0ad1283474095fb746e6adbabc405ebf5",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/13",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 12,
+      "title": "M10: complete 2D production foundation and editable demos",
+      "base": "codex/m9-editor-refinements",
+      "head": "codex/m10-2d-production",
+      "sha": "4074c59d0540fa3cd3201045a6503241b134489b",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/12",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 11,
+      "title": "M9.2: complete authoring UX, group editing and primitive normal refinements",
+      "base": "codex/m9-editor-physics-corrections",
+      "head": "codex/m9-editor-refinements",
+      "sha": "cf1ae777e060a1606311a1407d05bfcc0aa46ad1",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/11",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 10,
+      "title": "M9.1: complete editor authoring corrections and angular 2D/3D contacts",
+      "base": "codex/m9-renderer-production",
+      "head": "codex/m9-editor-physics-corrections",
+      "sha": "58c9567301c39ddb3a1ed8c491330153fa44c90c",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/10",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 9,
+      "title": "Add bounded HDR PBR rendering, Forward+ instancing and editable M9 demos",
+      "base": "codex/m8-causal-diagnostics",
+      "head": "codex/m9-renderer-production",
+      "sha": "1ea7b2cbf4a881d427705b8a5efda09a7cb7166b",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/9",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 8,
+      "title": "M8: Causal diagnostics and visual scene authoring",
+      "base": "codex/m7-physics-foundation",
+      "head": "codex/m8-causal-diagnostics",
+      "sha": "314bcd8d30c67110cc466e553d772542bcd59260",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/8",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 7,
+      "title": "M7: CPU/Wasm physics foundation and editable 2D/3D demos",
+      "base": "codex/m6-transactional-workspaces",
+      "head": "codex/m7-physics-foundation",
+      "sha": "fa459ef3457989490cb20037b3a57ea6a560b86e",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/7",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 6,
+      "title": "M6: isolated AI proposals with human review and transactional acceptance",
+      "base": "codex/m5-ai-control",
+      "head": "codex/m6-transactional-workspaces",
+      "sha": "fe08c876f38b791dd1ef59d19971c876fb697bd6",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/6",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 5,
+      "title": "M5: semantic AI tools, MCP stdio and real renderer captures",
+      "base": "codex/m4-csharp-gameplay",
+      "head": "codex/m5-ai-control",
+      "sha": "9f4c04b2f4d37524c401ee6a683292d94388182d",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/5",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 4,
+      "title": "M4: C# gameplay, scoped compilation and safe runtime reload",
+      "base": "codex/m3-asset-pipeline",
+      "head": "codex/m4-csharp-gameplay",
+      "sha": "706f9c101bc20c03d2de9c2657ad50350c5dd92a",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/4",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 3,
+      "title": "M3 complete: incremental asset builds, background imports and hot reload",
+      "base": "codex/m2-project-persistence",
+      "head": "codex/m3-asset-pipeline",
+      "sha": "6403a14a42c4e31ed28547fd734b53764a0bf536",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/3",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 2,
+      "title": "M2 complete: persistent 2D/3D scenes, PNG/GLB imports and isolated Play",
+      "base": "codex/m1-wasm-kernel",
+      "head": "codex/m2-project-persistence",
+      "sha": "36b9ab5c5e25cdb30691fe55a909e9a985d2ab4b",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/2",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "number": 1,
+      "title": "M1: integrate Rust/Wasm kernel with WebGPU and Null rendering",
+      "base": "main",
+      "head": "codex/m1-wasm-kernel",
+      "sha": "41d7afdc0761a5989705bc3c257fbbd490a73fd3",
+      "url": "https://github.com/Krozzeo/AxiomEngine/pull/1",
+      "state": "open",
+      "draft": false,
+      "containedInRecoveryBaseline": true
+    }
+  ],
+  "branches": [
+    {
+      "name": "codex/gpu-physics-shader-plan",
+      "sha": "bda29c19cee169a34442e0a4a6ef2cb58b19d4e8",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/hub-github-workflow",
+      "sha": "e264ca835de14daf4fe964be6a78be5e4646ad14",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m1-wasm-kernel",
+      "sha": "41d7afdc0761a5989705bc3c257fbbd490a73fd3",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m2-project-persistence",
+      "sha": "36b9ab5c5e25cdb30691fe55a909e9a985d2ab4b",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m3-asset-pipeline",
+      "sha": "6403a14a42c4e31ed28547fd734b53764a0bf536",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m4-csharp-gameplay",
+      "sha": "706f9c101bc20c03d2de9c2657ad50350c5dd92a",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m5-ai-control",
+      "sha": "9f4c04b2f4d37524c401ee6a683292d94388182d",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m6-transactional-workspaces",
+      "sha": "fe08c876f38b791dd1ef59d19971c876fb697bd6",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m7-physics-foundation",
+      "sha": "fa459ef3457989490cb20037b3a57ea6a560b86e",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m8-causal-diagnostics",
+      "sha": "314bcd8d30c67110cc466e553d772542bcd59260",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m9-editor-physics-corrections",
+      "sha": "58c9567301c39ddb3a1ed8c491330153fa44c90c",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m9-editor-refinements",
+      "sha": "cf1ae777e060a1606311a1407d05bfcc0aa46ad1",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m9-renderer-production",
+      "sha": "1ea7b2cbf4a881d427705b8a5efda09a7cb7166b",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m10-2d-production",
+      "sha": "4074c59d0540fa3cd3201045a6503241b134489b",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m11-animation",
+      "sha": "ff10b1a0ad1283474095fb746e6adbabc405ebf5",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m12-audio",
+      "sha": "7ba5aaba645108121f9397b2808341feeb5d1fc9",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m13-1-editor-workspace",
+      "sha": "901ce4715b6f3b899aa499a0483f3765364f8549",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m13-profiler",
+      "sha": "0223e912320e199bc45e6c6173eebdc7c3b0c5de",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m14-game-testing",
+      "sha": "5324901a6dec2238bfe9290b76b84d3b5dce370c",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m15-replay",
+      "sha": "f2a11bffd853e1bf9d085f81095ebfb1d5a3a879",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m16-1-editor",
+      "sha": "b5b1757cf41a49e9c89f186b62e1742714bdf357",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m16-performance",
+      "sha": "cbcfc67695543bebe50dcb500fcfb30defdef013",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m17-assets",
+      "sha": "aeedda541ebf054fad857ce5c5ac33938382a9e9",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-1-1-fixes",
+      "sha": "6a2fa5376e1e2ebd6c1e53a30054c9ada9679fd0",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-1-2-session-budget",
+      "sha": "8b6ff7b1eba39dfc054ef6f4ab9ba1937979e029",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-1-openai",
+      "sha": "e137b01b219c393b6c5b111866b8170e345cd2d6",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-2-1-script-efficiency",
+      "sha": "9cb2afefa0c3eae8df939e6f703b838feed09157",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-2-preview-efficiency",
+      "sha": "bd32e28339cf438b1d835241f25db99bc165f833",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-1-player-runtime-repair",
+      "sha": "398bf94bb681e84d27c6428fd541354fbe75a238",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-2-pmd-conversation",
+      "sha": "08f7005879bd6e5a942eee9051aadd271dbb0d8d",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-3-agent-workflow",
+      "sha": "f1c2f887cbecad4ef53f36e30311a0ededb3ab92",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-4-pmd-recovery",
+      "sha": "cf851ffeecf619fe7f78fa36af278d478c8fd784",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-5-agent-hub",
+      "sha": "d836b8aceca6e8ddf113ea27634852a3993f9b0a",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-6-hub-pmd",
+      "sha": "94619f8d0345f33d79685cc0e6b2eaa4835e6157",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-7-api-context",
+      "sha": "e94543835ff8616985db07d21c5377f625cf7f57",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-8-captures-runtime",
+      "sha": "267065ce1eaa9a2402498b2e9e130a3c9423f766",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-9-input-scenes-physics",
+      "sha": "92132e92cc8a8708f28e7dff3a81a93e7c032f35",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-10-scenes-api",
+      "sha": "023e1383857cf7c3cc6523f6a16e0078cd23c621",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-11-editor-runtime-performance",
+      "sha": "b471f2a935b05a7517c9887c44aa8569edb5312e",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-agent-workflow-research",
+      "sha": "e8669422f2a7e4a33f185ad4750c96690f56b24f",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-3-pmd-prefab-players",
+      "sha": "21bcd97bf8e0bfba9161129d92f8808e24b05dd1",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-4-github-publication",
+      "sha": "74261599ff7336a229d4827a4ba3c8fc18c5f20a",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-autonomy",
+      "sha": "5ec491da85df094fe16f87fbf3f6143e9d55ac6b",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m18-inspector-scene-corrections",
+      "sha": "1dea1d85d6f54d28c52d1b04945759e088ea2c2a",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "codex/m19-m40-api-roadmap",
+      "sha": "52147a3dd3b18cc07e3b3c7a3c24a3abaa9a45df",
+      "containedInRecoveryBaseline": true
+    },
+    {
+      "name": "main",
+      "sha": "16c065c88f51780d489bf60082c73873a60db31d",
+      "containedInRecoveryBaseline": true
+    }
+  ]
+}

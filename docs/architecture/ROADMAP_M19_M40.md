@@ -4,7 +4,7 @@ M18.4 cerrada con validación nativa manual aplazada por decisión del usuario; 
 
 # Roadmap ampliado — M19 a M40
 
-Decisión de alcance: **2026-10-19**, solicitada por el usuario. Plan vigente sobre Axiom **0.0.49 / SDK 8**; no es una nueva versión ejecutable ni una aceptación funcional.
+Decisión de alcance: **2026-10-19**, solicitada por el usuario. Plan originalmente aprobado sobre Axiom **0.0.49 / SDK 8**. Base funcional actual: **0.0.52 / SDK 8** integrada en `main`; [estado y verificación](IMPLEMENTATION_STATUS.md). Este documento no acredita implementación ni aceptación de las etapas futuras.
 
 ## Número de milestones y migración
 
@@ -24,7 +24,7 @@ Se publican cobertura total, cobertura de perfiles de plataforma y cobertura por
 
 ## Estado y porcentajes
 
-La implementación verificada es 0.0.49 / SDK 8: CI 315, 42 trabajos, 415 tests Node, 44 Rust y 33 grupos de navegador. Las físicas actuales siguen siendo CPU/Wasm; el backend GPU aquí planificado no está implementado. Los porcentajes por área de la conversación anterior son estimaciones de planificación; no forman una línea base auditada.
+La última base con CI completo verde fue 0.0.49 / SDK 8: CI 315, 42 trabajos, 415 tests Node, 44 Rust y 33 grupos de navegador. La entrega vigente 0.0.52 tiene evidencia local propia y tres fallos de navegador en CI 320; consultar el estado enlazado. Las físicas actuales siguen siendo CPU/Wasm; el backend GPU aquí planificado no está implementado. Los porcentajes por área de la conversación anterior son estimaciones de planificación; no forman una línea base auditada.
 
 El **94% (122/130)** se conserva únicamente como **MVP histórico**. El avance global ampliado queda **sin cuantificar hasta M19**, que deberá definir esfuerzo relativo y criterios medibles. Publicar este plan no gana crédito funcional. Una ponderación futura tendrá que distinguir esfuerzo de roadmap y cobertura API por firmas.
 
@@ -58,7 +58,7 @@ El **94% (122/130)** se conserva únicamente como **MVP histórico**. El avance 
 
 ## Ampliación de físicas GPU y shaders — 2026-10-19
 
-La aceleración era una intención de ADR-0009 y M30 ya contemplaba shaders/compute. Ahora es alcance explícito y requerido: **M25.0** infraestructura compute WGSL y puente; **M26.4–26.6** físicas GPU 3D; **M28.4–28.6** físicas GPU 2D; **M30.4** sistema compartido de shaders; **M39.4** conformidad cruzada; **M40.2** hardening. M19 fija el contrato y los umbrales. Son nueve subtandas nuevas, no nueve milestones principales: permanecen 45 principales y 23 pendientes, con M40 al final.
+La aceleración era una intención de ADR-0009 y M30 ya contemplaba shaders/compute. Ahora es alcance explícito y requerido: **M25.0** infraestructura compute WGSL y puente; **M26.4–26.6** físicas GPU 3D; **M28.4–28.6** físicas GPU 2D; **M30.4** sistema compartido de shaders; **M39.4** conformidad cruzada; **M40.2** hardening. M19 fija el contrato y los umbrales. Son nueve subtandas nuevas, no nueve milestones principales: permanecen 45 principales y 22 pendientes tras el cierre acordado de M18.4, con M40 al final.
 
 CPU/Wasm permanece disponible; Auto necesita capacidades, funciones compatibles y beneficio medido. Se desarrollan compute shaders WGSL de producción, sincronización y consultas/eventos coherentes con C#, y pruebas en GPU física. Renderizar con WebGPU no acredita simular físicas en GPU. No cambia el ejecutable, la cobertura ni el rendimiento actual por publicar el plan.
 

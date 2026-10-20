@@ -16,6 +16,23 @@ permissions:
   contents: read
 
 jobs:
+  ci-complete:
+    name: All required checks
+    if: ${{ always() }}
+    needs: [script-boundaries, bootstrap, rust, csharp-wasm-spike, browser-milestones]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every job family to pass
+        env:
+          JOB_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module <<'JS'
+          const jobs=Object.entries(JSON.parse(process.env.JOB_RESULTS));
+          const failed=jobs.filter(([,job])=>job.result!=='success');
+          for(const [name,job] of jobs)console.log(`${name}: ${job.result}`);
+          if(jobs.length!==5||failed.length)process.exit(1);
+          JS
+
   script-boundaries:
     strategy:
       matrix:
@@ -122,7 +139,7 @@ jobs:
       # Isolated runners: parallel browser jobs do not share GPU or scene state.
       max-parallel: 8
       matrix:
-        milestone: [m18-4-1, m18-3-12, m18-4, m18-3-11, m18-3-10, m18-3-9, m18-3-8, m2, m3, m18-3-7, m18-3-6, m18-3-5, m18-3-4, m18-3-3, m18-3, m18-2-1, m18-2, m18-1, m18, m17, m16-1, m16, m15, m14, m13-1, m13, m12, m11, m10, corrections, m9, m4, m5, m6, m7, m8]
+        milestone: [m18-2, m18, m7, m18-4-1, m18-3-12, m18-4, m18-3-11, m18-3-10, m18-3-9, m18-3-8, m2, m3, m18-3-7, m18-3-6, m18-3-5, m18-3-4, m18-3-3, m18-3, m18-2-1, m18-1, m17, m16-1, m16, m15, m14, m13-1, m13, m12, m11, m10, corrections, m9, m4, m5, m6, m8]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

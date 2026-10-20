@@ -5,8 +5,11 @@ export function startAgentBridge({api,projectEditor,getRenderer,getSnapshot,take
  async function poll(){
   try{
    const snapshot=getSnapshot(),renderer=getRenderer();
-   const result=await api('/v1/editor/sync',{method:'POST',body:JSON.stringify({clientId,workspaceId:snapshot?.workspaceId??null,sceneRevision:snapshot?.sceneRevision??-1,status:renderer?.status()??{},errors:takeErrors(),capture,diagnostic,animation,audio,profiler,gameTest,replay})});capture=null;diagnostic=null;animation=null;audio=null;profiler=null;gameTest=null;replay=null;onProposals(result.proposals??[]);
-   if(result.snapshot)await projectEditor.synchronize(result.snapshot);
+   const result=await api('/v1/editor/sync',{method:'POST',body:JSON.stringify({clientId,workspaceId:snapshot?.workspaceId??null,sceneRevision:snapshot?.sceneRevision??-1,status:renderer?.status()??{},errors:takeErrors(),capture,diagnostic,animation,audio,profiler,gameTest,replay})});if(stopped)return;capture=null;diagnostic=null;animation=null;audio=null;profiler=null;gameTest=null;replay=null;onProposals(result.proposals??[]);
+   // A reply belongs to the editor snapshot that requested it. A human may
+   // have switched previews or edited the scene while the HTTP request waited.
+   // The next poll reconciles the current state instead of replaying stale UI.
+   if(result.snapshot&&getSnapshot()===snapshot)await projectEditor.synchronize(result.snapshot);
    if(result.replay){const requestId=result.replay.requestId;try{replay={requestId,value:getRenderer().replayControl(result.replay)};}catch(error){replay={requestId,error:error.message};}}
    if(result.gameTest){const requestId=result.gameTest.requestId;try{gameTest={requestId,value:getRenderer().gameTestControl(result.gameTest)};}catch(error){gameTest={requestId,error:error.message};}}
    if(result.animation){const requestId=result.animation.requestId;try{animation={requestId,value:getRenderer().animationControl(result.animation)};}catch(error){animation={requestId,error:error.message};}}

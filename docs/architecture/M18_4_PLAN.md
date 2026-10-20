@@ -1,3 +1,9 @@
+# Revisión vigente M18.4.1 — 0.0.52
+
+Petición de interfaz y defaults implementada; [informe](../reports/M18_4_1_REPORT.md), [ADR-0035](../adr/0035-hub-and-github-project-workflow.md). Reemplaza el flujo manual y los defaults OFF de la entrega 0.0.50. La cuenta sigue en memoria de sesión; los ajustes se guardan automáticamente por proyecto, con defaults ON para nuevos destinos y preferencias existentes conservadas. Hub importa una copia local de carpetas/proyectos GitHub; no incorpora pull, merge ni resolución de conflictos. Los apartados siguientes son antecedentes del cierre M18.4.
+
+---
+
 # Orden vigente — 2026-10-19
 
 M18.4 está cerrada en su alcance acordado: nueve grupos aprobados; verificación nativa manual aplazada explícitamente por ADR-0034. Estabilización final se conserva en M40. [Roadmap](ROADMAP_M19_M40.md). La auditoría M19 puede prepararse sin dar por cerrados los gates externos de M18.4.

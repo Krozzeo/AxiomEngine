@@ -1,3 +1,13 @@
+# Hub y GitHub renovados — 0.0.52 / SDK 8
+
+Hub incorpora Create project, Add Project y Settings desplegables, selector nativo de carpetas y entrada/importación de proyectos locales o publicados en GitHub. Agregar una carpeta crea una copia en Project Storage y conserva el original. Candado/X de escena al extremo derecho; título/Always active a la izquierda. Auto tiene ayuda; Config abre GitHub, su icono tiene el tamaño del de AI y la etiqueta superior es AI.
+
+GitHub mantiene una cuenta por sesión y configuración por proyecto, con iconos tachado/verde/rojo. Conexión compacta, repositorios refrescados al conectar, destino nuevo/existente, nombre sugerido y creación con progreso/errores visibles y enlace automático al nuevo repositorio. Preferencias nuevas ON por petición del usuario; se preservan las preferencias ya guardadas. Todos los ajustes se guardan automáticamente; revisión al abrir cuando MAIN está guardado y es publicable; botón único Review/Publish, lista de cambios e historial paginado en ventanas separadas. X habitual y título ampliado.
+
+[Informe](../reports/M18_4_1_REPORT.md) · [Guía vigente](../../demos/M18_4_GUIDE.md). Pruebas locales: 438 Node, 44 Rust, 18 grupos de navegador con adaptadores GitHub/selector controlados. No se presenta como prueba de un PAT real ni de un diálogo nativo abierto manualmente. M18.4 continúa cerrada bajo ADR-0034; M19 y el plan Unity API + shaders/GPU no cambian.
+
+---
+
 # Correcciones de Inspector y escenas — 0.0.51 / SDK 8
 
 **WebGPU verificado en CI 319:** primera apertura y revisita de Arena con 0 diferencia de píxeles; cuatro grupos de regresión de escenas y la suite Inspector aprobados. El CI general sigue en curso y no se declara completamente verde. Código probado: `915940d2e953ab07892bb4cef891a70f8f246b4e`; documentación posterior no cambia el ejecutable.

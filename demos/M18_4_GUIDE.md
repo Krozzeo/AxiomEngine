@@ -1,68 +1,57 @@
-# M18.4 — Dos demos de publicación en GitHub
+# M18.4 — Hub y dos demos GitHub · interfaz 0.0.52
 
-Estado: M18.4 cerrada según ADR-0034. La validación nativa de las demos con cuenta real queda aplazada, sin bloquear el cierre. TestRepo es exclusivamente un repositorio de pruebas sintéticas; no se usa como destino de estas demos.
+M18.4 permanece cerrada según ADR-0034. Esta revisión M18.4.1 actualiza el flujo; la validación con un PAT real sigue aplazada por decisión del usuario. TestRepo se reserva para pruebas sintéticas y no es destino de las demos.
 
-`npm run demo:m18-4` crea **dos proyectos independientes** en el almacenamiento configurado del Hub; no reemplaza proyectos existentes. Se puede pasar una carpeta de pruebas a `node demos/create-m18-4-projects.mjs <carpeta>`. Cada ejecución crea UUIDs nuevos. El cubo, cámara, luz, JSON de ejemplo y PMD son editables mediante las funciones normales del editor. Ninguna demo conecta cuentas ni selecciona destinos automáticamente.
+`npm run demo:m18-4` crea dos proyectos nuevos sin reemplazar existentes:
 
-| Demo en Hub | Recorrido | Señal para reconocer sus fuentes |
-|---|---|---|
-| **Demo · M18.4 GitHub · Create Repository** | Conectar cuenta, crear un repositorio desde Axiom y publicar allí | `Create Repo Cube` a X=-1; `Scripts/DemoMode.json` con `mode: "create"`; milestone `GH-CREATE` |
-| **Demo · M18.4 GitHub · Existing Repository** | Conectar cuenta y publicar en el repositorio creado manualmente | `Existing Repo Cube` a X=1; JSON con `mode: "existing"`; milestone `GH-EXISTING` |
+| Demo | Recorrido |
+| --- | --- |
+| Demo · M18.4 GitHub · Create Repository | Crear y vincular un repositorio desde Axiom; cubo Create Repo Cube, X=-1 |
+| Demo · M18.4 GitHub · Existing Repository | Elegir un repositorio ya inicializado; cubo Existing Repo Cube, X=1 |
 
-La conexión actual utiliza un token introducido en el panel, no inicio de sesión mediante navegador. Publicar es un envío hacia GitHub: todavía no hay descarga de cambios remotos ni resolución automática de conflictos.
+## Hub
 
-## Obtener el token y conectar Axiom, paso a paso
+- Create project despliega nombre y plantilla 3D/2D/Empty.
+- Add Project → Open Project from a folder permite escribir la ruta o elegirla con el botón de carpeta. Seleccionar la carpeta que contiene el JSON UUID del proyecto. Add Project crea una copia en Project Storage y conserva el original; elegir después el icono Open de su tarjeta.
+- Add Project → Import a project from GitHub: abrir GitHub account para conectar la sesión, escribir owner/repository y rama (vacía usa la predeterminada), Find projects, elegir el proyecto Axiom y luego Import project. Se admiten las publicaciones Axiom, no cualquier repositorio de código. Una copia con UUID ya existente no se reemplaza.
+- Settings contiene Project Storage e importación de versiones anteriores. Cada ruta tiene un selector de carpeta en la misma línea. Cambiar el banco no mueve proyectos y requiere cerrar el actual.
 
-Para un repositorio ya existente, usar un token fine-grained limitado a ese destino:
+En Windows el selector es un diálogo nativo. Si no está disponible, se puede escribir la ruta. El proceso de pruebas usa un adaptador; no se declara aquí una interacción humana con ese diálogo.
 
-1. Iniciar sesión en GitHub. Abrir la foto de perfil → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**. [Formulario directo](https://github.com/settings/personal-access-tokens/new).
-2. Nombre: `Axiom Engine`. Elegir una expiración, por ejemplo 30 días. En **Resource owner**, elegir la cuenta propietaria del repositorio, por ejemplo `Krozzeo`.
-3. En **Repository access**, marcar **Only select repositories** y seleccionar el repositorio del juego. `TestRepo` queda reservado a pruebas, no a las demos.
-4. En **Repository permissions**, configurar **Contents: Read and write**. Conservar **Metadata: Read-only**. Para publicar archivos y crear una rama en ese repositorio no hace falta dar acceso a Actions, Issues ni administración general.
-5. Pulsar **Generate token** y copiar el resultado en ese momento. Introducirlo únicamente en el campo de contraseña del panel GitHub de Axiom; no en el PMD ni en este chat. [Referencia oficial de tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
-6. Abrir el proyecto en Axiom → icono GitHub de la barra superior → pegar en **GitHub access token** → **Connect**. El campo debe vaciarse y el estado mostrar la cuenta conectada. La conexión de GitHub es independiente de la del agente de IA.
-7. Pulsar **List my repositories**, seleccionar el destino, o escribir `propietario/repositorio`. Escribir una rama existente, por ejemplo `main`, o una nueva y marcar **Create this branch…**. Pulsar **Use this destination**.
-8. Guardar el proyecto y detener Play. Pulsar **Review saved changes**, comprobar destino/archivos y luego **Publish reviewed changes**. **Last publication** abre el commit resultante.
+## Cuenta y token
 
-Para **crear repositorios desde Axiom**, el token necesita además **Repository creation: Write**, o alternativamente **Administration: Read and write**, según los permisos disponibles en GitHub. El acceso del token también debe abarcar los nuevos repositorios: **All repositories** los incluye, pero amplía el alcance a todos los repositorios de esa cuenta. Un token limitado a repositorios existentes no debe suponerse válido para publicar en uno nuevo. Si preferís mantener acceso restringido, creá el repositorio manualmente y usá el recorrido B. [Permisos oficiales del endpoint de creación](https://docs.github.com/en/rest/repos/repos#create-a-repository-for-the-authenticated-user).
+1. En GitHub: Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token. Elegir propietario, vencimiento y repositorios accesibles.
+2. Para publicar se necesita Contents read/write; Metadata es de lectura. Para crear repositorios se necesita Administration write o Repository creation write. Elegir un alcance que permita acceder también al nuevo repositorio; limitar el token a un repositorio existente puede impedir configurar el recién creado. [Permisos oficiales de creación](https://docs.github.com/en/rest/repos/repos#create-a-repository-for-the-authenticated-user).
+3. Introducir el token únicamente en el panel GitHub de Axiom, nunca en el chat. Pulsar Connect. El input desaparece y Account muestra confirmación, Refresh y Disconnect; la lista de repositorios se actualiza automáticamente.
+4. La cuenta permanece conectada al cambiar proyectos, hasta Disconnect o cerrar el daemon. El token no se guarda en proyectos, fuentes, historial ni storage del navegador. Los ajustes son independientes por UUID de proyecto.
 
-El token permanece en memoria hasta desconectar o cerrar el daemon; al reiniciarlo hay que volver a conectarse. Si expira o GitHub rechaza permisos, generar/actualizar uno y reconectar. La conexión nativa con token sigue pendiente de verificación manual: las pruebas conectadas de esta entrega usaron el conector, según el informe.
+El panel abre desde el icono superior o Config → GitHub. El icono es tachado sin cuenta, rojo con cuenta pero sin destino de proyecto y verde con destino configurado para esa cuenta. Sin proyecto abierto se muestra verde al conectar. Verde no garantiza que el remoto no haya cambiado: Review lo comprueba.
 
-## Demo A — Crear el repositorio desde Axiom
+## Demo A — crear
 
-1. Abrir **Create Repository** en Hub y pulsar el icono GitHub. Conectar desde el campo de contraseña del panel. El token debe permitir operar sobre el repositorio y, para este recorrido, crear repositorios en la cuenta. Si tu credencial no permite crearlos, utilizá la demo B; no es un fallo de publicación del proyecto.
-2. Desplegar **Create a game repository**, escribir un nombre de juego de prueba que no exista y mantener **Private repository** marcado. Pulsar **Create repository**. Esta acción crea un repositorio real cuando estás conectado a GitHub real.
-3. El campo de destino se completa con el repositorio creado, pero **todavía hay que seleccionarlo explícitamente** mediante **Use this destination**. Para probar también la creación de rama, escribir `axiom-demo-create`, marcar **Create this branch…** y pulsar ese botón.
-4. Pulsar **Review saved changes**. Comprobar cuenta, repositorio, rama y presencia de `Scripts/DemoMode.json`. Publicar con resumen `Demo A: primer proyecto publicado`. El enlace al commit debe apuntar al repositorio que acabás de crear.
-5. Verificar `mode: "create"`, el cubo y los archivos originales. Continuar con la comprobación común de reapertura indicada abajo.
+1. Abrir Create Repository, detener Play y guardar los cambios del proyecto con el control de guardado habitual del editor.
+2. Conectar la cuenta. Destination → Create a new repository. El nombre sugerido es Axiom-Game-[nombre del proyecto]; modificarlo si se desea. Elegir privacidad.
+3. Pulsar Create Repository. Mientras trabaja aparece el indicador de carga y se bloquea la creación repetida. Ante un error se muestra una X y su motivo. Si GitHub no confirma la respuesta, refrescar repositorios antes de volver a crear.
+4. Al crear correctamente cambia a Use existing repository y vincula el nuevo repositorio y su rama predeterminada. No hay un paso Use/Save. Si el repositorio se creó pero su configuración falló, el panel distingue ambos hechos: recuperar ese destino sin crear otro.
+5. La revisión automática muestra un resumen como “2 changed files · owner/repository / branch”. Review changes abre la lista en otra ventana. Cerrar con X y usar Publish changes para enviar el plan revisado.
 
-## Demo B — Usar tu repositorio creado manualmente
+## Demo B — existente
 
-1. Crear en GitHub **un repositorio de juego de prueba**, inicializado con un **README**. Puede ser privado. Anotar su dirección `propietario/repositorio` y la rama predeterminada. Un repositorio vacío sin primer commit todavía no sirve para este recorrido.
-2. Abrir **Existing Repository** en Hub, pulsar GitHub y conectar la cuenta. Pulsar **List my repositories** y seleccionar el que creaste, o escribir su `propietario/repositorio` si no aparece en el listado inicial. **No pulsar Create repository** en esta demo.
-3. Para la prueba más directa, escribir la rama predeterminada existente y dejar desmarcada **Create this branch…**. Pulsar **Use this destination**. También podés elegir una rama nueva de publicación marcando explícitamente su creación.
-4. Revisar y publicar con resumen `Demo B: proyecto en repositorio existente`. El commit debe contener `mode: "existing"` dentro del prefijo `axiom/<UUID>/`. El README original de la raíz debe seguir intacto: Axiom añade su contenido en su propio directorio.
-5. Modificar la posición del cubo desde Inspector, guardar, revisar y publicar otra vez. Debe aparecer un segundo commit con la modificación y actualizarse **Last publication**. Continuar con reapertura.
+1. Crear/inicializar el repositorio de juego en GitHub, por ejemplo con un README. Abrir Existing Repository y conectar la cuenta si hace falta.
+2. Destination → Use existing repository. Elegir el repositorio del desplegable; su rama predeterminada se configura automáticamente. El botón Refresh está junto al desplegable. También se puede escribir owner/repository y rama.
+3. Para una rama nueva, marcar Create this branch if it does not exist y escribir el nombre. Los cambios se guardan al cambiar/salir del campo; no hay botones Use this branch o Save.
+4. Revisar el resumen, abrir Review changes si se desea inspeccionar la lista y pulsar Publish changes. Last publication abre el commit; el README ajeno se conserva y el estado canónico se publica dentro de axiom/UUID/.
 
-## Comprobaciones comunes y resultados esperados
+## Preferencias, revisión e historial
 
-1. Pulsar el icono GitHub de la barra. Conectar con un token introducido en el campo de contraseña del editor; nunca pegar credenciales en un chat, PMD o archivo del proyecto. Se mantiene en memoria hasta desconectar o cerrar el daemon. Se necesita acceso al repositorio elegido y permiso Contents de lectura/escritura. Para crear repositorios, la credencial debe admitir esa operación; también se puede crear el repositorio en GitHub y escribir `propietario/repositorio`.
-2. Elegir **un repositorio de juego de prueba** o crearlo desde el panel. Elegir una rama existente o marcar explícitamente la creación de una rama desde la predeterminada. El repositorio debe estar inicializado. Pulsar **Use this destination**. Elegir la cuenta y destino es responsabilidad humana; no se elige automáticamente el repositorio de Axiom.
-3. Guardar MAIN y detener Play. **Review saved changes** muestra archivos añadidos, modificados y borrados. Revisar el destino y pulsar **Publish reviewed changes**. El enlace **Last publication** debe abrir el commit resultante. El punto de cambios pendientes se apaga; desconectar vuelve gris y tachado el icono, sin confundirlo con los cambios pendientes.
-4. Verificar en GitHub el directorio `axiom/<UUID>/`: JSON canónico, originales `.assets`, fuentes legibles, README y manifiesto. Descargar/clonar su contenido y elegir `axiom/` como carpeta de proyectos del Hub; abrir el proyecto UUID conservando su directorio hermano de assets. Los recursos derivados se reconstruyen. Las copias legibles de Scripts/Scenes son de consulta: el JSON es la fuente canónica para reabrir.
-5. Opcionalmente activar **Automatically publish newly delivered milestones after saving**, guardar la preferencia y completar/guardar una milestone nueva del PMD. Solo transiciones nuevas a `delivered` cuentan; habilitar la opción no publica entregas históricas. **Allow publication when the AI agent requests it** es un permiso distinto, desactivado por defecto. El agente utiliza `github.preview` y `github.publish` desde MAIN guardado; primero hay que aplicar sus propuestas.
-6. Una preview activa, cambios sin guardar, Play o trabajos pendientes deben impedir publicar. Cambiar un archivo en GitHub en la rama seleccionada debe detener la siguiente publicación por divergencia, preservando su historial. Se puede elegir explícitamente otra rama; no hay merge ni force-push automático.
-7. Ante una respuesta no confirmada, **Check an unconfirmed publication** busca el identificador persistente en los últimos 50 commits. **Retry the same publication** recupera el commit existente o reintenta exactamente el mismo snapshot y condición de cabecera. Si el proyecto o la rama cambiaron, se detiene y explica el motivo.
+Ambas preferencias están ON por defecto en nuevas configuraciones, por solicitud del usuario. Las preferencias ya guardadas se conservan. Cambiarlas guarda automáticamente: la primera habilita publicación de nuevas entregas de milestones guardadas; la segunda permite solicitudes de publicación del agente. Deshabilitar una no altera la otra. Habilitar no publica milestones históricas.
 
-Evidencia para la validación manual posterior, no exigida para cerrar M18.4: URL del commit de juego, cuenta/repositorio/rama seleccionados (sin token), confirmación de reapertura y resultado observado de desconexión/reintento. La prueba `npm run test:browser:m18-4` cubre el recorrido con un adaptador controlado; no sustituye esta verificación con GitHub real.
+Al abrir el panel, una cuenta/destino correctos revisan automáticamente MAIN si está guardado y no hay Play, preview o trabajo incompatible. El único botón primario dice Review saved changes si aún no hay plan y Publish changes después de revisarlo. Cero cambios deja Publish deshabilitado. La lista solo aparece en la ventana Review changes; History abre otra ventana con los eventos del proyecto y páginas anteriores. X cierra cada ventana.
 
-| Comprobación | Demo A: crear desde Axiom | Demo B: repositorio manual |
-|---|---|---|
-| Flujo automatizado | 5/5 grupos aprobados | 5/5 grupos aprobados |
-| Cuenta/repositorio/rama reales | Pendiente de elegir en el panel | Pendiente de crear/elegir en el panel |
-| Enlace al primer commit real | Pendiente | Pendiente |
-| Reapertura del proyecto publicado | Pendiente con cuenta real | Pendiente con cuenta real |
+Las credenciales de cuenta son globales a la sesión; destino, preferencias, nombre/privacidad/mensaje e historial son por proyecto. Crear/configurar no elige el repositorio del engine. Una divergencia remota detiene el envío sin force-push. Los controles Check unconfirmed publication / Retry the same publication aparecen si una publicación quedó sin confirmar y permiten recuperar su identificador sin duplicar commits.
 
-Para la demo B, basta con que compartas la dirección del repositorio de prueba que vas a crear; la conexión se realiza dentro de Axiom. La demo A utilizará otro nombre de repositorio elegido explícitamente al pulsar Create. Ninguna prueba automatizada genera repositorios externos reales.
+## Pruebas y límites
 
-Límites: Node daemon local; GitHub.com; máximo 32 destinos locales por perfil, 2.048 archivos/16 MiB de fuente por publicación, listado inicial de 100 repositorios (también admite destino escrito), repositorios remotos con listado completo no truncado. Credenciales, conversaciones del PMD, previews, cachés y compilaciones se excluyen; las fuentes que escribe el usuario se publican tal como están y deben revisarse. No hay colaboración Git general, LFS, merge ni integración GitHub Enterprise en esta tanda.
+`npm run test:browser:m18-4` cubre ambos modos con transporte controlado (12 grupos). `npm run test:browser:m18-4-1` cubre Hub, importaciones, cuenta por sesión, preferencias por proyecto y alineación de escenas (6 grupos). No crean repositorios reales ni validan un PAT real.
+
+El flujo usa el daemon Node y GitHub.com. Máximo 32 destinos locales, 2.048 archivos y 16 MiB de fuentes por publicación/importación; árboles remotos completos. La lista inicial muestra hasta 100 repositorios; se puede escribir otro destino. Las fuentes canónicas y originales se reabren/reconstruyen; se excluyen credenciales, conversaciones, previews y compilaciones. No se añaden pull, merge, LFS ni colaboración Git general. Plan Unity API/shaders/físicas GPU sin cambios.

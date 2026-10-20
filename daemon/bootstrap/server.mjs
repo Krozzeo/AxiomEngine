@@ -1,3 +1,5 @@
+import {pickFolder} from './folder-picker.mjs';
+import {addLocalProject,githubProjects,importGitHubProject} from './github/import-project.mjs';
 import {GitHubPublication} from './github/publication.mjs';
 import {spawn} from 'node:child_process';
 import packageData from '../../package.json' with {type:'json'};
@@ -155,11 +157,12 @@ export async function startServer(options = {}) {
       if(url.pathname.startsWith('/v1/github/')){
         const action=url.pathname.slice('/v1/github/'.length);
         if(request.method==='GET'&&action==='status')return json(response,200,github.status());
+        if(request.method==='GET'&&action==='history'){const id=url.searchParams.get('id');if(!workspace.project||id!==workspace.project.id)throw Error('Open this project before inspecting its history');const raw=url.searchParams.get('before'),before=raw===null?undefined:Number(raw);if(before!==undefined&&(!Number.isSafeInteger(before)||before<1))throw Error('Invalid history cursor');return json(response,200,await github.history.list(id,before));}
         if(request.method==='GET'&&action==='repositories')return json(response,200,{items:await github.client.repositories()});
         if(request.method==='POST'){
           const data=await readJson(request);
-          const operations={connect:()=>github.connect(data.token),disconnect:()=>github.disconnect(),create:()=>github.client.create(data.name,data.private),configure:()=>github.configure(data),preferences:()=>github.preferences(data),preview:()=>github.prepare(data),publish:()=>github.publish(data),reconcile:()=>github.reconcile(data),retry:()=>github.retry(data)};
-          if(Object.hasOwn(operations,action))return json(response,200,await bus.transaction(operations[action]));
+          const operations={connect:()=>github.connect(data.token),disconnect:()=>github.disconnect(),create:async()=>{if(!workspace.project||workspace.project.id!==data.id)throw Error('Open this project before creating its repository');const repo=await github.client.create(data.name,data.private);await github.record('repository.created',{repository:repo.name});return repo;},draft:()=>github.draft(data),configure:()=>github.configure(data),preferences:()=>github.preferences(data),preview:()=>github.prepare(data),publish:()=>github.publish(data),reconcile:()=>github.reconcile(data),retry:()=>github.retry(data)};
+          if(Object.hasOwn(operations,action))return json(response,200,await bus.transaction(async()=>{try{const value=await operations[action]();if(['connect','disconnect'].includes(action))await github.record('account.'+action);return value;}catch(error){await github.record(action+'.failed',{code:error.code??'AX_GITHUB_0001',reason:error.code?String(error.message).slice(0,300):'Operation failed; see the panel error'});throw error;}}));
         }
         return json(response,404,{code:'AX_HTTP_0002',cause:'Unknown GitHub operation'});
       }
@@ -170,6 +173,10 @@ export async function startServer(options = {}) {
       if(url.pathname==='/v1/hub'){
         if(request.method==='GET')return json(response,200,{version:packageData.version,applications:axiomApplications,projectRoot:workspace.store.root,projects:(await workspace.store.run('project.list',{})).projects,legacyRoot:join(ROOT,'.axiom/projects')});
         if(request.method==='POST'){const data=await readJson(request);if(assistant.active)throw Error('Finish or cancel the AI task before managing projects');if(['configure','import-legacy'].includes(data.action)&&workspace.project)throw Error('Close the project before changing Hub storage');
+          if(data.action==='pick-folder')return json(response,200,await (options.pickFolder??pickFolder)({initial:data.initial??''}));
+          if(data.action==='add-project')return json(response,200,await bus.transaction(()=>addLocalProject(workspace.store,data.path)));
+          if(data.action==='github-projects'){const source=await githubProjects(github.client,data);return json(response,200,{repository:source.repository,branch:source.branch,items:source.items});}
+          if(data.action==='github-import')return json(response,200,await bus.transaction(async()=>{const result=await importGitHubProject(workspace.store,github.client,data);await github.record('project.imported',{repository:result.repository,branch:result.branch},result.id);return result;}));
           if(data.action==='open-folder'){await workspace.store.directory();const entry=(await workspace.store.run('project.list',{})).projects.find(p=>p.id===data.id);if(!entry)throw Error('Unknown project');const folder=dirname(entry.path),command=process.platform==='win32'?'explorer.exe':process.platform==='darwin'?'open':'xdg-open';await new Promise((yes,no)=>{const child=spawn(command,[folder],{shell:false,stdio:'ignore'});child.once('error',no);child.once('spawn',()=>{child.unref();yes();});});return json(response,200,{opened:true});}
           if(data.action==='delete'){if(workspace.project?.id===data.id)throw Error('Close this project before deleting it');if(data.confirm!==true)throw Error('Project deletion requires confirmation');for(const item of [...proposals.items.values()].filter(v=>v.base.id===data.id)){if(proposals.busy(item)||item.child.playing)throw Error('Stop the project proposal and finish its jobs before deletion');await proposals.run('workspace.reject',{workspaceId:item.id,expectedWorkspaceRevision:item.child.revision},{actor:{kind:'human',id:'hub'}});}const result=await workspace.store.run('project.delete',{id:data.id,confirm:data.confirm});return json(response,200,result);}
           if(data.action==='import-legacy'){if(!workspace.store.folders)throw Error('Select persistent folder storage first');return json(response,200,await workspace.store.importLegacy(data.sourceRoot?resolve(data.sourceRoot):join(ROOT,'.axiom/projects')));}

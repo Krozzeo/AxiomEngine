@@ -2,14 +2,14 @@
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
   "updatedAt": "2026-10-20",
-  "engineVersion": "0.0.51",
+  "engineVersion": "0.0.52",
   "activeMilestone": 18.4,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
     "wholeProjectPercent": null,
     "method": "docs/architecture/MILESTONE_REPORTING.md",
-    "scopeNote": "M18.4 remains closed under ADR-0034. M18.3.12 implements seven requested Inspector/Hierarchy/first-scene-render corrections, with local functional evidence and separate WebGPU pixel availability. Expanded Unity API coverage remains unmeasured.",
+    "scopeNote": "M18.4 remains closed under ADR-0034. M18.4.1 implements requested Hub/GitHub workflow and default-on preferences, with local controlled acceptance; live-account validation remains deferred. M19–M40 scope unchanged.",
     "historicalMvpPercent": 94,
     "historicalMvpCompletedWeight": 122,
     "historicalMvpTotalWeight": 130
@@ -319,21 +319,35 @@
       "adr": "docs/adr/0033-gpu-physics-and-shader-roadmap.md"
     },
     "githubPublication": {
-      "status": "complete under ADR-0034; native manual account validation deferred",
+      "status": "UI workflow implemented and locally verified; native live-account check remains deferred under ADR-0034",
       "credentialStorage": "daemon memory only",
       "settingsStorage": "local user profile outside projects",
       "savedMainOnly": true,
       "atomicExpectedHead": true,
-      "autoMilestonesDefault": false,
-      "allowAgentDefault": false,
-      "report": "docs/reports/M18_4_CURRENT_REPORT.md"
+      "autoMilestonesDefault": true,
+      "allowAgentDefault": true,
+      "report": "docs/reports/M18_4_1_REPORT.md",
+      "revision": "M18.4.1",
+      "accountScope": "daemon session",
+      "configurationScope": "project",
+      "autosave": true,
+      "automaticReviewOnOpen": true,
+      "history": "persistent project journal, 100 events per page, all pages retained"
+    },
+    "hubProjectImport": {
+      "localFolder": true,
+      "githubPublication": true,
+      "nativeWindowsFolderPicker": true,
+      "copiesIntoProjectStorage": true,
+      "preservesSource": true,
+      "continuousRemoteSync": false
     }
   },
   "verified": {
     "nodeTests": {
-      "passed": 431,
+      "passed": 438,
       "failed": 0,
-      "evidenceEnvironment": "Local Windows, 0.0.51; npm run check"
+      "evidenceEnvironment": "Local Windows, 0.0.52; npm run check"
     },
     "schemaDocuments": 18,
     "architectureRules": 3,
@@ -1477,6 +1491,13 @@
         "groupsPassed": 4
       },
       "note": "Snapshot while broader CI is running. Only completed jobs are counted; this does not claim a green overall workflow. Later documentation-only commits do not alter the tested executable tree."
+    },
+    "m18_4_1Local": {
+      "passed": true,
+      "browserGroups": 18,
+      "report": "docs/reports/m18-4-1-local.json",
+      "githubTransport": "controlled adapter",
+      "nativePicker": "Win32 invocation contract and authenticated chooser callback, no real GUI acceptance"
     }
   },
   "blockedChecks": [
@@ -1680,10 +1701,12 @@
     "docs/adr/0033-gpu-physics-and-shader-roadmap.md",
     "docs/reports/M18_3_12_REPORT.md",
     "demos/M18_3_12_GUIDE.md",
-    "docs/reports/m18-3-12-remote.json"
+    "docs/reports/m18-3-12-remote.json",
+    "docs/reports/M18_4_1_REPORT.md",
+    "docs/adr/0035-hub-and-github-project-workflow.md"
   ],
-  "nextTask": "Review M18.3.12 corrections in PR45; WebGPU scene pixel comparison and Inspector CI jobs passed, broader CI319 still running. M18.4 remains closed per ADR-0034; native account validation deferred by user. Next principal milestone M19 audit, not started. Dense physics and live-model follow-ups remain; Unity API + shaders/GPU roadmap unchanged. No automatic merge.",
-  "activeRevision": "M18.3.12",
+  "nextTask": "Review M18.4.1 Hub/GitHub workflow, default-on publication preferences and source-preserving imports. M18.4 remains closed; live PAT/native GUI check remains deferred. Next principal milestone M19 audit; Unity API/shaders/GPU roadmap unchanged. Dense-physics and live-model gates remain. No automatic merge.",
+  "activeRevision": "M18.4.1",
   "roadmap": {
     "version": 2,
     "manifest": "docs/architecture/roadmap-v2.json",

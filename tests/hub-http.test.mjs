@@ -5,6 +5,11 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {startServer} from '../daemon/bootstrap/server.mjs';
 import {envelope} from '../protocol/src/protocol.ts';
+test('native folder selection requires the existing local authentication and handles cancellation without editing storage',async t=>{
+ const root=await mkdtemp(join(tmpdir(),'axiom-hub-picker-'));let calls=0;const server=await startServer({projectRoot:join(root,'projects'),pickFolder:async()=>{calls++;return {path:null};}});t.after(async()=>{await server.close();await rm(root,{recursive:true,force:true});});
+ const body=JSON.stringify({action:'pick-folder',initial:root});assert.equal((await fetch(server.origin+'/v1/hub',{method:'POST',headers:{'Content-Type':'application/json'},body})).status,403);assert.equal(calls,0);
+ const response=await fetch(server.origin+'/v1/hub',{method:'POST',headers:{Origin:server.origin,Authorization:'Bearer '+server.token,'Content-Type':'application/json'},body});assert.equal(response.status,200);assert.deepEqual(await response.json(),{path:null});assert.equal(calls,1);
+});
 test('authenticated Hub API creates persistent projects, requires deletion confirmation and refuses storage switching with an open project',async t=>{
  const root=await mkdtemp(join(tmpdir(),'axiom-hub-http-'));let server=await startServer({projectRoot:join(root,'projects'),projectFolders:true,hubSettings:{settingsRoot:join(root,'settings')}});t.after(async()=>{await server.close();await rm(root,{recursive:true,force:true});});
  const headers={Origin:server.origin,Authorization:'Bearer '+server.token,'Content-Type':'application/json'};

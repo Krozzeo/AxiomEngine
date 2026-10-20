@@ -1,0 +1,63 @@
+{
+  "version": "0.0.52",
+  "sdkVersion": 8,
+  "scope": "Local Windows; controlled GitHub transport and native chooser callback; no real account/PAT or human-operated Windows dialog proof",
+  "nodeTests": {
+    "passed": 438,
+    "failed": 0
+  },
+  "rustTests": {
+    "passed": 44,
+    "failed": 0
+  },
+  "browser": {
+    "github": {
+      "criteria": [
+        "create: Creation shows loading/failure reasons, then automatically binds and switches to existing mode",
+        "create: Separate changes dialog and one Review/Publish action publish atomically; linked account indicator stays green",
+        "create: Preferences autosave per project, durable history opens separately, Config reopens GitHub and reviews automatically",
+        "create: Dirty state is blocked; a lost successful response recovers the same commit without duplicate publication",
+        "create: Remote divergence stops publication without overwriting history",
+        "create: Autosaved agent preference disables publication; password is absent from command events and browser storage",
+        "existing: Repository selection autosaves and automatically reviews without a Save/Use button",
+        "existing: Separate changes dialog and one Review/Publish action publish atomically; linked account indicator stays green",
+        "existing: Preferences autosave per project, durable history opens separately, Config reopens GitHub and reviews automatically",
+        "existing: Dirty state is blocked; a lost successful response recovers the same commit without duplicate publication",
+        "existing: Remote divergence stops publication without overwriting history",
+        "existing: Autosaved agent preference disables publication; password is absent from command events and browser storage"
+      ],
+      "pageErrors": [],
+      "modes": [
+        {
+          "mode": "create",
+          "projectId": "project://5905c4a3-3042-4add-8569-4a4b22a11eee",
+          "repository": "test-player/publication-lab",
+          "commits": 2,
+          "passed": true
+        },
+        {
+          "mode": "existing",
+          "projectId": "project://f48830ad-f6f4-47cb-8515-bb14453f8f3a",
+          "repository": "test-player/game",
+          "commits": 2,
+          "passed": true
+        }
+      ],
+      "scope": "Controlled GitHub adapter, not live-account acceptance",
+      "passed": true
+    },
+    "hub": {
+      "criteria": [
+        "Hub has collapsible Create/Add/Settings, native folder selection adapter and functional Add Project",
+        "Account connects without an open project, shows green and hides project-only fields",
+        "Hub imports and opens the pinned GitHub project; account persists while unconfigured project is red",
+        "Toolbar icons have matching size, AI label and Auto tooltip; Config opens GitHub with X and larger title",
+        "Switching projects retains the session account and restores only each project destination/preferences",
+        "Scene title and Always active stay left while lock and close align to the far right"
+      ],
+      "errors": [],
+      "scope": "Controlled GitHub transport and native chooser adapter; no real account token",
+      "passed": true
+    }
+  }
+}

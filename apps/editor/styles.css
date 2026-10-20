@@ -398,3 +398,10 @@ input[type="file"] { font-size: 11px; }
 .reference-field.drag-compatible{background:#24394c;outline:1px solid #527b9d;border-radius:4px;}
 .reference-field.drag-target{background:#285d7c;outline:2px solid #82cfff;box-shadow:0 0 7px #68baff66;}
 .reference-field.drag-compatible .reference-value{background:transparent;}
+
+.scene-root .scene-always-active{margin-left:auto;}
+.hub-options>details{border-bottom:1px solid #34465b;padding:12px 0;}.hub-options>details>summary{font-size:17px;cursor:pointer;}.hub-options summary img{width:20px;height:20px;vertical-align:middle;margin-right:7px;}.hub-options details details{margin:15px 0;}.path-input,.gh-repository-row{display:flex;align-items:center;gap:8px;}.path-input input,.gh-repository-row select{flex:1;min-width:0;}.path-input button{flex:none;}.path-input img{width:19px;height:19px;}
+.topbar .github-indicator{padding:3px 6px;box-sizing:border-box;height:28px;}.topbar .github-indicator img{width:20px;height:20px;}#github-pending{width:7px;height:7px;border-radius:50%;background:#ed7070;}#github-pending[data-state=linked]{background:#63cf91;}
+.github-dialog [hidden]{display:none!important;}.github-dialog{width:min(740px,90vw);}.github-dialog .gh-heading h2{font-size:22px;letter-spacing:.035em;}.github-dialog .icon-button img{width:18px;height:18px;}.github-dialog fieldset{border:0;padding:0;margin:0;min-width:0;}.github-dialog .gh-repository-row select{display:inline-block;width:0;}.gh-mode{display:flex;gap:8px;}.gh-mode button{flex:1;}.gh-mode [aria-pressed=true]{background:#214e70;border-color:#71bfff;}.gh-operation{display:flex;align-items:center;gap:7px;}.gh-operation img{width:17px;height:17px;}.gh-operation.loading img{animation:compile-spin 1s linear infinite;}.gh-operation.failed{color:#ffabab;}.gh-operation.success{color:#7ee4a1;}#gh-history-items{max-height:50vh;overflow:auto;overflow-wrap:anywhere;}#gh-changes-dialog #gh-files{max-height:55vh;overflow:auto;}
+
+.github-dialog .gh-heading{align-items:center;}

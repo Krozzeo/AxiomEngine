@@ -1,3 +1,15 @@
+# 0.0.52 — M18.4.1 Hub y flujo GitHub
+
+- Hub con tres desplegables, importación local y GitHub, selector nativo Windows en cada ruta y originales preservados.
+- Candado/X de escena al extremo derecho; ayuda Auto, AI breve, GitHub compacto y acceso desde Config.
+- Cuenta compacta y global a la sesión; destinos, borradores, preferencias e historial separados por proyecto. Verde vinculado, rojo sin destino, tachado sin cuenta; sin proyecto solo importa la cuenta.
+- Creación con carga, X/razón de error y vinculación automática; modos nuevo/existente, sugerencia de nombre y actualización automática de repositorios.
+- Ajustes automáticos sin botones Save/Use; defaults nuevos ON autorizados por el usuario. Valores previamente guardados se preservan.
+- Revisión automática al abrir un proyecto publicable, acción única Review/Publish, detalles e historial persistente paginado en diálogos separados; cierre con X y título mayor.
+- 438 Node, 44 Rust y 18 grupos locales de navegador; adaptadores controlados, sin afirmar aceptación de PAT real.
+
+---
+
 # 0.0.51 — M18.3.12 Inspector, Hierarchy y primera apertura de escenas
 
 - Always active a la izquierda del candado; título de ancho natural y alineado a la izquierda; Hierarchy sin la ayuda ni el estado/revisión duplicados. El indicador de guardado permanece en la barra superior.

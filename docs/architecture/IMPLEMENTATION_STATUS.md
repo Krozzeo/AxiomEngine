@@ -1,5 +1,7 @@
 # Correcciones de Inspector y escenas — 0.0.51 / SDK 8
 
+**WebGPU verificado en CI 319:** primera apertura y revisita de Arena con 0 diferencia de píxeles; cuatro grupos de regresión de escenas y la suite Inspector aprobados. El CI general sigue en curso y no se declara completamente verde. Código probado: `915940d2e953ab07892bb4cef891a70f8f246b4e`; documentación posterior no cambia el ejecutable.
+
 Implementados los siete cambios pendientes como revisión M18.3.12: “Always active” antes del candado, título de escena sin expansión, eliminación visual de ambos textos del Hierarchy, resaltado global de destinos compatibles y hover más intenso, e Inspector como acción única de creación en Panels. Create ya no incluye Inspector; se conserva el máximo de ocho paneles y cerrar libera un lugar.
 
 Corregido el defecto de primera apertura de Arena: sus ajustes faltantes se resuelven antes de activarla. Las escenas inactivas dejan de recibir ajustes de otra escena durante la sincronización. La reproducción del código anterior demuestra `legacy → HDR`; el corregido mantiene `HDR → HDR`. Se preservan ajustes explícitos y modos 2D/3D.

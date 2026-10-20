@@ -1,6 +1,6 @@
 # M18.3.12 — Inspector, Hierarchy y apertura de escenas
 
-Versión 0.0.51 / SDK 8. Revisión correctiva posterior al cierre acordado de M18.4, sin cambiar el alcance de M19–M40. Implementación completa; validación funcional local aprobada. La validación de píxeles WebGPU se informa por separado de Null.
+Versión 0.0.51 / SDK 8. Revisión correctiva posterior al cierre acordado de M18.4, sin cambiar el alcance de M19–M40. Implementación completa; validación funcional local y comparación de píxeles WebGPU aprobadas. El CI general continúa en curso; se informa separado de los trabajos ya completados.
 
 ## Resultado y aceptación
 
@@ -33,12 +33,18 @@ Ahora se resuelven los ajustes omitidos antes de activar un documento recién ab
 
 La suite nueva compara los PNG del canvas en WebGPU: diferencia media inferior a un nivel RGB y menos del 1% de píxeles con diferencia mayor de 15 niveles RGB sumados. En Null registra explícitamente indisponibilidad. Se añadió al trabajo de navegador de GitHub Actions; resultado remoto se registra separado de esta evidencia local.
 
+### WebGPU remoto aprobado
+
+[CI 319](https://github.com/Krozzeo/AxiomEngine/actions/runs/39422253864), código `915940d2e953ab07892bb4cef891a70f8f246b4e`, árbol `801e9247560790881d1a71b12e8c1ac1f371813f`: trabajo `browser-milestones (m18-3-12)` aprobado, cuatro grupos, con WebGPU obligatorio en CI. Las capturas de primera apertura y revisita registraron **diferencia media RGB 0 y fracción de píxeles diferentes 0**. También está aprobado el trabajo de Inspector `m18-3-11`.
+
+[Evidencia remota y snapshot de trabajos](m18-3-12-remote.json). Ubuntu con Vulkan de software; esto verifica píxeles WebGPU, sin acreditar rendimiento en GPU física. La ejecución general tiene 44 trabajos y sigue en curso al registrar esta evidencia: no se declara verde ni se hereda el resultado de una revisión anterior. El commit posterior de documentación no modifica el código ejecutable probado.
+
 El CI anterior 318 terminó con 42/43 trabajos aprobados; falló `browser-milestones (m18-2)`. Ese resultado histórico no verifica esta revisión ni se presenta como verde.
 
 ## Demos y continuidad
 
 [Guía de demostración](../../demos/M18_3_12_GUIDE.md). `npm run demo` crea proyectos nuevos sin reemplazar existentes; los nombres de los labs conservan M18.3.10. Las correcciones forman parte de los controles y escenas normales del editor, sin implementación exclusiva para las demos.
 
-No se solicita al usuario repetir las pruebas automatizadas. La comprobación de colores en WebGPU queda cubierta por el trabajo remoto cuando esté disponible; no se confunde con rendimiento en GPU física.
+No se solicita al usuario repetir las pruebas automatizadas. La comprobación de colores en WebGPU ya pasó en el trabajo remoto; no se confunde con rendimiento en GPU física.
 
 M18.4 permanece cerrada según ADR-0034. La validación nativa de cuenta GitHub sigue aplazada explícitamente por el usuario. Fluidez de físicas densas y pruebas de modelo conectado continúan pendientes. Esta revisión no añade cobertura de Unity API ni físicas GPU; el próximo hito principal es M19. No hay fusión automática.

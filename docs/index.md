@@ -8,6 +8,7 @@ Estado vigente sobre 0.0.52 / SDK 8. Los informes por milestone y documentos arc
 | Estado real, límites y pendientes | [Implementación](architecture/IMPLEMENTATION_STATUS.md) |
 | Retomar el desarrollo | [AI handoff](AI_HANDOFF.md) |
 | Recuperación, ramas y flujo de contribución | [Mantenimiento](REPOSITORY_MAINTENANCE.md) |
+| Milestones nativas en GitHub | [Correspondencia y límites](NATIVE_GITHUB_MILESTONES.md) |
 | Plan de compatibilidad | [Roadmap M19–M40](architecture/ROADMAP_M19_M40.md) |
 | Shaders y físicas GPU | [Plan](architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md) |
 | API propia y referencia generada | [Scripting API](scripting-api/README.md) |

@@ -7,6 +7,8 @@
 - Documentación vigente separada del historial; inventario de ramas/PR y proceso de recuperación documentados.
 - Enlaces de ayuda del editor apuntan a `main`.
 - Helper de navegador espera la inicialización del Hub antes de decidir cómo acceder a cualquier control; corrección candidata al fallo M7, pendiente de confirmar con CI completo.
+- Respuestas de sincronización tardías ya no deshacen cambios de preview/edición/proyecto ni se aplican después del cierre; tres regresiones deterministas y 441 pruebas Node aprobadas.
+- Gate de CI agregado que exige todas las familias de pruebas; milestones nativas M19–M40, etiquetas y referencias de recuperación protegidas.
 - Fallos CI M18/M18.2/M7 registrados sin alterar criterios ni declarar cierre anticipado.
 
 ## 0.0.52 — M18.4.1 · Hub y GitHub

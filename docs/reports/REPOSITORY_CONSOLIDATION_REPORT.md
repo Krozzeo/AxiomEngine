@@ -11,3 +11,7 @@ Fecha: 2026-10-20. Base e264ca835de14daf4fe964be6a78be5e4646ad14. Cambios en PR 
 Los recorridos locales no certifican GPU física ni cierran por sí solos fallos intermitentes de CI. M18 incluyó detach real del Inspector; M7 incluyó recarga y física en Null; M18.2 incluyó la traza de preview tras Play/Stop. Los servicios externos controlados conservan sus límites de aceptación.
 
 Se verificaron con merge-base los 46 heads de ramas y 45 heads de PR del inventario previo: todos son ancestros de la etiqueta fija de recuperación 0.0.52. No se reescribió el historial. El CI completo del PR determina el estado de regresión remota; consultar #47/#48/#49.
+
+## Regresión determinista de sincronización
+
+Pruebas nuevas: respuesta atrasada tras cambio humano de preview/edición/proyecto; actualización externa válida; respuesta posterior a desconexión. Código anterior: dos fallos y una aprobación; corregido: 3/3. npm run check posterior al cambio: 441/441 Node, checks completos aprobados. Los recorridos locales anteriores no se atribuyen a este cambio posterior. La confirmación del recorrido remoto figura en el CI del PR.

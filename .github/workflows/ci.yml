@@ -16,6 +16,23 @@ permissions:
   contents: read
 
 jobs:
+  ci-complete:
+    name: All required checks
+    if: ${{ always() }}
+    needs: [script-boundaries, bootstrap, rust, csharp-wasm-spike, browser-milestones]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every job family to pass
+        env:
+          JOB_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module <<'JS'
+          const jobs=Object.entries(JSON.parse(process.env.JOB_RESULTS));
+          const failed=jobs.filter(([,job])=>job.result!=='success');
+          for(const [name,job] of jobs)console.log(`${name}: ${job.result}`);
+          if(jobs.length!==5||failed.length)process.exit(1);
+          JS
+
   script-boundaries:
     strategy:
       matrix:

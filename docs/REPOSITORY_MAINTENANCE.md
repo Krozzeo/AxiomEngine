@@ -52,4 +52,12 @@ Otros pendientes conservados: rendimiento físico denso, validaciones con modelo
 
 El workflow Release publica notas y archivos fuente automáticos para futuras etiquetas `v*`, sin prometer binarios. La publicación de mantenimiento remite a la etiqueta exacta de recuperación y declara los límites de CI. No se eliminan releases anteriores.
 
-La protección de `main`, los labels, las milestones nativas y el borrado automático de ramas requieren revisar permisos/configuración de GitHub. El conector de esta sesión no expone esos ajustes y el navegador no tiene sesión iniciada. No se presentan como configurados. El roadmap y los criterios siguen versionados en documentación; se puede completar esa configuración desde GitHub sin cambiar el motor.
+Con sesión GitHub iniciada por el usuario se crearon las 22 milestones nativas M19–M40, planificadas y sin fechas inventadas, más ocho etiquetas de clasificación, conservando las diez existentes. Se activó el borrado automático de ramas integradas. `Preserve recovery baselines` protege las dos etiquetas `recovery/*` contra actualización, borrado y force-push, sin bypass. La release de recuperación exacta está publicada como pre-release con los límites de CI explícitos.
+
+La protección de `main` se completa después de verificar la corrección de CI del PR. El nuevo gate **All required checks** requiere éxito en las cinco familias de jobs (incluidas todas sus matrices); rechaza fallos, cancelaciones y saltos. Esto permite exigir la suite completa mediante una condición estable, sin mantener manualmente una lista de 45 nombres.
+
+## Corrección de sincronización tardía
+
+Los diagnósticos de CI 326 confirman renderer WebGPU detenido en MAIN/revisión 6 mientras el recorrido esperaba preview/revisión 9. Se reprodujo por separado que una respuesta atrasada de `/v1/editor/sync` podía sobrescribir un cambio humano de preview, una edición o cambio de proyecto. También podía aplicarse después de desconectar.
+
+El bridge ahora solo adopta una respuesta si el snapshot que la pidió sigue siendo el actual, y descarta respuestas posteriores al cierre. El próximo poll reconcilia cambios externos con el estado actual. Tres pruebas deterministas: dos fallaban con el código anterior, las tres pasan con el corregido. `npm run check` completo: **441/441 Node**. La atribución final del fallo CI M18.2 exige aprobar su recorrido remoto; no se cierra solo por la reproducción unitaria.

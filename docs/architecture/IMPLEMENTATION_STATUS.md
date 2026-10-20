@@ -20,6 +20,10 @@ CI 320 sobre la entrega: 42/45 trabajos aprobados; fallos de detach Inspector (M
 
 El rendimiento denso medido en M18.3.11 (~5,1 FPS del editor local Null con 1.024 cuerpos dinámicos densos) sigue siendo un pendiente, no un objetivo cumplido. El benchmark de física CPU aislada no representa FPS ni rendimiento GPU.
 
+## Mantenimiento posterior a la entrega
+
+PR #50 conserva la base y las etiquetas fijas; corrige sincronización atrasada del bridge con tres regresiones deterministas y 441/441 Node aprobadas. M7/M18/M18.2 pasaron localmente antes de esa corrección; el CI remoto del PR decide el cierre de sus incidencias. Hay 22 milestones nativas, release de recuperación publicada y reglas activas para main/recovery, sin bypass. Consultar el [mantenimiento](../REPOSITORY_MAINTENANCE.md).
+
 ## Planificación
 
 45 milestones principales, 23 cerradas y 22 pendientes M19–M40. El siguiente trabajo de producto es M19 tras la estabilización y la reestructuración que defina el usuario. [Roadmap](ROADMAP_M19_M40.md) y [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md) conservan alcance y gates. Las estimaciones anteriores por familia de Unity no constituyen una auditoría; porcentaje global ampliado sin cuantificar hasta M19.

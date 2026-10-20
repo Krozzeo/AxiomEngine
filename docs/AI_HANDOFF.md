@@ -20,6 +20,10 @@ GitHub: credencial en memoria durante la sesión del daemon, configuración/borr
 - M18.4 cerrada según [ADR-0034](adr/0034-m18-4-closure-and-deferred-native-account-check.md), con validación nativa manual aplazada por el usuario. Hub y GitHub renovados documentados en [M18.4.1](reports/M18_4_1_REPORT.md).
 - TestRepo es solo para pruebas. Dos demos GitHub independientes. No solicitar ni publicar tokens por chat ni guardarlos en el proyecto.
 
+## Consolidación y verificación actual
+
+PR #50 organiza documentación, historial e inventario. 22 milestones nativas M19–M40 creadas; ocho etiquetas adicionales conservan las diez existentes. Release exacta 0.0.52 publicada y tags recovery protegidos contra cambio/borrado. Main exige PR y All required checks de GitHub Actions, sin bypass; ramas integradas se retiran automáticamente. Las tres regresiones del bridge llevan npm run check a 441/441. Confirmar el CI del PR antes de dar por cerrados #47/#48/#49; el respaldo exacto e264 permanece intacto. [Detalles y reglas](REPOSITORY_MAINTENANCE.md).
+
 ## Plan que se conserva
 
 45 milestones principales; 23 cerradas y 22 pendientes M19–M40. M19 audita el alcance público objetivo de Unity 6.3 LTS y fija denominadores, prioridades y equivalencia funcional. M20–M39 implementan por familias y verifican conformidad; M40 conserva el hardening final. Meta futura: al menos 95% de firmas core objetivo y 100% de P0, con excepciones visibles. No es cobertura actual medida.

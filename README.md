@@ -6,6 +6,7 @@ Motor de juegos con editor en navegador, núcleo Rust/WebAssembly, renderizado W
 
 - [Estado confirmado y límites](docs/architecture/IMPLEMENTATION_STATUS.md)
 - [Mapa de documentación](docs/index.md) y [contexto para continuar](docs/AI_HANDOFF.md)
+- [Milestones de GitHub](https://github.com/Krozzeo/AxiomEngine/milestones) y [su correspondencia con los planes](docs/NATIVE_GITHUB_MILESTONES.md)
 - [Roadmap M19–M40](docs/architecture/ROADMAP_M19_M40.md): Scripting API compatible con Unity, shaders y físicas GPU
 - [Recuperación y organización de GitHub](docs/REPOSITORY_MAINTENANCE.md)
 - [Cambios por versión](CHANGELOG.md)

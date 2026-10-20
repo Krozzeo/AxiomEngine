@@ -1392,9 +1392,13 @@
     "githubPublication": {
       "adapterTests": 11,
       "assistantMainPublicationTest": true,
-      "browserAcceptanceGroups": 5,
+      "browserAcceptanceGroups": 10,
       "pageErrors": 0,
-      "scope": "Controlled adapters only; real GitHub game-account acceptance unexecuted"
+      "scope": "Controlled adapters only; real GitHub game-account acceptance unexecuted",
+      "demoModes": [
+        "create repository in Axiom",
+        "select manually created existing repository"
+      ]
     }
   },
   "blockedChecks": [
@@ -1597,7 +1601,7 @@
     "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
     "docs/adr/0033-gpu-physics-and-shader-roadmap.md"
   ],
-  "nextTask": "Complete M18.4 real-account acceptance from the GitHub editor panel using a user-selected game test repository; retain prior Hierarchy/Inspector/drag feedback, initial scene render, M18.3.11 dense performance and live-model gates before claiming M18 closed. Then M19 audit -> Unity API and GPU/WGSL roadmap M20–M39 -> M40 final. No automatic merge.",
+  "nextTask": "Validate both M18.4 demos against real GitHub after the user creates/selects the game test repository and connects in the editor. Guide: demos/M18_4_GUIDE.md. Finish current CI, retaining prior UI/render/dense-performance/live-model gates before claiming M18 closed. Unity API + GPU/shader roadmap M19–M40 unchanged. No automatic merge.",
   "activeRevision": "M18.3.11",
   "roadmap": {
     "version": 2,

@@ -1,3 +1,7 @@
+# Demos M18.4 — dos recorridos
+
+Disponibles **Create Repository** (crear y publicar desde Axiom) y **Existing Repository** (usar el repositorio de prueba creado manualmente). Proyectos separados y diez grupos de aceptación local con adaptadores controlados; cuenta real pendiente. [Guía paso a paso de ambos modos](demos/M18_4_GUIDE.md). `npm run demo:m18-4` genera las dos demos sin reemplazar proyectos existentes.
+
 # M18.4 — GitHub de proyectos de juegos · 0.0.50 / SDK 8
 
 Implementación en revisión: conexión independiente de IA, selección/creación explícita de repositorio y rama, revisión de archivos y publicación de MAIN guardado, con enlace al commit. Tokens solo en memoria del daemon; preferencias/recibos fuera del proyecto. Publicación automática al guardar nuevas entregas del PMD y publicación por solicitud del agente son preferencias distintas, desactivadas por defecto. Un identificador persistente y `expectedHeadOid` permiten recuperar respuestas perdidas sin force-push ni commits duplicados; la divergencia remota detiene el envío.

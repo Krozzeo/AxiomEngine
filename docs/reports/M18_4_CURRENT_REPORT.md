@@ -34,7 +34,7 @@ Se desglosa el alcance original en diez grupos requeridos de igual peso. No se d
 | Diff, propiedad de archivos y detención por divergencia | Passed | Manipulación de fuente publicada y cabecera; archivos ajenos conservados |
 | Commit condicionado y recuperación/reintento sin duplicados | Passed | Respuesta perdida antes/después, diario recargado tras reinicio y adaptador HTTP |
 | Automatización por entrega y solicitud del agente separadas | Passed | Transiciones durables, opt-in, no retroactividad y solicitud sobre MAIN |
-| Interfaz, demo editable, documentación y regresión automatizada | Passed | 427 Node, 44 Rust, cinco grupos de navegador M18.4 y demo normal |
+| Interfaz, demo editable, documentación y regresión automatizada | Passed | 427 Node, 44 Rust, diez grupos de navegador M18.4 y dos demos normales |
 | Cuenta real, repositorio de juego elegido, publicación y reapertura | **Blocked / no ejecutado** | Requiere conexión local del usuario y destino explícito; guía de aceptación |
 
 Corte automatizado: **9/10 = 90%**; regresión local aprobada. No equivale a GitHub real verificado. **M18.4 permanece abierta** hasta el grupo 10. El porcentaje global ampliado y la cobertura Unity no se cuantifican antes de M19; 94% sigue siendo una referencia histórica del MVP.
@@ -43,9 +43,17 @@ Corte automatizado: **9/10 = 90%**; regresión local aprobada. No equivale a Git
 
 - `tests/github.test.mjs`: **11/11**; reapertura de script/JSON/asset, estado guardado, revisión obsoleta, divergencia, recuperación tras reinicio, reintento, archivos ajenos, permisos de agente, transición de milestone, contrato atómico y expiración.
 - `tests/openai-assistant.test.mjs`: nueva aceptación de publicación sobre MAIN sin workspace de autoría.
-- `tests/browser/m18-4.mjs`: flujo real del editor contra adaptador controlado, con demo normal y cinco grupos de aceptación. Incluye publicación, respuesta perdida, divergencia y ausencia de token en eventos/storage. Evidencia local en `.axiom/browser-m18-4-evidence/`.
+- `tests/browser/m18-4.mjs`: flujo real del editor contra adaptador controlado, con dos demos normales y diez grupos de aceptación. Incluye publicación, respuesta perdida, divergencia y ausencia de token en eventos/storage. Evidencia local en `.axiom/browser-m18-4-evidence/`.
 - Catálogo generado: **92 herramientas semánticas**; schema, arquitectura y paridad de daemon comprobados. Versiones de protocolo y SDK sin cambios.
-- `npm run check`: **427/427 Node**, compilación del editor/kernel, catálogo de herramientas, bindings, 18 schemas, tres reglas de arquitectura y paridad de daemon aprobados localmente. `npm run check:native`: **44/44 Rust**, formato y clippy aprobados. Navegador M18.4: **5/5 grupos**, cero errores de página. La matriz CI de esta versión amplía a 34 grupos de navegador / 43 jobs y se informa por separado cuando termina; no se presume aprobada. Las cifras de CI315 de 0.0.49 son antecedentes, no resultados de este cambio.
+- `npm run check`: **427/427 Node**, compilación del editor/kernel, catálogo de herramientas, bindings, 18 schemas, tres reglas de arquitectura y paridad de daemon aprobados localmente. `npm run check:native`: **44/44 Rust**, formato y clippy aprobados. Navegador M18.4: **10/10 grupos (cinco por cada modo)**, cero errores de página. La matriz CI de esta versión amplía a 34 grupos de navegador / 43 jobs y se informa por separado cuando termina; no se presume aprobada. Las cifras de CI315 de 0.0.49 son antecedentes, no resultados de este cambio.
+
+## Ampliación de demos — ambos modos
+
+`npm run demo:m18-4` genera dos proyectos independientes: **Create Repository** y **Existing Repository**, con UUIDs, nombres de cubo, posición, PMD y archivo `Scripts/DemoMode.json` distintos. La primera prueba crea un repositorio privado desde el panel y publica en ese mismo destino; la segunda selecciona un repositorio preexistente sin invocar creación. Cada modo usa su propio servidor/adaptador durante aceptación, publica sus fuentes identificables, conserva el README original, prueba dirty/reintento/divergencia y desconexión. **10/10 grupos locales**, cero errores de página. No se ha ejecutado todavía ninguno con la cuenta real.
+
+CI316 del corte anterior (`afd88bb`) terminó con **42/43 jobs aprobados**, incluido M18.4; falló M13 por una carrera al abrir Hub durante la adopción inicial del proyecto tras recargar. Se ajusta el helper de aceptación para esperar la inicialización de los controles antes de decidir abrir Hub. No se atribuye ese resultado a la nueva revisión ni se presenta CI316 como completamente aprobado. La nueva revisión ejecuta su propia matriz.
+
+El intento local adicional de M13 no completó su aceptación: esta máquina usa Null y la aserción de muestras GPU de ese recorrido requiere el entorno Vulkan de CI. No se registra como aprobado ni se cambia la aserción para ocultarlo. La aceptación local M18.3.11 sí pasó sus siete grupos, con C# SDK8.
 
 ## Gate que requiere al usuario
 

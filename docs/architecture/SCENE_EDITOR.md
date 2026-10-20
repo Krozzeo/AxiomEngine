@@ -1,3 +1,17 @@
+# Contratos vigentes — revisión M18.3.12 / 0.0.51
+
+Panels contiene una sola acción Inspector, que crea un panel con el foco actual y sin bloqueo. Las instancias viven en los docks, no en el menú. Si el Inspector primario estaba cerrado, su lugar se restaura con foco actual y sin bloqueo; máximo ocho abiertos. Duplicate Tab conserva su comportamiento de copiar el foco/bloqueo.
+
+El título de escena no crece con el espacio libre. Always active se coloca antes del candado. La ayuda y el estado duplicado de guardado no se muestran en Hierarchy; el estado accesible interno se conserva oculto para compatibilidad de automatización y el guardado se informa en la barra superior.
+
+Un drag de referencias publica su payload de sesión y actualiza los campos mediante referencias débiles a sus nodos. Cada campo usa la misma validación que la asignación: tipo, archivo/componente, proyecto y permisos de edición. Un nivel tenue señala compatibilidad; el hover del destino válido usa un nivel más intenso. Dragend/drop limpian el estado, también en documentos adjuntos. Los datos de la sesión permiten validar durante la fase protegida de DataTransfer. El payload de drop se valida otra vez antes de aplicar.
+
+Al abrir un documento nuevo, los ajustes omitidos se resuelven desde la escena activa antes de activar/renderizar y quedan incorporados en el documento de trabajo; Save los persiste. Los modos 2D/3D explícitos no heredan el modo opuesto. La sincronización solo escribe los ajustes globales en el documento activo y conserva los de los inactivos. Antes, los inactivos adquirían ajustes ausentes de otra escena en una sincronización posterior, lo que cambiaba la ruta legacy/HDR al revisitar Arena.
+
+Las secciones siguientes son antecedentes históricos.
+
+---
+
 # Authoring workspace and editor — 0.0.11
 
 Historical first editor slice. Current imports, rendering and Play are documented

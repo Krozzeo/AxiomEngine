@@ -19,7 +19,7 @@ export function syncSceneDocuments(scene){
  const byId=new Map(scene.entities.map(e=>[e.id,e]));function owner(e,visited=new Set()){if(visited.has(e.id))throw Error('Scene hierarchy cycle');visited.add(e.id);const path=e.parentId?owner(byId.get(e.parentId)??{},visited):state.owners[e.id]??state.active;if(!path||!state.open.includes(path))throw Error('Open a scene before creating entities');state.owners[e.id]=path;return path;}
  for(const e of scene.entities)owner(e);
  state.cameras??={};state.listeners??={};for(const path of state.open){const members=scene.entities.filter(e=>state.owners[e.id]===path);const camera=members.find(e=>e.camera?.active),listener=members.find(e=>e.audioListener?.enabled);if(path===state.active||camera)state.cameras[path]=camera?.id??null;if(path===state.active||listener)state.listeners[path]=listener?.id??null;}
- for(const path of state.open){const file=scene.projectFiles.find(f=>f.path===path);if(!file)throw Error('An open scene file is missing');const previous=(()=>{try{return JSON.parse(file.text);}catch{return {};}})();const value={format:'axiom-scene',schemaVersion:1,...Object.fromEntries(settings.filter(k=>scene[k]!==undefined&&(path===state.active||previous[k]===undefined)).map(k=>[k,structuredClone(scene[k])])),...Object.fromEntries(settings.filter(k=>path!==state.active&&previous[k]!==undefined).map(k=>[k,previous[k]])),entities:scene.entities.filter(e=>state.owners[e.id]===path).map(e=>{const value=structuredClone(e);if(value.camera)value.camera.active=state.cameras[path]===e.id;if(value.audioListener)value.audioListener.enabled=state.listeners[path]===e.id;return value;})};file.text=JSON.stringify(value,null,2)+'\n';}
+ for(const path of state.open){const file=scene.projectFiles.find(f=>f.path===path);if(!file)throw Error('An open scene file is missing');const previous=(()=>{try{return JSON.parse(file.text);}catch{return {};}})();const value={format:'axiom-scene',schemaVersion:1,...Object.fromEntries(settings.filter(k=>scene[k]!==undefined&&path===state.active).map(k=>[k,structuredClone(scene[k])])),...Object.fromEntries(settings.filter(k=>path!==state.active&&previous[k]!==undefined).map(k=>[k,previous[k]])),entities:scene.entities.filter(e=>state.owners[e.id]===path).map(e=>{const value=structuredClone(e);if(value.camera)value.camera.active=state.cameras[path]===e.id;if(value.audioListener)value.audioListener.enabled=state.listeners[path]===e.id;return value;})};file.text=JSON.stringify(value,null,2)+'\n';}
 }
 export function editSceneDocument(scene,data){
  initializeSceneDocuments(scene);syncSceneDocuments(scene);const state=scene.sceneDocuments,path=projectPath(data.path),file=()=>scene.projectFiles.find(f=>f.path===path);
@@ -30,6 +30,11 @@ export function editSceneDocument(scene,data){
   if(state.open.includes(path)){activate();return;}if(state.open.length>=16)throw Error('At most 16 scenes may be open');if(state.open.some(p=>sceneTitle(p)===sceneTitle(path)))throw Error('Open scenes must have distinct names');
   const value=readSceneFile(file()),ids=new Set(scene.entities.map(e=>e.id));if(value.entities.some(e=>ids.has(e.id)))throw Error('Scene shares entity IDs with an open scene; close it before opening this copy');
   if(scene.entities.length+value.entities.length>65536)throw Error('Open scenes exceed 65536 live entities');
+  // Resolve omitted settings once on first open, before activating/rendering.
+  // Inactive documents must never acquire settings from a later active scene.
+  const twoD=value.twoD!==undefined||value.rendering===undefined&&scene.twoD!==undefined;
+  for(const key of settings)if(!(key==='rendering'&&twoD||key==='twoD'&&!twoD)&&value[key]===undefined&&scene[key]!==undefined)value[key]=structuredClone(scene[key]);
+  file().text=JSON.stringify(value,null,2)+'\n';
   state.cameras[path]=value.entities.find(e=>e.camera?.active)?.id??null;state.listeners[path]=value.entities.find(e=>e.audioListener?.enabled)?.id??null;
   scene.entities.push(...structuredClone(value.entities));for(const e of value.entities)state.owners[e.id]=path;state.open.push(path);activate();
  }else if(data.action==='activate')activate();

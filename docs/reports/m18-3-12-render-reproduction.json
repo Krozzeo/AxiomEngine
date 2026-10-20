@@ -1,0 +1,12 @@
+{
+  "baseline": "74261599ff7336a229d4827a4ba3c8fc18c5f20a",
+  "scope": "Pure authoring settings reproduction; no GPU pixel evidence",
+  "before": {
+    "firstOpenRoute": "legacy",
+    "revisitedRoute": "hdr"
+  },
+  "after": {
+    "firstOpenRoute": "hdr",
+    "revisitedRoute": "hdr"
+  }
+}

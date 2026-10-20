@@ -1,0 +1,100 @@
+{
+  "version": "0.0.51",
+  "sdkVersion": 8,
+  "environment": "Local Windows; Null renderer, no WebGPU pixel proof",
+  "nodeTests": {
+    "passed": 431,
+    "failed": 0
+  },
+  "rustTests": {
+    "passed": 44,
+    "failed": 0
+  },
+  "browser": {
+    "inspector": {
+      "criteria": [
+        "Protected drag hover highlights compatible fields only; GameObject drop resolves its Transform",
+        "Drag start highlights all compatible entity, script and file fields across documents; stronger protected hover, read-only/type/project rejection and complete drop cleanup",
+        "Panels has one Inspector factory for eight panels; close frees slots and primary can be recreated; no Create action or instance submenu",
+        "Clickable breadcrumb, no scene preview and Open in IDE reads starter cube/camera/light JSON",
+        "Play loads only active scene by default",
+        "Scene title retains natural width, Always active precedes lock, Hierarchy help and project status are hidden",
+        "C# component enabled state and live script checkbox halt/resume actual updates",
+        "Always active Managers survives C# LoadScene Single and keeps separate Hierarchy headers",
+        "Detached parallel Game displays Debug FPS while Scene remains primary"
+      ],
+      "errors": [],
+      "passed": true
+    },
+    "demos": {
+      "milestone": "M18.3.10",
+      "criteria": [
+        "Hub opens projects and closes automatically; File has no project create/open menu and AI has no Autonomy diagnostics menu",
+        "Locked Inspector edits its pinned entity; independent duplicated Inspector accepts Transform, MonoBehaviour and physical file references without drag changing app selection",
+        "Actual C# resolves component and asset references during Play",
+        "Inspector duplication and common tab Close Tab context action work",
+        "Scenes & Resources Arena uses identical HDR settings on first open and revisit",
+        "Physical scenes open additively in Hierarchy, titles activate, collapse leaves header-only height and Close Scene retains its document",
+        "Explicit PlayerPref Inspector binding preserves SavedVisits display across Stop without retaining arbitrary runtime state",
+        "Actual C# coroutine HTTP request reaches a separate controlled server, completes through the browser bridge and omits cookies/authorization",
+        "C# presentation facade creates a default instance material when needed, updates actual rendering and live Inspector without runtime fault",
+        "Actual runtime NavMeshAgent follows the computed obstacle-detour path and publishes its moving transform",
+        "Physics 2D stress lab spawns its initial batch with 17 active bodies and no runtime fault",
+        "Physics stress lab creates 1024 dynamic blocks with 1025 active bodies; no 256-body blocker or runtime fault"
+      ],
+      "errors": [],
+      "stress2D": {
+        "dynamicBodies": 16,
+        "physics": {
+          "backend": "cpu-wasm",
+          "reason": "AX_PHYSICS_CPU_BASELINE",
+          "steps": 8,
+          "bodyCount": 17,
+          "contactCount": 14,
+          "candidates": 14
+        },
+        "fps": null
+      },
+      "stress": {
+        "dynamicBodies": 96,
+        "physics": {
+          "backend": "cpu-wasm",
+          "reason": "AX_PHYSICS_CPU_BASELINE",
+          "steps": 81,
+          "bodyCount": 97,
+          "contactCount": 356,
+          "candidates": 135
+        },
+        "fps": null
+      },
+      "stressThousand": {
+        "dynamicBodies": 1024,
+        "physics": {
+          "backend": "cpu-wasm",
+          "reason": "AX_PHYSICS_CPU_BASELINE",
+          "steps": 48,
+          "bodyCount": 1025,
+          "contactCount": 3384,
+          "candidates": 5290
+        },
+        "fps": null
+      },
+      "passed": true
+    },
+    "render": {
+      "milestone": "M18.3.12",
+      "criteria": [
+        "Actual Scenes & Resources demo selects HDR and loads Arena Cube on its very first open",
+        "Returning to Arena preserves the complete rendering configuration and HDR route",
+        "Closing and reopening the physical Arena scene preserves its resolved settings"
+      ],
+      "errors": [],
+      "pixelComparison": {
+        "backend": "null",
+        "status": "unavailable",
+        "reason": "No WebGPU adapter on this host"
+      },
+      "passed": true
+    }
+  }
+}

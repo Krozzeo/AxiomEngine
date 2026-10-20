@@ -6,7 +6,30 @@ import {join} from 'node:path';
 import {SceneWorkspace} from '../daemon/bootstrap/scene-workspace.mjs';
 import {ProjectStore} from '../daemon/bootstrap/project-store.mjs';
 import {runtimeProjectData} from '../engine/scripting/runtime-project.mjs';
+import {renderingDefaults} from '../engine/renderer/render-plan.mjs';
+import {syncSceneDocuments} from '../engine/scene/scene-documents.mjs';
+import {twoDDefaults} from '../engine/renderer/two-d-plan.mjs';
 const setup=async fn=>{const root=await mkdtemp(join(tmpdir(),'axiom-scenes-'));try{const w=new SceneWorkspace(new ProjectStore(root));const run=(type,data={})=>w.run(type,{id:w.project?.id,expectedSceneRevision:w.revision,...data});await run('project.create',{name:'Scene documents'});await fn(w,run);}finally{await rm(root,{recursive:true,force:true});}};
+test('omitted rendering settings resolve on first open and remain identical after switching and reopening',()=>setup(async(w,run)=>{
+ await run('scene.rendering.update',{value:{...renderingDefaults,exposure:1.3}});
+ await run('project.files.edit',{action:'create',kind:'scene',path:'Scenes/Arena.scene',text:'{"format":"axiom-scene","version":1,"entities":[]}'});
+ await run('scene.document.edit',{action:'open',path:'Scenes/Arena.scene'});const first=structuredClone(w.project.scene.rendering);assert.equal(first.exposure,1.3);
+ await run('scene.document.edit',{action:'activate',path:'Scenes/Main Scene.scene'});await run('scene.rendering.update',{value:{...renderingDefaults,exposure:2}});
+ await run('scene.document.edit',{action:'activate',path:'Scenes/Arena.scene'});assert.deepEqual(w.project.scene.rendering,first);
+ await run('scene.document.edit',{action:'close',path:'Scenes/Arena.scene'});await run('scene.document.edit',{action:'open',path:'Scenes/Arena.scene'});assert.deepEqual(w.project.scene.rendering,first);
+ await run('scene.save');const id=w.project.id;await run('project.close');await run('project.open',{id});assert.deepEqual(w.project.scene.rendering,first);
+}));
+test('sync does not inject active scene settings into inactive legacy documents',()=>setup(async(w,run)=>{
+ await run('scene.document.edit',{action:'create',path:'Scenes/Legacy.scene'});await run('scene.document.edit',{action:'open',path:'Scenes/Legacy.scene'});await run('scene.document.edit',{action:'activate',path:'Scenes/Main Scene.scene'});
+ const legacy=w.project.scene.projectFiles.find(f=>f.path==='Scenes/Legacy.scene');const data=JSON.parse(legacy.text);delete data.rendering;legacy.text=JSON.stringify(data);w.project.scene.rendering=structuredClone(renderingDefaults);syncSceneDocuments(w.project.scene);assert.equal(JSON.parse(legacy.text).rendering,undefined);
+}));
+test('first open preserves explicitly authored rendering instead of inheriting active exposure',()=>setup(async(w,run)=>{
+ await run('scene.rendering.update',{value:{...renderingDefaults,exposure:2}});await run('project.files.edit',{action:'create',kind:'scene',path:'Scenes/Custom.scene',text:JSON.stringify({entities:[],rendering:{...renderingDefaults,exposure:.7}})});await run('scene.document.edit',{action:'open',path:'Scenes/Custom.scene'});assert.equal(w.project.scene.rendering.exposure,.7);
+}));
+test('opening explicit 2D and 3D scenes does not inherit the opposite rendering mode',()=>setup(async(w,run)=>{
+ await run('scene.rendering.update',{value:renderingDefaults});await run('project.files.edit',{action:'create',kind:'scene',path:'Scenes/Flat.scene',text:JSON.stringify({entities:[],twoD:twoDDefaults,camera:{position:[0,0,6],target:[0,0,0],projection:'orthographic',orthoHeight:6,fov:60}})});await run('scene.document.edit',{action:'open',path:'Scenes/Flat.scene'});assert.ok(w.project.scene.twoD);assert.equal(w.project.scene.rendering,undefined);
+ await run('project.files.edit',{action:'create',kind:'scene',path:'Scenes/Depth.scene',text:JSON.stringify({entities:[],rendering:renderingDefaults,camera:{position:[0,0,6],target:[0,0,0],projection:'perspective',orthoHeight:6,fov:60}})});await run('scene.document.edit',{action:'open',path:'Scenes/Depth.scene'});assert.ok(w.project.scene.rendering);assert.equal(w.project.scene.twoD,undefined);
+}));
 test('new project has a durable Main Scene and independent editable additive scenes',()=>setup(async(w,run)=>{
  assert.equal(w.project.scene.sceneDocuments.active,'Scenes/Main Scene.scene');await run('scene.entity.create',{name:'Main cube'});const main=w.project.scene.entities[0].id;
  await run('project.files.edit',{action:'create',kind:'scene',path:'Scenes/Other.scene',text:'{"entities":[]}'});await run('scene.document.edit',{action:'open',path:'Scenes/Other.scene'});await run('scene.entity.create',{name:'Other cube'});const other=w.project.scene.entities[1].id;

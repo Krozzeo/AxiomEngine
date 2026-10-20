@@ -1,15 +1,15 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-19",
-  "engineVersion": "0.0.50",
+  "updatedAt": "2026-10-20",
+  "engineVersion": "0.0.51",
   "activeMilestone": 18.4,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
     "wholeProjectPercent": null,
     "method": "docs/architecture/MILESTONE_REPORTING.md",
-    "scopeNote": "M18.4 closed: 9/9 agreed required groups passed; native account/UI/GraphQL manual check explicitly deferred by user in ADR-0034. Six remote production-service checks passed via connector-backed Git transport in TestRepo, not demos. Prior editor/render/performance/model follow-ups retained; expanded global/API coverage remains unmeasured.",
+    "scopeNote": "M18.4 remains closed under ADR-0034. M18.3.12 implements seven requested Inspector/Hierarchy/first-scene-render corrections, with local functional evidence and separate WebGPU pixel availability. Expanded Unity API coverage remains unmeasured.",
     "historicalMvpPercent": 94,
     "historicalMvpCompletedWeight": 122,
     "historicalMvpTotalWeight": 130
@@ -293,9 +293,9 @@
     "openAiAssistant": "live_workshop_confirmed; grouped_tools_compact_checkpoints; per_request_cache_reasoning_usage; task_history_requests_xy",
     "scriptingApi": "verified_sdk8_nine_partial_families; enabled activation, scene ownership and Axiom always-active scene extensions",
     "editorRuntimeCorrections": {
-      "revision": "M18.3.11",
+      "revision": "M18.3.12",
       "sdkVersion": 8,
-      "status": "functional corrections verified in CI 315; dense physics fluency remains pending",
+      "status": "Inspector/Hierarchy/reference drag and first-open scene settings corrected; dense physics fluency remains pending",
       "maxInspectors": 8,
       "maxEntities": 65536,
       "maxPhysicsBodies": 65536,
@@ -303,7 +303,11 @@
       "alwaysActiveScenes": true,
       "sharedComponentEnabled": true,
       "benchmark": "docs/reports/m18-3-11-physics.json",
-      "performanceAccepted": false
+      "performanceAccepted": false,
+      "inspectorFactoryMenu": true,
+      "referenceDragGlobalFeedback": true,
+      "firstOpenSceneSettingsStable": true,
+      "report": "docs/reports/M18_3_12_REPORT.md"
     },
     "gpuPhysics": {
       "status": "not_started",
@@ -327,9 +331,9 @@
   },
   "verified": {
     "nodeTests": {
-      "passed": 427,
+      "passed": 431,
       "failed": 0,
-      "evidenceEnvironment": "Local Windows, 0.0.50 M18.4; npm run check"
+      "evidenceEnvironment": "Local Windows, 0.0.51; npm run check"
     },
     "schemaDocuments": 18,
     "architectureRules": 3,
@@ -1419,12 +1423,28 @@
       "passed": true,
       "groups": 14,
       "errors": 0
+    },
+    "m18_3_12Local": {
+      "passed": true,
+      "version": "0.0.51",
+      "browserGroups": {
+        "inspector": 9,
+        "demos": 12,
+        "render": 3
+      },
+      "gpuPixels": "unavailable locally (Null)",
+      "report": "docs/reports/m18-3-12-local.json"
+    },
+    "m18_3_12RemoteCi": {
+      "status": "not_started",
+      "passed": false,
+      "note": "Previous CI318: 42/43, M18.2 failed; new correction CI not yet published."
     }
   },
   "blockedChecks": [
     "Live-account vision quality and actual billed token usage require a connected model; no paid requests were run.",
-    "Prior requested Inspector/Hierarchy/drag-feedback changes and first-scene render defect remain open.",
-    "M18.3.11 dense physics fluency remains unaccepted; this GitHub integration does not implement GPU physics."
+    "M18.3.11 dense physics fluency remains unaccepted; this GitHub integration does not implement GPU physics.",
+    "Local rendering verification uses Null; WebGPU pixel comparison is separately reported by the M18.3.12 browser job."
   ],
   "protocolVersions": {
     "command": 1,
@@ -1620,18 +1640,20 @@
     "docs/reports/M18_3_11_CURRENT_REPORT.md",
     "docs/scripting-api/STATUS_0_0_49.md",
     "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
-    "docs/adr/0033-gpu-physics-and-shader-roadmap.md"
+    "docs/adr/0033-gpu-physics-and-shader-roadmap.md",
+    "docs/reports/M18_3_12_REPORT.md",
+    "demos/M18_3_12_GUIDE.md"
   ],
-  "nextTask": "M18.4 closed under ADR-0034. Next planned milestone is M19 audit, not started. Retain separate prior Hierarchy/Inspector/drag-feedback, first-render, dense-physics and live-model follow-ups. Native account/demo validation is deferred by user, not a closure blocker. TestRepo is tests-only. Unity API + shaders/GPU roadmap M19–M40 unchanged. No automatic merge.",
-  "activeRevision": "M18.3.11",
+  "nextTask": "Review M18.3.12 Inspector/Hierarchy/scene corrections and its WebGPU pixel evidence. M18.4 remains closed per ADR-0034; native account validation deferred by user. Next principal milestone M19 audit, not started. Dense physics and live-model follow-ups remain. Unity API + shaders/GPU roadmap M19–M40 unchanged. No automatic merge.",
+  "activeRevision": "M18.3.12",
   "roadmap": {
     "version": 2,
     "manifest": "docs/architecture/roadmap-v2.json",
     "document": "docs/architecture/ROADMAP_M19_M40.md",
-    "nextPlannedMilestone": "M18.4",
+    "nextPlannedMilestone": "M19",
     "compatibilityAudit": "M19",
     "finalMilestone": "M40",
-    "pendingMainMilestones": 23,
+    "pendingMainMilestones": 22,
     "totalMainMilestones": 45,
     "decisionDate": "2026-10-19",
     "formerM19MovedTo": "M40",

@@ -391,6 +391,10 @@ input[type="file"] { font-size: 11px; }
 
 .show-only{appearance:none;}.reference-field.show-only .reference-value{background:transparent;border:0;padding:0;text-align:left;}
 
-.scene-root{gap:2px;}.scene-root .scene-root-button{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.scene-root .icon-button{width:22px;height:22px;padding:2px;flex:none;}.scene-root .tree-toggle{width:14px;flex:none;}.scene-root .scene-mode-label{font-size:10px;flex:none;}
+.scene-root{gap:2px;}.scene-root .scene-root-button{min-width:0;flex:0 1 auto;width:auto;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.scene-root .icon-button{width:22px;height:22px;padding:2px;flex:none;}.scene-root .tree-toggle{width:14px;flex:none;}.scene-root .scene-mode-label{font-size:10px;flex:none;}
 .github-indicator{position:relative;display:inline-flex;align-items:center;gap:4px;padding:5px 8px}.github-indicator img{width:22px;height:22px}.github-indicator.disconnected{filter:grayscale(1);opacity:.55}.github-indicator.disconnected::after{content:'';position:absolute;left:4px;right:4px;top:50%;height:2px;background:#aab5c7;transform:rotate(-45deg)}#github-pending{color:#efbf61}.github-dialog{width:min(650px,90vw);max-height:88vh;overflow:auto;background:#171f2c;color:#dce4ef;border:1px solid #526177;border-radius:8px;padding:20px}.github-dialog section{border-top:1px solid #39475b;padding:10px 0}.github-dialog label{display:block;margin:9px 0}.github-dialog input:not([type=checkbox]),.github-dialog select{display:block;width:100%}.github-dialog h2{flex:1}.github-dialog #gh-files{max-height:170px;overflow:auto}.github-dialog #gh-error{color:#ffabab}
 .github-dialog::backdrop{background:#060a12aa}.github-dialog>.actions{position:sticky;top:-20px;background:#171f2c;z-index:1;padding:8px 0}.github-dialog input[type=checkbox]{display:inline-block;width:auto;margin-right:7px}.github-dialog label:has(input[type=checkbox]){display:flex;align-items:center;gap:4px}
+
+.reference-field.drag-compatible{background:#24394c;outline:1px solid #527b9d;border-radius:4px;}
+.reference-field.drag-target{background:#285d7c;outline:2px solid #82cfff;box-shadow:0 0 7px #68baff66;}
+.reference-field.drag-compatible .reference-value{background:transparent;}

@@ -1,3 +1,13 @@
+# 0.0.51 — M18.3.12 Inspector, Hierarchy y primera apertura de escenas
+
+- Always active a la izquierda del candado; título de ancho natural y alineado a la izquierda; Hierarchy sin la ayuda ni el estado/revisión duplicados. El indicador de guardado permanece en la barra superior.
+- Referencias: todos los destinos compatibles se resaltan al iniciar un drag, con hover más intenso, limpieza al terminar y validación de tipo/proyecto/solo lectura. Funciona entre documentos e Inspectors.
+- Panels → Inspector crea un panel; única entrada persistente, sin submenú de instancias ni acción en Create. Máximo ocho simultáneos; cerrar libera cupo.
+- Ajustes de escena omitidos resueltos una sola vez al abrir; no se propagan desde la escena activa a documentos inactivos. Corrige Arena legacy en primera apertura y HDR al revisitarla.
+- Nuevas regresiones de ciclo de referencias y de primera apertura, persistencia, configuración explícita y separación 2D/3D. Comparación de píxeles WebGPU añadida a CI; Null no cuenta como evidencia visual GPU.
+
+---
+
 # Cierre M18.4 — alcance acordado
 
 - M18.4 completa: 9/9 grupos requeridos; verificación nativa manual aplazada explícitamente por el usuario (ADR-0034).

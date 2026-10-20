@@ -1,3 +1,13 @@
+# Correcciones de Inspector y escenas — 0.0.51 / SDK 8
+
+Implementados los siete cambios pendientes como revisión M18.3.12: “Always active” antes del candado, título de escena sin expansión, eliminación visual de ambos textos del Hierarchy, resaltado global de destinos compatibles y hover más intenso, e Inspector como acción única de creación en Panels. Create ya no incluye Inspector; se conserva el máximo de ocho paneles y cerrar libera un lugar.
+
+Corregido el defecto de primera apertura de Arena: sus ajustes faltantes se resuelven antes de activarla. Las escenas inactivas dejan de recibir ajustes de otra escena durante la sincronización. La reproducción del código anterior demuestra `legacy → HDR`; el corregido mantiene `HDR → HDR`. Se preservan ajustes explícitos y modos 2D/3D.
+
+[Informe y límites de verificación](reports/M18_3_12_REPORT.md) · [Guía de las demos](../demos/M18_3_12_GUIDE.md). M18.4 sigue cerrada según ADR-0034; M19 es la próxima milestone principal. El plan Unity API + shaders + físicas GPU no cambia. Continúan pendientes la fluidez de físicas densas, las validaciones de modelo conectado y la comprobación nativa de cuenta aplazada por el usuario.
+
+---
+
 # M18.4 cerrada — 0.0.50 / SDK 8
 
 **100% del alcance de cierre acordado (9/9 grupos)**. El usuario aplaza la validación nativa con su cuenta hasta disponer de las demos; no se declara aprobada. Seis pruebas adicionales del servicio de producción contra TestRepo real pasaron con transporte delegado al conector. **TestRepo es solo para pruebas; las dos demos siguen independientes.** Decisión: [ADR-0034](adr/0034-m18-4-closure-and-deferred-native-account-check.md). No hay cambios ejecutables en este cierre ni fusión automática.

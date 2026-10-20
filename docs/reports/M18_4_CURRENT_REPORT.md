@@ -1,6 +1,6 @@
 # M18.4 — GitHub de proyectos de juegos
 
-Fecha: 2026-10-19. Versión: **0.0.50**, SDK **8**. Estado: **en progreso**, implementación para revisión; aceptación externa pendiente. No fusionar automáticamente.
+Fecha: 2026-10-19. Versión: **0.0.50**, SDK **8**. Estado: **cerrada, 100% del alcance acordado**; validación nativa manual aplazada por decisión explícita del usuario (ADR-0034). No fusionar automáticamente.
 
 ## Resultado
 
@@ -22,7 +22,7 @@ La operación se serializa con los comandos del editor. Se valida que el proyect
 
 ## Aceptación y porcentaje
 
-Se desglosa el alcance original en diez grupos requeridos de igual peso. No se descuentan criterios externos del denominador.
+El alcance original tenía diez grupos. Por decisión explícita del usuario documentada en ADR-0034, el grupo manual externo queda Deferred y el cierre acordado se mide sobre los nueve grupos restantes. El criterio aplazado sigue visible; no se presenta como aprobado.
 
 | Grupo requerido | Estado | Evidencia y límite |
 |---|---|---|
@@ -35,9 +35,9 @@ Se desglosa el alcance original en diez grupos requeridos de igual peso. No se d
 | Commit condicionado y recuperación/reintento sin duplicados | Passed | Respuesta perdida antes/después, diario recargado tras reinicio y adaptador HTTP |
 | Automatización por entrega y solicitud del agente separadas | Passed | Transiciones durables, opt-in, no retroactividad y solicitud sobre MAIN |
 | Interfaz, demo editable, documentación y regresión automatizada | Passed | 427 Node, 44 Rust, diez grupos de navegador M18.4 y dos demos normales |
-| Cuenta real, repositorio de juego elegido, publicación y reapertura | **Blocked / no ejecutado** | Requiere conexión local del usuario y destino explícito; guía de aceptación |
+| Cuenta real, repositorio de juego elegido, publicación y reapertura | **Deferred / no ejecutado desde la app** | Requiere conexión local del usuario y destino explícito; guía de aceptación |
 
-Corte automatizado: **9/10 = 90%**; regresión local aprobada. No equivale a GitHub real verificado. **M18.4 permanece abierta** hasta el grupo 10. El porcentaje global ampliado y la cobertura Unity no se cuantifican antes de M19; 94% sigue siendo una referencia histórica del MVP.
+Cierre acordado: **9/9 = 100%**, con el grupo nativo externo explícitamente aplazado por [ADR-0034](../adr/0034-m18-4-closure-and-deferred-native-account-check.md). Las [pruebas adicionales en TestRepo](M18_4_CONNECTED_TEST_REPORT.md) aprobaron seis comprobaciones remotas del servicio mediante transporte delegado; no verifican el inicio de sesión/GraphQL nativos. El porcentaje global ampliado y la cobertura Unity no se cuantifican antes de M19; 94% sigue siendo una referencia histórica del MVP.
 
 ## Evidencia automatizada
 
@@ -49,15 +49,15 @@ Corte automatizado: **9/10 = 90%**; regresión local aprobada. No equivale a Git
 
 ## Ampliación de demos — ambos modos
 
-`npm run demo:m18-4` genera dos proyectos independientes: **Create Repository** y **Existing Repository**, con UUIDs, nombres de cubo, posición, PMD y archivo `Scripts/DemoMode.json` distintos. La primera prueba crea un repositorio privado desde el panel y publica en ese mismo destino; la segunda selecciona un repositorio preexistente sin invocar creación. Cada modo usa su propio servidor/adaptador durante aceptación, publica sus fuentes identificables, conserva el README original, prueba dirty/reintento/divergencia y desconexión. **10/10 grupos locales**, cero errores de página. No se ha ejecutado todavía ninguno con la cuenta real.
+`npm run demo:m18-4` genera dos proyectos independientes: **Create Repository** y **Existing Repository**, con UUIDs, nombres de cubo, posición, PMD y archivo `Scripts/DemoMode.json` distintos. La primera prueba crea un repositorio privado desde el panel y publica en ese mismo destino; la segunda selecciona un repositorio preexistente sin invocar creación. Cada modo usa su propio servidor/adaptador durante aceptación, publica sus fuentes identificables, conserva el README original, prueba dirty/reintento/divergencia y desconexión. **10/10 grupos locales**, cero errores de página. Los recorridos nativos de las demos siguen pendientes por decisión del usuario. TestRepo se usa solo para pruebas sintéticas, separadas de las demos.
 
 CI316 del corte anterior (`afd88bb`) terminó con **42/43 jobs aprobados**, incluido M18.4; falló M13 por una carrera al abrir Hub durante la adopción inicial del proyecto tras recargar. Se ajusta el helper de aceptación para esperar la inicialización de los controles antes de decidir abrir Hub. No se atribuye ese resultado a la nueva revisión ni se presenta CI316 como completamente aprobado. La nueva revisión ejecuta su propia matriz.
 
 El intento local adicional de M13 no completó su aceptación: esta máquina usa Null y la aserción de muestras GPU de ese recorrido requiere el entorno Vulkan de CI. No se registra como aprobado ni se cambia la aserción para ocultarlo. La aceptación local M18.3.11 sí pasó sus siete grupos, con C# SDK8.
 
-## Gate que requiere al usuario
+## Validación manual aplazada (no bloquea el cierre acordado)
 
-No hace falta repetir compilación, pruebas unitarias ni navegador automatizado. Solo la prueba que necesita su cuenta: abrir la demo, conectar desde el campo de contraseña del panel, elegir un repositorio de juego de prueba y publicar/reabrir siguiendo [M18_4_GUIDE](../../demos/M18_4_GUIDE.md). No enviar el token por chat. Evidencia: enlace al commit y resultado de reapertura/recuperación, sin credenciales. No se ha elegido ni publicado silenciosamente ningún repositorio de juego durante el desarrollo.
+No hace falta repetir compilación, pruebas unitarias ni navegador automatizado. Solo la prueba que necesita su cuenta: abrir la demo, conectar desde el campo de contraseña del panel, elegir un repositorio de juego de prueba y publicar/reabrir siguiendo [M18_4_GUIDE](../../demos/M18_4_GUIDE.md). No enviar el token por chat. Evidencia: enlace al commit y resultado de reapertura/recuperación, sin credenciales. El usuario eligió explícitamente TestRepo para pruebas sintéticas posteriores; no se destinó a las demos.
 
 ## Límites y continuidad
 
@@ -66,3 +66,15 @@ Node daemon local y GitHub.com; token temporal, listado inicial de 100 repositor
 M18 completa **no se declara cerrada**. Siguen las solicitudes previas de Hierarchy/Inspectors/resaltado de referencias, el bug de primer render de escena (causa sin confirmar), el objetivo de fluidez física densa (~5–6 FPS locales Null en el corte previo con 1.024 dinámicos) y gates de modelo/cuenta real. Esta tanda no los presenta como resueltos. El plan M19–M40 conserva implementación funcional de la Scripting API de Unity, compute/shaders y físicas GPU opcionales; CPU/Wasm permanece vigente. No hay nuevos miembros de scripting ni física GPU implementados en M18.4.
 
 Referencias de contrato: [GitHub GraphQL commits](https://docs.github.com/en/graphql/reference/commits), [repositorios REST](https://docs.github.com/en/rest/repos/repos), [tokens de acceso](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+
+## Decisión de cierre
+
+M18.4 queda cerrada por el alcance acordado en ADR-0034. Las dos demos y la guía se mantienen. La verificación nativa manual es un seguimiento explícito; no hace falta entregar un enlace de repositorio para cerrar la implementación. CI317 corresponde al código `76c18154b117fbaecceac1dd3cb1975acf4ee909`; su resultado final se registra separadamente.
+
+
+## CI al publicar el cierre documental
+
+CI317 terminó **42/43 aprobados** en ambos intentos: en M18.2 la espera del contexto de preview y luego el clic sobre Play oculto fallaron. La prueba abría Scene y pulsaba directamente un control que pertenece a Game. Se ajustó para usar el helper existente que abre Game antes de pulsar Play; el recorrido local corregido pasa **14/14 grupos**. No se modifica el motor para relajar la comprobación.
+
+La revisión de prueba es `e9b0b7c79be84497bfa7d1a5ba28d65677eed095`, árbol `bcb48655082934af4124975218d9a8632094f404`. [CI318](https://github.com/Krozzeo/AxiomEngine/actions/runs/39414513928) está pendiente al publicar este cierre; no se declara aprobada. Se conserva el cierre funcional del alcance acordado y se distingue de la comprobación remota completa de publicación. La documentación posterior no cambia el código ejecutable.

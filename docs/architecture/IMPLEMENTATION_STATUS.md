@@ -1,3 +1,11 @@
+# M18.4 cerrada — 0.0.50 / SDK 8
+
+**100% del alcance de cierre acordado (9/9 grupos)**. El usuario aplaza la validación nativa con su cuenta hasta disponer de las demos; no se declara aprobada. Seis pruebas adicionales del servicio de producción contra TestRepo real pasaron con transporte delegado al conector. **TestRepo es solo para pruebas; las dos demos siguen independientes.** Decisión: [ADR-0034](../adr/0034-m18-4-closure-and-deferred-native-account-check.md). No hay cambios ejecutables en este cierre ni fusión automática.
+
+Roadmap vigente: 45 milestones principales, 23 cerradas y 22 pendientes (M19–M40). Se mantiene íntegra la Scripting API de Unity más shaders y físicas GPU. Los pendientes anteriores del editor/render/rendimiento/modelo siguen registrados por separado. Las entradas siguientes son antecedentes.
+
+---
+
 # M18.4 — GitHub de proyectos de juegos · 0.0.50 / SDK 8
 
 Implementación en revisión: conexión independiente de IA, selección/creación explícita de repositorio y rama, revisión de archivos y publicación de MAIN guardado, con enlace al commit. Tokens solo en memoria del daemon; preferencias/recibos fuera del proyecto. Publicación automática al guardar nuevas entregas del PMD y publicación por solicitud del agente son preferencias distintas, desactivadas por defecto. Un identificador persistente y `expectedHeadOid` permiten recuperar respuestas perdidas sin force-push ni commits duplicados; la divergencia remota detiene el envío.

@@ -4,12 +4,12 @@
   "updatedAt": "2026-10-19",
   "engineVersion": "0.0.50",
   "activeMilestone": 18.4,
-  "milestoneStatus": "in_progress",
+  "milestoneStatus": "complete",
   "completion": {
-    "activeMilestonePercent": 90,
+    "activeMilestonePercent": 100,
     "wholeProjectPercent": null,
     "method": "docs/architecture/MILESTONE_REPORTING.md",
-    "scopeNote": "M18.4: 9/10 required groups automated; real-account game publication/reopen gate unexecuted. M18 remains open, retaining prior editor/render/performance/model gates. Unity core coverage and expanded global progress remain unmeasured until M19.",
+    "scopeNote": "M18.4 closed: 9/9 agreed required groups passed; native account/UI/GraphQL manual check explicitly deferred by user in ADR-0034. Six remote production-service checks passed via connector-backed Git transport in TestRepo, not demos. Prior editor/render/performance/model follow-ups retained; expanded global/API coverage remains unmeasured.",
     "historicalMvpPercent": 94,
     "historicalMvpCompletedWeight": 122,
     "historicalMvpTotalWeight": 130
@@ -114,9 +114,10 @@
       "percent": 100
     },
     "18.4": {
-      "status": "in_progress",
-      "percent": 90,
-      "report": "docs/reports/M18_4_CURRENT_REPORT.md"
+      "status": "complete",
+      "percent": 100,
+      "report": "docs/reports/M18_4_CURRENT_REPORT.md",
+      "scopeDecision": "docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md"
     },
     "18.3.10": {
       "status": "complete",
@@ -314,7 +315,7 @@
       "adr": "docs/adr/0033-gpu-physics-and-shader-roadmap.md"
     },
     "githubPublication": {
-      "status": "automated implementation; live-account acceptance pending",
+      "status": "complete under ADR-0034; native manual account validation deferred",
       "credentialStorage": "daemon memory only",
       "settingsStorage": "local user profile outside projects",
       "savedMainOnly": true,
@@ -609,187 +610,15 @@
       "editorIntegration": false
     },
     "currentRemoteCi": {
-      "passed": true,
-      "status": "completed",
-      "version": "0.0.49",
-      "commit": "2cf8fa7284c1520f64b1c36d2fe82ccd4a19ce8c",
-      "tree": "72203942554b122aef5745dd46f10bd42a759b8c",
-      "run": 315,
-      "runId": 39324017306,
-      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/39324017306",
-      "jobCount": 42,
-      "jobsPassed": 42,
-      "pendingJobs": [],
-      "jobs": [
-        {
-          "name": "rust",
-          "conclusion": "success"
-        },
-        {
-          "name": "csharp-wasm-spike (ubuntu-latest, aot)",
-          "conclusion": "success"
-        },
-        {
-          "name": "bootstrap (ubuntu-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "script-boundaries (ubuntu-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "script-boundaries (windows-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3)",
-          "conclusion": "success"
-        },
-        {
-          "name": "bootstrap (windows-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-1)",
-          "conclusion": "success"
-        },
-        {
-          "name": "csharp-wasm-spike (windows-latest, development)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m2)",
-          "conclusion": "success"
-        },
-        {
-          "name": "csharp-wasm-spike (ubuntu-latest, development)",
-          "conclusion": "success"
-        },
-        {
-          "name": "script-boundaries (macos-latest)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-4)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-9)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m3)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-8)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m16-1)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-2)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-7)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-10)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-5)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-6)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-3)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m17)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-2-1)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m18-3-11)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m16)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m13)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m12)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m13-1)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m15)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m11)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m14)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m10)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m9)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (corrections)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m4)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m7)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m6)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m5)",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser-milestones (m8)",
-          "conclusion": "success"
-        }
-      ]
+      "passed": null,
+      "status": "queued_or_in_progress",
+      "version": "0.0.50",
+      "commit": "e9b0b7c79be84497bfa7d1a5ba28d65677eed095",
+      "tree": "bcb48655082934af4124975218d9a8632094f404",
+      "run": 318,
+      "runId": 39414513928,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/39414513928",
+      "note": "CI317 ended 42/43 on both attempts. M18.2 hidden Play control was corrected to use the existing Game-control helper; 14/14 groups pass locally. CI318 pending, never claimed green."
     },
     "m2PersistenceRemoteCi": {
       "passed": true,
@@ -1398,12 +1227,202 @@
       "demoModes": [
         "create repository in Axiom",
         "select manually created existing repository"
+      ],
+      "connectedRemoteChecks": 6,
+      "nativeAccountFlowVerified": false,
+      "connectedEvidence": "docs/reports/m18-4-connected-test.json"
+    },
+    "priorRemoteCi315": {
+      "passed": true,
+      "status": "completed",
+      "version": "0.0.49",
+      "commit": "2cf8fa7284c1520f64b1c36d2fe82ccd4a19ce8c",
+      "tree": "72203942554b122aef5745dd46f10bd42a759b8c",
+      "run": 315,
+      "runId": 39324017306,
+      "url": "https://github.com/Krozzeo/AxiomEngine/actions/runs/39324017306",
+      "jobCount": 42,
+      "jobsPassed": 42,
+      "pendingJobs": [],
+      "jobs": [
+        {
+          "name": "rust",
+          "conclusion": "success"
+        },
+        {
+          "name": "csharp-wasm-spike (ubuntu-latest, aot)",
+          "conclusion": "success"
+        },
+        {
+          "name": "bootstrap (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "script-boundaries (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "script-boundaries (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3)",
+          "conclusion": "success"
+        },
+        {
+          "name": "bootstrap (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-1)",
+          "conclusion": "success"
+        },
+        {
+          "name": "csharp-wasm-spike (windows-latest, development)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m2)",
+          "conclusion": "success"
+        },
+        {
+          "name": "csharp-wasm-spike (ubuntu-latest, development)",
+          "conclusion": "success"
+        },
+        {
+          "name": "script-boundaries (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-4)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-9)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m3)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-8)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m16-1)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-2)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-7)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-10)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-5)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-6)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-3)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m17)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-2-1)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m18-3-11)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m16)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m13)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m12)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m13-1)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m15)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m11)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m14)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m10)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m9)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (corrections)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m4)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m7)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m6)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m5)",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser-milestones (m8)",
+          "conclusion": "success"
+        }
       ]
+    },
+    "m18_2LocalRegression": {
+      "passed": true,
+      "groups": 14,
+      "errors": 0
     }
   },
   "blockedChecks": [
     "Live-account vision quality and actual billed token usage require a connected model; no paid requests were run.",
-    "M18.4 live GitHub account, explicitly selected game test repository, successful publication and reopen require account-side acceptance; no game repository was published by development tests.",
     "Prior requested Inspector/Hierarchy/drag-feedback changes and first-scene render defect remain open.",
     "M18.3.11 dense physics fluency remains unaccepted; this GitHub integration does not implement GPU physics."
   ],
@@ -1416,6 +1435,8 @@
     "mcp": 1
   },
   "canonicalDocs": [
+    "docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md",
+    "docs/reports/M18_4_CONNECTED_TEST_REPORT.md",
     "docs/reports/M18_4_CURRENT_REPORT.md",
     "demos/M18_4_GUIDE.md",
     "docs/reports/M18_3_9_CURRENT_REPORT.md",
@@ -1601,7 +1622,7 @@
     "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
     "docs/adr/0033-gpu-physics-and-shader-roadmap.md"
   ],
-  "nextTask": "Validate both M18.4 demos against real GitHub after the user creates/selects the game test repository and connects in the editor. Guide: demos/M18_4_GUIDE.md. Finish current CI, retaining prior UI/render/dense-performance/live-model gates before claiming M18 closed. Unity API + GPU/shader roadmap M19–M40 unchanged. No automatic merge.",
+  "nextTask": "M18.4 closed under ADR-0034. Next planned milestone is M19 audit, not started. Retain separate prior Hierarchy/Inspector/drag-feedback, first-render, dense-physics and live-model follow-ups. Native account/demo validation is deferred by user, not a closure blocker. TestRepo is tests-only. Unity API + shaders/GPU roadmap M19–M40 unchanged. No automatic merge.",
   "activeRevision": "M18.3.11",
   "roadmap": {
     "version": 2,
@@ -1630,5 +1651,13 @@
       "M30.4",
       "M39.4"
     ]
-  }
+  },
+  "deferredChecks": [
+    {
+      "milestone": "M18.4",
+      "check": "Native UI/token/GraphQL live-account validation using demos",
+      "status": "deferred_by_user",
+      "decision": "docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md"
+    }
+  ]
 }

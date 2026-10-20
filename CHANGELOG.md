@@ -1,3 +1,9 @@
+# Cierre M18.4 — alcance acordado
+
+- M18.4 completa: 9/9 grupos requeridos; verificación nativa manual aplazada explícitamente por el usuario (ADR-0034).
+- Seis pruebas conectadas del servicio pasan en TestRepo, con transporte Git delegado y datos sintéticos, sin usar las demos.
+- Estado/roadmap actualizados: 23 de 45 milestones principales cerradas, 22 pendientes. Sin cambios ejecutables ni nueva versión.
+
 # 0.0.50 — M18.4 GitHub publication (en revisión)
 
 - Panel GitHub independiente de IA, token temporal en memoria, selección/creación humana de repositorio y rama de juego y estado de cambios pendientes separado de autenticación.

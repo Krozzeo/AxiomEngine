@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "repository": "Krozzeo/TestRepo",
+  "branch": "axiom-tests/m18-4-282b799a",
+  "projectId": "project://ab4bc033-791c-4c01-a84a-2727af1e5c01",
+  "prefix": "axiom/ab4bc033-791c-4c01-a84a-2727af1e5c01/",
+  "first": {
+    "sha": "9faf889796b396ae7d849e1a4b62a063514c70ec",
+    "url": "https://github.com/Krozzeo/TestRepo/commit/9faf889796b396ae7d849e1a4b62a063514c70ec",
+    "snapshotHash": "e63ae95b00179bd620a1254117ef3e06debeaa1b3cc433fa47e48fa6ff2c7a72",
+    "projectRevision": 1,
+    "publicationId": "ef7eca1c-8efb-4b29-af0d-5f20bebbabf5",
+    "at": "2026-10-20T02:08:15.081Z",
+    "summary": {
+      "added": 4,
+      "modified": 0,
+      "deleted": 0
+    }
+  },
+  "recovered": {
+    "sha": "49852a8726742fb2bfe96236a9a22eab5c771646",
+    "url": "https://github.com/Krozzeo/TestRepo/commit/49852a8726742fb2bfe96236a9a22eab5c771646",
+    "snapshotHash": "2039e91f93f30615ad44cec50fb137f1c58abb2480428ce559e77894e831abe1",
+    "projectRevision": 2,
+    "publicationId": "738bcbdb-1171-4196-a9d8-52d479eabdc6",
+    "at": "2026-10-20T02:08:51.933Z",
+    "summary": {
+      "added": 0,
+      "modified": 2,
+      "deleted": 0
+    }
+  },
+  "integrity": {
+    "publications": 2,
+    "mainUnchanged": true,
+    "readmeUnchanged": true,
+    "mainHead": "b6f7f930c84eb5532c0bbcf1ec1c933feff76429",
+    "testHead": "894ed30fe99fcb18c4ea3e0abc457fa2b6db0f35"
+  },
+  "criteria": [
+    "Real saved fixture publication",
+    "Downloaded source bytes match canonical bundle and reopen",
+    "Lost successful response recovered across service restart without duplicate publication",
+    "Real external commit blocks subsequent publication",
+    "Main and original README preserved",
+    "Profile contains no connector sentinel"
+  ],
+  "scope": "Production GitHubPublication service with connector-backed Git transport; native password authentication and GraphQL transport not exercised. No demo was used."
+}

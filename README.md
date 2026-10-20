@@ -1,3 +1,11 @@
+# M18.4 cerrada — 0.0.50 / SDK 8
+
+**100% del alcance de cierre acordado (9/9 grupos)**. El usuario aplaza la validación nativa con su cuenta hasta disponer de las demos; no se declara aprobada. Seis pruebas adicionales del servicio de producción contra TestRepo real pasaron con transporte delegado al conector. **TestRepo es solo para pruebas; las dos demos siguen independientes.** Decisión: [ADR-0034](docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md). No hay cambios ejecutables en este cierre ni fusión automática.
+
+Roadmap vigente: 45 milestones principales, 23 cerradas y 22 pendientes (M19–M40). Se mantiene íntegra la Scripting API de Unity más shaders y físicas GPU. Los pendientes anteriores del editor/render/rendimiento/modelo siguen registrados por separado. Las entradas siguientes son antecedentes.
+
+---
+
 # Demos M18.4 — dos recorridos
 
 Disponibles **Create Repository** (crear y publicar desde Axiom) y **Existing Repository** (usar el repositorio de prueba creado manualmente). Proyectos separados y diez grupos de aceptación local con adaptadores controlados; cuenta real pendiente. [Guía paso a paso de ambos modos](demos/M18_4_GUIDE.md). `npm run demo:m18-4` genera las dos demos sin reemplazar proyectos existentes.

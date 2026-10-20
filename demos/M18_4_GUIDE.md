@@ -1,6 +1,6 @@
 # M18.4 — Dos demos de publicación en GitHub
 
-Estado: implementación automatizada; aceptación con cuenta real pendiente. No se ha publicado ningún juego en una cuenta externa durante el desarrollo.
+Estado: M18.4 cerrada según ADR-0034. La validación nativa de las demos con cuenta real queda aplazada, sin bloquear el cierre. TestRepo es exclusivamente un repositorio de pruebas sintéticas; no se usa como destino de estas demos.
 
 `npm run demo:m18-4` crea **dos proyectos independientes** en el almacenamiento configurado del Hub; no reemplaza proyectos existentes. Se puede pasar una carpeta de pruebas a `node demos/create-m18-4-projects.mjs <carpeta>`. Cada ejecución crea UUIDs nuevos. El cubo, cámara, luz, JSON de ejemplo y PMD son editables mediante las funciones normales del editor. Ninguna demo conecta cuentas ni selecciona destinos automáticamente.
 
@@ -10,6 +10,23 @@ Estado: implementación automatizada; aceptación con cuenta real pendiente. No 
 | **Demo · M18.4 GitHub · Existing Repository** | Conectar cuenta y publicar en el repositorio creado manualmente | `Existing Repo Cube` a X=1; JSON con `mode: "existing"`; milestone `GH-EXISTING` |
 
 La conexión actual utiliza un token introducido en el panel, no inicio de sesión mediante navegador. Publicar es un envío hacia GitHub: todavía no hay descarga de cambios remotos ni resolución automática de conflictos.
+
+## Obtener el token y conectar Axiom, paso a paso
+
+Para un repositorio ya existente, usar un token fine-grained limitado a ese destino:
+
+1. Iniciar sesión en GitHub. Abrir la foto de perfil → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**. [Formulario directo](https://github.com/settings/personal-access-tokens/new).
+2. Nombre: `Axiom Engine`. Elegir una expiración, por ejemplo 30 días. En **Resource owner**, elegir la cuenta propietaria del repositorio, por ejemplo `Krozzeo`.
+3. En **Repository access**, marcar **Only select repositories** y seleccionar el repositorio del juego. `TestRepo` queda reservado a pruebas, no a las demos.
+4. En **Repository permissions**, configurar **Contents: Read and write**. Conservar **Metadata: Read-only**. Para publicar archivos y crear una rama en ese repositorio no hace falta dar acceso a Actions, Issues ni administración general.
+5. Pulsar **Generate token** y copiar el resultado en ese momento. Introducirlo únicamente en el campo de contraseña del panel GitHub de Axiom; no en el PMD ni en este chat. [Referencia oficial de tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+6. Abrir el proyecto en Axiom → icono GitHub de la barra superior → pegar en **GitHub access token** → **Connect**. El campo debe vaciarse y el estado mostrar la cuenta conectada. La conexión de GitHub es independiente de la del agente de IA.
+7. Pulsar **List my repositories**, seleccionar el destino, o escribir `propietario/repositorio`. Escribir una rama existente, por ejemplo `main`, o una nueva y marcar **Create this branch…**. Pulsar **Use this destination**.
+8. Guardar el proyecto y detener Play. Pulsar **Review saved changes**, comprobar destino/archivos y luego **Publish reviewed changes**. **Last publication** abre el commit resultante.
+
+Para **crear repositorios desde Axiom**, el token necesita además **Repository creation: Write**, o alternativamente **Administration: Read and write**, según los permisos disponibles en GitHub. El acceso del token también debe abarcar los nuevos repositorios: **All repositories** los incluye, pero amplía el alcance a todos los repositorios de esa cuenta. Un token limitado a repositorios existentes no debe suponerse válido para publicar en uno nuevo. Si preferís mantener acceso restringido, creá el repositorio manualmente y usá el recorrido B. [Permisos oficiales del endpoint de creación](https://docs.github.com/en/rest/repos/repos#create-a-repository-for-the-authenticated-user).
+
+El token permanece en memoria hasta desconectar o cerrar el daemon; al reiniciarlo hay que volver a conectarse. Si expira o GitHub rechaza permisos, generar/actualizar uno y reconectar. La conexión nativa con token sigue pendiente de verificación manual: las pruebas conectadas de esta entrega usaron el conector, según el informe.
 
 ## Demo A — Crear el repositorio desde Axiom
 
@@ -37,7 +54,7 @@ La conexión actual utiliza un token introducido en el panel, no inicio de sesi�
 6. Una preview activa, cambios sin guardar, Play o trabajos pendientes deben impedir publicar. Cambiar un archivo en GitHub en la rama seleccionada debe detener la siguiente publicación por divergencia, preservando su historial. Se puede elegir explícitamente otra rama; no hay merge ni force-push automático.
 7. Ante una respuesta no confirmada, **Check an unconfirmed publication** busca el identificador persistente en los últimos 50 commits. **Retry the same publication** recupera el commit existente o reintenta exactamente el mismo snapshot y condición de cabecera. Si el proyecto o la rama cambiaron, se detiene y explica el motivo.
 
-Evidencia necesaria para cerrar el gate real: URL del commit de juego, cuenta/repositorio/rama seleccionados (sin token), confirmación de reapertura y resultado observado de desconexión/reintento. La prueba `npm run test:browser:m18-4` cubre el recorrido con un adaptador controlado; no sustituye esta verificación con GitHub real.
+Evidencia para la validación manual posterior, no exigida para cerrar M18.4: URL del commit de juego, cuenta/repositorio/rama seleccionados (sin token), confirmación de reapertura y resultado observado de desconexión/reintento. La prueba `npm run test:browser:m18-4` cubre el recorrido con un adaptador controlado; no sustituye esta verificación con GitHub real.
 
 | Comprobación | Demo A: crear desde Axiom | Demo B: repositorio manual |
 |---|---|---|

@@ -1,6 +1,6 @@
 # Reporting vigente — roadmap ampliado 2026-10-19
 
-[Roadmap M19–M40](ROADMAP_M19_M40.md) es la decisión de alcance vigente. El antiguo M19 se traslada a M40; M19–M39 son 21 milestones nuevas, todas inicialmente planificadas y sin crédito funcional. M18.4 permanece pendiente.
+[Roadmap M19–M40](ROADMAP_M19_M40.md) es la decisión de alcance vigente. El antiguo M19 se traslada a M40; M19–M39 son 21 milestones nuevas, todas inicialmente planificadas y sin crédito funcional. M18.4 cerrada según ADR-0034; verificación nativa manual Deferred por decisión explícita del usuario.
 
 - Progreso de milestone: aceptación requerida aprobada / aceptación requerida total; no contar documentos como implementación.
 - Cobertura API: firmas objetivo con comportamiento verificado / firmas objetivo del snapshot M19. Declarar parciales, bloqueos, plataformas, paquetes y exclusiones por separado; no deduplicar sobrecargas diferentes ni sumar miembros heredados varias veces.

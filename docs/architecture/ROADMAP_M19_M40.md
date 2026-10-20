@@ -1,3 +1,7 @@
+# Actualización de cierre
+
+M18.4 cerrada con validación nativa manual aplazada por decisión del usuario; [ADR-0034](../adr/0034-m18-4-closure-and-deferred-native-account-check.md). M19 aún no ha empezado. Los contratos y el resto del alcance no cambian.
+
 # Roadmap ampliado — M19 a M40
 
 Decisión de alcance: **2026-10-19**, solicitada por el usuario. Plan vigente sobre Axiom **0.0.49 / SDK 8**; no es una nueva versión ejecutable ni una aceptación funcional.
@@ -6,8 +10,8 @@ Decisión de alcance: **2026-10-19**, solicitada por el usuario. Plan vigente so
 
 - Se añaden **21 milestones de compatibilidad, M19–M39**.
 - La última milestone anterior, **M19 MVP Hardening**, se traslada íntegramente a **M40**. El nuevo M19 es auditoría, no estabilización.
-- **M18.4 se conserva** con su alcance de integración GitHub. Quedan **23 milestones principales pendientes**: M18.4, M19–M39 y M40.
-- El proyecto pasa a **45 milestones principales**: M0–M40 y M18.1–M18.4; 22 principales están cerradas. Las correcciones M18.3.x no se suman como milestones principales nuevas.
+- **M18.4 se conserva** con su alcance de integración GitHub. M18.4 queda cerrada según ADR-0034; quedan **22 milestones principales pendientes**: M19–M39 y M40.
+- El proyecto pasa a **45 milestones principales**: M0–M40 y M18.1–M18.4; 23 principales están cerradas. Las correcciones M18.3.x no se suman como milestones principales nuevas.
 - Orden recomendado: M18.4 → M19 → M20–M39 → M40. El inventario/harness de M19 puede prepararse mientras una verificación externa de M18.4 esté pendiente; eso no cierra M18.4. Las dependencias de la tabla permiten trabajo independiente, pero cada cierre respeta sus gates.
 
 ## Objetivo verificable

@@ -17,3 +17,6 @@ Consequences and Status.
 - [ADR-0026: bounded measured frame profiler](0026-bounded-measured-frame-profiler.md).
 
 - [ADR-0033: planificación de físicas GPU y shaders](0033-gpu-physics-and-shader-roadmap.md).
+
+- [ADR-0036: separación de Axiom Platform](0036-platform-separation.md).
+- [ADR-0037: MIT e identidad de repositorio](0037-mit-license-and-repository-identity.md), sustituye ADR-0013 para nuevas entregas; el registro original se conserva.

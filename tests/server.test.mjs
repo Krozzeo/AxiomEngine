@@ -34,7 +34,7 @@ test("daemon rebuilds and serves editor assets when dist is absent", async (cont
 
   const response = await fetch(instance.origin);
   assert.equal(response.status, 200);
-  assert.match(await response.text(), /<title>Axiom Engine<\/title>/);
+  assert.match(await response.text(), /<title>Axiom Game Engine<\/title>/);
   const profilerModule = await fetch(`${instance.origin}/frame-profiler.js`);
   assert.equal(profilerModule.status, 200);
   assert.match(profilerModule.headers.get("content-type"), /text\/javascript/);

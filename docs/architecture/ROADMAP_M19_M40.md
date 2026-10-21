@@ -4,6 +4,8 @@ M18.4 cerrada con validación nativa manual aplazada por decisión del usuario; 
 
 # Roadmap ampliado — M19 a M40
 
+Actualización P0, 2026-10-21: estas milestones pertenecen exclusivamente a **Axiom Game Engine**. [Axiom Platform](PLATFORM_TRANSITION.md) tiene P0–P5 independientes; no sustituye este alcance. La extracción no implementa Unity API, shaders o físicas GPU. La evidencia histórica siguiente se complementa con CI 329 del candidato de consolidación (46/46, árbol de la base 871a72f); ver el estado vigente. M19 no necesita esperar P5 cuando no haya dependencia técnica.
+
 Decisión de alcance: **2026-10-19**, solicitada por el usuario. Plan originalmente aprobado sobre Axiom **0.0.49 / SDK 8**. Base funcional actual: **0.0.52 / SDK 8** integrada en `main`; [estado y verificación](IMPLEMENTATION_STATUS.md). Este documento no acredita implementación ni aceptación de las etapas futuras.
 
 ## Número de milestones y migración
@@ -87,7 +89,7 @@ La selección de backends de física, shaders, texto, audio y red se documenta m
 - Cada M19–M40 tiene un plan con alcance, subtandas, demo y aceptación.
 - [Estado del proyecto](../../axiom.project-state.json) conserva evidencia ejecutable separada de planificación.
 - [Estado de la API SDK 8](../scripting-api/STATUS_0_0_49.md) sigue describiendo lo implementado.
-- [Issue #40 de seguimiento](https://github.com/Krozzeo/AxiomEngine/issues/40): checklist de las 23 milestones, enlazado desde el PR de planificación. Las casillas representan aceptación futura, no simple creación de documentos.
+- [Issue #40 de seguimiento](https://github.com/Krozzeo/AxiomGameEngine/issues/40): checklist de las 23 milestones, enlazado desde el PR de planificación. Las casillas representan aceptación futura, no simple creación de documentos.
 - Las referencias antiguas a M19 Hardening en informes históricos quedan supersedidas por esta migración; los informes de releases no se reescriben.
 
 ## Referencias

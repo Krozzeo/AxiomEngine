@@ -1,9 +1,11 @@
-# Documentación de Axiom Engine
+# Documentación de Axiom Game Engine
 
 Estado vigente sobre 0.0.52 / SDK 8. Los informes por milestone y documentos archivados son evidencia de sus respectivas entregas; no sustituyen este estado.
 
 | Necesidad | Referencia |
 | --- | --- |
+| Informe de P0 | [Entrega y límites](reports/PLATFORM_P0_REPORT.md) |
+| Familia Axiom y separación P0 | [Transición a Platform](architecture/PLATFORM_TRANSITION.md) |
 | Instalación y arranque | [README](../README.md) |
 | Estado real, límites y pendientes | [Implementación](architecture/IMPLEMENTATION_STATUS.md) |
 | Retomar el desarrollo | [AI handoff](AI_HANDOFF.md) |

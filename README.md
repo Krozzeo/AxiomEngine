@@ -1,4 +1,4 @@
-# Axiom Engine
+# Axiom Game Engine
 
 Motor de juegos con editor en navegador, núcleo Rust/WebAssembly, renderizado WebGPU y gameplay C#. Incluye escenas 2D/3D, recursos, físicas CPU/Wasm, herramientas de edición y propuestas de IA aisladas con revisión humana.
 
@@ -6,14 +6,18 @@ Motor de juegos con editor en navegador, núcleo Rust/WebAssembly, renderizado W
 
 - [Estado confirmado y límites](docs/architecture/IMPLEMENTATION_STATUS.md)
 - [Mapa de documentación](docs/index.md) y [contexto para continuar](docs/AI_HANDOFF.md)
-- [Milestones de GitHub](https://github.com/Krozzeo/AxiomEngine/milestones) y [su correspondencia con los planes](docs/NATIVE_GITHUB_MILESTONES.md)
+- [Milestones de GitHub](https://github.com/Krozzeo/AxiomGameEngine/milestones) y [su correspondencia con los planes](docs/NATIVE_GITHUB_MILESTONES.md)
 - [Roadmap M19–M40](docs/architecture/ROADMAP_M19_M40.md): Scripting API compatible con Unity, shaders y físicas GPU
 - [Recuperación y organización de GitHub](docs/REPOSITORY_MAINTENANCE.md)
 - [Cambios por versión](CHANGELOG.md)
 
+## Familia Axiom y reestructuración
+
+Este es el primer producto de [Axiom Platform](https://github.com/Krozzeo/AxiomPlatform). La [separación aprobada](docs/architecture/PLATFORM_TRANSITION.md) está en P0 documental: el código común aún reside aquí. Platform tendrá Hub/servicios/SDK; el motor conserva dominio y adaptador. M19–M40 mantienen Unity scripting, shaders y físicas GPU. No cambia el arranque ni el formato de proyectos.
+
 ## Descargar y ejecutar
 
-[Descargar la entrega de recuperación 0.0.52](https://github.com/Krozzeo/AxiomEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). Es código fuente; requiere las herramientas siguientes, no es un instalador.
+[Descargar la entrega de recuperación 0.0.52](https://github.com/Krozzeo/AxiomGameEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). Es código fuente; requiere las herramientas siguientes, no es un instalador.
 
 Requisitos: Node.js 24+, Rust 1.90 con `wasm32-unknown-unknown` y, para C#, .NET 10 SDK con `wasm-tools`.
 
@@ -43,8 +47,8 @@ npm run check
 npm run check:native
 ```
 
-Los recorridos de navegador se ejecutan mediante `test:browser:*`, enumerados en `package.json` y en el workflow CI. La evidencia local de la entrega incluyó 438 pruebas Node, 44 Rust y 18 grupos de navegador con adaptadores controlados. El CI 320 tuvo 42/45 trabajos aprobados; sus tres fallos están registrados en [el informe de mantenimiento](docs/REPOSITORY_MAINTENANCE.md). Esa entrega no se declara íntegramente verde.
+Los recorridos de navegador se ejecutan mediante `test:browser:*`. El candidato de consolidación e2eebc5 aprobó [CI 329, 46/46 trabajos](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39505502248), incluido Node 441/441; su árbol coincide con la base 871a72f. Es evidencia histórica, no aceptación del nuevo PR. El run posterior sobre main falló M17 y el gate agregado: [pendiente #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51); la base no se declara íntegramente verde. #48/#49 están cerradas; [#47 Inspector intermitente](https://github.com/Krozzeo/AxiomGameEngine/issues/47) sigue abierta. [Estado y límites](docs/architecture/IMPLEMENTATION_STATUS.md).
 
 M18.4 está cerrada en el alcance acordado según ADR-0034. La validación nativa manual con cuenta real continúa aplazada por el usuario. La paridad total con Unity y las físicas GPU siguen pendientes; no hay un porcentaje global auditado antes de M19.
 
-Apache License 2.0. Consultar [CONTRIBUTING.md](CONTRIBUTING.md) para cambios y revisión.
+[MIT](LICENSE). Las dependencias conservan sus licencias y [avisos](THIRD_PARTY_NOTICES.md). Consultar [CONTRIBUTING.md](CONTRIBUTING.md) para cambios y revisión.

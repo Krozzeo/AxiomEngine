@@ -2,7 +2,7 @@
 
 M17 uses the separately installed, replaceable npm module **occt-import-js 0.0.23**,
 by Viktor Kovacs and contributors, under LGPL-2.1. It contains Open CASCADE Technology
-7.6.1 compiled with Emscripten 3.1.69. Axiom's Apache-2.0 license does not replace
+7.6.1 compiled with Emscripten 3.1.69. Axiom's MIT license does not replace
 these dependency licenses. The source release does not vendor its JavaScript/Wasm
 binary; `npm ci` installs the exact package and integrity from package-lock.json.
 
@@ -22,7 +22,7 @@ Wasm without changing Axiom. No signature check prohibits replacing that library
 **Axiom modification:** `engine/assets/cad.mjs::capWasmMemory` changes only the defined
 Wasm memory maximum in memory immediately before instantiation (4096 64-KiB pages).
 The npm-distributed binary on disk is unchanged. The complete source of that
-transformation is included under Apache-2.0 in this release and is sufficient to
+transformation is included under MIT in this release and is sufficient to
 reproduce the change with any compatible rebuilt upstream module.
 
 Fixture provenance: `tests/fixtures/cad/cube.step` comes from upstream

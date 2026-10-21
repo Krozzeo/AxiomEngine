@@ -1,5 +1,10 @@
 # Changelog
 
+## P1 — Adaptador de Axiom Platform · 2026-10-21
+
+Descriptor/IPC, puerto de ciclo de vida opcional, revisión y protección de buffers, arrendamiento por carpeta y apertura nativa conservada. Sin cambios de formato o extracción AI/GitHub. Entrega en rama con pruebas conjuntas y navegador Null; ver informe P1.
+
+
 ## P0 de Axiom Platform e identidad — 2026-10-21
 
 - Producto/repo Axiom Game Engine / AxiomGameEngine; referencias activas y ayuda actualizadas, conservando nombres técnicos y formatos.

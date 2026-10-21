@@ -48,3 +48,7 @@ Nombre Axiom Game Engine, repositorio AxiomGameEngine. MIT sustituye ADR-0013 pa
 ## CI posterior de la base: pendiente #51
 
 Verificado durante P0: el [run posterior sobre main 871a72f](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39507425121) terminó con fallo de M17 y del gate agregado (44/46 trabajos aprobados). La aserción de posiciones de runtime en tests/browser/m17.mjs:13:643 encontró valores sin cambio; compilación completada y diagnóstico de script vacío no establecen la causa. [Seguimiento #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51). El CI 329 aprobado del mismo árbol sigue siendo evidencia histórica, pero la base no se declara íntegramente verde. Este fallo precede a publicar la rama P0 y no se corrige por documentación o renombrado.
+
+## Actualización P1
+
+Adaptador y puerto de autoría en feat/p1-platform-adapter, basado en P0 fcc7435. Platform utiliza IPC/protocolo 1 / API 0.1; sin imports del motor desde Platform ni migración de formato. [P1](architecture/PLATFORM_P1.md) e [informe](reports/PLATFORM_P1_REPORT.md). Local: 443 Node y recorrido conjunto/browser Null aprobados; verificar CI/estado de los PR antes de integrar. Main no se modifica por esta rama. P2 será extracción de catálogo/servicios, sin cambiar M19–M40.

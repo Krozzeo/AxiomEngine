@@ -15,6 +15,10 @@ Motor de juegos con editor en navegador, núcleo Rust/WebAssembly, renderizado W
 
 Este es el primer producto de [Axiom Platform](https://github.com/Krozzeo/AxiomPlatform). La [separación aprobada](docs/architecture/PLATFORM_TRANSITION.md) está en P0 documental: el código común aún reside aquí. Platform tendrá Hub/servicios/SDK; el motor conserva dominio y adaptador. M19–M40 mantienen Unity scripting, shaders y físicas GPU. No cambia el arranque ni el formato de proyectos.
 
+## Primera integración con Platform — P1
+
+La rama P1 añade un adaptador que permite crear/abrir el proyecto desde el Hub de Platform, editarlo en una pestaña independiente y guardar/cerrar con control de revisión y buffers pendientes. [Ejecución y límites](docs/architecture/PLATFORM_P1.md) · [Informe](docs/reports/PLATFORM_P1_REPORT.md). Es una entrega en rama, sin extracción de GitHub/AI ni cambio de formatos.
+
 ## Descargar y ejecutar
 
 [Descargar la entrega de recuperación 0.0.52](https://github.com/Krozzeo/AxiomGameEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). Es código fuente; requiere las herramientas siguientes, no es un instalador.

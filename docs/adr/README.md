@@ -20,3 +20,5 @@ Consequences and Status.
 
 - [ADR-0036: separación de Axiom Platform](0036-platform-separation.md).
 - [ADR-0037: MIT e identidad de repositorio](0037-mit-license-and-repository-identity.md), sustituye ADR-0013 para nuevas entregas; el registro original se conserva.
+
+- [ADR-0038: adaptador P1 de Platform](0038-platform-p1-adapter.md).

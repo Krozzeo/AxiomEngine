@@ -48,4 +48,4 @@ P1 aceptada por usuario y CI, integrada en main 400fec0. P2 extrae servicios y c
 
 ## Platform P3 — 2026-10-21
 
-Núcleo AI, broker alojado, registro, codec de journal y diff/gates consumidos desde proveedor fijo. Dominio y transacción conservados. 444 tests Engine y 21 Platform; HTTP controlado, no modelo real. [Estado y límites](PLATFORM_P3.md). P2/P3 aún en ramas; #55 sigue pendiente.
+Núcleo AI, broker alojado, registro, codec de journal y diff/gates consumidos desde proveedor fijo. Dominio y transacción conservados. 445 tests Engine y 21 Platform; HTTP controlado, no modelo real. [Estado y límites](PLATFORM_P3.md). P2/P3 aún en ramas; #55 sigue pendiente.

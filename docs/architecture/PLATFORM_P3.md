@@ -14,6 +14,6 @@ La configuración recuerda modelo; al reabrir debe probarse la conexión. Las ub
 
 ## Validación
 
-npm run check: 444/444. Enfoque AI/work orders/propuestas: 94/94. Platform: 21 tests incluyendo tres integraciones reales con aprobación, aislamiento, aplicación/reapertura, cancelación/tardía/429 y conflictos sin overwrite. Browser P3 prueba el mismo recorrido desde UI. HTTP AI controlado; Null; ninguna clave o aceptación de modelo real. [Guía P3](https://github.com/Krozzeo/AxiomPlatform/blob/feat/p3-ai-and-changes/docs/P3_GUIDE.md).
+npm run check: 445/445. Enfoque AI/work orders/propuestas: 95/95. Platform: 21 tests incluyendo tres integraciones reales con aprobación, aislamiento, aplicación/reapertura, cancelación/tardía/429 y conflictos sin overwrite. Browser P3 prueba el mismo recorrido desde UI. HTTP AI controlado; Null; ninguna clave o aceptación de modelo real. [Guía P3](https://github.com/Krozzeo/AxiomPlatform/blob/feat/p3-ai-and-changes/docs/P3_GUIDE.md).
 
 P3 se entrega con PR base feat/p2-platform-services; no integrar con checks fallidos ni atribuir #55 a esta extracción sin evidencia. P4/P5 y M19–M40 (Unity/shaders/GPU) siguen independientes.

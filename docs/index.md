@@ -9,3 +9,5 @@ Current candidate 0.0.53/SDK 8/Platform P4. Historical reports retain their own 
 - [Demos](../demos/README.md), [GitHub demo guide](../demos/M18_4_GUIDE.md), [changelog](../CHANGELOG.md), [reports](reports/), [pre-restructure archive](archive/pre-restructure-0.0.52/README.md).
 
 Maintained English editions link complete original-language .txt sources in [the reference archive](archive/original-language/README.md), preserving details/provenance without treating historical wording as new instructions. Existing English subsystem contracts remain in architecture and are not reclassified as new implementation.
+
+- [Platform P5 editor lifecycle and independent Math Lab](architecture/PLATFORM_P5.md).

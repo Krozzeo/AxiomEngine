@@ -1,6 +1,6 @@
 # Confirmed implementation status
 
-Current branch candidate: **0.0.53 / SDK 8 / Platform P4**. P1 is integrated/accepted; P2/P3/P4 are stacked review candidates. Protected recovery/pre-restructure-0.0.52 remains e264ca835de14daf4fe964be6a78be5e4646ad14. Main has not been advanced by this delivery.
+Current branch candidate: **0.0.54 / SDK 8 / Platform P5**. P1 is integrated/accepted; P2/P3/P4/P5 are stacked review candidates. Protected recovery/pre-restructure-0.0.52 remains e264ca835de14daf4fe964be6a78be5e4646ad14. Main has not been advanced by this delivery.
 
 | Area | Confirmed behavior | Remaining limits |
 | --- | --- | --- |
@@ -23,3 +23,5 @@ P4 local final evidence is recorded in [its report](../reports/PLATFORM_P4_REPOR
 ## Planning
 
 45 main milestones,23 historically closed,22 pendingM19–M40. M18.4 closed in the explicitly agreed scope with native account validation deferred (ADR0034). M19 audit remains next product expansion, independent of Platform P5 when interfaces allow. The historical94%(122/130) refers only to original MVP weighting; expanded global/complete Unity coverage remains unquantified. [Roadmap](ROADMAP_M19_M40.md), [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md), [handoff](../AI_HANDOFF.md).
+
+P5: negotiated Platform framing, shared public folder lease/native picker, safe file-based import, one hosted editor with disconnection/reconnection. Math Lab is independent and gives no Engine API credit. [Details](PLATFORM_P5.md).

@@ -6,7 +6,7 @@ import {adoptLegacyGitHub} from './github-state.mjs';
 import {copyProjectFiles} from 'axiom-platform/files';
 import {SharedGitHubClient} from 'axiom-platform/github-peer';
 import {githubProjects,importGitHubProject} from '../daemon/bootstrap/github/import-project.mjs';
-import {resolve,relative,dirname,sep,isAbsolute,join} from 'node:path';
+import {resolve,relative,dirname,basename,sep,isAbsolute,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import manifest from './product.json' with {type:'json'};
 import {acquireLease} from './lease.mjs';
@@ -41,7 +41,7 @@ export class GameEngineAdapter {
       if(this.root)fail('invalidRequest','Session already initialized.');
       if(!/^0\.1\.\d+$/.test(params.platformVersion))fail('incompatibleVersion','Game Engine requires Platform API 0.1.');
       this.root=await realpath(params.authorizedRoot);
-      this.readSources=params.readSources??[];
+      this.embeddingOrigin=params.platformOrigin;this.readSources=params.readSources??[];
       this.projectStateRoot=params.projectStateRoot;if(params.services?.ai)this.sharedAi=new SharedAiProvider({sessionId:this.sessionId,state:params.services.ai});
       if(params.services?.github)this.sharedGitHub=new SharedGitHubClient({sessionId:this.sessionId,account:params.services.github});
       return {protocolVersion:1,productId:manifest.productId,productVersion:manifest.productVersion,capabilities:manifest.capabilities};
@@ -63,11 +63,11 @@ export class GameEngineAdapter {
       }
       const source=await realpath(params.sourcePath);
       if(!this.readSources.includes(source))fail('permissionDenied','This source was not explicitly granted for import.');
-      const docs=(await readdir(source)).filter(n=>/^[0-9a-f-]{36}\.json$/.test(n));
+      const sourceFile=(await lstat(source)).isFile(),sourceFolder=sourceFile?dirname(source):source;const docs=(sourceFile?[basename(source)]:await readdir(sourceFolder)).filter(n=>/^[0-9a-f-]{36}\.json$/.test(n));
       if(docs.length!==1)fail('invalidRequest','Choose a folder containing exactly one Game Engine UUID JSON project.');
-      const entry=await this.document(join(source,docs[0])),paths=[docs[0]];
-      for(const extension of ['.assets','.scripts']){const name=docs[0].replace('.json',extension);try{await lstat(join(source,name));paths.push(name);}catch(error){if(error.code!=='ENOENT')throw error;}}
-      await copyProjectFiles({source:params.sourcePath,destination,paths});
+      const entry=await this.document(join(sourceFolder,docs[0])),paths=[docs[0]];
+      for(const extension of ['.assets','.scripts']){const name=docs[0].replace('.json',extension);try{await lstat(join(sourceFolder,name));paths.push(name);}catch(error){if(error.code!=='ENOENT')throw error;}}
+      await copyProjectFiles({source:sourceFolder,destination,paths});
       return this.document(join(destination,docs[0]));
     }
     if(method==='project.open'||method==='project.create'){
@@ -79,7 +79,7 @@ export class GameEngineAdapter {
       try{
         const githubOptions={...(this.sharedGitHub?{client:this.sharedGitHub}:{}),...(this.projectStateRoot?{statePath:join(this.projectStateRoot,createHash('sha256').update(folder).digest('hex'),'github.json')}: {})};
         if(entry&&githubOptions.statePath)await adoptLegacyGitHub({target:githubOptions.statePath,legacy:join(process.env.APPDATA??join(homedir(),'.config'),'Axiom','github-session.json'),projectId:entry.projectId});
-        this.runtime=await startServer({projectRoot:folder,platformSession:true,githubOptions,...(this.sharedAi?{assistantOptions:{transport:this.sharedAi,apiKey:''}}:{})});
+        this.runtime=await startServer({projectRoot:folder,platformSession:true,embeddingOrigin:this.embeddingOrigin,githubOptions,...(this.sharedAi?{assistantOptions:{transport:this.sharedAi,apiKey:''}}:{})});
         const status=creating?await this.runtime.platform.create(params.name):await this.runtime.platform.open(entry.projectId);
         this.projectId=status.projectId;
         return {path:join(folder,status.projectId.slice('project://'.length)+'.json'),status,editorUrl:this.runtime.editorUrl};

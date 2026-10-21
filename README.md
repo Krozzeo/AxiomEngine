@@ -2,7 +2,7 @@
 
 A local browser game editor with Rust/WebAssembly kernel, WebGPU renderer and C# gameplay. Includes2D/3D scenes, resources, CPU/Wasm physics, editing tools and isolated AI proposals with human review.
 
-**Current candidate:0.0.53 / scripting SDK 8 / Platform P4.** P1 is integrated and accepted; P2/P3/P4 are stacked review candidates. [Confirmed status/limits](docs/architecture/IMPLEMENTATION_STATUS.md), [current context](docs/AI_HANDOFF.md), [documentation map](docs/index.md).
+**Current candidate:0.0.54 / scripting SDK 8 / Platform P5.** P1 is integrated and accepted; P2/P3/P4/P5 are stacked review candidates. [Confirmed status/limits](docs/architecture/IMPLEMENTATION_STATUS.md), [current context](docs/AI_HANDOFF.md), [documentation map](docs/index.md).
 
 ## Axiom family
 
@@ -42,3 +42,5 @@ Browser suites use test:browser:* and retain separate GPU/Null evidence. Previou
 npm run demo creates References & Inspector and related labs; [demo map](demos/README.md). npm run demo:m18-4 creates two independent GitHub demos; [guide](demos/M18_4_GUIDE.md). TestRepo is testing-only and is never auto-linked to demos. Session credentials stay in memory; repository/preferences/history remain per project. Never paste tokens/API keys into chat.
 
 Code/UI/maintained docs use English. Original-language historical snapshots are retained as reference text, not current instructions. [Contributing](CONTRIBUTING.md). [MIT](LICENSE); [third-party notices](THIRD_PARTY_NOTICES.md) remain applicable.
+
+[P5 shared editor lifecycle and second-consumer integration](docs/architecture/PLATFORM_P5.md). Math Lab is an independent product; Unity/shader/GPU coverage and Engine M19–M40 are unchanged.

@@ -103,7 +103,10 @@ export async function startServer(options = {}) {
   let allowedOrigins = new Set();
 
   let closing;
+  let embeddingOrigin;
+  if(options.embeddingOrigin){const u=new URL(options.embeddingOrigin);if(u.protocol!=='http:'||u.hostname!=='127.0.0.1'||u.origin!==options.embeddingOrigin)throw Error('Invalid Platform embedding origin');embeddingOrigin=u.origin;}
   const server = createHttpServer(async (request, response) => {
+    if(embeddingOrigin){const write=response.writeHead;response.writeHead=function(status,headers){return write.call(this,status,{...headers,'Cross-Origin-Resource-Policy':'cross-origin','Content-Security-Policy':SECURITY_HEADERS['Content-Security-Policy'].replace("frame-ancestors 'none'",'frame-ancestors '+embeddingOrigin)});};}
     requestCount += 1;
     const url = new URL(request.url ?? "/", "http://127.0.0.1");
     try {

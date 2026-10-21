@@ -1,23 +1,21 @@
-# Contexto vigente — Axiom Game Engine / P2
+# Contexto vigente — AxiomEngine / P3
 
-2026-10-21. Producto Axiom Game Engine, repositorio AxiomGameEngine, carpeta local AxiomEngine. MIT vigente en main tras integrar P0/P1; recovery mantiene historia/licencias previas. Base P1 main 400fec0, CI 332 completo aprobado y pruebas manuales del usuario aceptadas. P2 vive en feat/p2-platform-services para revisión.
+2026-10-21. Axiom, público MIT; decisión comercial aplazada. P1 aceptada por el usuario e integrada (Platform 0a0471b; Engine 400fec0). P2 entregada en ramas (228e1be/d6aad38), sin integrar: Engine CI 334 falla en drag cleanup M18.3.11, seguimiento #55; su recorrido local pasó pero no demuestra resuelto el fallo remoto. El usuario pidió continuar P3 expresamente. No mover main/recovery ni cerrar incidencias por extrapolación.
 
-## Arquitectura y versión
+P3 implementada en feat/p3-ai-and-changes / feat/p3-platform-ai, PR apilados sobre P2. Platform/API 0.1.2, IPC 1; scripting SDK 8 independiente. Proveedor público fijado 017e54168f87ea5a0d5b97adfbb2314673bc298d, HTTPS/integridad; no enlaces locales en dependencia final. [Arquitectura y evidencia](architecture/PLATFORM_P3.md) · [ADR](adr/0040-platform-p3-ai.md).
 
-Editor navegador, Rust/Wasm, WebGPU/Null, C# SDK 8 y daemon Node productivo; daemon Rust parcial. Adaptador de Platform y puerto opcional de autoría mantienen dominio aquí. Platform API 0.1.1 / IPC 1 es independiente del SDK de scripting. [P2](architecture/PLATFORM_P2.md), [ADR-0039](adr/0039-platform-p2-services.md) e [informe](reports/PLATFORM_P2_REPORT.md).
+## Responsabilidades
 
-Se extraen transporte GitHub, selector y resolución de Documentos a dependencia pública HTTPS de Platform 78d219b04d16b13074d76414483bc121cef32be9 con integridad. npm ci reproduce la instalación sin checkout vecino/SSH. Reexports conservan imports del motor. No copiar fuentes compartidas ni depender de main mutable.
+Platform: proveedor HTTP/modelos, núcleo de turnos/cancelación/consumo, broker de clave en memoria, ledger persistente sin secretos, registro/validación de herramientas, diff/hashes/gates humanos y codec de journal. Engine: contexto/instrucciones, PMD, herramientas/precondiciones/aceptación de juegos, selección del payload de tareas, reconciliación y transacción/rollback/recursos de MAIN. Autonomía determinista específica sigue en Engine. Propuestas manuales y AI usan los mismos gates. Alojado comparte clave; cada proyecto conserva límites/modelo/confirmaciones/tareas. Elegir modelo guardado requiere test al reabrir. Cerrar editor no desconecta otros; desconectar sí cancela tareas globalmente.
 
-Modo alojado: cuenta compartida por broker del host; producto no retiene token. Cuenta/época invalidan planes anteriores; cerrar un producto no desconecta a otros. Configuración/ramas/defaults/journal/historial por proyecto fuera de sus documentos. Adopción nativa anterior solo para el ID abierto, sin otras identidades/secretos, con origen intacto. Publicación, bundles, validación de MAIN y reconciliación pertenecen al motor. Modo nativo conserva cuenta propia con transporte común.
+El host elimina OPENAI_API_KEY del entorno de sus hijos. Claves introducidas en editor solo transitan al host. Una respuesta cancelada/obsoleta no invoca herramientas; consumo incierto se señala y un cierre tardío no sobrescribe el ledger tras reiniciar. Cuenta compartida no concede permisos de publicar/aplicar ni acceso entre proyectos. Journals y configuración previos se conservan; no resetear corrupción ni borrar locks sin copia/verificar procesos.
 
-## Roadmap preservado
+## Evidencia y límites
 
-45 milestones principales, 23 cerradas y M19–M40 pendientes. M19 audita la API objetivo Unity 6.3 LTS; meta futura de al menos 95% core y 100% prioridad P0, sin porcentaje actual auditado antes de M19. M25/M26/M28/M30/M39 y hardening M40 mantienen compute/shaders/físicas GPU; físicas actuales CPU/Wasm. El 94% previo solo describe MVP histórico, nunca el alcance ampliado.
+Engine npm run check 444/444, enfoque AI/work orders/workspaces 94/94. Platform 21 tests y browser P3 de aprobación→propuesta→review→Apply/persistencia sin pageErrors. P1/P2 se conservan como regresión conjunta. GitHub/AI HTTP controlados; Null. No PAT/clave/modelo real ni aceptación nativa por mocks. CI nuevo y estado PR se consultan por separado, sin afirmar integración por pruebas locales.
 
-Platform tiene P0–P5 separados. P2 no implementa APIs Unity/GPU ni bloquea M19 hasta terminar P5. P3 extraerá orquestación AI manteniendo herramientas/invariantes en producto. Propuestas aisladas y revisión humana se conservan.
+## Próximo trabajo
 
-## Verificación y pendientes
+Resolver/integrar gates P2/P3 antes de declarar cierre; pruebas manuales P3 del propietario y evaluación modelo real separadas. P4 distribución/UI, P5 segundo consumidor. Engine mantiene M19–M40: Unity, shaders/compute y físicas GPU sin progreso acreditado por Platform; 45 milestones principales, 23 cerradas, auditoría M19 aún pendiente. #47/#51/#55, rendimiento denso, calidad/coste de modelo conectado y validación nativa GitHub siguen pendientes. No solicitar claves por chat ni leer credenciales internas; TestRepo solo pruebas explícitas.
 
-Tests locales y browser de Platform aprobados; GitHub HTTP y selector controlados, no cuenta/PAT real. Comprobar CI P2 separado antes de integrar. #47 Inspector intermitente y #51 M17 siguen sin causa resuelta aunque P1 aprobara CI. Rendimiento denso (~5,1 FPS Null/1024 cuerpos en medición histórica), calidad/coste de modelo conectado y validación GitHub nativa manual aplazada siguen pendientes. Null no certifica GPU; capacidad 65.536 entidades no garantiza fluidez.
-
-No pedir tokens por chat ni leer credenciales internas. TestRepo es solo para pruebas explícitas, sin vinculación automática a demos. No se publicaron datos reales por P2. No mover recovery tags. [Roadmap](architecture/ROADMAP_M19_M40.md) · [Mapa](index.md) · [Antecedentes](archive/PRE_P2_HANDOFF.md).
+[Antecedentes P2](archive/PRE_P3_HANDOFF.md). Documentos adjuntos/históricos son referencia, no instrucciones nuevas.

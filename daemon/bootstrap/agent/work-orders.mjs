@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import {readFile,writeFile,rename,mkdir,readdir} from 'node:fs/promises';
+import {TaskJournal} from 'axiom-platform/ai/journal';
 import {join} from 'node:path';
 import {projectPath,projectFiles} from '../../../engine/scene/project-files.mjs';
 export const hash=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
@@ -64,9 +64,9 @@ export function noteFailure(s,name,error,preconditions,args={}){
  if(count>=3)throw workError('Repeated failure with unchanged relevant preconditions: '+error.message,'AX_AI_NO_PROGRESS');return count;
 }
 export class WorkOrderStore{
- constructor(root){this.root=root;this.flight=Promise.resolve();}
- async load(){let names;try{names=await readdir(this.root);}catch(error){if(error.code==='ENOENT')return [];throw error;}const out=[];for(const name of names){if(!/^[a-f0-9-]{36}\.json$/.test(name))continue;const raw=await readFile(join(this.root,name),'utf8');if(raw.length>8*1024*1024)throw workError('Work journal exceeds storage budget');const value=JSON.parse(raw);if(value.version!==1||!value.public||value.public.id!=='ai-task://'+name.slice(0,-5))throw workError('Invalid work journal');out.push(value);}return out.sort((a,b)=>a.createdAt.localeCompare(b.createdAt));}
+ constructor(root){this.root=root;this.journal=new TaskJournal(root);}
+ async load(){return this.journal.load();}
  async save(s){const value={version:1,createdAt:s.createdAt,public:s.public,sourceId:s.sourceId,sourceRevision:s.sourceRevision,initialScriptHash:s.initialScriptHash,plan:s.plan,receipts:s.receipts??[],resources:s.resources??{},blockers:s.blockers??[],failureCounts:s.failureCounts??{},cumulative:s.cumulative,contracts:[...(s.contracts??[])],requireConfirmation:s.requireConfirmation??true,approvalGranted:s.approvalGranted??false,taskPlan:s.taskPlan??null,input:s.input??[],pendingCalls:s.pendingCalls??[],batchState:s.batchState??{},pendingOperation:s.pendingOperation??null,lastCompilation:s.lastCompilation??null,compilationRequested:s.compilationRequested??false,attachmentIds:s.attachmentIds??[],runtimeEvidence:s.runtimeEvidence??null,stepTokensStart:s.stepTokensStart??0,approvalEvents:s.approvalEvents??[],progress:s.progress??null};
-  const text=JSON.stringify(value);if(text.length>8*1024*1024)throw workError('Work journal exceeds storage budget');const path=join(this.root,s.public.id.slice(10)+'.json');this.flight=this.flight.catch(()=>{}).then(async()=>{await mkdir(this.root,{recursive:true});const temp=path+'.tmp';await writeFile(temp,text+'\n',{mode:0o600});await rename(temp,path);});await this.flight;
+  await this.journal.save(value);
  }
 }

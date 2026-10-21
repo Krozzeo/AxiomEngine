@@ -45,3 +45,7 @@ Host/Hub propios en Platform y adaptador de este producto, ciclo de vida con rev
 ## P2 candidata — 2026-10-21
 
 P1 aceptada por usuario y CI, integrada en main 400fec0. P2 extrae servicios y configura cuenta compartida/metadatos por proyecto; [contrato](PLATFORM_P2.md). Las referencias a estados P0/P1 previas son históricas. M19–M40, #47/#51 y aceptación nativa/modelo/rendimiento permanecen independientes.
+
+## Platform P3 — 2026-10-21
+
+Núcleo AI, broker alojado, registro, codec de journal y diff/gates consumidos desde proveedor fijo. Dominio y transacción conservados. 444 tests Engine y 21 Platform; HTTP controlado, no modelo real. [Estado y límites](PLATFORM_P3.md). P2/P3 aún en ramas; #55 sigue pendiente.

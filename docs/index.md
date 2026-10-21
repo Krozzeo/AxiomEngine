@@ -25,3 +25,5 @@ Estado vigente sobre 0.0.52 / SDK 8. Los informes por milestone y documentos arc
 | Estado previo a la consolidación | [Archivo completo](archive/pre-restructure-0.0.52/README.md) |
 
 Orden de lectura para continuar: estado → handoff → mantenimiento → plan de la siguiente entrega. Los contratos específicos del motor, daemon, persistencia y renderer permanecen en `architecture/`; no se eliminan ni se reinterpretan como funciones nuevas.
+
+- [Platform P3: AI y revisión compartidas](architecture/PLATFORM_P3.md) · [ADR-0040](adr/0040-platform-p3-ai.md).

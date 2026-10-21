@@ -60,3 +60,5 @@ Los recorridos de navegador se ejecutan mediante `test:browser:*`. El candidato 
 M18.4 está cerrada en el alcance acordado según ADR-0034. La validación nativa manual con cuenta real continúa aplazada por el usuario. La paridad total con Unity y las físicas GPU siguen pendientes; no hay un porcentaje global auditado antes de M19.
 
 [MIT](LICENSE). Las dependencias conservan sus licencias y [avisos](THIRD_PARTY_NOTICES.md). Consultar [CONTRIBUTING.md](CONTRIBUTING.md) para cambios y revisión.
+
+P3 candidata: [AI y revisión compartidas](docs/architecture/PLATFORM_P3.md), en rama apilada sobre P2; no cambia el alcance Unity/shaders/GPU.

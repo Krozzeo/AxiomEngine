@@ -1,3 +1,4 @@
+import {SharedAiProvider} from 'axiom-platform/ai-peer';
 import {readFile,lstat,realpath,readdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {homedir} from 'node:os';
@@ -41,7 +42,7 @@ export class GameEngineAdapter {
       if(!/^0\.1\.\d+$/.test(params.platformVersion))fail('incompatibleVersion','Game Engine requires Platform API 0.1.');
       this.root=await realpath(params.authorizedRoot);
       this.readSources=params.readSources??[];
-      this.projectStateRoot=params.projectStateRoot;
+      this.projectStateRoot=params.projectStateRoot;if(params.services?.ai)this.sharedAi=new SharedAiProvider({sessionId:this.sessionId,state:params.services.ai});
       if(params.services?.github)this.sharedGitHub=new SharedGitHubClient({sessionId:this.sessionId,account:params.services.github});
       return {protocolVersion:1,productId:manifest.productId,productVersion:manifest.productVersion,capabilities:manifest.capabilities};
     }
@@ -78,7 +79,7 @@ export class GameEngineAdapter {
       try{
         const githubOptions={...(this.sharedGitHub?{client:this.sharedGitHub}:{}),...(this.projectStateRoot?{statePath:join(this.projectStateRoot,createHash('sha256').update(folder).digest('hex'),'github.json')}: {})};
         if(entry&&githubOptions.statePath)await adoptLegacyGitHub({target:githubOptions.statePath,legacy:join(process.env.APPDATA??join(homedir(),'.config'),'Axiom','github-session.json'),projectId:entry.projectId});
-        this.runtime=await startServer({projectRoot:folder,platformSession:true,githubOptions});
+        this.runtime=await startServer({projectRoot:folder,platformSession:true,githubOptions,...(this.sharedAi?{assistantOptions:{transport:this.sharedAi,apiKey:''}}:{})});
         const status=creating?await this.runtime.platform.create(params.name):await this.runtime.platform.open(entry.projectId);
         this.projectId=status.projectId;
         return {path:join(folder,status.projectId.slice('project://'.length)+'.json'),status,editorUrl:this.runtime.editorUrl};
@@ -109,14 +110,14 @@ export class GameEngineAdapter {
     try{const result=await this.handle(message.method,message.params);if(mutates)this.receipts.set(id,{key,result:structuredClone(result)});return result;}
     catch(error){if(mutates)this.receipts.set(id,{key,error});throw error;}
   }
-  async shutdown(){const runtime=this.runtime;this.runtime=null;try{await runtime?.close();}finally{await this.release?.();this.release=null;this.sharedGitHub?.close();}}
+  async shutdown(){const runtime=this.runtime;this.runtime=null;try{await runtime?.close();}finally{await this.release?.();this.release=null;this.sharedGitHub?.close();this.sharedAi?.close();}}
 }
 
 if(process.argv[1]===fileURLToPath(import.meta.url)){
   if(!process.send)throw Error('Launch this adapter through the registered Platform IPC host.');
   const adapter=new GameEngineAdapter();let queue=Promise.resolve(),closing=false;
   process.on('message',message=>{
-    if(message?.kind==='service.reply'||message?.kind==='service.account'){adapter.sharedGitHub?.receive(message);return;}
+    if(['service.reply','service.account','service.ai'].includes(message?.kind)){adapter.sharedGitHub?.receive(message);adapter.sharedAi?.receive(message);return;}
     if(closing)return;
     queue=queue.then(async()=>{
       let reply;

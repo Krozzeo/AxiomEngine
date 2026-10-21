@@ -24,3 +24,5 @@ Consequences and Status.
 - [ADR-0038: adaptador P1 de Platform](0038-platform-p1-adapter.md).
 
 - [ADR-0039: servicios comunes P2](0039-platform-p2-services.md).
+
+- [0040 — AI y revisión compartidas de Platform](0040-platform-p3-ai.md).

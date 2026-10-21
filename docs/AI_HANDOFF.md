@@ -1,54 +1,23 @@
-# Contexto vigente para continuar
+# Contexto vigente — Axiom Game Engine / P2
 
-Fecha de consolidación: 2026-10-20. Base funcional: **0.0.52 / SDK 8**, commit `e264ca835de14daf4fe964be6a78be5e4646ad14`. El usuario pidió integrar la última entrega en `main` y conservarla como punto de recuperación antes de reestructurar el proyecto. Esta instrucción reemplaza las advertencias históricas de no fusionar automáticamente para esta consolidación concreta.
+2026-10-21. Producto Axiom Game Engine, repositorio AxiomGameEngine, carpeta local AxiomEngine. MIT vigente en main tras integrar P0/P1; recovery mantiene historia/licencias previas. Base P1 main 400fec0, CI 332 completo aprobado y pruebas manuales del usuario aceptadas. P2 vive en feat/p2-platform-services para revisión.
 
-## Qué es y cómo está construido
+## Arquitectura y versión
 
-Editor en navegador (`apps/editor`), núcleo Rust/Wasm (`engine`), daemon Node de producción y daemon Rust de alcance acotado (`daemon`), protocolo semántico (`protocol`), scripting C# y bindings generados (`scripting`, `scripts`). WebGPU y Null son rutas distintas; una prueba Null no acredita píxeles GPU ni rendimiento de hardware. Las propuestas del agente operan en workspaces aislados; revisión y aceptación humana preceden a modificar MAIN del juego.
+Editor navegador, Rust/Wasm, WebGPU/Null, C# SDK 8 y daemon Node productivo; daemon Rust parcial. Adaptador de Platform y puerto opcional de autoría mantienen dominio aquí. Platform API 0.1.1 / IPC 1 es independiente del SDK de scripting. [P2](architecture/PLATFORM_P2.md), [ADR-0039](adr/0039-platform-p2-services.md) e [informe](reports/PLATFORM_P2_REPORT.md).
 
-## Última entrega
+Se extraen transporte GitHub, selector y resolución de Documentos a dependencia pública HTTPS de Platform 78d219b04d16b13074d76414483bc121cef32be9 con integridad. npm ci reproduce la instalación sin checkout vecino/SSH. Reexports conservan imports del motor. No copiar fuentes compartidas ni depender de main mutable.
 
-Hub agrupa Create project, Add Project y Settings. Importación local conserva el original; importación GitHub usa publicación canónica. Selector nativo Windows junto a rutas. Hierarchy conserva título/Always active a la izquierda y candado/X a la derecha; Inspector se crea desde una única acción Panels y soporta hasta ocho instancias. Los campos compatibles se resaltan durante drag y más intensamente al hover. Corregida la configuración faltante de primera apertura de escenas en 0.0.51.
+Modo alojado: cuenta compartida por broker del host; producto no retiene token. Cuenta/época invalidan planes anteriores; cerrar un producto no desconecta a otros. Configuración/ramas/defaults/journal/historial por proyecto fuera de sus documentos. Adopción nativa anterior solo para el ID abierto, sin otras identidades/secretos, con origen intacto. Publicación, bundles, validación de MAIN y reconciliación pertenecen al motor. Modo nativo conserva cuenta propia con transporte común.
 
-GitHub: credencial en memoria durante la sesión del daemon, configuración/borradores/preferencias por proyecto, iconos desconectado/vinculado/sin destino, creación con progreso y error visible, vinculación automática, autosave y flujo Review/Publish. Detalles de cambios e historial paginado en diálogos separados. Defaults nuevos de publicación ON por petición explícita; preferencias guardadas se respetan (ADR-0035).
+## Roadmap preservado
 
-## Qué está confirmado
+45 milestones principales, 23 cerradas y M19–M40 pendientes. M19 audita la API objetivo Unity 6.3 LTS; meta futura de al menos 95% core y 100% prioridad P0, sin porcentaje actual auditado antes de M19. M25/M26/M28/M30/M39 y hardening M40 mantienen compute/shaders/físicas GPU; físicas actuales CPU/Wasm. El 94% previo solo describe MVP histórico, nunca el alcance ampliado.
 
-- La entrega local aprobó 438 pruebas Node, 44 Rust y 18 grupos de navegador con transporte GitHub y selector controlados.
-- M18.3.12 aprobó la comparación WebGPU de primera apertura/revisita en CI 319: diferencia de píxeles 0; ese CI general tuvo otro fallo.
-- CI 320: 42/45 trabajos aprobados. Fallaron M18, M18.2 y M7; [seguimiento](REPOSITORY_MAINTENANCE.md). No atribuirles una causa definitiva sin reproducción.
-- M18.4 cerrada según [ADR-0034](adr/0034-m18-4-closure-and-deferred-native-account-check.md), con validación nativa manual aplazada por el usuario. Hub y GitHub renovados documentados en [M18.4.1](reports/M18_4_1_REPORT.md).
-- TestRepo es solo para pruebas. Dos demos GitHub independientes. No solicitar ni publicar tokens por chat ni guardarlos en el proyecto.
+Platform tiene P0–P5 separados. P2 no implementa APIs Unity/GPU ni bloquea M19 hasta terminar P5. P3 extraerá orquestación AI manteniendo herramientas/invariantes en producto. Propuestas aisladas y revisión humana se conservan.
 
-## Consolidación y verificación actual
+## Verificación y pendientes
 
-PR #50 organiza documentación, historial e inventario. 22 milestones nativas M19–M40 creadas; ocho etiquetas adicionales conservan las diez existentes. Release exacta 0.0.52 publicada y tags recovery protegidos contra cambio/borrado. Main exige PR y All required checks de GitHub Actions, sin bypass; ramas integradas se retiran automáticamente. Las tres regresiones del bridge llevan npm run check a 441/441. Confirmar el CI del PR antes de dar por cerrados #47/#48/#49; el respaldo exacto e264 permanece intacto. [Detalles y reglas](REPOSITORY_MAINTENANCE.md).
+Tests locales y browser de Platform aprobados; GitHub HTTP y selector controlados, no cuenta/PAT real. Comprobar CI P2 separado antes de integrar. #47 Inspector intermitente y #51 M17 siguen sin causa resuelta aunque P1 aprobara CI. Rendimiento denso (~5,1 FPS Null/1024 cuerpos en medición histórica), calidad/coste de modelo conectado y validación GitHub nativa manual aplazada siguen pendientes. Null no certifica GPU; capacidad 65.536 entidades no garantiza fluidez.
 
-## Plan que se conserva
-
-45 milestones principales; 23 cerradas y 22 pendientes M19–M40. M19 audita el alcance público objetivo de Unity 6.3 LTS y fija denominadores, prioridades y equivalencia funcional. M20–M39 implementan por familias y verifican conformidad; M40 conserva el hardening final. Meta futura: al menos 95% de firmas core objetivo y 100% de P0, con excepciones visibles. No es cobertura actual medida.
-
-Shaders/compute WGSL y físicas GPU opcionales permanecen planificados en M25, M26, M28, M30 y M39, con hardening M40. Aceptación de esa ampliación: 0%; las físicas actuales son CPU/Wasm. No traducir el antiguo 94% del MVP a avance del alcance ampliado.
-
-## Estado posterior y reestructuración aprobada
-
-Base consolidada 871a72f, recovery/pre-restructure-stable-2026-10-20. El candidato e2eebc5, con el mismo árbol, aprobó CI 329 46/46; no extrapolar a runs nuevos. #48/#49 cerradas; #47 intermitente abierto. Las menciones a CI 320 anteriores son evidencia histórica, no el estado final de consolidación.
-
-Nombre Axiom Game Engine, repositorio AxiomGameEngine. MIT sustituye ADR-0013 para esta rama (ADR-0037). AxiomPlatform público/MIT aloja P0–P5 y contratos comunes; este repo conserva dominio/adaptador y M19–M40. [Transición](architecture/PLATFORM_TRANSITION.md). No hay código extraído ni formato migrado en P0; no asumir este PR integrado hasta comprobarlo.
-
-## Próxima secuencia
-
-1. Verificar integración de la rama documental P0 y sus checks; preservar referencias de recuperación.
-2. Comenzar P1 mediante contrato/adaptador y un recorrido de apertura del motor, sin extracción masiva.
-3. Mantener pendientes de #47, rendimiento denso, modelo conectado y validación nativa manual aplazada.
-4. M19 continúa como siguiente milestone de producto; coordinar interfaces con P1 sin esperar todo P5 ni cambiar alcance/API.
-
-[Mapa documental](index.md) · [Estado](architecture/IMPLEMENTATION_STATUS.md) · [Roadmap](architecture/ROADMAP_M19_M40.md) · [Historial anterior completo](archive/pre-restructure-0.0.52/docs/AI_HANDOFF.md).
-
-## CI posterior de la base: pendiente #51
-
-Verificado durante P0: el [run posterior sobre main 871a72f](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39507425121) terminó con fallo de M17 y del gate agregado (44/46 trabajos aprobados). La aserción de posiciones de runtime en tests/browser/m17.mjs:13:643 encontró valores sin cambio; compilación completada y diagnóstico de script vacío no establecen la causa. [Seguimiento #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51). El CI 329 aprobado del mismo árbol sigue siendo evidencia histórica, pero la base no se declara íntegramente verde. Este fallo precede a publicar la rama P0 y no se corrige por documentación o renombrado.
-
-## Actualización P1
-
-Adaptador y puerto de autoría en feat/p1-platform-adapter, basado en P0 fcc7435. Platform utiliza IPC/protocolo 1 / API 0.1; sin imports del motor desde Platform ni migración de formato. [P1](architecture/PLATFORM_P1.md) e [informe](reports/PLATFORM_P1_REPORT.md). Local: 443 Node y recorrido conjunto/browser Null aprobados; verificar CI/estado de los PR antes de integrar. Main no se modifica por esta rama. P2 será extracción de catálogo/servicios, sin cambiar M19–M40.
+No pedir tokens por chat ni leer credenciales internas. TestRepo es solo para pruebas explícitas, sin vinculación automática a demos. No se publicaron datos reales por P2. No mover recovery tags. [Roadmap](architecture/ROADMAP_M19_M40.md) · [Mapa](index.md) · [Antecedentes](archive/PRE_P2_HANDOFF.md).

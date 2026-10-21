@@ -4,6 +4,7 @@ Estado vigente sobre 0.0.52 / SDK 8. Los informes por milestone y documentos arc
 
 | Necesidad | Referencia |
 | --- | --- |
+| Servicios comunes P2 | [Guía](architecture/PLATFORM_P2.md), [informe](reports/PLATFORM_P2_REPORT.md) y [decisión](adr/0039-platform-p2-services.md) |
 | Integración funcional P1 | [Contrato/guía](architecture/PLATFORM_P1.md) y [evidencia](reports/PLATFORM_P1_REPORT.md) |
 | Informe de P0 | [Entrega y límites](reports/PLATFORM_P0_REPORT.md) |
 | Familia Axiom y separación P0 | [Transición a Platform](architecture/PLATFORM_TRANSITION.md) |

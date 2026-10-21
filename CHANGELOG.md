@@ -1,5 +1,10 @@
 # Changelog
 
+## P2 — Servicios comunes · 2026-10-21
+
+Catálogo/ajustes persistentes, selección e importación, cuenta/transporte GitHub compartidos con destinos por proyecto; proveedor fijado HTTPS con integridad, configuración nativa adoptada selectivamente. P1 aceptada por usuario e integrada con CI. P2 candidata en ramas; pruebas nativas/reales diferenciadas.
+
+
 ## P1 — Adaptador de Axiom Platform · 2026-10-21
 
 Descriptor/IPC, puerto de ciclo de vida opcional, revisión y protección de buffers, arrendamiento por carpeta y apertura nativa conservada. Sin cambios de formato o extracción AI/GitHub. Entrega en rama con pruebas conjuntas y navegador Null; ver informe P1.

@@ -19,6 +19,10 @@ Este es el primer producto de [Axiom Platform](https://github.com/Krozzeo/AxiomP
 
 La rama P1 añade un adaptador que permite crear/abrir el proyecto desde el Hub de Platform, editarlo en una pestaña independiente y guardar/cerrar con control de revisión y buffers pendientes. [Ejecución y límites](docs/architecture/PLATFORM_P1.md) · [Informe](docs/reports/PLATFORM_P1_REPORT.md). Es una entrega en rama, sin extracción de GitHub/AI ni cambio de formatos.
 
+## Servicios de Platform — P2
+
+La rama P2 consume transporte GitHub, selector y Documentos desde una dependencia HTTPS fijada; cuenta compartida al alojarse y destinos/historial por proyecto. [Guía y contrato](docs/architecture/PLATFORM_P2.md). Ejecutar npm ci después de actualizar. P1 ya fue aceptada e integrada; P2 se revisa por separado.
+
 ## Descargar y ejecutar
 
 [Descargar la entrega de recuperación 0.0.52](https://github.com/Krozzeo/AxiomGameEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). Es código fuente; requiere las herramientas siguientes, no es un instalador.

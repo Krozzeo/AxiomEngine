@@ -41,3 +41,7 @@ Verificado durante P0: el [run posterior sobre main 871a72f](https://github.com/
 ## P1 en rama — 2026-10-21
 
 Host/Hub propios en Platform y adaptador de este producto, ciclo de vida con revisión/buffers/lease, formato intacto. Local 443/443 Node y aceptación conjunta de navegador Null aprobados. [Detalle](PLATFORM_P1.md). No equivale a integración en main, CI remoto ni aceptación de los pendientes anteriores. P2–P5 y M19–M40 conservan su alcance.
+
+## P2 candidata — 2026-10-21
+
+P1 aceptada por usuario y CI, integrada en main 400fec0. P2 extrae servicios y configura cuenta compartida/metadatos por proyecto; [contrato](PLATFORM_P2.md). Las referencias a estados P0/P1 previas son históricas. M19–M40, #47/#51 y aceptación nativa/modelo/rendimiento permanecen independientes.

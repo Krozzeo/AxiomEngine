@@ -280,7 +280,7 @@ export async function startServer(options = {}) {
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
     close: () => closing??=(async()=>{
       const httpClosed=new Promise((resolveClose,reject)=>{server.close(error=>error&&error.code!=='ERR_SERVER_NOT_RUNNING'?reject(error):resolveClose());server.closeAllConnections();});
-      github.disconnect();await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await bus.transaction(async()=>{});
+      if(!github.client.sharedAccount)github.disconnect();else github.client.close();await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await bus.transaction(async()=>{});
       workspace.activeJob?.controller.abort();workspace.activeScriptJob?.controller.abort();
       const deadline=Date.now()+10000;while((workspace.activeJob||workspace.activeScriptJob)&&Date.now()<deadline)await new Promise(r=>setTimeout(r,20));
       if(workspace.activeJob||workspace.activeScriptJob)throw Error('Owned compiler/import job did not stop during shutdown');

@@ -80,7 +80,7 @@ export class ProjectStore {
     const path = join(directory, this.filename(id));
     if (type === "project.open") return { project: await this.read(path) };
     if(type==='project.delete'){if(data.confirm!==true)throw projectError('AX_PROJECT_0002','Project deletion requires confirmation');await this.read(path);if(this.folders&&!this.locations.has(id))throw projectError('AX_FS_0001','Unknown project folder');await rm(this.folders?join(directory,this.filename(id).split(/[\\/]/)[0]):path,{recursive:this.folders,force:false});if(!this.folders)for(const extension of ['.assets','.scripts'])await rm(path.replace(/\.json$/,extension),{recursive:true,force:true});this.locations.delete(id);return {deleted:id};}
-    if (!["project.create", "project.save"].includes(type)) throw projectError("AX_COMMAND_0002", "Unknown project command");
+    if (!["project.create", "project.save", "project.rename"].includes(type)) throw projectError("AX_COMMAND_0002", "Unknown project command");
     let lock;
     const temporary = `${path}.${randomUUID()}.tmp`;
     try {
@@ -90,12 +90,13 @@ export class ProjectStore {
       } else {
         const previous = await this.read(path);
         if (!Number.isSafeInteger(data.expectedRevision) || data.expectedRevision !== previous.revision) throw projectError("AX_PROJECT_0003", "Project revision conflict; reopen before saving");
-        if (data.scene?.id !== previous.scene.id) throw projectError("AX_PROJECT_0002", "Scene identity cannot change during save");
+        if (type!=='project.rename' && data.scene?.id !== previous.scene.id) throw projectError("AX_PROJECT_0002", "Scene identity cannot change during save");
         if(data.scene?.sceneDocuments)syncSceneDocuments(data.scene);
         // Validate supplied known fields before preserving extensions.
-        validateProject({ ...previous, scene: data.scene, ...(data.editor?{editor:data.editor}:{}) });
-        document = { ...previous, axiom:{...previous.axiom,modifiedAt:new Date().toISOString(),applicationId:previous.axiom?.applicationId??'game-engine',createdWithVersion:previous.axiom?.createdWithVersion??null,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
+        validateProject({ ...previous, scene: type==='project.rename'?previous.scene:data.scene, ...(data.editor?{editor:data.editor}:{}) });
+        document = { ...previous, axiom:{...previous.axiom,modifiedAt:new Date().toISOString(),applicationId:previous.axiom?.applicationId??'game-engine',createdWithVersion:previous.axiom?.createdWithVersion??null,lastSavedWithVersion:packageData.version,projectFormatVersion:1}, scene: type==='project.rename'?previous.scene:preserveExtensions(previous.scene, data.scene), revision: previous.revision + 1, ...(data.editor?{editor:data.editor}:{}) };
       }
+      if(type==='project.rename'){const previous=await this.read(path);if(data.expectedRevision!==previous.revision)throw projectError('AX_PROJECT_0003','Project revision conflict');document={...previous,name:data.name,revision:previous.revision+1,axiom:{...previous.axiom,modifiedAt:new Date().toISOString(),lastSavedWithVersion:packageData.version}};}
       if(type==='project.create')initializeSceneDocuments(document.scene);
       validateProject(document);
       const bytes = JSON.stringify(document, null, 2) + "\n";

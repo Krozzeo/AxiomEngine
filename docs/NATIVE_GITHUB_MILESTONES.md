@@ -1,8 +1,8 @@
-# Milestones de GitHub
+# GitHub milestones
 
-Creadas el 2026-10-20 a partir del roadmap vigente. Todas planificadas, no iniciadas, sin fecha comprometida. El progreso mostrado por GitHub refleja issues asignadas, no porcentaje de firmas Unity implementadas.
+Created2026-10-20 from the approved roadmap. AllM19–M40 are planned/not started, without invented dates. GitHub issue completion is not Unity signature coverage. Retain 45 main milestones/23 historical closures/22 pending; no retrospective empty milestones to inflate progress. English current plans preserve IDs/dependencies/statuses.
 
-| Etapa | GitHub | Plan y criterios |
+| Stage | GitHub | Scope/acceptance |
 | --- | --- | --- |
 | M19 | [Milestone 1](https://github.com/Krozzeo/AxiomGameEngine/milestone/1) | [Plan](architecture/M19_PLAN.md) |
 | M20 | [Milestone 2](https://github.com/Krozzeo/AxiomGameEngine/milestone/2) | [Plan](architecture/M20_PLAN.md) |
@@ -27,4 +27,4 @@ Creadas el 2026-10-20 a partir del roadmap vigente. Todas planificadas, no inici
 | M39 | [Milestone 21](https://github.com/Krozzeo/AxiomGameEngine/milestone/21) | [Plan](architecture/M39_PLAN.md) |
 | M40 | [Milestone 22](https://github.com/Krozzeo/AxiomGameEngine/milestone/22) | [Plan](architecture/M40_PLAN.md) |
 
-Se conservan 45 milestones principales del proyecto: 23 cierres históricos y 22 pendientes M19–M40. Los cierres anteriores permanecen documentados; no se crean retrospectivamente 23 milestones vacías para aparentar progreso. [Roadmap completo](architecture/ROADMAP_M19_M40.md).
+[Roadmap](architecture/ROADMAP_M19_M40.md). Native titles/descriptions may retain their historical wording until an administrative documentation update; this candidate changes no issue closure or acceptance status.

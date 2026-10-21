@@ -1,46 +1,43 @@
-# M26 — Física 3D CPU/GPU: solver avanzado y controladores
+# M26 — 3D CPU/GPU advanced solver and controllers
 
-Plan vigente desde 2026-10-19; ampliación explícita de físicas GPU/shaders. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M25.
+Minimum dependencies: M25.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [Plan GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- Completar Rigidbody, centros de masa, inercia, interpolación, sleep automático, CCD y configuración del solver.
-- Joints y articulaciones del inventario, CharacterController y WheelCollider/vehículos con comportamiento real.
-- Separar creación/topología de simulación estable, medir estabilidad y throughput; Cloth se implementa en M34 con integración física.
-- Implementar backend físico WebGPU opcional con kernels WGSL propios, desde cuerpos simples hasta broadphase, contactos, solver y constraints del contrato. Integrar C#, consultas/eventos y render con selección medida CPU/GPU/Auto y fallback explícito.
+- Complete Rigidbody, center of mass/inertia/interpolation/automatic sleep/CCD/solver configuration.
+- Inventoried joints/articulations, CharacterController and WheelCollider/vehicles with real behavior.
+- Separate topology creation from stable simulation; measure stability/throughput. Cloth belongs to M34 with physics integration.
+- Optional WebGPU physics using production WGSL from simple bodies through broadphase/contact/solver/constraints; coherent C#/queries/events/render and measured CPU/GPU/Auto selection/fallback.
 
-## Subtandas previstas
+## Planned batches
 
-- 26.1 Dinámica e interpolación/CCD.
-- 26.2 Joints y articulaciones.
-- 26.3 Personajes, vehículos y estrés.
-- 26.4 Prototipo GPU 3D: gravedad, integración, rotación y cuerpos simples; consume M25.0.
-- 26.5 Broadphase/narrowphase GPU, parejas/contactos, filtros y presupuestos para formas 3D del contrato.
-- 26.6 Solver GPU 3D, fricción/inercia/sleep/islas/constraints, integración API y benchmark estable CPU/GPU.
+- 26.1 Dynamics/interpolation/CCD.
+- 26.2 Joints/articulations.
+- 26.3 Characters/vehicles/stress.
+- 26.4 3D GPU prototype: gravity/integration/rotation/simple bodies using M25.0.
+- 26.5 GPU broadphase/narrowphase/pairs/contacts/filters and shape budgets.
+- 26.6 GPU contact solver/friction/inertia/sleep/islands/constraints/API and stable CPU/GPU benchmark.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Escenarios de joints/controladores/vehículos tienen aserciones de comportamiento y estabilidad.
-- [ ] Los casos rápidos y angulares validan los modos CCD implementados y sus límites.
-- [ ] El estrés mide simulación estable, memoria y regresiones; no deduce FPS universal de la capacidad máxima.
-- [ ] El alcance 3D acelerado ejecuta física real en GPU y coincide con el corpus CPU dentro de tolerancias, incluyendo consultas, eventos, activación y cambios de topología; fallback y límites son visibles.
-- [ ] La demo compara el mismo escenario CPU/GPU, muestra backend/motivo y aporta mediana/P95 del sistema completo y evidencia en hardware físico según el contrato M19; el mínimo GPU no se sustituye íntegramente por CPU.
+- [ ] Joints/controllers/vehicles have behavior and stability assertions.
+- [ ] Fast/angular cases validate actual CCD modes and limits.
+- [ ] Stress measures stable simulation/memory/regression, not universal FPS from maximum capacity.
+- [ ] Accelerated scope performs real GPU physics within CPU tolerances, including queries/events/activation/topology; fallback/limits visible.
+- [ ] Same CPU/GPU scenario, backend/reason, complete-system median/P95 and physical hardware evidence per M19; CPU cannot replace required GPU minimum.
 
-## Demo editable requerida
+## Required editable demo
 
-3D Mechanics Lab con ragdoll, personaje, vehículo y banco de estrés. Extender Stress Physics 3D y CPU/GPU Physics & Shader Lab con selección CPU/GPU/Auto y mediciones reproducibles.
+3D Mechanics Lab: ragdoll/character/vehicle/stress; extend Stress Physics3D and CPU/GPU Physics & Shader Lab.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 8 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).

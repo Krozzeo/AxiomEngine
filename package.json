@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -81,7 +81,7 @@
     "test:browser:m18-4": "node tests/browser/m18-4.mjs"
   },
   "dependencies": {
-    "axiom-platform": "https://codeload.github.com/Krozzeo/AxiomPlatform/tar.gz/017e54168f87ea5a0d5b97adfbb2314673bc298d",
+    "axiom-platform": "https://codeload.github.com/Krozzeo/AxiomPlatform/tar.gz/149403753092f24a684d0241fe2aa7762abf7bc0",
     "fflate": "0.8.3",
     "occt-import-js": "0.0.23",
     "pdfjs-dist": "5.4.296",

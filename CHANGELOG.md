@@ -1,53 +1,39 @@
 # Changelog
 
-## P3 — 2026-10-21 (candidata en rama)
+## 0.0.53 / Platform P4 —2026-10-21 (review candidate)
 
-AI compartida por contratos: proveedor/turnos/consumo, clave de sesión alojada, registro/validador, journal y diff/gates humanos. Contexto, herramientas y transacción de juegos siguen en Engine. P2 no se integra por esta entrega; #55 y aceptación de modelo real permanecen pendientes.
+Hosted creation explicitly selects the existing3D starter preset (Cube/Directional Light/configured Camera). Added revision-aware atomic rename for active/closed projects preserving identity/content and rejecting dirty/busy/stale changes. Consume the public pinned P4 provider and common stable option primitive; editor build includes its browser module. Default PMD prompt and maintained documentation use English; complete original-language references are retained separately. Joint Hub/Settings/distribution changes live in Platform. P4 export/manual gates and previous CI issues remain open; no main/recovery movement.
 
-## P2 — Servicios comunes · 2026-10-21
+## Platform P3 —2026-10-21 (review candidate)
 
-Catálogo/ajustes persistentes, selección e importación, cuenta/transporte GitHub compartidos con destinos por proyecto; proveedor fijado HTTPS con integridad, configuración nativa adoptada selectivamente. P1 aceptada por usuario e integrada con CI. P2 candidata en ramas; pruebas nativas/reales diferenciadas.
+Shared provider/turn/usage/session credential, registry/validator/journal/diff/human gates. Game context/tools/PMD/MAIN transaction remain here. P2 is not integrated by proceeding; #55 and real-model evaluation stay independent.
 
+## Platform P2 —2026-10-21 (review candidate)
 
-## P1 — Adaptador de Axiom Platform · 2026-10-21
+Consume common GitHub/OS infrastructure over pinned HTTPS/integrity, share hosted session account with isolated project destinations/preferences/history, selectively adopt legacy native configuration. P1 accepted/integrated after CI; native/real-account acceptance labeled separately.
 
-Descriptor/IPC, puerto de ciclo de vida opcional, revisión y protección de buffers, arrendamiento por carpeta y apertura nativa conservada. Sin cambios de formato o extracción AI/GitHub. Entrega en rama con pruebas conjuntas y navegador Null; ver informe P1.
+## Platform P1 —2026-10-21
 
+Descriptor/IPC/optional transactional lifecycle port, revision/buffer protection, folder lease and preserved direct startup. No native-format change or AI/GitHub extraction. Subsequently accepted/integrated after joint tests/CI/user acceptance.
 
-## P0 de Axiom Platform e identidad — 2026-10-21
+## Platform P0 / identity —2026-10-21
 
-- Producto/repo Axiom Game Engine / AxiomGameEngine; referencias activas y ayuda actualizadas, conservando nombres técnicos y formatos.
-- [Separación P0](docs/architecture/PLATFORM_TRANSITION.md), ADR-0036 y ADR-0037; M19–M40 se conservan y Platform tiene P0–P5 propios. Sin extracción funcional.
-- MIT por instrucción del propietario; metadatos y avisos propios coherentes, licencias de terceros e historia preservadas.
-- Protección de publicación de juegos cubre nombre anterior, nuevo y Platform.
-- Evidencia histórica de consolidación actualizada: CI 329 46/46 del árbol base; #48/#49 cerradas, #47 intermitente abierto. Checks del PR nuevo independientes.
+Product/repository Axiom Game Engine/AxiomGameEngine with stable technical formats/names. Approved separation/ADR0036/0037 and independent roadmaps. MIT by later owner instruction; preserve third-party notices/history. Protect historical/new/Platform repositories from game publication. Earlier consolidation CI 329 (46/46) was historical; #47 and later #51 retained.
 
+## Repository maintenance —2026-10-20
 
-## Mantenimiento del repositorio — 2026-10-20
+Integrated latest0.0.52 history and fixed recovery references; separated current docs from archive; inventoried/consolidated old branches/PRs. Added stale-sync adoption guards with three deterministic regressions/441 Node tests, current help links, aggregate CI gate, native milestones/labels and main/recovery protections. CI regressions stayed visible rather than weakening asserts.
 
-- Última entrega 0.0.52 integrada en `main` conservando la cadena de commits.
-- Dos etiquetas de recuperación: entrega 0.0.52 y `main` anterior.
-- Documentación vigente separada del historial; inventario de ramas/PR y proceso de recuperación documentados.
-- Enlaces de ayuda del editor apuntan a `main`.
-- Helper de navegador espera la inicialización del Hub antes de decidir cómo acceder a cualquier control; corrección candidata al fallo M7, pendiente de confirmar con CI completo.
-- Respuestas de sincronización tardías ya no deshacen cambios de preview/edición/proyecto ni se aplican después del cierre; tres regresiones deterministas y 441 pruebas Node aprobadas.
-- Gate de CI agregado que exige todas las familias de pruebas; milestones nativas M19–M40, etiquetas y referencias de recuperación protegidas.
-- Fallos CI M18/M18.2/M7 registrados sin alterar criterios ni declarar cierre anticipado.
+## 0.0.52 —M18.4.1
 
-## 0.0.52 — M18.4.1 · Hub y GitHub
+Hub create/add/settings, native Windows folder picker, hierarchy/toolbar changes, session GitHub account, project destinations/autosave, repository creation status/error, Review/Publish and diff/history dialogs. New publication defaults ON while explicit existing preferences stay unchanged. [Report](docs/reports/M18_4_1_REPORT.md).
 
-Hub desplegable, entrada/importación de proyectos, selector nativo Windows, ajustes de Hierarchy/toolbar, cuenta GitHub por sesión, destinos y autosave por proyecto, creación con estado/error, Review/Publish y diálogos de cambios/historial. Defaults nuevos de publicación ON por petición del usuario; valores previos preservados.
+## 0.0.51 —M18.3.12
 
-[Informe y límites de validación](docs/reports/M18_4_1_REPORT.md).
+Compatible target highlighting, one Panels→Inspector creation action, simplified Hierarchy and resolved scene settings before first render. [Report](docs/reports/M18_3_12_REPORT.md).
 
-## 0.0.51 — M18.3.12 · Inspector y escenas
+## 0.0.50 —M18.4
 
-Resaltado compatible de destinos, Inspector como acción única en Panels, jerarquía simplificada y configuración resuelta antes de primera apertura de escenas. [Informe](docs/reports/M18_3_12_REPORT.md).
+Create/link repository, review/publish saved MAIN, project preferences and safe reconciliation. Closed only in agreed scope with native real-account acceptance deferred, [ADR0034](docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md).
 
-## 0.0.50 — M18.4 · GitHub de proyectos
-
-Creación/enlace de repositorios, revisión y publicación de MAIN guardado, preferencias y recuperación segura. Cerrada en alcance acordado con validación nativa manual aplazada: [ADR-0034](docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md).
-
-## Entregas anteriores
-
-[Changelog histórico íntegro hasta 0.0.52](docs/archive/pre-restructure-0.0.52/CHANGELOG.md). Sus estados de revisión, pendientes y cifras corresponden a cada fecha; el [estado vigente](docs/architecture/IMPLEMENTATION_STATUS.md) prevalece.
+[Complete historical release record](docs/archive/pre-restructure-0.0.52/CHANGELOG.md); original-language source snapshots retain exact older wording/results. Current [implementation status](docs/architecture/IMPLEMENTATION_STATUS.md) prevails over older planning percentages.

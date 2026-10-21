@@ -1,79 +1,18 @@
-# Consolidación del repositorio — 2026-10-20
+# Repository maintenance and recovery
 
-El usuario autorizó que la última entrega fuera `main` y punto de recuperación antes de reestructurar. `main` se adelantó desde `16c065c88f51780d489bf60082c73873a60db31d` hasta `e264ca835de14daf4fe964be6a78be5e4646ad14`, conservando la cadena de 304 commits. Los cambios de mantenimiento posteriores se revisan por PR sobre esa base.
+Owner authorized latest0.0.52 as main and recovery before restructuring on2026-10-20. Main advanced from 16c065c88f51780d489bf60082c73873a60db31d to e264ca835de14daf4fe964be6a78be5e4646ad14 retaining304 commits. Later changes go through review PRs, not history rewrites.
 
-## Recuperación
-
-| Referencia fija | Commit | Propósito |
+| Fixed reference | Commit | Purpose |
 | --- | --- | --- |
-| `recovery/pre-restructure-0.0.52` | `e264ca835de14daf4fe964be6a78be5e4646ad14` | Última entrega funcional exacta, previa a esta limpieza |
-| `recovery/old-main-2026-10-20` | `16c065c88f51780d489bf60082c73873a60db31d` | `main` anterior, M0/0.0.6 |
+| recovery/pre-restructure-0.0.52 | e264ca835de14daf4fe964be6a78be5e4646ad14 | Exact delivered product |
+| recovery/old-main-2026-10-20 |16c065c88f51780d489bf60082c73873a60db31d | Previous M0/main |
 
-Ambas etiquetas se publicaron y verificaron. También se conservaron ramas `archive/main-before-0.0.52-2026-10-20` y `archive/pre-restructure-0.0.52-2026-10-20` como respaldo adicional. Las etiquetas de recuperación no se mueven ni se reutilizan.
+Retain archive/main-before-0.0.52-2026-10-20 and archive/pre-restructure-0.0.52-2026-10-20 as extra backups. Never move/reuse recovery tags. [Source recovery ZIP](https://github.com/Krozzeo/AxiomGameEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip) contains source, not installer/user projects. Fetch tags and create a separate recovery branch; copy complete user projects/resources separately. Git refs do not preserve ignored files, external data or credentials. Restore through reviewed changes rather than forcing main.
 
-[Descarga del código fuente de recuperación](https://github.com/Krozzeo/AxiomGameEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). No contiene un instalador ni los proyectos personales del usuario.
+Historical inventory had46 branches/45 openPRs (23drafts); all heads were verified ancestors of the recovered delivery before consolidation/removal. Preserve any branch with unique changes. [Original inventory](archive/pre-restructure-0.0.52/github-inventory.json) retains names/SHAs/URLs. Current/historical docs remain separate.
 
-Para inspeccionar o recuperar esa versión sin cambiar el trabajo posterior:
+Main requires PR/up-to-date branch/All required checks with no bypass, force-push or deletion; zero outside approvals for sole-maintainer workflow. Recovery rule blocks ref update/deletion/force-push.22 nativeM19–M40 milestones, classification labels, auto-delete merged branches and recovery prerelease were configured via user-authenticated browser without extracting Git credentials. [Main rule](https://github.com/Krozzeo/AxiomGameEngine/rules/25508502), [recovery rule](https://github.com/Krozzeo/AxiomGameEngine/rules/25508420). Administrative state is historical, not a fresh audit here.
 
-```powershell
-git fetch origin --tags
-git switch -c recovery/restore-0.0.52 recovery/pre-restructure-0.0.52
-```
+CI 320 (42/45) exposed Inspector detachM18(#47), preview-after-StopM18.2(#48) and reloadHubM7(#49). Local passes did not close intermittent remote failures. Stale editor-sync replies were reproduced and guarded by snapshot/generation checks with 3 deterministic tests/441 Node. Later browser-state synchronization corrected misleading preview waits; historicalCI 329 (46/46) and #48/#49 closures remain evidence of that slice. A later same-base run failedM17(#51); P3CI 336 (43/46) retainsM17/M18.3.11(#55)/aggregate failures. Current status/report determines new closure; never weaken assertions/timeouts to hide a regression.
 
-Guardar también una copia completa de los proyectos de juego y recursos fuera del checkout. La referencia de Git conserva el código del motor, no credenciales, archivos ignorados ni datos externos. Si se decide restaurar `main`, preparar una rama/PR con los cambios que corresponda; no reescribir el historial por defecto.
-
-## Ramas y PR históricos
-
-[Inventario previo](archive/pre-restructure-0.0.52/github-inventory.json): 46 ramas y 45 PR abiertos, de los cuales 23 eran borradores. Se verificó localmente que **todos sus SHA son ancestros de la entrega de recuperación**. Por eso sus cambios ya están en `main`; los PR históricos se cierran como consolidados y las 45 ramas de trabajo anteriores se retiran. Los títulos, bases, SHA y enlaces quedan en el inventario, además del historial de GitHub.
-
-Se conservan `main`, ambas ramas de respaldo y la rama activa de mantenimiento mientras tenga un PR abierto. Futuras ramas parten de `main`, con un cambio acotado por PR. El retiro siempre exige verificar alcance y ancestry; una rama con cambios exclusivos se preserva.
-
-## Documentación
-
-README, handoff, estado y changelog tienen una única lectura vigente. Sus contenidos anteriores completos se conservan en [el archivo 0.0.52](archive/pre-restructure-0.0.52/README.md), con enlaces relativos convertidos a la revisión original para no perder referencias. Los informes y planes específicos permanecen en su sitio.
-
-El roadmap mantiene M19–M40 y el plan Unity API + shaders + físicas GPU. Solo se corrigen referencias a la base actual y el total pendiente tras el cierre de M18.4. El antiguo 94% pertenece al MVP histórico.
-
-## Calidad pendiente antes de reestructurar
-
-CI 320: [ejecución](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39455470602), 42/45 trabajos aprobados. No se declara una base verde por crear una etiqueta.
-
-| Prioridad | Incidencia | Hecho confirmado | Hipótesis / siguiente comprobación |
-| --- | --- | --- | --- |
-| Alta | [#47 M18](https://github.com/Krozzeo/AxiomGameEngine/issues/47) | Timeout esperando popup de Inspector tras scrub numérico | Investigar busy/persistencia; no causa confirmada |
-| Alta | [#48 M18.2](https://github.com/Krozzeo/AxiomGameEngine/issues/48) | Traza no cambia al workspace esperado después de Stop | Reproducir sincronización de snapshot/renderer y generación |
-| Alta | [#49 M7](https://github.com/Krozzeo/AxiomGameEngine/issues/49) | Hub se oculta durante el click de cierre al recargar | Helper espera inicialización para cualquier control; recorrido local M7 aprobado, confirmación CI pendiente |
-
-No se quitan asserts ni se cambian los timeouts para declarar éxito. La consolidación no cierra estas incidencias sin evidencia. Verificación de mantenimiento: `npm run check` aprobado, 438/438 pruebas Node y checks de build/bindings/schema/arquitectura/paridad. M7 local aprobó sus siete grupos incluyendo Null y sin pageerrors; M18 sus ocho grupos y detach real; M18.2 sus catorce grupos; esto no demuestra resuelto el fallo intermitente de CI. CI 322 sobre main aprobó 44/45 trabajos, con el mismo fallo M18.2. Se amplía su diagnóstico de fallo con estado de renderer y frame-trace sin cambiar el assert. El CI del PR es la referencia para la regresión completa.
-
-Otros pendientes conservados: rendimiento físico denso, validaciones con modelo conectado y validación nativa manual GitHub aplazada bajo ADR-0034. No forman parte de la limpieza documental ni se declaran cerrados.
-
-## Publicaciones y configuración administrativa
-
-El workflow Release publica notas y archivos fuente automáticos para futuras etiquetas `v*`, sin prometer binarios. La publicación de mantenimiento remite a la etiqueta exacta de recuperación y declara los límites de CI. No se eliminan releases anteriores.
-
-Con sesión GitHub iniciada por el usuario se crearon las 22 milestones nativas M19–M40, planificadas y sin fechas inventadas, más ocho etiquetas de clasificación, conservando las diez existentes. Se activó el borrado automático de ramas integradas. `Preserve recovery baselines` protege las dos etiquetas `recovery/*` contra actualización, borrado y force-push, sin bypass. La release de recuperación exacta está publicada como pre-release con los límites de CI explícitos.
-
-La regla activa `Main requires pull requests and complete CI` protege `main`: exige PR, rama actualizada y **All required checks** emitido por GitHub Actions; bloquea borrado y force-push, sin bypass. Cero aprobaciones externas requeridas para no bloquear al mantenedor único. El gate exige éxito en las cinco familias de jobs (incluidas todas sus matrices); rechaza fallos, cancelaciones y saltos. El workflow actual tiene 46 jobs contando este gate, frente a 45 de la entrega base. La integración de mantenimiento espera esa comprobación.
-
-## Corrección de sincronización tardía
-
-Los diagnósticos de CI 326 confirman renderer WebGPU detenido en MAIN/revisión 6 mientras el recorrido esperaba preview/revisión 9. Se reprodujo por separado que una respuesta atrasada de `/v1/editor/sync` podía sobrescribir un cambio humano de preview, una edición o cambio de proyecto. También podía aplicarse después de desconectar.
-
-El bridge ahora solo adopta una respuesta si el snapshot que la pidió sigue siendo el actual, y descarta respuestas posteriores al cierre. El próximo poll reconcilia cambios externos con el estado actual. Tres pruebas deterministas: dos fallaban con el código anterior, las tres pasan con el corregido. `npm run check` completo: **441/441 Node**. La atribución final del fallo CI M18.2 exige aprobar su recorrido remoto; no se cierra solo por la reproducción unitaria.
-
-Referencias administrativas verificadas: [regla main](https://github.com/Krozzeo/AxiomGameEngine/rules/25508502), [regla recovery](https://github.com/Krozzeo/AxiomGameEngine/rules/25508420), [milestones](https://github.com/Krozzeo/AxiomGameEngine/milestones), [etiquetas](https://github.com/Krozzeo/AxiomGameEngine/labels), [release fija](https://github.com/Krozzeo/AxiomGameEngine/releases/tag/recovery%2Fpre-restructure-0.0.52). Se usó la sesión de navegador iniciada por el usuario; no se extrajeron credenciales internas de Git.
-
-## Sincronización del recorrido M18.2
-
-CI 328 mantuvo el fallo de preview aun después del guard del bridge; ese defecto real no se presenta como causa suficiente del fallo de navegador. El recorrido histórico usaba la visibilidad de la barra para inferir preview activo, pero desde M18.2.1 esa barra también está visible en MAIN. La espera podía resolver antes del cambio de vista y encadenar clicks sobre estados equivocados.
-
-El recorrido ahora espera `Exit preview`/`Preview` y que termine la acción. Edita primero X=6 y verifica el valor real en el workspace antes de volver a X=5; exige que Play esté activo en ese workspace antes de Stop. Tras descartar, espera que desaparezca la barra. Conserva la comprobación de `profileContext.workspaceId` y el timeout original. Las 36 milestones de navegador se conservan; M18.2/M18/M7 se ejecutan primero para obtener antes evidencia de las regresiones.
-
-## P0 y nuevo nombre — 2026-10-21
-
-Repositorio renombrado AxiomGameEngine; actualizar origin a https://github.com/Krozzeo/AxiomGameEngine.git. No renombrar carpetas locales por obligación ni mover recovery tags. Referencia estable 871a72f, recovery/pre-restructure-stable-2026-10-20. El candidato del mismo árbol aprobó CI 329 46/46; #48/#49 cerradas y #47 intermitente abierto. Los estados de CI 320 anteriores se conservan como historial. P0 va por rama/PR, sin integración automática. MIT vigente en esa rama; no reescribir licencias de recovery. [Transición](architecture/PLATFORM_TRANSITION.md).
-
-## CI posterior de la base: pendiente #51
-
-Verificado durante P0: el [run posterior sobre main 871a72f](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39507425121) terminó con fallo de M17 y del gate agregado (44/46 trabajos aprobados). La aserción de posiciones de runtime en tests/browser/m17.mjs:13:643 encontró valores sin cambio; compilación completada y diagnóstico de script vacío no establecen la causa. [Seguimiento #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51). El CI 329 aprobado del mismo árbol sigue siendo evidencia histórica, pero la base no se declara íntegramente verde. Este fallo precede a publicar la rama P0 y no se corrige por documentación o renombrado.
+Dense physics, real model/account/native-dialog acceptance and GPU roadmap remain independent. Exact original chronological investigation/results are retained in [the original-language source](archive/original-language/docs__REPOSITORY_MAINTENANCE.md.txt); consult it for detailed provenance rather than treating these summaries as new tests. Main/recovery refs are unchanged by P4.

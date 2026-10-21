@@ -7,7 +7,7 @@ import {paintTokenMeter} from './chat-usage.mjs';
 import {renderChatText} from './chat-format.mjs';
 import {newPmd,updatePmd,restorePmd,importPmd,validatePmd} from '../../../engine/project/pmd.mjs';
 export function pmdConversation(chat,pending,projectId){
- const entries=[...(chat??[{role:'assistant',text:'¿Qué proyecto tienes en mente?'}])];
+ const entries=[...(chat??[{role:'assistant',text:'What project do you have in mind?'}])];
  if(!pending||!projectId||pending.projectId!==projectId)return {entries,pending};
  if(JSON.stringify(chat??[])!==pending.baseChat&&entries.findLast(c=>c.role==='user')?.text===pending.text)pending=null;
  if(pending)entries.push({role:'user',text:pending.text});return {entries,pending};

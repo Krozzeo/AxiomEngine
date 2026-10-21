@@ -1,14 +1,12 @@
-# Contratos vigentes — revisión M18.3.12 / 0.0.51
+# Current Scene/Inspector contracts — M18.3.12 and P4
 
-Panels contiene una sola acción Inspector, que crea un panel con el foco actual y sin bloqueo. Las instancias viven en los docks, no en el menú. Si el Inspector primario estaba cerrado, su lugar se restaura con foco actual y sin bloqueo; máximo ocho abiertos. Duplicate Tab conserva su comportamiento de copiar el foco/bloqueo.
+Panels contains one Inspector creation action. Instances live in docks, not menu entries. Restoring the closed primary Inspector uses current unlocked focus; maximum eight open. Duplicate Tab retains its focus/lock-copy behavior. Scene title does not expand; title and Always active stay left, lock/close right. Hierarchy omits redundant help/save text; hidden accessible automation state is retained and topbar reports saves.
 
-El título de escena no crece con el espacio libre. Always active se coloca antes del candado. La ayuda y el estado duplicado de guardado no se muestran en Hierarchy; el estado accesible interno se conserva oculto para compatibilidad de automatización y el guardado se informa en la barra superior.
+Reference drag exposes session payload to fields via weak node references. Preview and drop share type/file/component/project/edit-permission validation. All compatible targets highlight subtly; valid hovered target highlights more. Dragend/drop clear state, including detached documents. Session data supports DataTransfer's protected phase; drop is validated again before apply.
 
-Un drag de referencias publica su payload de sesión y actualiza los campos mediante referencias débiles a sus nodos. Cada campo usa la misma validación que la asignación: tipo, archivo/componente, proyecto y permisos de edición. Un nivel tenue señala compatibilidad; el hover del destino válido usa un nivel más intenso. Dragend/drop limpian el estado, también en documentos adjuntos. Los datos de la sesión permiten validar durante la fase protegida de DataTransfer. El payload de drop se valida otra vez antes de aplicar.
+Resolve omitted scene settings from the active scene before first activation/render and incorporate them into the working document; Save persists them. Explicit2D/3D modes never inherit the opposite mode. Synchronization writes global settings only to the active document, preserving inactive ones. Previously inactive scenes could acquire another scene's missing legacy/HDR settings later, causing different first/revisited Arena rendering.
 
-Al abrir un documento nuevo, los ajustes omitidos se resuelven desde la escena activa antes de activar/renderizar y quedan incorporados en el documento de trabajo; Save los persiste. Los modos 2D/3D explícitos no heredan el modo opuesto. La sincronización solo escribe los ajustes globales en el documento activo y conserva los de los inactivos. Antes, los inactivos adquirían ajustes ausentes de otra escena en una sincronización posterior, lo que cambiaba la ruta legacy/HDR al revisitar Arena.
-
-Las secciones siguientes son antecedentes históricos.
+P4 hosted creation explicitly selects the existing3D preset (Cube/Directional Light/configured Camera). New physical3D scenes already use that preset. Low-level empty ProjectStore fixtures and user-loaded legacy empty scenes are not silently rewritten. The following first-editor contract is historical and retains its original acceptance date/scope.
 
 ---
 

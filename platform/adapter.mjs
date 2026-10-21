@@ -34,7 +34,7 @@ export class GameEngineAdapter {
     let doc;try{doc=JSON.parse(await readFile(path,'utf8'));}catch{fail('invalidRequest','Project JSON cannot be parsed.');}
     if(doc.schemaVersion!==1 || doc.axiom?.applicationId && doc.axiom.applicationId!=='game-engine')fail('incompatibleVersion','Unsupported Game Engine project format (version 1). No migration was attempted.');
     await new ProjectStore(dirname(path)).read(path);
-    return {path,projectId:doc.id,name:doc.name,formatId:'axiom.game-project',formatVersion:1};
+    return {path,projectId:doc.id,name:doc.name,projectRevision:doc.revision,formatId:'axiom.game-project',formatVersion:1};
   }
   async handle(method,params={}){
     if(method==='initialize'){
@@ -85,8 +85,10 @@ export class GameEngineAdapter {
         return {path:join(folder,status.projectId.slice('project://'.length)+'.json'),status,editorUrl:this.runtime.editorUrl};
       }catch(error){await this.shutdown();throw error;}
     }
+    if(method==='project.rename'&&!this.runtime){const entry=await this.detect(params.path),release=await acquireLease(dirname(entry.path),this.sessionId);try{const saved=await new ProjectStore(dirname(entry.path)).run('project.rename',{id:entry.projectId,expectedRevision:entry.projectRevision,name:params.name});return {...entry,name:saved.project.name,projectRevision:saved.project.revision};}finally{await release();}}
     if(!this.runtime)fail('operationFailed','Open a project before using this capability.');
     if(method==='project.status')return this.runtime.platform.status();
+    if(method==='project.rename')return this.runtime.platform.rename(params.name,params.expectedRevision);
     if(method==='project.save')return this.runtime.platform.save(params.expectedRevision);
     if(method==='project.close'){
       const result=await this.runtime.platform.close(params.expectedRevision,params.decision);
@@ -99,7 +101,7 @@ export class GameEngineAdapter {
     if(message.projectId&&this.projectId!==message.projectId)fail('permissionDenied','Foreign project identity.');
     if(this.sessionId&&this.sessionId!==message.sessionId)fail('permissionDenied','Foreign product session.');
     this.sessionId=message.sessionId;
-    const mutates=['project.create','project.open','project.save','project.close','project.import'].includes(message.method);
+    const mutates=['project.create','project.open','project.save','project.close','project.import','project.rename'].includes(message.method);
     const id=message.params?.operationId,key=JSON.stringify([message.method,message.params]);
     if(mutates){
       if(typeof id!=='string'||!/^[a-zA-Z0-9_-]{8,100}$/.test(id))fail('invalidRequest','A unique operationId is required.');

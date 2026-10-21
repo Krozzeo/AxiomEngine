@@ -1,40 +1,37 @@
-# M23 — Serialización, ScriptableObject y prefabs
+# M23 — Serialization, ScriptableObject and prefabs
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M20, M22.
+Minimum dependencies: M20, M22.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- ScriptableObject, atributos de serialización y callbacks; campos, arrays/listas, estructuras, referencias y grafos admitidos por Unity.
-- Serialización polimórfica/managed references y JsonUtility según su semántica real; identidad de assets, ciclos y referencias faltantes.
-- Prefabs, instancias, overrides y variantes asignadas; persistencia y migración de proyectos sin perder referencias ni Undo.
+- ScriptableObject, serialization attributes/callbacks, fields/arrays/lists/structs/references and Unity-supported graphs.
+- Polymorphism/managed references and actual JsonUtility semantics, asset identity/cycles/missing references.
+- Assigned prefabs/instances/overrides/variants; persistence/migration preserve references and Undo.
 
-## Subtandas previstas
+## Planned batches
 
-- 23.1 Modelo serializado y ScriptableObject.
-- 23.2 Grafos, callbacks y JSON.
-- 23.3 Prefabs, overrides y migración.
+- 23.1 Serialized model/ScriptableObject.
+- 23.2 Graphs/callbacks/JSON.
+- 23.3 Prefabs/overrides/migration.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Guardar/reabrir conserva valores, identidad y relaciones; se verifican casos anidados y polimórficos.
-- [ ] Datos inválidos o incompatibles no corrompen el proyecto; versiones previas tienen migración probada.
-- [ ] Las limitaciones de JsonUtility no se sustituyen por un serializador con comportamiento diferente sin declararlo.
+- [ ] Save/reopen preserves values/identity/relationships, including nested/polymorphic cases.
+- [ ] Invalid/incompatible data cannot corrupt projects; earlier versions have tested migration.
+- [ ] Do not silently replace JsonUtility restrictions with a different serializer behavior.
 
-## Demo editable requerida
+## Required editable demo
 
-Save Graph & Prefab Lab con ScriptableObjects compartidos, overrides y reapertura.
+Save Graph & Prefab Lab: shared ScriptableObjects, overrides and reopening.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).

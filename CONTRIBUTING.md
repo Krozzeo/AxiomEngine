@@ -1,13 +1,9 @@
-# Contribuir a Axiom Game Engine
+# Contributing to Axiom Game Engine
 
-Partir del `main` actualizado y crear una rama corta por cambio. Cada PR apunta a `main`; evitar cadenas de PR dependientes como flujo habitual. Conservar la recuperación 0.0.52 y no mover sus etiquetas.
+Use English for identifiers/comments/UI/documentation/commits/PRs. Preserve stable serialized identifiers, native formats and user-authored text. Historical source-language documents are retained under docs/archive/original-language as reference, not current instructions.
 
-Describir el problema, comportamiento resultante, alcance y verificación real. Distinguir pruebas con adaptadores controlados de servicios/cuentas reales y Null de WebGPU. Mantener visibles límites, fallos y verificaciones aplazadas. No versionar tokens, proyectos personales, dependencias instaladas ni compilados generados.
+Read docs/AI_HANDOFF.md, architecture/IMPLEMENTATION_STATUS.md, the relevant plan/ADR and the Platform boundary before changing code. Domain invariants stay in Engine; generic services use pinned public Platform contracts and lockfile integrity. No permanent checkout-copy dependency. Provider source is published before consumer pinning.
 
-Ejecutar `npm run check`; para Rust, `npm run check:native`. Elegir los recorridos `test:browser:*` afectados y comprobar el CI completo antes de declarar una entrega verde. No eliminar asserts ni aumentar timeouts para ocultar fallos. Las actualizaciones de bindings y referencias generadas se realizan mediante los scripts del repositorio.
+Work through review branches/PRs. Preserve main/recovery refs and historical test results. Run npm run check and relevant domain/browser/native checks; do not weaken assertions or count unexecuted checks as passed. Browser Null, software WebGPU and physical GPU evidence are distinct; real-account/model quality need their own acceptance.
 
-Actualizar el estado y la guía correspondiente si cambia el comportamiento. Registrar decisiones arquitectónicas en ADRs y cambiar milestones únicamente con alcance y criterios explícitos. Informes anteriores se conservan como evidencia histórica.
-
-Tras integrar una rama, verificar que su SHA es ancestro de `main` antes de retirarla. Para recuperar una entrega usar una rama desde la etiqueta y revisar el cambio; consultar [recuperación](docs/REPOSITORY_MAINTENANCE.md).
-
-Para la separación de la familia, consultar [P0](docs/architecture/PLATFORM_TRANSITION.md). Contratos comunes en AxiomPlatform, dominio/adaptador aquí. MIT según LICENSE; licencias de terceros conservadas.
+Maintain editable demos, status/handoff/changelog/API docs and machine-readable state with each milestone. No fake API values or compile-only equivalence; M19 fixes the full signature denominator. Keep projects/generated artifacts/credentials out of source. Human review/Apply, stale revision protection, isolated proposals, scoped credentials and explicit publication remain invariants.

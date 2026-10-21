@@ -94,7 +94,7 @@ export async function startServer(options = {}) {
   const bridge=new EditorBridge(view,error=>bus.recordError(error));
   bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;bus.agentService.github=github;
   const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,...(!options.projectRoot?{sessionPath:join(hubSettings.settingsRoot,'assistant-session.json')}:{}) ,...(options.assistantOptions??{})});await assistant.ready;bus.agentService.assistant=assistant;
-  const platform=options.platformSession?createAuthoringPort({workspace,bus,proposals}):null;
+  const platform=options.platformSession?createAuthoringPort({workspace,bus,proposals,integrationStatus:()=>{const s=github.status();return {connected:s.connected,repository:s.repository,branch:s.branch,accountMatches:s.accountMatches};}}):null;
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();

@@ -1,40 +1,37 @@
-# M29 — Input y dispositivos
+# M29 — Input and devices
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M20, M22.
+Minimum dependencies: M20, M22.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- Completar Input/KeyCode/Touch y estado de mouse, teclado y gamepad; perfiles, zonas muertas y hotplug.
-- Sensores, pen, haptics, orientación y APIs de dispositivos con backends y hardware identificados.
-- Remapeo interactivo, persistencia y foco entre Game principal/desacoplado; Input System se versiona como paquete en M39.
+- Complete Input/KeyCode/Touch, mouse/keyboard/gamepad state/profiles/deadzones/hotplug.
+- Sensors/pen/haptics/orientation/device APIs with identified backends/hardware.
+- Interactive rebinding/persistence and primary/detached Game focus; Input System is a separate M39 package.
 
-## Subtandas previstas
+## Planned batches
 
-- 29.1 Estados y perfiles.
-- 29.2 Dispositivos, sensores y haptics.
-- 29.3 Remapeo y foco.
+- 29.1 State/profiles.
+- 29.2 Devices/sensors/haptics.
+- 29.3 Rebinding/focus.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Eventos edge/held, hotplug y pérdida de foco tienen pruebas deterministas.
-- [ ] Las capacidades físicas solo cuentan como verificadas con un backend real y evidencia del dispositivo; emulación se etiqueta.
-- [ ] Los controles funcionan en ventanas principales y desacopladas sin acciones duplicadas.
+- [ ] Deterministic edge/held/hotplug/focus-loss tests.
+- [ ] Device capabilities count only with real backend/device evidence; label emulation.
+- [ ] Primary/detached windows work without duplicate actions.
 
-## Demo editable requerida
+## Required editable demo
 
-Device & Rebinding Lab con perfiles, hotplug y remapeo persistente.
+Device & Rebinding Lab: profiles, hotplug and persistent rebinding.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).

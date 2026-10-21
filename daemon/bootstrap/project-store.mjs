@@ -1,9 +1,10 @@
 import {initializeSceneDocuments,syncSceneDocuments} from '../../engine/scene/scene-documents.mjs';
+import {assertPlatformLease} from '../../platform/lease.mjs';
 import packageData from '../../package.json' with {type:'json'};
 import { randomUUID } from "node:crypto";
 import { constants } from "node:fs";
 import { mkdir, realpath, open, lstat, readdir, rename, rm, cp } from "node:fs/promises";
-import { basename, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { validateProject, preserveExtensions, projectError } from "../../protocol/src/project-document.mjs";
 
 const MAX_BYTES = 4 * 1024 * 1024;
@@ -20,6 +21,7 @@ export class ProjectStore {
 
   async scanDirectory() {
     await mkdir(this.root, { recursive: true });
+    await assertPlatformLease(this.root);
     if ((await lstat(this.root)).isSymbolicLink()) throw projectError("AX_FS_0001", "Project root cannot be a link");
     const root=await realpath(this.root);if(this.folders){const locations=new Map();for(const entry of await readdir(root)){if(entry.startsWith('.'))continue;const folder=join(root,entry),info=await lstat(folder);if(!info.isDirectory()||info.isSymbolicLink())continue;for(const name of await readdir(folder))if(/^[0-9a-f-]{36}\.json$/.test(name)){const id='project://'+name.slice(0,-5);if(locations.has(id))throw projectError("AX_PROJECT_0002","Duplicate persistent project ID");locations.set(id,join(entry,name));}}this.locations=locations;}return root;
   }
@@ -31,6 +33,7 @@ export class ProjectStore {
   }
 
   async read(path) {
+    await assertPlatformLease(dirname(path));
     const info = await lstat(path);
     if (!info.isFile() || info.isSymbolicLink() || info.nlink !== 1) throw projectError("AX_FS_0001", "Project must be an ordinary unlinked file");
     const handle = await open(path, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0));

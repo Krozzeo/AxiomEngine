@@ -1,5 +1,19 @@
 # Changelog
 
+## P1 — Adaptador de Axiom Platform · 2026-10-21
+
+Descriptor/IPC, puerto de ciclo de vida opcional, revisión y protección de buffers, arrendamiento por carpeta y apertura nativa conservada. Sin cambios de formato o extracción AI/GitHub. Entrega en rama con pruebas conjuntas y navegador Null; ver informe P1.
+
+
+## P0 de Axiom Platform e identidad — 2026-10-21
+
+- Producto/repo Axiom Game Engine / AxiomGameEngine; referencias activas y ayuda actualizadas, conservando nombres técnicos y formatos.
+- [Separación P0](docs/architecture/PLATFORM_TRANSITION.md), ADR-0036 y ADR-0037; M19–M40 se conservan y Platform tiene P0–P5 propios. Sin extracción funcional.
+- MIT por instrucción del propietario; metadatos y avisos propios coherentes, licencias de terceros e historia preservadas.
+- Protección de publicación de juegos cubre nombre anterior, nuevo y Platform.
+- Evidencia histórica de consolidación actualizada: CI 329 46/46 del árbol base; #48/#49 cerradas, #47 intermitente abierto. Checks del PR nuevo independientes.
+
+
 ## Mantenimiento del repositorio — 2026-10-20
 
 - Última entrega 0.0.52 integrada en `main` conservando la cadena de commits.

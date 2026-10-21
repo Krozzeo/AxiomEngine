@@ -30,11 +30,25 @@ PR #50 organiza documentación, historial e inventario. 22 milestones nativas M1
 
 Shaders/compute WGSL y físicas GPU opcionales permanecen planificados en M25, M26, M28, M30 y M39, con hardening M40. Aceptación de esa ampliación: 0%; las físicas actuales son CPU/Wasm. No traducir el antiguo 94% del MVP a avance del alcance ampliado.
 
+## Estado posterior y reestructuración aprobada
+
+Base consolidada 871a72f, recovery/pre-restructure-stable-2026-10-20. El candidato e2eebc5, con el mismo árbol, aprobó CI 329 46/46; no extrapolar a runs nuevos. #48/#49 cerradas; #47 intermitente abierto. Las menciones a CI 320 anteriores son evidencia histórica, no el estado final de consolidación.
+
+Nombre Axiom Game Engine, repositorio AxiomGameEngine. MIT sustituye ADR-0013 para esta rama (ADR-0037). AxiomPlatform público/MIT aloja P0–P5 y contratos comunes; este repo conserva dominio/adaptador y M19–M40. [Transición](architecture/PLATFORM_TRANSITION.md). No hay código extraído ni formato migrado en P0; no asumir este PR integrado hasta comprobarlo.
+
 ## Próxima secuencia
 
-1. Consolidar GitHub y recuperar un CI completo verde; conservar la referencia exacta de recuperación.
-2. Resolver los fallos de navegador con reproducciones y regresiones; preservar todos sus asserts.
-3. Mantener pendientes explícitos de rendimiento físico denso, modelo conectado y validación manual nativa aplazada. La capacidad de 65.536 entidades no promete fluidez a esa escala.
-4. Definir la reestructuración con el usuario y avanzar por tandas verificables; no empezar silenciosamente M19 ni cambiar alcance/API.
+1. Verificar integración de la rama documental P0 y sus checks; preservar referencias de recuperación.
+2. Comenzar P1 mediante contrato/adaptador y un recorrido de apertura del motor, sin extracción masiva.
+3. Mantener pendientes de #47, rendimiento denso, modelo conectado y validación nativa manual aplazada.
+4. M19 continúa como siguiente milestone de producto; coordinar interfaces con P1 sin esperar todo P5 ni cambiar alcance/API.
 
 [Mapa documental](index.md) · [Estado](architecture/IMPLEMENTATION_STATUS.md) · [Roadmap](architecture/ROADMAP_M19_M40.md) · [Historial anterior completo](archive/pre-restructure-0.0.52/docs/AI_HANDOFF.md).
+
+## CI posterior de la base: pendiente #51
+
+Verificado durante P0: el [run posterior sobre main 871a72f](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39507425121) terminó con fallo de M17 y del gate agregado (44/46 trabajos aprobados). La aserción de posiciones de runtime en tests/browser/m17.mjs:13:643 encontró valores sin cambio; compilación completada y diagnóstico de script vacío no establecen la causa. [Seguimiento #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51). El CI 329 aprobado del mismo árbol sigue siendo evidencia histórica, pero la base no se declara íntegramente verde. Este fallo precede a publicar la rama P0 y no se corrige por documentación o renombrado.
+
+## Actualización P1
+
+Adaptador y puerto de autoría en feat/p1-platform-adapter, basado en P0 fcc7435. Platform utiliza IPC/protocolo 1 / API 0.1; sin imports del motor desde Platform ni migración de formato. [P1](architecture/PLATFORM_P1.md) e [informe](reports/PLATFORM_P1_REPORT.md). Local: 443 Node y recorrido conjunto/browser Null aprobados; verificar CI/estado de los PR antes de integrar. Main no se modifica por esta rama. P2 será extracción de catálogo/servicios, sin cambiar M19–M40.

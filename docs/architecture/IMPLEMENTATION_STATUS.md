@@ -29,3 +29,15 @@ PR #50 conserva la base y las etiquetas fijas; corrige sincronización atrasada 
 45 milestones principales, 23 cerradas y 22 pendientes M19–M40. El siguiente trabajo de producto es M19 tras la estabilización y la reestructuración que defina el usuario. [Roadmap](ROADMAP_M19_M40.md) y [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md) conservan alcance y gates. Las estimaciones anteriores por familia de Unity no constituyen una auditoría; porcentaje global ampliado sin cuantificar hasta M19.
 
 Fuentes: [M18.4.1](../reports/M18_4_1_REPORT.md), [M18.3.12](../reports/M18_3_12_REPORT.md), [M18.3.11](../reports/M18_3_11_CURRENT_REPORT.md). [Estado histórico completo](../archive/pre-restructure-0.0.52/docs/architecture/IMPLEMENTATION_STATUS.md).
+
+## Actualización de P0 — 2026-10-21
+
+Producto Axiom Game Engine y repositorio AxiomGameEngine; licencia MIT en esta rama. [Separación aprobada](PLATFORM_TRANSITION.md), todavía documental. Platform conserva P0–P5 propios; ninguna función se ha extraído ni se acredita cobertura nueva. Base consolidada 871a72f: mismo árbol que e2eebc5, aprobado CI 329 46/46 con 441 Node. Las referencias a CI 320 anteriores son históricas. #48/#49 cerradas; #47 intermitente sigue abierta. Los checks del nuevo PR deben verificarse por separado.
+
+## CI posterior de la base: pendiente #51
+
+Verificado durante P0: el [run posterior sobre main 871a72f](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39507425121) terminó con fallo de M17 y del gate agregado (44/46 trabajos aprobados). La aserción de posiciones de runtime en tests/browser/m17.mjs:13:643 encontró valores sin cambio; compilación completada y diagnóstico de script vacío no establecen la causa. [Seguimiento #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51). El CI 329 aprobado del mismo árbol sigue siendo evidencia histórica, pero la base no se declara íntegramente verde. Este fallo precede a publicar la rama P0 y no se corrige por documentación o renombrado.
+
+## P1 en rama — 2026-10-21
+
+Host/Hub propios en Platform y adaptador de este producto, ciclo de vida con revisión/buffers/lease, formato intacto. Local 443/443 Node y aceptación conjunta de navegador Null aprobados. [Detalle](PLATFORM_P1.md). No equivale a integración en main, CI remoto ni aceptación de los pendientes anteriores. P2–P5 y M19–M40 conservan su alcance.

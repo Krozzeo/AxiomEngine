@@ -11,7 +11,7 @@ El usuario autorizó que la última entrega fuera `main` y punto de recuperació
 
 Ambas etiquetas se publicaron y verificaron. También se conservaron ramas `archive/main-before-0.0.52-2026-10-20` y `archive/pre-restructure-0.0.52-2026-10-20` como respaldo adicional. Las etiquetas de recuperación no se mueven ni se reutilizan.
 
-[Descarga del código fuente de recuperación](https://github.com/Krozzeo/AxiomEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). No contiene un instalador ni los proyectos personales del usuario.
+[Descarga del código fuente de recuperación](https://github.com/Krozzeo/AxiomGameEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). No contiene un instalador ni los proyectos personales del usuario.
 
 Para inspeccionar o recuperar esa versión sin cambiar el trabajo posterior:
 
@@ -36,13 +36,13 @@ El roadmap mantiene M19–M40 y el plan Unity API + shaders + físicas GPU. Solo
 
 ## Calidad pendiente antes de reestructurar
 
-CI 320: [ejecución](https://github.com/Krozzeo/AxiomEngine/actions/runs/39455470602), 42/45 trabajos aprobados. No se declara una base verde por crear una etiqueta.
+CI 320: [ejecución](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39455470602), 42/45 trabajos aprobados. No se declara una base verde por crear una etiqueta.
 
 | Prioridad | Incidencia | Hecho confirmado | Hipótesis / siguiente comprobación |
 | --- | --- | --- | --- |
-| Alta | [#47 M18](https://github.com/Krozzeo/AxiomEngine/issues/47) | Timeout esperando popup de Inspector tras scrub numérico | Investigar busy/persistencia; no causa confirmada |
-| Alta | [#48 M18.2](https://github.com/Krozzeo/AxiomEngine/issues/48) | Traza no cambia al workspace esperado después de Stop | Reproducir sincronización de snapshot/renderer y generación |
-| Alta | [#49 M7](https://github.com/Krozzeo/AxiomEngine/issues/49) | Hub se oculta durante el click de cierre al recargar | Helper espera inicialización para cualquier control; recorrido local M7 aprobado, confirmación CI pendiente |
+| Alta | [#47 M18](https://github.com/Krozzeo/AxiomGameEngine/issues/47) | Timeout esperando popup de Inspector tras scrub numérico | Investigar busy/persistencia; no causa confirmada |
+| Alta | [#48 M18.2](https://github.com/Krozzeo/AxiomGameEngine/issues/48) | Traza no cambia al workspace esperado después de Stop | Reproducir sincronización de snapshot/renderer y generación |
+| Alta | [#49 M7](https://github.com/Krozzeo/AxiomGameEngine/issues/49) | Hub se oculta durante el click de cierre al recargar | Helper espera inicialización para cualquier control; recorrido local M7 aprobado, confirmación CI pendiente |
 
 No se quitan asserts ni se cambian los timeouts para declarar éxito. La consolidación no cierra estas incidencias sin evidencia. Verificación de mantenimiento: `npm run check` aprobado, 438/438 pruebas Node y checks de build/bindings/schema/arquitectura/paridad. M7 local aprobó sus siete grupos incluyendo Null y sin pageerrors; M18 sus ocho grupos y detach real; M18.2 sus catorce grupos; esto no demuestra resuelto el fallo intermitente de CI. CI 322 sobre main aprobó 44/45 trabajos, con el mismo fallo M18.2. Se amplía su diagnóstico de fallo con estado de renderer y frame-trace sin cambiar el assert. El CI del PR es la referencia para la regresión completa.
 
@@ -62,10 +62,18 @@ Los diagnósticos de CI 326 confirman renderer WebGPU detenido en MAIN/revisión
 
 El bridge ahora solo adopta una respuesta si el snapshot que la pidió sigue siendo el actual, y descarta respuestas posteriores al cierre. El próximo poll reconcilia cambios externos con el estado actual. Tres pruebas deterministas: dos fallaban con el código anterior, las tres pasan con el corregido. `npm run check` completo: **441/441 Node**. La atribución final del fallo CI M18.2 exige aprobar su recorrido remoto; no se cierra solo por la reproducción unitaria.
 
-Referencias administrativas verificadas: [regla main](https://github.com/Krozzeo/AxiomEngine/rules/25508502), [regla recovery](https://github.com/Krozzeo/AxiomEngine/rules/25508420), [milestones](https://github.com/Krozzeo/AxiomEngine/milestones), [etiquetas](https://github.com/Krozzeo/AxiomEngine/labels), [release fija](https://github.com/Krozzeo/AxiomEngine/releases/tag/recovery%2Fpre-restructure-0.0.52). Se usó la sesión de navegador iniciada por el usuario; no se extrajeron credenciales internas de Git.
+Referencias administrativas verificadas: [regla main](https://github.com/Krozzeo/AxiomGameEngine/rules/25508502), [regla recovery](https://github.com/Krozzeo/AxiomGameEngine/rules/25508420), [milestones](https://github.com/Krozzeo/AxiomGameEngine/milestones), [etiquetas](https://github.com/Krozzeo/AxiomGameEngine/labels), [release fija](https://github.com/Krozzeo/AxiomGameEngine/releases/tag/recovery%2Fpre-restructure-0.0.52). Se usó la sesión de navegador iniciada por el usuario; no se extrajeron credenciales internas de Git.
 
 ## Sincronización del recorrido M18.2
 
 CI 328 mantuvo el fallo de preview aun después del guard del bridge; ese defecto real no se presenta como causa suficiente del fallo de navegador. El recorrido histórico usaba la visibilidad de la barra para inferir preview activo, pero desde M18.2.1 esa barra también está visible en MAIN. La espera podía resolver antes del cambio de vista y encadenar clicks sobre estados equivocados.
 
 El recorrido ahora espera `Exit preview`/`Preview` y que termine la acción. Edita primero X=6 y verifica el valor real en el workspace antes de volver a X=5; exige que Play esté activo en ese workspace antes de Stop. Tras descartar, espera que desaparezca la barra. Conserva la comprobación de `profileContext.workspaceId` y el timeout original. Las 36 milestones de navegador se conservan; M18.2/M18/M7 se ejecutan primero para obtener antes evidencia de las regresiones.
+
+## P0 y nuevo nombre — 2026-10-21
+
+Repositorio renombrado AxiomGameEngine; actualizar origin a https://github.com/Krozzeo/AxiomGameEngine.git. No renombrar carpetas locales por obligación ni mover recovery tags. Referencia estable 871a72f, recovery/pre-restructure-stable-2026-10-20. El candidato del mismo árbol aprobó CI 329 46/46; #48/#49 cerradas y #47 intermitente abierto. Los estados de CI 320 anteriores se conservan como historial. P0 va por rama/PR, sin integración automática. MIT vigente en esa rama; no reescribir licencias de recovery. [Transición](architecture/PLATFORM_TRANSITION.md).
+
+## CI posterior de la base: pendiente #51
+
+Verificado durante P0: el [run posterior sobre main 871a72f](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39507425121) terminó con fallo de M17 y del gate agregado (44/46 trabajos aprobados). La aserción de posiciones de runtime en tests/browser/m17.mjs:13:643 encontró valores sin cambio; compilación completada y diagnóstico de script vacío no establecen la causa. [Seguimiento #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51). El CI 329 aprobado del mismo árbol sigue siendo evidencia histórica, pero la base no se declara íntegramente verde. Este fallo precede a publicar la rama P0 y no se corrige por documentación o renombrado.

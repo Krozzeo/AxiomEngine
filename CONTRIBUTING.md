@@ -1,4 +1,4 @@
-# Contribuir a Axiom Engine
+# Contribuir a Axiom Game Engine
 
 Partir del `main` actualizado y crear una rama corta por cambio. Cada PR apunta a `main`; evitar cadenas de PR dependientes como flujo habitual. Conservar la recuperación 0.0.52 y no mover sus etiquetas.
 
@@ -9,3 +9,5 @@ Ejecutar `npm run check`; para Rust, `npm run check:native`. Elegir los recorrid
 Actualizar el estado y la guía correspondiente si cambia el comportamiento. Registrar decisiones arquitectónicas en ADRs y cambiar milestones únicamente con alcance y criterios explícitos. Informes anteriores se conservan como evidencia histórica.
 
 Tras integrar una rama, verificar que su SHA es ancestro de `main` antes de retirarla. Para recuperar una entrega usar una rama desde la etiqueta y revisar el cambio; consultar [recuperación](docs/REPOSITORY_MAINTENANCE.md).
+
+Para la separación de la familia, consultar [P0](docs/architecture/PLATFORM_TRANSITION.md). Contratos comunes en AxiomPlatform, dominio/adaptador aquí. MIT según LICENSE; licencias de terceros conservadas.

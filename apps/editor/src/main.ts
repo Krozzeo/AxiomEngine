@@ -93,7 +93,10 @@ async function execute(type, data = {}) {
 const githubEditor=mountGitHubEditor({document,api,reportError});
 const proposalEditor=mountProposalEditor({document,send:sendCommand,reportError});
 let unsavedScene = false;
-const projectEditor = mountProjectEditor({ getRenderer:()=>renderer,document, api, send: sendCommand, reportError,onLocate:id=>sceneTools?.locate(id),onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: value => { unsavedScene = value; }, onState: async snapshot => {
+let hostedSession=false,dirtyBuffers=false,bufferSequence=0;
+const bufferClientId=crypto.randomUUID();
+function reportBuffers(){if(hostedSession)void api('/v1/platform/editor-state',{method:'POST',body:JSON.stringify({clientId:bufferClientId,dirty:dirtyBuffers,sequence:++bufferSequence})}).catch(reportError);}
+const projectEditor = mountProjectEditor({ getRenderer:()=>renderer,document, api, send: sendCommand, reportError,onLocate:id=>sceneTools?.locate(id),onSelection:id=>sceneTools?.select(id),onView:view=>{activeView=view;renderer?.setView(view);}, onDirty: (value,details) => { unsavedScene = value;const next=details?.buffers??false;if(next!==dirtyBuffers){dirtyBuffers=next;reportBuffers();} }, onState: async snapshot => {
   const changed=!pendingSnapshot||(pendingSnapshot.workspaceId??null)!==(snapshot.workspaceId??null)||pendingSnapshot.sceneRevision!==snapshot.sceneRevision||pendingSnapshot.project?.id!==snapshot.project?.id;
   pendingSnapshot=snapshot;githubEditor.setSnapshot(snapshot);
   if(renderer&&changed) await renderer.setSnapshot(snapshot);
@@ -120,6 +123,7 @@ async function initializeWebGpu() {
 async function boot() {
   try {
     const handshake = await api("/v1/handshake");
+    hostedSession=handshake.platformSession===true;reportBuffers();
     agentBridgeEnabled=handshake.capabilities.includes("editor.bridge");
     if(handshake.capabilities.includes("command.script.compile")){const sample=await fetch("/default-game.cs");if(sample.ok)projectEditor.setDefaultSource(await sample.text());}
     connection.textContent = `Connected · protocol v${handshake.protocol.selected}`;

@@ -1,4 +1,5 @@
 import {pickFolder} from './folder-picker.mjs';
+import {createAuthoringPort} from '../../platform/authoring.mjs';
 import {addLocalProject,githubProjects,importGitHubProject} from './github/import-project.mjs';
 import {GitHubPublication} from './github/publication.mjs';
 import {spawn} from 'node:child_process';
@@ -93,6 +94,7 @@ export async function startServer(options = {}) {
   const bridge=new EditorBridge(view,error=>bus.recordError(error));
   bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;bus.agentService.github=github;
   const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,...(!options.projectRoot?{sessionPath:join(hubSettings.settingsRoot,'assistant-session.json')}:{}) ,...(options.assistantOptions??{})});await assistant.ready;bus.agentService.assistant=assistant;
+  const platform=options.platformSession?createAuthoringPort({workspace,bus,proposals}):null;
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();
@@ -125,6 +127,8 @@ export async function startServer(options = {}) {
         }
       }
 
+      if(platform&&request.method!=='GET'&&url.pathname==='/v1/hub')return json(response,409,{code:'AX_SCENE_0003',cause:'Manage hosted projects from Axiom Platform.'});
+
       if(url.pathname.startsWith("/script-runtime/")) {
         const origin=request.headers.origin;
         if(request.method!=="GET"||(origin?!allowedOrigins.has(origin):request.headers["sec-fetch-site"]!=="same-origin")||!request.headers.cookie?.split("; ").includes("axiom-runtime="+runtimeCookie))return json(response,403,{code:"AX_SECURITY_0001"});
@@ -146,6 +150,7 @@ export async function startServer(options = {}) {
         if (requested !== 1) return json(response, 409, { code: "AX_PROTOCOL_0003", supported: { min: 1, max: 1 } });
         response.setHeader("Set-Cookie",`axiom-runtime=${runtimeCookie}; HttpOnly; SameSite=Strict; Path=/script-runtime/`);
         return json(response, 200, {
+          platformSession:!!platform,
           protocol: { min: 1, max: 1, selected: 1 },
           schemaHash: hash,
           server: { name: "axiom-daemon-bootstrap", version: packageData.version },
@@ -195,6 +200,7 @@ export async function startServer(options = {}) {
       if(request.method==='POST'&&url.pathname==='/v1/ai/recover'){const data=await readJson(request);return json(response,200,await bus.transaction(()=>proposals.recover(data,{actor:{kind:'human',id:'editor'}})));}
       if(request.method==='POST'&&url.pathname==='/v1/ai/cancel'){const data=await readJson(request);return json(response,200,assistant.cancel(data.id));}
       if(request.method==='GET'&&url.pathname==='/v1/tools')return json(response,200,{tools:tools.filter(t=>t.mcp)});
+      if(platform&&request.method==='POST'&&url.pathname==='/v1/platform/editor-state')return json(response,200,platform.reportEditor(await readJson(request)));
       if(request.method==='POST'&&url.pathname==='/v1/editor/sync')return json(response,200,{...bridge.sync(await readJson(request)),proposals:proposals.list()});
       if(request.method==='POST'&&url.pathname==='/v1/editor/disconnect')return json(response,200,{released:bridge.release((await readJson(request)).clientId)});
       if(request.method==='POST'&&url.pathname==='/v1/tools/call'){
@@ -268,6 +274,7 @@ export async function startServer(options = {}) {
   allowedOrigins = new Set([origin, `http://localhost:${address.port}`]);
   return {
     server,
+    ...(platform?{platform}:{}),
     token,
     origin,
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,

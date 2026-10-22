@@ -1,8 +1,8 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-21",
-  "engineVersion": "0.0.53",
+  "updatedAt": "2026-10-22",
+  "engineVersion": "0.0.56",
   "activeMilestone": 18.4,
   "milestoneStatus": "complete",
   "completion": {

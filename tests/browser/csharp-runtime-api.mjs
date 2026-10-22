@@ -1,3 +1,4 @@
+import {launchEditorBrowser} from './browser-options.mjs';
 import {scriptMetadata} from '../../engine/scripting/fields.mjs';
 import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm} from 'node:fs/promises';
@@ -57,7 +58,7 @@ try {
   if(modules[path]){res.setHeader('Content-Type',path.endsWith('.json')?'application/json':'text/javascript');let source=await readFile(new URL('../../'+modules[path],import.meta.url),'utf8');source=source.replace('../scene/runtime-edit.mjs','./runtime-edit.mjs').replace('../scripting/fields.mjs','./fields.mjs').replace('../scripting/references.mjs','./references.mjs').replaceAll('../scene/','./').replace('../../protocol/schema/project-document.schema.json','./project-document.schema.json');return res.end(source);}
   const name=path.slice('/runtime/'.length);res.setHeader('Content-Type',({'.js':'text/javascript','.json':'application/json','.wasm':'application/wasm'})[extname(name)]??'application/octet-stream');res.end(await compiler.read(projectId,build,name));
  }catch(e){res.writeHead(404);res.end(String(e));}});
- await new Promise(r=>server.listen(0,'127.0.0.1',r));browser=await chromium.launch({headless:true,args:['--no-sandbox']});const page=await browser.newPage();await page.goto('http://127.0.0.1:'+server.address().port);
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));browser=await launchEditorBrowser({headless:true,args:['--no-sandbox']});const page=await browser.newPage();await page.goto('http://127.0.0.1:'+server.address().port);
  const results=await page.evaluate(async SOURCE_FILES=>{
   const worker=new Worker('/script-worker.js',{type:'module'});let id=0;
   const send=data=>new Promise((resolve,reject)=>{const ticket=++id;const timer=setTimeout(()=>{worker.terminate();reject(new Error('Script timeout'));},60000);worker.onerror=e=>{clearTimeout(timer);reject(new Error(e.message));};worker.onmessage=({data:r})=>{if(r.id!==ticket)return;clearTimeout(timer);r.error?reject(new Error(r.error)):resolve(r.result??r);};worker.postMessage({...data,id:ticket});});

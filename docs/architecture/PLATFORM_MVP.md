@@ -1,3 +1,5 @@
+> Historical integration snapshot. Current account/version/export ownership and acceptance are in [Engine0.0.56 product integration](PRODUCT_INTEGRATION_0_0_56.md) and its audit.
+
 # Platform MVP integration
 
 Engine0.0.55 / scripting SDK8 consumes public Platform0.1.5 source f2131275ffed2d132383322959631484e8fc8ad5 by HTTPS with lockfile integrity. Product identity, IPC1 and native game format1 remain unchanged. The CI script-boundaries job now installs locked dependencies before running tests that import the shared lease. This fixes the missing-package failure in CI338 rather than skipping the check.

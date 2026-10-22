@@ -1,3 +1,4 @@
+import {launchEditorBrowser} from './browser-options.mjs';
 import {control} from './editor-controls.mjs';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -10,7 +11,7 @@ const root=await mkdtemp(join(tmpdir(),'axiom-m18-')),evidence=resolve('.axiom/b
 try{
  const demos=await createM18Projects(root);daemon=await startServer({projectRoot:root});
  const command=async(type,data={})=>{const response=await fetch(daemon.origin+'/v1/commands',{method:'POST',headers:{Origin:daemon.origin,Authorization:'Bearer '+daemon.token,'Content-Type':'application/json'},body:JSON.stringify(envelope('command',{type,data}))});const r=await response.json();if(r.kind==='error')throw Error(JSON.stringify(r));return r.payload.data;};
- browser=await chromium.launch({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1700,height:1100}});page.setDefaultTimeout(240000);page.on('pageerror',error=>report.errors.push(error.message));page.on('dialog',dialog=>void dialog.accept());await page.goto(daemon.editorUrl);await page.locator('#connection').filter({hasText:'Connected'}).waitFor();
+ browser=await launchEditorBrowser({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1700,height:1100}});page.setDefaultTimeout(240000);page.on('pageerror',error=>report.errors.push(error.message));page.on('dialog',dialog=>void dialog.accept());await page.goto(daemon.editorUrl);await page.locator('#connection').filter({hasText:'Connected'}).waitFor();
  const ready=()=>page.waitForFunction(()=>document.querySelector('#editor-workspace').getAttribute('aria-busy')==='false');
  const open=async d=>{await (await control(page,'#project-list')).selectOption(d.id);await (await control(page,'#project-open')).click();await ready();assert.notEqual(await page.locator('#toolbar-compile').getAttribute('data-state'),'compiling','Opening stays busy until required compilation finishes');};
  const state=()=>command('scene.get');const save=async()=>{if((await state()).dirty){await (await control(page,'#scene-save')).click();await ready();}};

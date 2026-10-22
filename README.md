@@ -2,7 +2,7 @@
 
 A local browser game editor with Rust/WebAssembly kernel, WebGPU renderer and C# gameplay. Includes2D/3D scenes, resources, CPU/Wasm physics, editing tools and isolated AI proposals with human review.
 
-**Current candidate:0.0.54 / scripting SDK 8 / Platform P5.** P1 is integrated and accepted; P2/P3/P4/P5 are stacked review candidates. [Confirmed status/limits](docs/architecture/IMPLEMENTATION_STATUS.md), [current context](docs/AI_HANDOFF.md), [documentation map](docs/index.md).
+**Current candidate:0.0.56 / scripting SDK8 / Platform0.1.7 product integration.** P1 is accepted; the subsequent Engine adaptation remains on stacked review branches. [Architecture audit](docs/reports/ARCHITECTURE_AUDIT_0_0_56.md), [product contract](docs/architecture/PRODUCT_INTEGRATION_0_0_56.md), [current handoff](docs/AI_HANDOFF.md).
 
 ## Axiom family
 
@@ -44,3 +44,5 @@ npm run demo creates References & Inspector and related labs; [demo map](demos/R
 Code/UI/maintained docs use English. Original-language historical snapshots are retained as reference text, not current instructions. [Contributing](CONTRIBUTING.md). [MIT](LICENSE); [third-party notices](THIRD_PARTY_NOTICES.md) remain applicable.
 
 [P5 shared editor lifecycle and second-consumer integration](docs/architecture/PLATFORM_P5.md). Math Lab is an independent product; Unity/shader/GPU coverage and Engine M19–M40 are unchanged.
+
+Account connection is managed exclusively in Platform. Project model/reasoning can use Same as Hub or explicit overrides. Engine software updates are discovered through prepared GitHub releases; game publication destinations remain project-specific. `npm version` synchronizes package/product descriptor/state through the version hook.

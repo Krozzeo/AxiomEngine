@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.56 / Platform product audit —2026-10-22
+
+Hosted AI readiness follows the verified Hub account; model/reasoning support Same as Hub and persistent project overrides with a separate model test. Products no longer connect/disconnect OpenAI or GitHub through their UI/HTTP; the host independently enforces account authority. Game repository/publication settings, task budgets, PMD and human review/Apply remain project-owned. Package/descriptor/state agree at0.0.56 and npm version synchronizes metadata. Prepared publishing follows the public Platform release manifest. [Audit, evidence and limits](docs/reports/ARCHITECTURE_AUDIT_0_0_56.md). Native format1/SDK8 and M19–M40 acceptance remain unchanged.
+
 ## 0.0.53 / Platform P4 —2026-10-21 (review candidate)
 
 Hosted creation explicitly selects the existing3D starter preset (Cube/Directional Light/configured Camera). Added revision-aware atomic rename for active/closed projects preserving identity/content and rejecting dirty/busy/stale changes. Consume the public pinned P4 provider and common stable option primitive; editor build includes its browser module. Default PMD prompt and maintained documentation use English; complete original-language references are retained separately. Joint Hub/Settings/distribution changes live in Platform. P4 export/manual gates and previous CI issues remain open; no main/recovery movement.

@@ -1,3 +1,5 @@
+> Historical integration snapshot. Current account/version/export ownership and acceptance are in [Engine0.0.56 product integration](PRODUCT_INTEGRATION_0_0_56.md) and its audit.
+
 # Platform P4 — Hub and distribution consumer
 
 2026-10-21. Engine 0.0.53 / scripting SDK 8, Platform 0.1.3 / IPC1, native project format1. Review candidate over P3; no automatic main merge. Public provider149403753092f24a684d0241fe2aa7762abf7bc0 is pinned by HTTPS archive/integrity in package-lock.

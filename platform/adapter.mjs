@@ -43,6 +43,7 @@ export class GameEngineAdapter {
       this.root=await realpath(params.authorizedRoot);
       this.embeddingOrigin=params.platformOrigin;this.readSources=params.readSources??[];
       this.projectStateRoot=params.projectStateRoot;if(params.services?.ai)this.sharedAi=new SharedAiProvider({sessionId:this.sessionId,state:params.services.ai});
+      if(this.sharedAi)this.sharedAi.platformOrigin=this.embeddingOrigin;
       if(params.services?.github)this.sharedGitHub=new SharedGitHubClient({sessionId:this.sessionId,account:params.services.github});
       return {protocolVersion:1,productId:manifest.productId,productVersion:manifest.productVersion,capabilities:manifest.capabilities};
     }
@@ -77,7 +78,7 @@ export class GameEngineAdapter {
       if(creating&&(await readdir(folder)).length!==0)fail('projectBusy','New projects require an empty directory.');
       this.release=await acquireLease(folder,this.sessionId);
       try{
-        const githubOptions={...(this.sharedGitHub?{client:this.sharedGitHub}:{}),...(this.projectStateRoot?{statePath:join(this.projectStateRoot,createHash('sha256').update(folder).digest('hex'),'github.json')}: {})};
+        const githubOptions={platformOrigin:this.embeddingOrigin,...(this.sharedGitHub?{client:this.sharedGitHub}:{}),...(this.projectStateRoot?{statePath:join(this.projectStateRoot,createHash('sha256').update(folder).digest('hex'),'github.json')}: {})};
         if(entry&&githubOptions.statePath)await adoptLegacyGitHub({target:githubOptions.statePath,legacy:join(process.env.APPDATA??join(homedir(),'.config'),'Axiom','github-session.json'),projectId:entry.projectId});
         this.runtime=await startServer({projectRoot:folder,platformSession:true,embeddingOrigin:this.embeddingOrigin,githubOptions,...(this.sharedAi?{assistantOptions:{transport:this.sharedAi,apiKey:''}}:{})});
         const status=creating?await this.runtime.platform.create(params.name):await this.runtime.platform.open(entry.projectId);

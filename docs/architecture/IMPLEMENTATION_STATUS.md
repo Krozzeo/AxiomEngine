@@ -1,6 +1,6 @@
 # Confirmed implementation status
 
-Current branch candidate: **0.0.54 / SDK 8 / Platform P5**. P1 is integrated/accepted; P2/P3/P4/P5 are stacked review candidates. Protected recovery/pre-restructure-0.0.52 remains e264ca835de14daf4fe964be6a78be5e4646ad14. Main has not been advanced by this delivery.
+Current branch candidate: **0.0.56 / SDK8 / Platform0.1.7**. [Current audit](../reports/ARCHITECTURE_AUDIT_0_0_56.md) and [product contract](PRODUCT_INTEGRATION_0_0_56.md) supersede older integration snapshots. P1 is accepted; later Engine changes remain stacked review candidates. Main/recovery refs have not been advanced by this delivery.
 
 | Area | Confirmed behavior | Remaining limits |
 | --- | --- | --- |
@@ -11,7 +11,7 @@ Current branch candidate: **0.0.54 / SDK 8 / Platform P5**. P1 is integrated/acc
 | AI | Semantic tools, isolated proposals, human review/Apply/PMD; P3 generic infrastructure shared | Real-model quality/cost and contract-specific limitations |
 | GitHub | Session account, project destinations/preferences/autosave/review/publication/history | Native real-account acceptance deferred; TestRepo testing-only |
 | P4 distribution | Relocatable prepared Windows launcher, dependency checks/local runtimes/browser/error console, local installation activation/rollback | Fresh-machine download/manual picker acceptance separate; no signed online product registry |
-| Build/export | Direct independent editor startup | No standalone game build/export pipeline; P4 exported-game gate open |
+| Build/export | Direct independent editor startup | No standalone game build/export pipeline; Engine build/export gate open (transferred from Platform) |
 | Shaders/compute/GPU physics expansion | Approved dependencies/batches |0% new acceptance; future M25/M26/M28/M30/M39/M40 |
 
 ## Evidence

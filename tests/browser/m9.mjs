@@ -1,3 +1,4 @@
+import {launchEditorBrowser} from './browser-options.mjs';
 import {control} from './editor-controls.mjs';
 import assert from 'node:assert/strict';import {chromium} from 'playwright';import {PNG} from 'pngjs';import {mkdtemp,mkdir,rm,writeFile} from 'node:fs/promises';import {join,resolve} from 'node:path';import {tmpdir} from 'node:os';
 import {createM9Demos} from '../../demos/create-m9-projects.mjs';import {startServer} from '../../daemon/bootstrap/server.mjs';import {envelope} from '../../protocol/src/protocol.ts';
@@ -6,7 +7,7 @@ function difference(a,b){const A=PNG.sync.read(a),B=PNG.sync.read(b);let sum=0,c
 try{
  const demos=await createM9Demos(root);daemon=await startServer({projectRoot:root});
  const command=async(type,data={})=>{const r=await fetch(daemon.origin+'/v1/commands',{method:'POST',headers:{Origin:daemon.origin,Authorization:'Bearer '+daemon.token,'Content-Type':'application/json'},body:JSON.stringify(envelope('command',{type,data}))});const v=await r.json();if(v.kind==='error')throw Error(JSON.stringify(v));return v.payload.data;};
- browser=await chromium.launch({headless:process.env.AXIOM_HEADLESS==='true',channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
+ browser=await launchEditorBrowser({headless:process.env.AXIOM_HEADLESS==='true',channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
  page=await browser.newPage({viewport:{width:1700,height:1100}});page.on('pageerror',e=>report.pageErrors.push(e.message));page.on('response',r=>{if(r.status()>=400&&report.httpErrors.length<16)report.httpErrors.push({status:r.status(),path:new URL(r.url()).pathname});});page.on('console',m=>{if(m.type()==='error')report.consoleErrors.push(m.text());});page.on('dialog',d=>d.accept());page.setDefaultTimeout(60000);await page.goto(daemon.editorUrl);
  const trace=()=>page.locator('#frame-trace').textContent().then(JSON.parse);
  async function ready(){await page.waitForFunction(()=>{try{const f=JSON.parse(document.querySelector('#frame-trace').textContent);return f.rendering&&f.kernel.renderer==='webgpu'&&f.kernel.view==='game';}catch{return false;}});await page.waitForTimeout(200);}

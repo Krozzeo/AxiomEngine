@@ -1,3 +1,5 @@
+> Historical integration snapshot. Current account/version/export ownership and acceptance are in [Engine0.0.56 product integration](PRODUCT_INTEGRATION_0_0_56.md) and its audit.
+
 # Platform P5 integration
 
 Engine0.0.54 / scripting SDK8 consumes public Platform provider099d0d4c6098f434428793ebbe38d696e61f55c9 through HTTPS/package-lock integrity. Platform0.1.4 and independent Math Lab0.1.0 are review candidates alongside this Engine branch. IPC1/native game format1 are unchanged.

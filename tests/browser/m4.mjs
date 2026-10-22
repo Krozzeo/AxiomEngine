@@ -1,3 +1,4 @@
+import {launchEditorBrowser} from './browser-options.mjs';
 import {control} from './editor-controls.mjs';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
@@ -11,7 +12,7 @@ const root=await mkdtemp(join(tmpdir(),'axiom-m4-')),evidence=resolve('.axiom/br
 const daemon=await startServer({projectRoot:root});let browser,page;const errors=[],report={criteria:[]};
 async function state(){const r=await fetch(daemon.origin+'/v1/commands',{method:'POST',headers:{Origin:daemon.origin,Authorization:'Bearer '+daemon.token,'Content-Type':'application/json'},body:JSON.stringify(envelope('command',{type:'scene.get',data:{}}))});return(await r.json()).payload.data;}
 try {
- browser=await chromium.launch({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
+ browser=await launchEditorBrowser({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
  page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(180000);
  await page.goto(daemon.editorUrl);await (await control(page,'#project-name')).fill('M4 C# gameplay');await (await control(page,'input[name="project-dimension"][value="empty"]')).check();await (await control(page,'#project-new')).click();
  await (await control(page,'#asset-file')).setInputFiles({name:'player.png',mimeType:'image/png',buffer:imageFixture()});await (await control(page,'#asset-import')).click();

@@ -1,3 +1,4 @@
+import {listenLoopback} from 'axiom-platform/loopback';
 import {pickFolder} from './folder-picker.mjs';
 import {createAuthoringPort} from '../../platform/authoring.mjs';
 import {addLocalProject,githubProjects,importGitHubProject} from './github/import-project.mjs';
@@ -268,10 +269,7 @@ export async function startServer(options = {}) {
     }
   });
 
-  await new Promise((resolveListen, reject) => {
-    server.once("error", reject);
-    server.listen(options.port ?? 0, "127.0.0.1", resolveListen);
-  });
+  await listenLoopback(server,options.port??0);
   const address = server.address();
   const origin = `http://127.0.0.1:${address.port}`;
   allowedOrigins = new Set([origin, `http://localhost:${address.port}`]);

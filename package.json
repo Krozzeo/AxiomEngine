@@ -81,7 +81,7 @@
     "test:browser:m18-4": "node tests/browser/m18-4.mjs"
   },
   "dependencies": {
-    "axiom-platform": "https://codeload.github.com/Krozzeo/AxiomPlatform/tar.gz/f1ec64432e3411a206b6643258d6b1c224d00571",
+    "axiom-platform": "https://codeload.github.com/Krozzeo/AxiomPlatform/tar.gz/f2131275ffed2d132383322959631484e8fc8ad5",
     "fflate": "0.8.3",
     "occt-import-js": "0.0.23",
     "pdfjs-dist": "5.4.296",

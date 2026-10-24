@@ -1,16 +1,16 @@
 # Expanded roadmap — M19 to M40
 
-Owner scope decision2026-10-19, maintained English edition2026-10-21. These are **Game Engine** milestones; Platform P0–P5 is independent and does not replace/credit Unity/shaders/GPU work. M18.4 closed under ADR0034 with native real-account validation deferred. M19 has not started.
+Owner scope decision2026-10-19, maintained English edition2026-10-21. These are **Game Engine** milestones; Platform P0–P5 is independent and does not replace/credit Unity/shaders/GPU work. M18.4 closed under ADR0034 with native real-account validation deferred. M19 audit is implemented in the0.0.57 review candidate; [report](../reports/M19_REPORT.md).
 
 ## Scope and progress
 
-21 new compatibility milestonesM19–M39; formerM19 MVP Hardening moved in full to finalM40. Preserve M18.4. Total 45 main milestones (M0–M40 plusM18.1–M18.4),23 historically closed,22 pendingM19–M40. M18.3.x corrections are not additional main milestones. Order: M18.4→M19→M20–M39→M40, respecting the dependency graph; independent work may proceed without claiming closure.
+21 new compatibility milestonesM19–M39; formerM19 MVP Hardening moved in full to finalM40. Preserve M18.4. Total 45 main milestones (M0–M40 plusM18.1–M18.4),23 historical closures plus locally accepted M19;21 implementation milestones M20–M40 remain. M18.3.x corrections are not additional main milestones. Order: M18.4→M19→M20–M39→M40, respecting the dependency graph; independent work may proceed without claiming closure.
 
 Implement all or almost all of the frozen public Unity 6.3LTS(6000.3) Scripting API through Axiom's own functional implementation. Unversioned docs were observed at6.6 on2026-10-18; track that delta separately. M19 freezes snapshot/hash/full signature denominator, overload/inheritance/obsolete handling, ownership and priorities. Include runtime **and editor**, not only gameplay families; packages have separate fixed versions/inventories.
 
 FutureM39 target: >=95% verified core public target signatures and 100% P0. Retain complete denominator with partial/blocked/excluded/platform-restricted members visible; never remove unsupported APIs to reach the target. Publish total/profile/package metrics separately. If dependencies prevent the target, keep the gate blocked or obtain an explicit scope decision.
 
-Historical94%(122/130) is original MVP only. Expanded whole-project/API progress remains unquantified before M19 audits effort/coverage. Prior conversational per-area percentages were planning estimates, not measured baselines. Platform documentation/refactoring adds no API acceptance.
+Historical94%(122/130) is original MVP only. M19 publishes [strict coverage and relative signature scope](../compatibility/README.md). Whole-project effort remains unestimated: signature counts cannot be added to historical MVP effort points. Prior conversational per-area percentages were planning estimates, not measured baselines. Platform documentation/refactoring adds no API acceptance.
 
 | Milestone | Main delivery | Minimum dependencies |
 | --- | --- | --- |

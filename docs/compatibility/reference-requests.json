@@ -1,0 +1,2262 @@
+[
+  {
+    "owner": "UnityEditor.PrefabUtility",
+    "member": "prefabInstanceUnpacking",
+    "page": "PrefabUtility-prefabInstanceUnpacking"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchContext",
+    "member": "sessionStarted",
+    "page": "Search.SearchContext-sessionStarted"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "beginFrameRendering",
+    "page": "Rendering.RenderPipelineManager-beginFrameRendering"
+  },
+  {
+    "owner": "UnityEngine.AdaptivePerformance.IPerformanceModeStatus",
+    "member": "PerformanceModeEvent",
+    "page": "AdaptivePerformance.IPerformanceModeStatus.PerformanceModeEvent"
+  },
+  {
+    "owner": "UnityEditor.DeviceSimulation.DeviceSimulator",
+    "member": "touchScreenInput",
+    "page": "DeviceSimulation.DeviceSimulator-touchScreenInput"
+  },
+  {
+    "owner": "UnityEditor.Connect.ProjectBindDrawer",
+    "member": "stateChangeButtonFired",
+    "page": "Connect.ProjectBindDrawer-stateChangeButtonFired"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "wantsToQuit",
+    "page": "Device.Application-wantsToQuit"
+  },
+  {
+    "owner": "UnityEditor.SceneVisibilityManager",
+    "member": "visibilityChanged",
+    "page": "SceneVisibilityManager-visibilityChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.ObjectOverride",
+    "member": "Apply(string)",
+    "page": "SceneManagement.ObjectOverride.Apply"
+  },
+  {
+    "owner": "UnityEditor.iOS.BuildPipeline",
+    "member": "collectResources",
+    "page": "iOS.BuildPipeline-collectResources"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilityNode",
+    "member": "dismissed",
+    "page": "Accessibility.AccessibilityNode-dismissed"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "wantsToQuit",
+    "page": "EditorApplication-wantsToQuit"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsEvents",
+    "member": "PostSimulate",
+    "page": "LowLevelPhysics2D.PhysicsEvents.PostSimulate"
+  },
+  {
+    "owner": "UnityEditor.SceneView",
+    "member": "gridVisibilityChanged",
+    "page": "SceneView-gridVisibilityChanged"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "frameReady",
+    "page": "Video.VideoPlayer-frameReady"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchMonitor",
+    "member": "sceneChanged",
+    "page": "Search.SearchMonitor-sceneChanged"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "seekCompleted",
+    "page": "Video.VideoPlayer-seekCompleted"
+  },
+  {
+    "owner": "UnityEditor.Animations.AnimatorController",
+    "member": "SetStateEffectiveBehaviours(AnimatorState,int,StateMachineBehaviourInfo[])",
+    "page": "Animations.AnimatorController.SetStateEffectiveBehaviours"
+  },
+  {
+    "owner": "Unity.Profiling.Editor.ProfilerModuleViewController",
+    "member": "Dispose(bool)",
+    "page": "Unity.Profiling.Editor.ProfilerModuleViewController.Dispose"
+  },
+  {
+    "owner": "UnityEditor.AssetDatabase",
+    "member": "cacheServerConnectionChanged",
+    "page": "AssetDatabase-cacheServerConnectionChanged"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "playModeStateChanged",
+    "page": "EditorApplication-playModeStateChanged"
+  },
+  {
+    "owner": "UnityEngine.Windows.Speech.PhraseRecognitionSystem",
+    "member": "OnError",
+    "page": "Windows.Speech.PhraseRecognitionSystem.OnError"
+  },
+  {
+    "owner": "UnityEngine.SceneManagement.SceneManager",
+    "member": "activeSceneChanged",
+    "page": "SceneManagement.SceneManager-activeSceneChanged"
+  },
+  {
+    "owner": "UnityEditor.HandleUtility",
+    "member": "getEntitiesForAuthoringObject",
+    "page": "HandleUtility-getEntitiesForAuthoringObject"
+  },
+  {
+    "owner": "UnityEditor.ClipboardUtility",
+    "member": "cuttingGameObjects",
+    "page": "ClipboardUtility-cuttingGameObjects"
+  },
+  {
+    "owner": "UnityEngine.UIElements.ITextSelection",
+    "member": "OnSelectIndexChange",
+    "page": "UIElements.ITextSelection.OnSelectIndexChange"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsDistanceJoint",
+    "member": "PhysicsDistanceJoint",
+    "page": "LowLevelPhysics2D.PhysicsDistanceJoint-operator_PhysicsJoint"
+  },
+  {
+    "owner": "UnityEngine.ArticulationJacobian",
+    "member": "this(int row, int col)",
+    "page": "ArticulationJacobian.Index_operator"
+  },
+  {
+    "owner": "UnityEngine.AdaptivePerformance.Holder",
+    "member": "LifecycleEventHandler",
+    "page": "AdaptivePerformance.Holder.LifecycleEventHandler"
+  },
+  {
+    "owner": "UnityEditor.TextureImporter",
+    "member": "ReadTextureImportInstructions(TextureImportInstructions)",
+    "page": "TextureImporter.ReadTextureImportInstructions"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Tab",
+    "member": "selected",
+    "page": "UIElements.Tab-selected"
+  },
+  {
+    "owner": "UnityEditor.Tools",
+    "member": "viewToolChanged",
+    "page": "Tools-viewToolChanged"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "quitting",
+    "page": "EditorApplication-quitting"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsDistanceJoint",
+    "member": "PhysicsJoint",
+    "page": "LowLevelPhysics2D.PhysicsDistanceJoint-operator_PhysicsDistanceJoint"
+  },
+  {
+    "owner": "UnityEditor.Compilation.CompilationPipeline",
+    "member": "codeOptimizationChanged",
+    "page": "Compilation.CompilationPipeline-codeOptimizationChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.TabView",
+    "member": "activeTabChanged",
+    "page": "UIElements.TabView-activeTabChanged"
+  },
+  {
+    "owner": "UnityEngine.Vector4",
+    "member": "Vector4",
+    "page": "Vector4-operator_Vector2"
+  },
+  {
+    "owner": "UnityEngine.UIElements.TabView",
+    "member": "tabClosed",
+    "page": "UIElements.TabView-tabClosed"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.RemovedComponent",
+    "member": "Apply(string)",
+    "page": "SceneManagement.RemovedComponent.Apply"
+  },
+  {
+    "owner": "UnityEditor.Compilation.CompilationPipeline",
+    "member": "assemblyCompilationNotRequired",
+    "page": "Compilation.CompilationPipeline-assemblyCompilationNotRequired"
+  },
+  {
+    "owner": "UnityEditor.EditorWindow",
+    "member": "windowFocusChanged",
+    "page": "EditorWindow-windowFocusChanged"
+  },
+  {
+    "owner": "UnityEngine.TerrainUtils.TerrainMap",
+    "member": "Predicate<Terrain>,bool)",
+    "page": "TerrainUtils.TerrainMap.CreateFromConnectedNeighbors"
+  },
+  {
+    "owner": "UnityEditor.Overlays.Overlay",
+    "member": "floatingChanged",
+    "page": "Overlays.Overlay-floatingChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneDirtied",
+    "page": "SceneManagement.EditorSceneManager-sceneDirtied"
+  },
+  {
+    "owner": "UnityEngine.CustomRenderTextureManager",
+    "member": "textureUnloaded",
+    "page": "CustomRenderTextureManager-textureUnloaded"
+  },
+  {
+    "owner": "UnityEditor.Overlays.Overlay",
+    "member": "collapsedChanged",
+    "page": "Overlays.Overlay-collapsedChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.MultiColumnListView",
+    "member": "columnSortingChanged",
+    "page": "UIElements.MultiColumnListView-columnSortingChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseListViewController",
+    "member": "itemsSourceSizeChanged",
+    "page": "UIElements.BaseListViewController-itemsSourceSizeChanged"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchContext",
+    "member": "asyncItemReceived",
+    "page": "Search.SearchContext-asyncItemReceived"
+  },
+  {
+    "owner": "UnityEngine.CanvasRenderer",
+    "member": "SplitUIVertexStreams(List<UIVertex>,List<Vector3>,List<Color32>,List<Vector2>,List<Vector2>,List<Vector3>,List<Vector4>,List<int>)",
+    "page": "CanvasRenderer.SplitUIVertexStreams"
+  },
+  {
+    "owner": "UnityEditor.Scripting.ManagedDebugger",
+    "member": "debuggerAttached",
+    "page": "Scripting.ManagedDebugger-debuggerAttached"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Translate",
+    "member": "Translate",
+    "page": "UIElements.Translate-operator_Vector2"
+  },
+  {
+    "owner": "UnityEditor.Experimental.GraphView.StickyNoteChangeEvent",
+    "member": "GetPooled(StickyNote,Change)",
+    "page": "Experimental.GraphView.StickyNoteChangeEvent.GetPooled"
+  },
+  {
+    "owner": "UnityEditor.ClipboardUtility",
+    "member": "pastedGameObjects",
+    "page": "ClipboardUtility-pastedGameObjects"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsRelativeJoint",
+    "member": "PhysicsJoint",
+    "page": "LowLevelPhysics2D.PhysicsRelativeJoint-operator_PhysicsRelativeJoint"
+  },
+  {
+    "owner": "UnityEngine.AdaptivePerformance.IPerformanceStatus",
+    "member": "PerformanceLevelChangeEvent",
+    "page": "AdaptivePerformance.IPerformanceStatus.PerformanceLevelChangeEvent"
+  },
+  {
+    "owner": "UnityEditor.EditorWindow",
+    "member": "m_Parent",
+    "page": "EditorWindow-m_Parent"
+  },
+  {
+    "owner": "UnityEngine.Android.PermissionCallbacks",
+    "member": "PermissionDenied",
+    "page": "Android.PermissionCallbacks.PermissionDenied"
+  },
+  {
+    "owner": "UnityEngine.Android.AndroidApplication",
+    "member": "onConfigurationChanged",
+    "page": "Android.AndroidApplication-onConfigurationChanged"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilityNode",
+    "member": "incremented",
+    "page": "Accessibility.AccessibilityNode-incremented"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "selectedIndicesChanged",
+    "page": "UIElements.BaseVerticalCollectionView-selectedIndicesChanged"
+  },
+  {
+    "owner": "UnityEngine.Color32",
+    "member": "Color32",
+    "page": "Color32-operator_Color"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.PrefabStage",
+    "member": "prefabStageOpened",
+    "page": "SceneManagement.PrefabStage-prefabStageOpened"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "setupDragAndDrop",
+    "page": "UIElements.BaseVerticalCollectionView-setupDragAndDrop"
+  },
+  {
+    "owner": "UnityEngine.Windows.Speech.DictationRecognizer",
+    "member": "DictationError",
+    "page": "Windows.Speech.DictationRecognizer.DictationError"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.ObjectOverride",
+    "member": "Revert()",
+    "page": "SceneManagement.ObjectOverride.Revert"
+  },
+  {
+    "owner": "UnityEngine.Windows.Speech.DictationRecognizer",
+    "member": "DictationComplete",
+    "page": "Windows.Speech.DictationRecognizer.DictationComplete"
+  },
+  {
+    "owner": "UnityEngine.WSA.Application",
+    "member": "windowActivated",
+    "page": "WSA.Application-windowActivated"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsFixedJoint",
+    "member": "PhysicsJoint",
+    "page": "LowLevelPhysics2D.PhysicsFixedJoint-operator_PhysicsFixedJoint"
+  },
+  {
+    "owner": "UnityEngine.GUISkin",
+    "member": "current",
+    "page": "GUISkin-current"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "newSceneCreated",
+    "page": "SceneManagement.EditorSceneManager-newSceneCreated"
+  },
+  {
+    "owner": "UnityEngine.XR.XRInputSubsystem",
+    "member": "trackingOriginUpdated",
+    "page": "XR.XRInputSubsystem-trackingOriginUpdated"
+  },
+  {
+    "owner": "UnityEditor.ClipboardUtility",
+    "member": "duplicatedGameObjects",
+    "page": "ClipboardUtility-duplicatedGameObjects"
+  },
+  {
+    "owner": "UnityEngine.Audio.RootOutputInstance.IRealtime",
+    "member": "EndProcessing(RealtimeContext,Pipe,ChannelBuffer)",
+    "page": "Audio.RootOutputInstance.IRealtime.EndProcessing"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AssistiveSupport",
+    "member": "nodeFocusChanged",
+    "page": "Accessibility.AssistiveSupport-nodeFocusChanged"
+  },
+  {
+    "owner": "Unity.Hierarchy.IHierarchyProperty<T0>",
+    "member": "GetValue(HierarchyNode)",
+    "page": "Unity.Hierarchy.IHierarchyProperty_1.GetValue"
+  },
+  {
+    "owner": "UnityEngine.RaycastHit2D",
+    "member": "bool",
+    "page": "RaycastHit2D-operator_RaycastHit2D"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchMonitor",
+    "member": "documentsInvalidated",
+    "page": "Search.SearchMonitor-documentsInvalidated"
+  },
+  {
+    "owner": "UnityEngine.XR.InputDevices",
+    "member": "deviceConnected",
+    "page": "XR.InputDevices-deviceConnected"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "onSelectedIndicesChange",
+    "page": "UIElements.BaseVerticalCollectionView-onSelectedIndicesChange"
+  },
+  {
+    "owner": "UnityEngine.WSA.Application",
+    "member": "windowSizeChanged",
+    "page": "WSA.Application-windowSizeChanged"
+  },
+  {
+    "owner": "UnityEngine.Animations.AnimatorControllerPlayable",
+    "member": "CrossFade(string,float,int,float,float)",
+    "page": "Animations.AnimatorControllerPlayable.CrossFade"
+  },
+  {
+    "owner": "UnityEngine.ExposedReference<T0>",
+    "member": "Resolve(ExposedPropertyResolver)",
+    "page": "ExposedReference_1.Resolve"
+  },
+  {
+    "owner": "UnityEngine.CustomRenderTextureManager",
+    "member": "initializeTriggered",
+    "page": "CustomRenderTextureManager-initializeTriggered"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "itemIndexChanged",
+    "page": "UIElements.BaseVerticalCollectionView-itemIndexChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneOpening",
+    "page": "SceneManagement.EditorSceneManager-sceneOpening"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsWheelJoint",
+    "member": "PhysicsJoint",
+    "page": "LowLevelPhysics2D.PhysicsWheelJoint-operator_PhysicsWheelJoint"
+  },
+  {
+    "owner": "UnityEngine.SubsystemManager",
+    "member": "beforeReloadSubsystems",
+    "page": "SubsystemManager-beforeReloadSubsystems"
+  },
+  {
+    "owner": "UnityEngine.UIElements.CustomBinding",
+    "member": "Update(BindingContext)",
+    "page": "UIElements.CustomBinding.Update"
+  },
+  {
+    "owner": "UnityEditor.CacheServer",
+    "member": "UploadArtifacts(GUID[] guids, bool uploadAllRevisions)",
+    "page": "CacheServer.UploadArtifacts"
+  },
+  {
+    "owner": "UnityEditor.Toolbars.EditorToolbarDropdownToggle",
+    "member": "dropdownClicked",
+    "page": "Toolbars.EditorToolbarDropdownToggle-dropdownClicked"
+  },
+  {
+    "owner": "UnityEngine.AudioSettings",
+    "member": "OnAudioConfigurationChanged",
+    "page": "AudioSettings.OnAudioConfigurationChanged"
+  },
+  {
+    "owner": "UnityEngine.Playables.PlayableDirector",
+    "member": "paused",
+    "page": "Playables.PlayableDirector-paused"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsRelativeJoint",
+    "member": "PhysicsRelativeJoint",
+    "page": "LowLevelPhysics2D.PhysicsRelativeJoint-operator_PhysicsJoint"
+  },
+  {
+    "owner": "UnityEngine.UIElements.DataBinding",
+    "member": "UpdateSource<TValue>(BindingContext,TValue)",
+    "page": "UIElements.DataBinding.UpdateSource"
+  },
+  {
+    "owner": "UnityEditor.ShortcutManagement.IShortcutManager",
+    "member": "shortcutBindingChanged",
+    "page": "ShortcutManagement.IShortcutManager-shortcutBindingChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.PrefabStage",
+    "member": "prefabStageClosing",
+    "page": "SceneManagement.PrefabStage-prefabStageClosing"
+  },
+  {
+    "owner": "UnityEditor.IDataModeController",
+    "member": "dataModeChanged",
+    "page": "IDataModeController-dataModeChanged"
+  },
+  {
+    "owner": "UnityEngine.Vector2Int",
+    "member": "Vector3Int",
+    "page": "Vector2Int-operator_Vector3Int"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BindingId",
+    "member": "string",
+    "page": "UIElements.BindingId-operator_BindingId"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "onItemsChosen",
+    "page": "UIElements.BaseVerticalCollectionView-onItemsChosen"
+  },
+  {
+    "owner": "UnityEditor.Playables.Utility",
+    "member": "graphCreated",
+    "page": "Playables.Utility-graphCreated"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchContext",
+    "member": "sessionEnded",
+    "page": "Search.SearchContext-sessionEnded"
+  },
+  {
+    "owner": "UnityEditor.DeviceSimulation.DeviceSimulator",
+    "member": "deviceChanged",
+    "page": "DeviceSimulation.DeviceSimulator-deviceChanged"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilityNode",
+    "member": "decremented",
+    "page": "Accessibility.AccessibilityNode-decremented"
+  },
+  {
+    "owner": "UnityEngine.UIElements.CollectionViewController",
+    "member": "itemsSourceChanged",
+    "page": "UIElements.CollectionViewController-itemsSourceChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneVisibilityManager",
+    "member": "pickingChanged",
+    "page": "SceneVisibilityManager-pickingChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.GenericDropdownMenu",
+    "member": "onClose",
+    "page": "UIElements.GenericDropdownMenu-onClose"
+  },
+  {
+    "owner": "UnityEditor.Rendering.IRenderPipelineGraphicsSettingsContextMenu2_1",
+    "member": "PopulateContextMenu(T0 setting, SerializedProperty property, ref GenericDropdownMenu menu)",
+    "page": "Rendering.IRenderPipelineGraphicsSettingsContextMenu2_1.PopulateContextMenu"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "unloading",
+    "page": "Device.Application-unloading"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "activeRenderPipelineDisposed",
+    "page": "Rendering.RenderPipelineManager-activeRenderPipelineDisposed"
+  },
+  {
+    "owner": "Unity.Collections.LowLevel.Unsafe.DisposeSentinel",
+    "member": "Create(AtomicSafetyHandle,DisposeSentinel,int)",
+    "page": "Unity.Collections.LowLevel.Unsafe.DisposeSentinel.Create"
+  },
+  {
+    "owner": "UnityEngine.EntityId",
+    "member": "int",
+    "page": "EntityId-operator_EntityId"
+  },
+  {
+    "owner": "UnityEngine.AsyncOperation",
+    "member": "completed",
+    "page": "AsyncOperation-completed"
+  },
+  {
+    "owner": "UnityEditor.SceneView",
+    "member": "beforeSceneGui",
+    "page": "SceneView-beforeSceneGui"
+  },
+  {
+    "owner": "UnityEditor.ConsoleWindowUtility",
+    "member": "GetConsoleLogCounts(out int, out int, out int)",
+    "page": "ConsoleWindowUtility.GetConsoleLogCounts"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsHingeJoint",
+    "member": "PhysicsHingeJoint",
+    "page": "LowLevelPhysics2D.PhysicsHingeJoint-operator_PhysicsJoint"
+  },
+  {
+    "owner": "UnityEditor.ProfilerWindow",
+    "member": "SelectedFrameIndexChanged",
+    "page": "ProfilerWindow.SelectedFrameIndexChanged"
+  },
+  {
+    "owner": "UnityEngine.Rendering.ShaderTagId",
+    "member": "ShaderTagId",
+    "page": "Rendering.ShaderTagId-operator_ShaderTagId"
+  },
+  {
+    "owner": "UnityEditor.Experimental.Licensing.LicensingUtility",
+    "member": "HasEntitlementsExtended(string[], bool includeCustomData)",
+    "page": "Experimental.Licensing.LicensingUtility.HasEntitlementsExtended"
+  },
+  {
+    "owner": "UnityEditor.EditorGUI",
+    "member": "hyperLinkClicked",
+    "page": "EditorGUI-hyperLinkClicked"
+  },
+  {
+    "owner": "UnityEngine.Color",
+    "member": "Color",
+    "page": "Color-operator_Vector4"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.PrefabStage",
+    "member": "prefabSaved",
+    "page": "SceneManagement.PrefabStage-prefabSaved"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneSaving",
+    "page": "SceneManagement.EditorSceneManager-sceneSaving"
+  },
+  {
+    "owner": "Unity.Hierarchy.HierarchyNodeTypeHandlerBase",
+    "member": "SearchMatch(HierarchyNode)",
+    "page": "Unity.Hierarchy.HierarchyNodeTypeHandlerBase.SearchMatch"
+  },
+  {
+    "owner": "UnityEngine.UIElements.StylePropertyName",
+    "member": "StylePropertyName",
+    "page": "UIElements.StylePropertyName-operator_string"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "endContextRendering",
+    "page": "Rendering.RenderPipelineManager-endContextRendering"
+  },
+  {
+    "owner": "Unity.Profiling.Memory.MemoryProfiler",
+    "member": "CreatingMetadata",
+    "page": "Unity.Profiling.Memory.MemoryProfiler.CreatingMetadata"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsQuery.CastResult",
+    "member": "bool",
+    "page": "LowLevelPhysics2D.PhysicsQuery.CastResult-operator_CastResult"
+  },
+  {
+    "owner": "UnityEngine.Audio.ControlContext",
+    "member": "AllocateGenerator<TRealtime,TControl>(TRealtime,TControl,AudioFormat?,CreationParameters)",
+    "page": "Audio.ControlContext.AllocateGenerator"
+  },
+  {
+    "owner": "UnityEngine.Windows.Speech.PhraseRecognizer",
+    "member": "OnPhraseRecognized",
+    "page": "Windows.Speech.PhraseRecognizer.OnPhraseRecognized"
+  },
+  {
+    "owner": "Unity.Hierarchy.HierarchyNodeTypeHandlerBase",
+    "member": "GetDefaultNodeFlags(HierarchyNode,HierarchyNodeFlags)",
+    "page": "Unity.Hierarchy.HierarchyNodeTypeHandlerBase.GetDefaultNodeFlags"
+  },
+  {
+    "owner": "UnityEngine.Physics",
+    "member": "ContactModifyEvent",
+    "page": "Physics.ContactModifyEvent"
+  },
+  {
+    "owner": "UnityEngine.Audio.GeneratorInstance",
+    "member": "ProcessorInstance",
+    "page": "Audio.GeneratorInstance-operator_GeneratorInstance"
+  },
+  {
+    "owner": "UnityEngine.U2D.SpriteAtlasManager",
+    "member": "atlasRegistered",
+    "page": "U2D.SpriteAtlasManager-atlasRegistered"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "endFrameRendering",
+    "page": "Rendering.RenderPipelineManager-endFrameRendering"
+  },
+  {
+    "owner": "UnityEditor.AssetDatabase",
+    "member": "importPackageCompleted",
+    "page": "AssetDatabase-importPackageCompleted"
+  },
+  {
+    "owner": "UnityEngine.Rendering.ShaderTagId",
+    "member": "string",
+    "page": "Rendering.ShaderTagId-operator_string"
+  },
+  {
+    "owner": "UnityEditor.PackageManager.Events",
+    "member": "registeredPackages",
+    "page": "PackageManager.Events-registeredPackages"
+  },
+  {
+    "owner": "UnityEditor.Connect.CoppaDrawer",
+    "member": "exceptionCallback",
+    "page": "Connect.CoppaDrawer-exceptionCallback"
+  },
+  {
+    "owner": "UnityEngine.QualitySettings",
+    "member": "activeQualityLevelChanged",
+    "page": "QualitySettings-activeQualityLevelChanged"
+  },
+  {
+    "owner": "UnityEngine.MeshLodRange",
+    "member": "ctor(int,int)",
+    "page": "MeshLodRange-ctor"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilityNode",
+    "member": "invoked",
+    "page": "Accessibility.AccessibilityNode-invoked"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "frameDropped",
+    "page": "Video.VideoPlayer-frameDropped"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "logMessageReceivedThreaded",
+    "page": "Application-logMessageReceivedThreaded"
+  },
+  {
+    "owner": "UnityEditor.SpeedTree.Importer.SpeedTree9Importer",
+    "member": "OnCustomEditorSettings(ref SerializedProperty, ref SerializedProperty)",
+    "page": "SpeedTree.Importer.SpeedTree9Importer.OnCustomEditorSettings"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "activeSceneChangedInEditMode",
+    "page": "SceneManagement.EditorSceneManager-activeSceneChangedInEditMode"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "logMessageReceived",
+    "page": "Device.Application-logMessageReceived"
+  },
+  {
+    "owner": "UnityEngine.ReflectionProbe",
+    "member": "defaultReflectionTexture",
+    "page": "ReflectionProbe-defaultReflectionTexture"
+  },
+  {
+    "owner": "UnityEngine.RenderingLayerMask",
+    "member": "RenderingLayerMask",
+    "page": "RenderingLayerMask-operator_uint"
+  },
+  {
+    "owner": "UnityEditor.Compilation.CompilationPipeline",
+    "member": "compilationStarted",
+    "page": "Compilation.CompilationPipeline-compilationStarted"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilitySettings",
+    "member": "fontScaleChanged",
+    "page": "Accessibility.AccessibilitySettings-fontScaleChanged"
+  },
+  {
+    "owner": "UnityEngine.Tilemaps.ITilemap",
+    "member": "ITilemap",
+    "page": "Tilemaps.ITilemap-operator_Tilemap"
+  },
+  {
+    "owner": "UnityEditor.Search.QueryBlock",
+    "member": "Apply(in SearchProposition)",
+    "page": "Search.QueryBlock.Apply"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "started",
+    "page": "Lightmapping-started"
+  },
+  {
+    "owner": "UnityEditor.Overlays.OverlayCanvas",
+    "member": "Add(Overlay,bool)",
+    "page": "Overlays.OverlayCanvas.Add"
+  },
+  {
+    "owner": "UnityEditor.HandleUtility",
+    "member": "getEntityIdsForAuthoringObject",
+    "page": "HandleUtility-getEntityIdsForAuthoringObject"
+  },
+  {
+    "owner": "UnityEngine.XR.InputTracking",
+    "member": "nodeRemoved",
+    "page": "XR.InputTracking-nodeRemoved"
+  },
+  {
+    "owner": "UnityEditor.HandleUtility",
+    "member": "placeObjectCustomPasses",
+    "page": "HandleUtility-placeObjectCustomPasses"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "onSelectionChange",
+    "page": "UIElements.BaseVerticalCollectionView-onSelectionChange"
+  },
+  {
+    "owner": "Unity.Hierarchy.HierarchyViewModel",
+    "member": "FlagsChanged",
+    "page": "Unity.Hierarchy.HierarchyViewModel.FlagsChanged"
+  },
+  {
+    "owner": "UnityEngine.XR.InputTracking",
+    "member": "trackingLost",
+    "page": "XR.InputTracking-trackingLost"
+  },
+  {
+    "owner": "UnityEditor.ObjectFactory",
+    "member": "componentWasAdded",
+    "page": "ObjectFactory-componentWasAdded"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsHingeJoint",
+    "member": "PhysicsJoint",
+    "page": "LowLevelPhysics2D.PhysicsHingeJoint-operator_PhysicsHingeJoint"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "lightingDataCleared",
+    "page": "Lightmapping-lightingDataCleared"
+  },
+  {
+    "owner": "UnityEditor.EditorSnapSettings",
+    "member": "gridSnapEnabledChanged",
+    "page": "EditorSnapSettings-gridSnapEnabledChanged"
+  },
+  {
+    "owner": "UnityEditor.iOS.BuildPipeline",
+    "member": "collectInitialInstallTags",
+    "page": "iOS.BuildPipeline-collectInitialInstallTags"
+  },
+  {
+    "owner": "UnityEditor.HandleUtility",
+    "member": "getAuthoringObjectForEntity",
+    "page": "HandleUtility-getAuthoringObjectForEntity"
+  },
+  {
+    "owner": "UnityEditor.ClipboardUtility",
+    "member": "duplicatingGameObjects",
+    "page": "ClipboardUtility-duplicatingGameObjects"
+  },
+  {
+    "owner": "UnityEngine.Android.PermissionCallbacks",
+    "member": "PermissionDeniedAndDontAskAgain",
+    "page": "Android.PermissionCallbacks.PermissionDeniedAndDontAskAgain"
+  },
+  {
+    "owner": "UnityEngine.UIElements.GenericDropdownMenu",
+    "member": "onOpen",
+    "page": "UIElements.GenericDropdownMenu-onOpen"
+  },
+  {
+    "owner": "UnityEditor.SceneView",
+    "member": "duringSceneGui",
+    "page": "SceneView-duringSceneGui"
+  },
+  {
+    "owner": "UnityEngine.Audio.RootOutputInstance.IRealtime",
+    "member": "Process(RealtimeContext,Pipe,JobHandle)",
+    "page": "Audio.RootOutputInstance.IRealtime.Process"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseListView",
+    "member": "itemsAdded",
+    "page": "UIElements.BaseListView-itemsAdded"
+  },
+  {
+    "owner": "UnityEditor.MPE.ProcessService",
+    "member": "SlaveProcessExitedEvent",
+    "page": "MPE.ProcessService.SlaveProcessExitedEvent"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchItem",
+    "member": "TryGetValue(string,Field)",
+    "page": "Search.SearchItem.TryGetValue"
+  },
+  {
+    "owner": "UnityEngine.QualitySettings",
+    "member": "activeQualityLevelRenamed",
+    "page": "QualitySettings-activeQualityLevelRenamed"
+  },
+  {
+    "owner": "UnityEngine.SceneManagement.SceneManager",
+    "member": "sceneLoaded",
+    "page": "SceneManagement.SceneManager-sceneLoaded"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BindingId",
+    "member": "BindingId",
+    "page": "UIElements.BindingId-operator_PropertyPath"
+  },
+  {
+    "owner": "UnityEditor.Overlays.Overlay",
+    "member": "displayedChanged",
+    "page": "Overlays.Overlay-displayedChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Clickable",
+    "member": "clicked",
+    "page": "UIElements.Clickable-clicked"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.AddedGameObject",
+    "member": "Apply(string)",
+    "page": "SceneManagement.AddedGameObject.Apply"
+  },
+  {
+    "owner": "UnityEngine.Vector3Int",
+    "member": "Vector3",
+    "page": "Vector3Int-operator_Vector3Int"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.AddedComponent",
+    "member": "Apply(string)",
+    "page": "SceneManagement.AddedComponent.Apply"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Clickable",
+    "member": "clickedWithEventInfo",
+    "page": "UIElements.Clickable-clickedWithEventInfo"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchExpression",
+    "member": "Execute(SearchContext,SearchExpressionExecutionFlags)",
+    "page": "Search.SearchExpression.Execute"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseListViewController",
+    "member": "itemsAdded",
+    "page": "UIElements.BaseListViewController-itemsAdded"
+  },
+  {
+    "owner": "UnityEditor.CloudProjectSettingsEventManager",
+    "member": "projectStateChanged",
+    "page": "CloudProjectSettingsEventManager-projectStateChanged"
+  },
+  {
+    "owner": "UnityEditor.ClipboardUtility",
+    "member": "rejectedGameObjects",
+    "page": "ClipboardUtility-rejectedGameObjects"
+  },
+  {
+    "owner": "UnityEngine.CanvasRenderer",
+    "member": "onRequestRebuild",
+    "page": "CanvasRenderer-onRequestRebuild"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.PrefabStage",
+    "member": "prefabSaving",
+    "page": "SceneManagement.PrefabStage-prefabSaving"
+  },
+  {
+    "owner": "UnityEditor.SceneViewCameraWindow",
+    "member": "additionalSettingsGui",
+    "page": "SceneViewCameraWindow-additionalSettingsGui"
+  },
+  {
+    "owner": "UnityEditor.Compilation.CompilationPipeline",
+    "member": "compilationFinished",
+    "page": "Compilation.CompilationPipeline-compilationFinished"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseTreeView",
+    "member": "itemExpandedChanged",
+    "page": "UIElements.BaseTreeView-itemExpandedChanged"
+  },
+  {
+    "owner": "UnityEditor.Connect.ProjectBindDrawer",
+    "member": "exceptionCallback",
+    "page": "Connect.ProjectBindDrawer-exceptionCallback"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneClosed",
+    "page": "SceneManagement.EditorSceneManager-sceneClosed"
+  },
+  {
+    "owner": "UnityEngine.Rendering.PlatformKeywordSet",
+    "member": "Enable(ShaderKeyword)",
+    "page": "Rendering.PlatformKeywordSet.Enable"
+  },
+  {
+    "owner": "UnityEngine.XR.InputDevices",
+    "member": "deviceDisconnected",
+    "page": "XR.InputDevices-deviceDisconnected"
+  },
+  {
+    "owner": "UnityEngine.AdaptivePerformance.IThermalStatus",
+    "member": "ThermalEvent",
+    "page": "AdaptivePerformance.IThermalStatus.ThermalEvent"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "focusChanged",
+    "page": "Device.Application-focusChanged"
+  },
+  {
+    "owner": "UnityEngine.Audio.IAudioGenerator",
+    "member": "CreateInstance(ControlContext,AudioFormat?,CreationParameters)",
+    "page": "Audio.IAudioGenerator.CreateInstance"
+  },
+  {
+    "owner": "UnityEditor.EditorTools.ToolManager",
+    "member": "activeContextChanging",
+    "page": "EditorTools.ToolManager-activeContextChanging"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsIgnoreJoint",
+    "member": "PhysicsJoint",
+    "page": "LowLevelPhysics2D.PhysicsIgnoreJoint-operator_PhysicsIgnoreJoint"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Button",
+    "member": "onClick",
+    "page": "UIElements.Button-onClick"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsWheelJoint",
+    "member": "PhysicsWheelJoint",
+    "page": "LowLevelPhysics2D.PhysicsWheelJoint-operator_PhysicsJoint"
+  },
+  {
+    "owner": "UnityEngine.Animations.AnimatorControllerPlayable",
+    "member": "CrossFadeInFixedTime(int,float,int,float,float)",
+    "page": "Animations.AnimatorControllerPlayable.CrossFadeInFixedTime"
+  },
+  {
+    "owner": "UnityEditor.AnimationMode",
+    "member": "SamplePlayableGraph(GameObject,PlayableGraph,int,float)",
+    "page": "AnimationMode.SamplePlayableGraph"
+  },
+  {
+    "owner": "UnityEngine.XR.InputTracking",
+    "member": "trackingAcquired",
+    "page": "XR.InputTracking-trackingAcquired"
+  },
+  {
+    "owner": "UnityEditor.PrefabUtility",
+    "member": "prefabInstanceApplying",
+    "page": "PrefabUtility-prefabInstanceApplying"
+  },
+  {
+    "owner": "UnityEditor.ShortcutManagement.IShortcutManager",
+    "member": "activeProfileChanged",
+    "page": "ShortcutManagement.IShortcutManager-activeProfileChanged"
+  },
+  {
+    "owner": "UnityEditor.Android.AndroidProjectFilesModifierContext",
+    "member": "AddFileAsGuidToCopy",
+    "page": "Android.AndroidProjectFilesModifierContext.AddFileAsGuidToCopy"
+  },
+  {
+    "owner": "Unity.IntegerTime.DiscreteTime",
+    "member": "RationalTime",
+    "page": "Unity.IntegerTime.DiscreteTime-operator_DiscreteTime"
+  },
+  {
+    "owner": "UnityEditor.Search.StringView",
+    "member": "bool",
+    "page": "Search.StringView-operator_stringView"
+  },
+  {
+    "owner": "UnityEditor.Android.AndroidProjectFilesModifierContext",
+    "member": "AddDirectoryToCopy",
+    "page": "Android.AndroidProjectFilesModifierContext.AddDirectoryToCopy"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "hierarchyChanged",
+    "page": "EditorApplication-hierarchyChanged"
+  },
+  {
+    "owner": "UnityEngine.PropertyName",
+    "member": "PropertyName",
+    "page": "PropertyName-operator_string"
+  },
+  {
+    "owner": "UnityEngine.Vector2",
+    "member": "Vector3",
+    "page": "Vector2-operator_Vector2"
+  },
+  {
+    "owner": "UnityEngine.Audio.GeneratorInstance.IRealtime",
+    "member": "Process(RealtimeContext,Pipe,ChannelBuffer,Arguments)",
+    "page": "Audio.GeneratorInstance.IRealtime.Process"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Tab",
+    "member": "closing",
+    "page": "UIElements.Tab-closing"
+  },
+  {
+    "owner": "UnityEngine.AdaptivePerformance.IPerformanceStatus",
+    "member": "PerformanceBottleneckChangeEvent",
+    "page": "AdaptivePerformance.IPerformanceStatus.PerformanceBottleneckChangeEvent"
+  },
+  {
+    "owner": "UnityEngine.Object",
+    "member": "bool",
+    "page": "Object-operator_Object"
+  },
+  {
+    "owner": "UnityEditor.Playables.Utility",
+    "member": "destroyingGraph",
+    "page": "Playables.Utility-destroyingGraph"
+  },
+  {
+    "owner": "UnityEditor.Rendering.IRenderPipelineGraphicsSettingsContextMenu",
+    "member": "PopulateContextMenu(IRenderPipelineGraphicsSettings setting, PropertyDrawer drawer, ref GenericDropdownMenu menu)",
+    "page": "Rendering.IRenderPipelineGraphicsSettingsContextMenu.PopulateContextMenu"
+  },
+  {
+    "owner": "UnityEngine.GUIStyle",
+    "member": "GUIStyle",
+    "page": "GUIStyle-operator_string"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "prepareCompleted",
+    "page": "Video.VideoPlayer-prepareCompleted"
+  },
+  {
+    "owner": "UnityEngine.XR.InputTracking",
+    "member": "nodeAdded",
+    "page": "XR.InputTracking-nodeAdded"
+  },
+  {
+    "owner": "UnityEngine.Physics",
+    "member": "ContactModifyEventCCD",
+    "page": "Physics.ContactModifyEventCCD"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "logMessageReceived",
+    "page": "Application-logMessageReceived"
+  },
+  {
+    "owner": "UnityEngine.Canvas",
+    "member": "preWillRenderCanvases",
+    "page": "Canvas-preWillRenderCanvases"
+  },
+  {
+    "owner": "UnityEngine.XR.XRDevice",
+    "member": "DisableAutoXRCameraTracking(Camera, Disabled)",
+    "page": "XR.XRDevice.DisableAutoXRCameraTracking"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "itemsSourceChanged",
+    "page": "UIElements.BaseVerticalCollectionView-itemsSourceChanged"
+  },
+  {
+    "owner": "UnityEditor.AssetDatabase",
+    "member": "importPackageStarted",
+    "page": "AssetDatabase-importPackageStarted"
+  },
+  {
+    "owner": "UnityEditor.Experimental.GraphView.PlacematContainer",
+    "member": "CreatePlacemat<T>(Rect,string)",
+    "page": "Experimental.GraphView.PlacematContainer.CreatePlacemat"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilityNode",
+    "member": "focusChanged",
+    "page": "Accessibility.AccessibilityNode-focusChanged"
+  },
+  {
+    "owner": "UnityEngine.Vector3Int",
+    "member": "Vector2Int",
+    "page": "Vector3Int-operator_Vector2Int"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "handleDrop",
+    "page": "UIElements.BaseVerticalCollectionView-handleDrop"
+  },
+  {
+    "owner": "UnityEditor.PivotManager",
+    "member": "activePivotRotationChanged",
+    "page": "PivotManager-activePivotRotationChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "selectionChanged",
+    "page": "UIElements.BaseVerticalCollectionView-selectionChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneView",
+    "member": "onCameraModeChanged",
+    "page": "SceneView-onCameraModeChanged"
+  },
+  {
+    "owner": "UnityEditor.PrefabUtility",
+    "member": "prefabInstanceApplied",
+    "page": "PrefabUtility-prefabInstanceApplied"
+  },
+  {
+    "owner": "UnityEngine.Audio.RootOutputInstance.RootOutputInstance<T0>",
+    "member": "Configure(ControlContext,TRealtime,AudioFormat)",
+    "page": "Audio.RootOutputInstance.IControl_1.Configure"
+  },
+  {
+    "owner": "UnityEngine.LightTransport.IProbeIntegrator",
+    "member": "IntegrateDirectRadiance(IDeviceContext,int,int,int,BufferSlice<SphericalHarmonicsL2>)",
+    "page": "LightTransport.IProbeIntegrator.IntegrateDirectRadiance"
+  },
+  {
+    "owner": "UnityEngine.Vector2Int",
+    "member": "Vector2",
+    "page": "Vector2Int-operator_Vector2Int"
+  },
+  {
+    "owner": "UnityEngine.LightTransport.RadeonRaysProbeIntegrator",
+    "member": "IntegrateIndirectRadiance(IDeviceContext,int,int,int,BufferSlice<SphericalHarmonicsL2>)",
+    "page": "LightTransport.RadeonRaysProbeIntegrator.IntegrateIndirectRadiance"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "activeRenderPipelineTypeChanged",
+    "page": "Rendering.RenderPipelineManager-activeRenderPipelineTypeChanged"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "activeRenderPipelineCreated",
+    "page": "Rendering.RenderPipelineManager-activeRenderPipelineCreated"
+  },
+  {
+    "owner": "UnityEditor.PackageManager.Events",
+    "member": "registeringPackages",
+    "page": "PackageManager.Events-registeringPackages"
+  },
+  {
+    "owner": "UnityEngine.Playables.PlayableDirector",
+    "member": "played",
+    "page": "Playables.PlayableDirector-played"
+  },
+  {
+    "owner": "UnityEngine.SceneManagement.SceneHandle",
+    "member": "uint",
+    "page": "SceneManagement.SceneHandle-operator_SceneHandle"
+  },
+  {
+    "owner": "UnityEditor.AssetDatabase",
+    "member": "importPackageCancelled",
+    "page": "AssetDatabase-importPackageCancelled"
+  },
+  {
+    "owner": "UnityEditor.ClipboardUtility",
+    "member": "copyingGameObjects",
+    "page": "ClipboardUtility-copyingGameObjects"
+  },
+  {
+    "owner": "UnityEditor.Analytics.AnalyticsSettings",
+    "member": "OnRequireInBuildHandler",
+    "page": "Analytics.AnalyticsSettings.OnRequireInBuildHandler"
+  },
+  {
+    "owner": "UnityEngine.LightTransport.RadeonRaysProbeIntegrator",
+    "member": "IntegrateDirectRadiance(IDeviceContext,int,int,int,BufferSlice<SphericalHarmonicsL2>)",
+    "page": "LightTransport.RadeonRaysProbeIntegrator.IntegrateDirectRadiance"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Column",
+    "member": "propertyChanged",
+    "page": "UIElements.Column-propertyChanged"
+  },
+  {
+    "owner": "UnityEditor.Experimental.GraphView.SelectionDropper",
+    "member": "ctor(DropEvent)",
+    "page": "Experimental.GraphView.SelectionDropper-ctor"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsSliderJoint",
+    "member": "PhysicsSliderJoint",
+    "page": "LowLevelPhysics2D.PhysicsSliderJoint-operator_PhysicsJoint"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "unloading",
+    "page": "Application-unloading"
+  },
+  {
+    "owner": "UnityEngine.Experimental.Audio.AudioSampleProvider",
+    "member": "sampleFramesAvailable",
+    "page": "Experimental.Audio.AudioSampleProvider-sampleFramesAvailable"
+  },
+  {
+    "owner": "UnityEditor.AssetDatabase",
+    "member": "importPackageFailed",
+    "page": "AssetDatabase-importPackageFailed"
+  },
+  {
+    "owner": "UnityEditor.Overlays.Overlay",
+    "member": "layoutChanged",
+    "page": "Overlays.Overlay-layoutChanged"
+  },
+  {
+    "owner": "UnityEditor.Editor",
+    "member": "finishedDefaultHeaderGUI",
+    "page": "Editor-finishedDefaultHeaderGUI"
+  },
+  {
+    "owner": "UnityEngine.Experimental.Audio.AudioSampleProvider",
+    "member": "sampleFramesOverflow",
+    "page": "Experimental.Audio.AudioSampleProvider-sampleFramesOverflow"
+  },
+  {
+    "owner": "UnityEngine.Font",
+    "member": "textureRebuilt",
+    "page": "Font-textureRebuilt"
+  },
+  {
+    "owner": "UnityEditor.SpeedTree.Importer.SpeedTree9Importer",
+    "member": "OnAssetPostProcess(GameObject mainObject)",
+    "page": "SpeedTree.Importer.SpeedTree9Importer.OnAssetPostProcess"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "HasDynamicGILightmapTextures(bool)",
+    "page": "Lightmapping.HasDynamicGILightmapTextures"
+  },
+  {
+    "owner": "UnityEngine.CustomRenderTextureManager",
+    "member": "textureLoaded",
+    "page": "CustomRenderTextureManager-textureLoaded"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilitySettings",
+    "member": "boldTextStatusChanged",
+    "page": "Accessibility.AccessibilitySettings-boldTextStatusChanged"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsTransform",
+    "member": "PhysicsTransform",
+    "page": "LowLevelPhysics2D.PhysicsTransform-operator_PhysicsRotate"
+  },
+  {
+    "owner": "UnityEditor.SpeedTree.Importer.MaterialSettingsCallbackAttribute",
+    "member": "ctor(int methodVersion)",
+    "page": "SpeedTree.Importer.MaterialSettingsCallbackAttribute-ctor"
+  },
+  {
+    "owner": "UnityEditor.ObjectChangeEvents",
+    "member": "changesPublished",
+    "page": "ObjectChangeEvents-changesPublished"
+  },
+  {
+    "owner": "UnityEditor.IMGUI.Controls.MultiColumnHeader",
+    "member": "visibleColumnsChanged",
+    "page": "IMGUI.Controls.MultiColumnHeader-visibleColumnsChanged"
+  },
+  {
+    "owner": "UnityEngine.Color32",
+    "member": "Color",
+    "page": "Color32-operator_Color32"
+  },
+  {
+    "owner": "UnityEditor.Media.MediaRational",
+    "member": "double",
+    "page": "Media.MediaRational-operator_double"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "canStartDrag",
+    "page": "UIElements.BaseVerticalCollectionView-canStartDrag"
+  },
+  {
+    "owner": "UnityEngine.UIElements.MultiColumnController",
+    "member": "columnSortingChanged",
+    "page": "UIElements.MultiColumnController-columnSortingChanged"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "lowMemory",
+    "page": "Application-lowMemory"
+  },
+  {
+    "owner": "UnityEngine.ReflectionProbe",
+    "member": "defaultReflectionSet",
+    "page": "ReflectionProbe-defaultReflectionSet"
+  },
+  {
+    "owner": "UnityEngine.Windows.Speech.DictationRecognizer",
+    "member": "DictationHypothesis",
+    "page": "Windows.Speech.DictationRecognizer.DictationHypothesis"
+  },
+  {
+    "owner": "UnityEngine.Android.PermissionCallbacks",
+    "member": "PermissionRequestDismissed",
+    "page": "Android.PermissionCallbacks.PermissionRequestDismissed"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseListView",
+    "member": "itemsRemoved",
+    "page": "UIElements.BaseListView-itemsRemoved"
+  },
+  {
+    "owner": "UnityEngine.ParticlePhysicsExtensions",
+    "member": "SetTriggerParticles(ParticleSystem,ParticleSystemTriggerEventType,Particle[],int,int)",
+    "page": "ParticlePhysicsExtensions.SetTriggerParticles"
+  },
+  {
+    "owner": "UnityEditor.HandleUtility",
+    "member": "pickGameObjectCustomPasses",
+    "page": "HandleUtility-pickGameObjectCustomPasses"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "dragAndDropUpdate",
+    "page": "UIElements.BaseVerticalCollectionView-dragAndDropUpdate"
+  },
+  {
+    "owner": "UnityEditor.ConsoleWindowUtility",
+    "member": "consoleLogsChanged",
+    "page": "ConsoleWindowUtility-consoleLogsChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneSaved",
+    "page": "SceneManagement.EditorSceneManager-sceneSaved"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchItem",
+    "member": "TryGetField(string,Field)",
+    "page": "Search.SearchItem.TryGetField"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "lightingDataUpdated",
+    "page": "Lightmapping-lightingDataUpdated"
+  },
+  {
+    "owner": "UnityEngine.Audio.GeneratorInstance.GeneratorInstance<T0>",
+    "member": "Configure(ControlContext,TRealtime,AudioFormat,Setup,Properties)",
+    "page": "Audio.GeneratorInstance.IControl_1.Configure"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "pauseStateChanged",
+    "page": "EditorApplication-pauseStateChanged"
+  },
+  {
+    "owner": "UnityEditor.Connect.IProjectEditorDrawer",
+    "member": "stateChangeButtonFired",
+    "page": "Connect.IProjectEditorDrawer-stateChangeButtonFired"
+  },
+  {
+    "owner": "UnityEditor.SceneView",
+    "member": "onValidateCameraMode",
+    "page": "SceneView-onValidateCameraMode"
+  },
+  {
+    "owner": "UnityEngine.LightProbes",
+    "member": "needsRetetrahedralization",
+    "page": "LightProbes-needsRetetrahedralization"
+  },
+  {
+    "owner": "UnityEditor.Rendering.IRenderPipelineGraphicsSettingsContextMenu<T0>",
+    "member": "PopulateContextMenu(T0 setting, PropertyDrawer drawer, ref GenericDropdownMenu menu)",
+    "page": "Rendering.IRenderPipelineGraphicsSettingsContextMenu_1.PopulateContextMenu"
+  },
+  {
+    "owner": "UnityEditor.Tools",
+    "member": "pivotRotationChanged",
+    "page": "Tools-pivotRotationChanged"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "quitting",
+    "page": "Application-quitting"
+  },
+  {
+    "owner": "UnityEditor.Search.QueryListBlock",
+    "member": "Apply(in SearchProposition)",
+    "page": "Search.QueryListBlock.Apply"
+  },
+  {
+    "owner": "UnityEditor.Android.AndroidProjectFilesModifierContext",
+    "member": "AddFileToCopy",
+    "page": "Android.AndroidProjectFilesModifierContext.AddFileToCopy"
+  },
+  {
+    "owner": "UnityEditor.IMGUI.Controls.MultiColumnHeader",
+    "member": "sortingChanged",
+    "page": "IMGUI.Controls.MultiColumnHeader-sortingChanged"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "bakeCompleted",
+    "page": "Lightmapping-bakeCompleted"
+  },
+  {
+    "owner": "Unity.Collections.NativeSlice<T0>",
+    "member": "NativeSlice<T>",
+    "page": "Unity.Collections.NativeSlice_1-operator_NativeArrayT"
+  },
+  {
+    "owner": "UnityEngine.LayerMask",
+    "member": "LayerMask",
+    "page": "LayerMask-operator_int"
+  },
+  {
+    "owner": "UnityEditor.CloudProjectSettingsEventManager",
+    "member": "projectRefreshed",
+    "page": "CloudProjectSettingsEventManager-projectRefreshed"
+  },
+  {
+    "owner": "UnityEngine.Scripting.GarbageCollector",
+    "member": "GCModeChanged",
+    "page": "Scripting.GarbageCollector.GCModeChanged"
+  },
+  {
+    "owner": "UnityEngine.TerrainCallbacks",
+    "member": "heightmapChanged",
+    "page": "TerrainCallbacks-heightmapChanged"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsIgnoreJoint",
+    "member": "PhysicsIgnoreJoint",
+    "page": "LowLevelPhysics2D.PhysicsIgnoreJoint-operator_PhysicsJoint"
+  },
+  {
+    "owner": "UnityEngine.Tilemaps.Tilemap",
+    "member": "tilemapPositionsChanged",
+    "page": "Tilemaps.Tilemap-tilemapPositionsChanged"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "projectChanged",
+    "page": "EditorApplication-projectChanged"
+  },
+  {
+    "owner": "UnityEngine.Vector4",
+    "member": "Vector3",
+    "page": "Vector4-operator_Vector4"
+  },
+  {
+    "owner": "UnityEngine.UIElements.DataBinding",
+    "member": "UpdateUI<TValue>(BindingContext,TValue)",
+    "page": "UIElements.DataBinding.UpdateUI"
+  },
+  {
+    "owner": "UnityEngine.XR.InputFeatureUsage<T0>",
+    "member": "InputFeatureUsage",
+    "page": "XR.InputFeatureUsage_1-operator_InputFeatureUsage"
+  },
+  {
+    "owner": "UnityEngine.UIElements.SortColumnDescription",
+    "member": "propertyChanged",
+    "page": "UIElements.SortColumnDescription-propertyChanged"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "focusChanged",
+    "page": "Application-focusChanged"
+  },
+  {
+    "owner": "UnityEditor.IMGUI.Controls.SearchField",
+    "member": "downOrUpArrowKeyPressed",
+    "page": "IMGUI.Controls.SearchField-downOrUpArrowKeyPressed"
+  },
+  {
+    "owner": "UnityEditor.Experimental.GraphView.Node",
+    "member": "InstantiatePort(Orientation,Direction,Type)",
+    "page": "Experimental.GraphView.Node.InstantiatePort"
+  },
+  {
+    "owner": "UnityEditor.Animations.AnimatorControllerLayer",
+    "member": "SetOverrideBehaviours(AnimatorState,StateMachineBehaviourInfo[])",
+    "page": "Animations.AnimatorControllerLayer.SetOverrideBehaviours"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Columns",
+    "member": "propertyChanged",
+    "page": "UIElements.Columns-propertyChanged"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "inputExtraction",
+    "page": "Lightmapping-inputExtraction"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "activeRenderPipelineAssetChanged",
+    "page": "Rendering.RenderPipelineManager-activeRenderPipelineAssetChanged"
+  },
+  {
+    "owner": "UnityEngine.SubsystemManager",
+    "member": "reloadSubsytemsCompleted",
+    "page": "SubsystemManager-reloadSubsytemsCompleted"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "deepLinkActivated",
+    "page": "Device.Application-deepLinkActivated"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsEvents",
+    "member": "PreSimulate",
+    "page": "LowLevelPhysics2D.PhysicsEvents.PreSimulate"
+  },
+  {
+    "owner": "UnityEditor.EditorBuildSettings",
+    "member": "sceneListChanged",
+    "page": "EditorBuildSettings-sceneListChanged"
+  },
+  {
+    "owner": "Unity.Jobs.LowLevel.Unsafe.JobsUtility",
+    "member": "PatchBufferMinMaxRanges(IntPtr,IntPtr,int,int)",
+    "page": "Unity.Jobs.LowLevel.Unsafe.JobsUtility.PatchBufferMinMaxRanges"
+  },
+  {
+    "owner": "UnityEngine.SceneManagement.SceneHandle",
+    "member": "SceneHandle",
+    "page": "SceneManagement.SceneHandle-operator_int"
+  },
+  {
+    "owner": "UnityEditor.Progress",
+    "member": "updated",
+    "page": "Progress-updated"
+  },
+  {
+    "owner": "UnityEditor.EditorSnapSettings",
+    "member": "snapEnabledChanged",
+    "page": "EditorSnapSettings-snapEnabledChanged"
+  },
+  {
+    "owner": "UnityEngine.Windows.Speech.DictationRecognizer",
+    "member": "DictationResult",
+    "page": "Windows.Speech.DictationRecognizer.DictationResult"
+  },
+  {
+    "owner": "UnityEditor.PivotManager",
+    "member": "activePivotModeChanged",
+    "page": "PivotManager-activePivotModeChanged"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "focusChanged",
+    "page": "EditorApplication-focusChanged"
+  },
+  {
+    "owner": "UnityEngine.LazyLoadReference<T0>",
+    "member": "LazyLoadReference<T>",
+    "page": "LazyLoadReference_1-operator_EntityId"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Button",
+    "member": "clicked",
+    "page": "UIElements.Button-clicked"
+  },
+  {
+    "owner": "UnityEngine.UIElements.TabView",
+    "member": "tabReordered",
+    "page": "UIElements.TabView-tabReordered"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchMonitor",
+    "member": "contentRefreshed",
+    "page": "Search.SearchMonitor-contentRefreshed"
+  },
+  {
+    "owner": "UnityEditor.EditorTools.ToolManager",
+    "member": "activeContextChanged",
+    "page": "EditorTools.ToolManager-activeContextChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseListViewController",
+    "member": "itemsRemoved",
+    "page": "UIElements.BaseListViewController-itemsRemoved"
+  },
+  {
+    "owner": "UnityEngine.LightProbes",
+    "member": "tetrahedralizationCompleted",
+    "page": "LightProbes-tetrahedralizationCompleted"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "endCameraRendering",
+    "page": "Rendering.RenderPipelineManager-endCameraRendering"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "wantsToQuit",
+    "page": "Application-wantsToQuit"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "onBeforeRender",
+    "page": "Application-onBeforeRender"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "bakeStarted",
+    "page": "Lightmapping-bakeStarted"
+  },
+  {
+    "owner": "UnityEditor.PrefabUtility",
+    "member": "prefabInstanceReverted",
+    "page": "PrefabUtility-prefabInstanceReverted"
+  },
+  {
+    "owner": "UnityEngine.UnityConsent.EndUserConsent",
+    "member": "consentStateChanged",
+    "page": "UnityConsent.EndUserConsent-consentStateChanged"
+  },
+  {
+    "owner": "UnityEngine.Color",
+    "member": "Vector4",
+    "page": "Color-operator_Color"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "logMessageReceivedThreaded",
+    "page": "Device.Application-logMessageReceivedThreaded"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "clockResyncOccurred",
+    "page": "Video.VideoPlayer-clockResyncOccurred"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Binding",
+    "member": "OnDataSourceChanged(DataSourceContextChanged)",
+    "page": "UIElements.Binding.OnDataSourceChanged"
+  },
+  {
+    "owner": "UnityEditor.IMGUI.Controls.MultiColumnHeader",
+    "member": "columnsSwapped",
+    "page": "IMGUI.Controls.MultiColumnHeader-columnsSwapped"
+  },
+  {
+    "owner": "UnityEditor.TerrainTools.TerrainPaintUtilityEditor",
+    "member": "DrawBrushPreview(PaintContext,BrushPreview,Texture,BrushTransform,Material,int)",
+    "page": "TerrainTools.TerrainPaintUtilityEditor.DrawBrushPreview"
+  },
+  {
+    "owner": "UnityEngine.Apple.ReplayKit.ReplayKit",
+    "member": "StartBroadcasting(BroadcastStatusDelegate, bool, bool)",
+    "page": "Apple.ReplayKit.ReplayKit.StartBroadcasting"
+  },
+  {
+    "owner": "UnityEngine.Audio.AudioMixerPlayable",
+    "member": "Create(PlayableGraph,Int32,Boolean)",
+    "page": "Audio.AudioMixerPlayable.Create"
+  },
+  {
+    "owner": "UnityEditor.Android.AndroidProjectFilesModifierContext",
+    "member": "AddDirectoryAsGuidToCopy",
+    "page": "Android.AndroidProjectFilesModifierContext.AddDirectoryAsGuidToCopy"
+  },
+  {
+    "owner": "UnityEngine.LightProbes",
+    "member": "lightProbesUpdated",
+    "page": "LightProbes-lightProbesUpdated"
+  },
+  {
+    "owner": "UnityEditor.AssemblyReloadEvents",
+    "member": "afterAssemblyReload",
+    "page": "AssemblyReloadEvents-afterAssemblyReload"
+  },
+  {
+    "owner": "UnityEngine.UIElements.INotifyBindablePropertyChanged",
+    "member": "propertyChanged",
+    "page": "UIElements.INotifyBindablePropertyChanged-propertyChanged"
+  },
+  {
+    "owner": "UnityEditor.Media.MediaTime",
+    "member": "double",
+    "page": "Media.MediaTime-operator_double"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "beginContextRendering",
+    "page": "Rendering.RenderPipelineManager-beginContextRendering"
+  },
+  {
+    "owner": "UnityEngine.Playables.PlayableDirector",
+    "member": "stopped",
+    "page": "Playables.PlayableDirector-stopped"
+  },
+  {
+    "owner": "UnityEngine.WheelCollider",
+    "member": "suspensionExpansionLimited(bool)",
+    "page": "WheelCollider-suspensionExpansionLimited"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.PrefabStage",
+    "member": "prefabStageDirtied",
+    "page": "SceneManagement.PrefabStage-prefabStageDirtied"
+  },
+  {
+    "owner": "Unity.Jobs.LowLevel.Unsafe.BatchQueryJob<T0,T1>",
+    "member": "BatchQueryJob(NativeArray<CommandT> commands, NativeArray<ResultT> results)",
+    "page": "Unity.Jobs.LowLevel.Unsafe.BatchQueryJob_2-ctor"
+  },
+  {
+    "owner": "UnityEngine.RectTransform",
+    "member": "reapplyDrivenProperties",
+    "page": "RectTransform-reapplyDrivenProperties"
+  },
+  {
+    "owner": "UnityEngine.Android.PermissionCallbacks",
+    "member": "PermissionGranted",
+    "page": "Android.PermissionCallbacks.PermissionGranted"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilityNode",
+    "member": "scrolled",
+    "page": "Accessibility.AccessibilityNode-scrolled"
+  },
+  {
+    "owner": "UnityEditor.Progress",
+    "member": "removed",
+    "page": "Progress-removed"
+  },
+  {
+    "owner": "UnityEngine.SubsystemManager",
+    "member": "reloadSubsytemsStarted",
+    "page": "SubsystemManager-reloadSubsytemsStarted"
+  },
+  {
+    "owner": "UnityEditor.SceneTemplate.SceneTemplateService",
+    "member": "newSceneTemplateInstantiated",
+    "page": "SceneTemplate.SceneTemplateService-newSceneTemplateInstantiated"
+  },
+  {
+    "owner": "UnityEngine.U2D.SpriteRendererDataAccessExtensions",
+    "member": "SetShaderUserValue(uint)",
+    "page": "U2D.SpriteRendererDataAccessExtensions.SetShaderUserValue"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneOpened",
+    "page": "SceneManagement.EditorSceneManager-sceneOpened"
+  },
+  {
+    "owner": "UnityEngine.ArticulationJacobian",
+    "member": "ctor(int rows, int cols)",
+    "page": "ArticulationJacobian-ctor"
+  },
+  {
+    "owner": "UnityEngine.Audio.RootOutputInstance.IRealtime",
+    "member": "EarlyProcessing(RealtimeContext,Pipe)",
+    "page": "Audio.RootOutputInstance.IRealtime.EarlyProcessing"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AssistiveSupport",
+    "member": "screenReaderStatusChanged",
+    "page": "Accessibility.AssistiveSupport-screenReaderStatusChanged"
+  },
+  {
+    "owner": "UnityEngine.Tilemaps.Tilemap",
+    "member": "loopEndedForTileAnimation",
+    "page": "Tilemaps.Tilemap-loopEndedForTileAnimation"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilitySettings",
+    "member": "closedCaptioningStatusChanged",
+    "page": "Accessibility.AccessibilitySettings-closedCaptioningStatusChanged"
+  },
+  {
+    "owner": "UnityEngine.AdaptivePerformance.IPerformanceStatus",
+    "member": "PerformanceBoostChangeEvent",
+    "page": "AdaptivePerformance.IPerformanceStatus.PerformanceBoostChangeEvent"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Binding",
+    "member": "OnActivated(BindingActivationContext)",
+    "page": "UIElements.Binding.OnActivated"
+  },
+  {
+    "owner": "UnityEditor.MaterialEditor",
+    "member": "LightmapEmissionProperty(string)",
+    "page": "MaterialEditor.LightmapEmissionProperty"
+  },
+  {
+    "owner": "UnityEngine.UIElements.MultiColumnListView",
+    "member": "headerContextMenuPopulateEvent",
+    "page": "UIElements.MultiColumnListView-headerContextMenuPopulateEvent"
+  },
+  {
+    "owner": "UnityEngine.UIElements.ITextSelection",
+    "member": "OnCursorIndexChange",
+    "page": "UIElements.ITextSelection.OnCursorIndexChange"
+  },
+  {
+    "owner": "UnityEditor.ShaderUtil",
+    "member": "LocalKeyword)",
+    "page": "ShaderUtil.PassHasKeyword"
+  },
+  {
+    "owner": "UnityEditor.PrefabUtility",
+    "member": "prefabInstanceUnpacked",
+    "page": "PrefabUtility-prefabInstanceUnpacked"
+  },
+  {
+    "owner": "UnityEditor.Rendering.IRenderPipelineGraphicsSettingsContextMenu2",
+    "member": "PopulateContextMenu(IRenderPipelineGraphicsSettings setting, SerializedProperty property, ref GenericDropdownMenu menu)",
+    "page": "Rendering.IRenderPipelineGraphicsSettingsContextMenu2.PopulateContextMenu"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Scroller",
+    "member": "valueChanged",
+    "page": "UIElements.Scroller-valueChanged"
+  },
+  {
+    "owner": "UnityEngine.Audio.RootOutputInstance",
+    "member": "ProcessorInstance",
+    "page": "Audio.RootOutputInstance-operator_RootOutputInstance"
+  },
+  {
+    "owner": "UnityEditor.Search.SearchMonitor",
+    "member": "objectChanged",
+    "page": "Search.SearchMonitor-objectChanged"
+  },
+  {
+    "owner": "UnityEngine.Windows.Speech.PhraseRecognitionSystem",
+    "member": "OnStatusChanged",
+    "page": "Windows.Speech.PhraseRecognitionSystem.OnStatusChanged"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsFixedJoint",
+    "member": "PhysicsFixedJoint",
+    "page": "LowLevelPhysics2D.PhysicsFixedJoint-operator_PhysicsJoint"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsSliderJoint",
+    "member": "PhysicsJoint",
+    "page": "LowLevelPhysics2D.PhysicsSliderJoint-operator_PhysicsSliderJoint"
+  },
+  {
+    "owner": "UnityEngine.XR.XRDisplaySubsystem",
+    "member": "displayFocusChanged",
+    "page": "XR.XRDisplaySubsystem-displayFocusChanged"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "memoryUsageChanged",
+    "page": "Application-memoryUsageChanged"
+  },
+  {
+    "owner": "UnityEngine.Experimental.Animations.AnimationPlayableOutputExtensions",
+    "member": "SetSortingOrder(AnimationPlayableOutput,int)",
+    "page": "Experimental.Animations.AnimationPlayableOutputExtensions.SetSortingOrder"
+  },
+  {
+    "owner": "UnityEngine.UIElements.CollectionViewController",
+    "member": "itemIndexChanged",
+    "page": "UIElements.CollectionViewController-itemIndexChanged"
+  },
+  {
+    "owner": "UnityEditor.AssemblyReloadEvents",
+    "member": "beforeAssemblyReload",
+    "page": "AssemblyReloadEvents-beforeAssemblyReload"
+  },
+  {
+    "owner": "UnityEngine.CanvasRenderer",
+    "member": "AddUIVertexStream(List<UIVertex>,List<Vector3>,List<Color32>,List<Vector2>,List<Vector2>,List<Vector3>,List<Vector4>)",
+    "page": "CanvasRenderer.AddUIVertexStream"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "started",
+    "page": "Video.VideoPlayer-started"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneManagerSetupRestored",
+    "page": "SceneManagement.EditorSceneManager-sceneManagerSetupRestored"
+  },
+  {
+    "owner": "UnityEngine.Physics",
+    "member": "ContactEvent",
+    "page": "Physics.ContactEvent"
+  },
+  {
+    "owner": "UnityEngine.AudioSettings.Mobile",
+    "member": "OnMuteStateChanged",
+    "page": "AudioSettings.Mobile.OnMuteStateChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneTemplate.SceneTemplateService",
+    "member": "newSceneTemplateInstantiating",
+    "page": "SceneTemplate.SceneTemplateService-newSceneTemplateInstantiating"
+  },
+  {
+    "owner": "UnityEditor.Tools",
+    "member": "pivotModeChanged",
+    "page": "Tools-pivotModeChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.MultiColumnTreeView",
+    "member": "headerContextMenuPopulateEvent",
+    "page": "UIElements.MultiColumnTreeView-headerContextMenuPopulateEvent"
+  },
+  {
+    "owner": "UnityEngine.EntityId",
+    "member": "EntityId",
+    "page": "EntityId-operator_int"
+  },
+  {
+    "owner": "UnityEditor.EditorTools.ToolManager",
+    "member": "activeToolChanged",
+    "page": "EditorTools.ToolManager-activeToolChanged"
+  },
+  {
+    "owner": "UnityEditor.Overlays.Overlay",
+    "member": "floatingPositionChanged",
+    "page": "Overlays.Overlay-floatingPositionChanged"
+  },
+  {
+    "owner": "UnityEditor.Profiling.IProfilerFrameTimeViewSampleSelectionController",
+    "member": "selectionChanged",
+    "page": "Profiling.IProfilerFrameTimeViewSampleSelectionController-selectionChanged"
+  },
+  {
+    "owner": "UnityEngine.XR.XRInputSubsystem",
+    "member": "boundaryChanged",
+    "page": "XR.XRInputSubsystem-boundaryChanged"
+  },
+  {
+    "owner": "Unity.Hierarchy.HierarchyNodeTypeHandlerBase",
+    "member": "GetNodeHashCode(HierarchyNode)",
+    "page": "Unity.Hierarchy.HierarchyNodeTypeHandlerBase.GetNodeHashCode"
+  },
+  {
+    "owner": "UnityEngine.UIElements.MultiColumnTreeView",
+    "member": "columnSortingChanged",
+    "page": "UIElements.MultiColumnTreeView-columnSortingChanged"
+  },
+  {
+    "owner": "UnityEngine.XR.InputDevices",
+    "member": "deviceConfigChanged",
+    "page": "XR.InputDevices-deviceConfigChanged"
+  },
+  {
+    "owner": "UnityEngine.LightTransport.IProbeIntegrator",
+    "member": "IntegrateIndirectRadiance(IDeviceContext,int,int,int,BufferSlice<SphericalHarmonicsL2>)",
+    "page": "LightTransport.IProbeIntegrator.IntegrateIndirectRadiance"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "memoryUsageChanged",
+    "page": "Device.Application-memoryUsageChanged"
+  },
+  {
+    "owner": "UnityEditor.IMGUI.Controls.MultiColumnHeader",
+    "member": "columnSettingsChanged",
+    "page": "IMGUI.Controls.MultiColumnHeader-columnSettingsChanged"
+  },
+  {
+    "owner": "UnityEditor.Compilation.CompilationPipeline",
+    "member": "assemblyCompilationFinished",
+    "page": "Compilation.CompilationPipeline-assemblyCompilationFinished"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "bakeCancelled",
+    "page": "Lightmapping-bakeCancelled"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Tab",
+    "member": "closed",
+    "page": "UIElements.Tab-closed"
+  },
+  {
+    "owner": "UnityEditor.Progress",
+    "member": "added",
+    "page": "Progress-added"
+  },
+  {
+    "owner": "UnityEditor.SpeedTree.Importer.DiffuseProfileCallbackAttribute",
+    "member": "ctor(int methodVersion)",
+    "page": "SpeedTree.Importer.DiffuseProfileCallbackAttribute-ctor"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "quitting",
+    "page": "Device.Application-quitting"
+  },
+  {
+    "owner": "UnityEngine.Camera",
+    "member": "CalculateProjectionMatrixFromPhysicalProperties(Matrix4x4,float,Vector2,Vector2,GateFitParameters)",
+    "page": "Camera.CalculateProjectionMatrixFromPhysicalProperties"
+  },
+  {
+    "owner": "UnityEngine.LowLevelPhysics2D.PhysicsShape.ContactFilter",
+    "member": "ctor(PhysicsMask,PhysicsMask,Int32)",
+    "page": "LowLevelPhysics2D.PhysicsShape.ContactFilter-ctor"
+  },
+  {
+    "owner": "Unity.Hierarchy.IHierarchyProperty<T0>",
+    "member": "SetValue(HierarchyNode,T)",
+    "page": "Unity.Hierarchy.IHierarchyProperty_1.SetValue"
+  },
+  {
+    "owner": "UnityEditor.Connect.CoppaDrawer",
+    "member": "stateChangeButtonFired",
+    "page": "Connect.CoppaDrawer-stateChangeButtonFired"
+  },
+  {
+    "owner": "UnityEngine.SceneManagement.SceneManager",
+    "member": "sceneUnloaded",
+    "page": "SceneManagement.SceneManager-sceneUnloaded"
+  },
+  {
+    "owner": "UnityEditor.MPE.ProcessService",
+    "member": "ProcessExitedEvent",
+    "page": "MPE.ProcessService.ProcessExitedEvent"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "loopPointReached",
+    "page": "Video.VideoPlayer-loopPointReached"
+  },
+  {
+    "owner": "UnityEngine.Rendering.PlatformKeywordSet",
+    "member": "Disable(ShaderKeyword)",
+    "page": "Rendering.PlatformKeywordSet.Disable"
+  },
+  {
+    "owner": "UnityEngine.Accessibility.AccessibilityNode",
+    "member": "selected",
+    "page": "Accessibility.AccessibilityNode-selected"
+  },
+  {
+    "owner": "UnityEngine.UIElements.BaseVerticalCollectionView",
+    "member": "itemsChosen",
+    "page": "UIElements.BaseVerticalCollectionView-itemsChosen"
+  },
+  {
+    "owner": "UnityEngine.Rendering.RenderPipelineManager",
+    "member": "beginCameraRendering",
+    "page": "Rendering.RenderPipelineManager-beginCameraRendering"
+  },
+  {
+    "owner": "UnityEngine.ReflectionProbe",
+    "member": "reflectionProbeChanged",
+    "page": "ReflectionProbe-reflectionProbeChanged"
+  },
+  {
+    "owner": "UnityEditor.SceneManagement.EditorSceneManager",
+    "member": "sceneClosing",
+    "page": "SceneManagement.EditorSceneManager-sceneClosing"
+  },
+  {
+    "owner": "UnityEngine.U2D.SpriteAtlasManager",
+    "member": "atlasRequested",
+    "page": "U2D.SpriteAtlasManager-atlasRequested"
+  },
+  {
+    "owner": "UnityEngine.Vector2",
+    "member": "Vector2",
+    "page": "Vector2-operator_Vector3"
+  },
+  {
+    "owner": "UnityEngine.UIElements.Binding",
+    "member": "OnDeactivated(BindingActivationContext)",
+    "page": "UIElements.Binding.OnDeactivated"
+  },
+  {
+    "owner": "UnityEditor.EditorApplication",
+    "member": "updateMainWindowTitle",
+    "page": "EditorApplication-updateMainWindowTitle"
+  },
+  {
+    "owner": "UnityEngine.SubsystemManager",
+    "member": "afterReloadSubsystems",
+    "page": "SubsystemManager-afterReloadSubsystems"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "lowMemory",
+    "page": "Device.Application-lowMemory"
+  },
+  {
+    "owner": "UnityEditor.EditorTools.ToolManager",
+    "member": "activeToolChanging",
+    "page": "EditorTools.ToolManager-activeToolChanging"
+  },
+  {
+    "owner": "UnityEditor.PrefabUtility",
+    "member": "prefabInstanceReverting",
+    "page": "PrefabUtility-prefabInstanceReverting"
+  },
+  {
+    "owner": "UnityEditor.Lightmapping",
+    "member": "lightingDataAssetCleared",
+    "page": "Lightmapping-lightingDataAssetCleared"
+  },
+  {
+    "owner": "UnityEngine.CustomRenderTextureManager",
+    "member": "updateTriggered",
+    "page": "CustomRenderTextureManager-updateTriggered"
+  },
+  {
+    "owner": "Unity.Hierarchy.IHierarchyProperty<T0>",
+    "member": "ClearValue(HierarchyNode)",
+    "page": "Unity.Hierarchy.IHierarchyProperty_1.ClearValue"
+  },
+  {
+    "owner": "UnityEngine.Tilemaps.Tilemap",
+    "member": "tilemapTileChanged",
+    "page": "Tilemaps.Tilemap-tilemapTileChanged"
+  },
+  {
+    "owner": "UnityEngine.UIElements.MultiColumnController",
+    "member": "headerContextMenuPopulateEvent",
+    "page": "UIElements.MultiColumnController-headerContextMenuPopulateEvent"
+  },
+  {
+    "owner": "UnityEditor.Compilation.CompilationPipeline",
+    "member": "assemblyCompilationStarted",
+    "page": "Compilation.CompilationPipeline-assemblyCompilationStarted"
+  },
+  {
+    "owner": "UnityEngine.Identifiers.Identifiers",
+    "member": "userIdChanged",
+    "page": "Identifiers.Identifiers-userIdChanged"
+  },
+  {
+    "owner": "UnityEngine.Device.Application",
+    "member": "onBeforeRender",
+    "page": "Device.Application-onBeforeRender"
+  },
+  {
+    "owner": "Unity.IntegerTime.RationalTime",
+    "member": "DiscreteTime",
+    "page": "Unity.IntegerTime.RationalTime-operator_DiscreteTime"
+  },
+  {
+    "owner": "UnityEngine.Canvas",
+    "member": "willRenderCanvases",
+    "page": "Canvas-willRenderCanvases"
+  },
+  {
+    "owner": "UnityEngine.TerrainCallbacks",
+    "member": "textureChanged",
+    "page": "TerrainCallbacks-textureChanged"
+  },
+  {
+    "owner": "UnityEngine.ParticlePhysicsExtensions",
+    "member": "GetTriggerParticles(ParticleSystem,ParticleSystemTriggerEventType,Particle[])",
+    "page": "ParticlePhysicsExtensions.GetTriggerParticles"
+  },
+  {
+    "owner": "UnityEngine.Video.VideoPlayer",
+    "member": "errorReceived",
+    "page": "Video.VideoPlayer-errorReceived"
+  },
+  {
+    "owner": "UnityEngine.Application",
+    "member": "deepLinkActivated",
+    "page": "Application-deepLinkActivated"
+  }
+]

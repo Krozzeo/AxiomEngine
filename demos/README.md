@@ -1,3 +1,7 @@
+# M19 Compatibility Observatory
+
+[Editable demo and discrepancies](M19_GUIDE.md). Generate with `npm run demo:m19`; open Help → Compatibility Observatory for the inventory.
+
 # Current demos: M18
 
 `npm.cmd run demo` creates Script Component Lab, Autonomy Position Repair and

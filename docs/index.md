@@ -1,6 +1,6 @@
 # Axiom Game Engine documentation
 
-Current candidate0.0.56/SDK8/Platform0.1.7. Historical reports retain their own release scope; they do not certify this candidate.
+Current candidate0.0.57/SDK8/M19; Platform0.1.7 is merged. Historical reports retain their own release scope; they do not certify this candidate.
 
 - Start with [implementation status](architecture/IMPLEMENTATION_STATUS.md), [handoff](AI_HANDOFF.md), [repository recovery](REPOSITORY_MAINTENANCE.md), then the next phase plan.
 - [Master specification](architecture/AXIOM_MASTER_SPEC.md), [Unity roadmapM19–M40](architecture/ROADMAP_M19_M40.md), [GPU/shaders](architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md), [milestone reporting](architecture/MILESTONE_REPORTING.md), [native GitHub milestones](NATIVE_GITHUB_MILESTONES.md).
@@ -13,3 +13,5 @@ Maintained English editions link complete original-language .txt sources in [the
 - [Platform P5 editor lifecycle and independent Math Lab](architecture/PLATFORM_P5.md).
 
 - [Current architecture audit](reports/ARCHITECTURE_AUDIT_0_0_56.md), [product integration contract](architecture/PRODUCT_INTEGRATION_0_0_56.md), [0.0.56 release notes](releases/0.0.56.md).
+
+- [M19 frozen compatibility baseline](compatibility/README.md), [report](reports/M19_REPORT.md), [demo](../demos/M19_GUIDE.md).

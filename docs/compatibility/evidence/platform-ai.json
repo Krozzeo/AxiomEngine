@@ -1,0 +1,11 @@
+{
+  "criteria": [
+    "Hub connects the shared account; Engine inherits the model without a second login or credential input",
+    "AI plan requires human approval; typed tools edit an isolated proposal; persisted MAIN stays unchanged until review",
+    "Human Apply adopts and saves reviewed proposal through the shared review gate and domain transaction"
+  ],
+  "pageErrors": [],
+  "provider": "controlled HTTP; no real model acceptance",
+  "renderer": "Null — UI acceptance",
+  "passed": true
+}

@@ -2,7 +2,7 @@
 
 A local browser game editor with Rust/WebAssembly kernel, WebGPU renderer and C# gameplay. Includes2D/3D scenes, resources, CPU/Wasm physics, editing tools and isolated AI proposals with human review.
 
-**Current candidate:0.0.56 / scripting SDK8 / Platform0.1.7 product integration.** P1 is accepted; the subsequent Engine adaptation remains on stacked review branches. [Architecture audit](docs/reports/ARCHITECTURE_AUDIT_0_0_56.md), [product contract](docs/architecture/PRODUCT_INTEGRATION_0_0_56.md), [current handoff](docs/AI_HANDOFF.md).
+**Current candidate:0.0.57 / scripting SDK8 / M19 compatibility audit.** The Platform integration base is now merged in all three products. M19 adds the Compatibility Observatory, frozen signature inventories and an editable runtime corpus. [M19 report](docs/reports/M19_REPORT.md), [measured baseline](docs/compatibility/README.md), [current handoff](docs/AI_HANDOFF.md).
 
 ## Axiom family
 

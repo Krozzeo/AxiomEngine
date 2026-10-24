@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -80,7 +80,9 @@
     "test:browser:m18-4-1": "node tests/browser/m18-4-1.mjs",
     "test:browser:m18-4": "node tests/browser/m18-4.mjs",
     "version": "node scripts/sync-product-version.mjs",
-    "test:browser:reference-refresh": "node tests/browser/reference-drag-refresh.mjs"
+    "test:browser:reference-refresh": "node tests/browser/reference-drag-refresh.mjs",
+    "demo:m19": "node demos/create-m19-project.mjs",
+    "test:browser:m19": "node tests/browser/m19.mjs"
   },
   "dependencies": {
     "axiom-platform": "https://codeload.github.com/Krozzeo/AxiomPlatform/tar.gz/6e8e05d3934e649df1fb89228b3bac2965d37018",

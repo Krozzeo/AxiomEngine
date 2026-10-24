@@ -3,7 +3,7 @@
   "protocolVersion": 1,
   "productId": "axiom.game-engine",
   "displayName": "Axiom Game Engine",
-  "productVersion": "0.0.56",
+  "productVersion": "0.0.57",
   "platformApiRange": ">=0.1.0 <0.2.0",
   "projectFormats": [
     {

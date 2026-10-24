@@ -1,3 +1,9 @@
+# Current consolidation —2026-10-24
+
+Engine#59, Platform#9 and Math Lab#2 are merged after CI and explicit owner approvals; see the [M19 report](reports/M19_REPORT.md) for exact merge commits. Engine#54/#56/#57/#58 were closed after verifying inclusion. Recovery refs were untouched. M19 is reviewed in [#60](https://github.com/Krozzeo/AxiomGameEngine/pull/60); do not confuse its branch status with main or a stable release. Earlier maintenance snapshots below remain historical.
+
+---
+
 # Repository maintenance and recovery
 
 Owner authorized latest0.0.52 as main and recovery before restructuring on2026-10-20. Main advanced from 16c065c88f51780d489bf60082c73873a60db31d to e264ca835de14daf4fe964be6a78be5e4646ad14 retaining304 commits. Later changes go through review PRs, not history rewrites.

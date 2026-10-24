@@ -1,0 +1,51 @@
+{
+  "engineVersion": "0.0.57",
+  "date": "2026-10-24",
+  "engineCheck": {
+    "passed": true,
+    "tests": 455,
+    "failed": 0
+  },
+  "rust": {
+    "passed": true,
+    "tests": 44
+  },
+  "pythonParser": {
+    "passed": true,
+    "tests": 4
+  },
+  "declarationToolBuilds": {
+    "passed": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  "browserM19": {
+    "passed": true,
+    "pageErrors": [],
+    "observations": 27,
+    "successfulObservations": 25,
+    "knownDiscrepancies": 2,
+    "conformancePassed": false
+  },
+  "integrationPlatform": {
+    "passed": 52,
+    "failed": 0,
+    "skipped": 1,
+    "skipReason": "Opt-in Windows native Recycle Bin integration, unchanged and not executed in M19"
+  },
+  "remoteCi": "See PR60 exact-head GitHub checks; do not infer remote success from this local artifact",
+  "mainIntegration": "M19 review branch; base consolidation merged",
+  "review": "https://github.com/Krozzeo/AxiomGameEngine/pull/60",
+  "jointBrowser": {
+    "products": {
+      "passed": true,
+      "pageErrors": [],
+      "engineVersion": "0.0.57"
+    },
+    "sharedAi": {
+      "passed": true,
+      "pageErrors": [],
+      "transport": "Controlled HTTP; no real-model acceptance"
+    }
+  }
+}

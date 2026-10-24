@@ -1,15 +1,15 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-22",
-  "engineVersion": "0.0.56",
-  "activeMilestone": 18.4,
+  "updatedAt": "2026-10-24",
+  "engineVersion": "0.0.57",
+  "activeMilestone": 19,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
     "wholeProjectPercent": null,
     "method": "docs/architecture/MILESTONE_REPORTING.md",
-    "scopeNote": "M18.4 remains closed under ADR-0034. M18.4.1 implements requested Hub/GitHub workflow and default-on preferences, with local controlled acceptance; live-account validation remains deferred. M19â€“M40 scope unchanged.",
+    "scopeNote": "M19 audit criteria4/4 passed locally; API implementation credit0. M20\u2013M40 pending. CI/main integration is distinct.",
     "historicalMvpPercent": 94,
     "historicalMvpCompletedWeight": 122,
     "historicalMvpTotalWeight": 130
@@ -92,10 +92,136 @@
       "percent": 100
     },
     "19": {
+      "status": "complete",
+      "percent": 100,
+      "title": "Complete audit and compatibility contract",
+      "plan": "docs/architecture/M19_PLAN.md"
+    },
+    "20": {
       "status": "not_started",
       "percent": 0,
-      "title": "AuditorÃ­a completa y contrato de compatibilidad",
-      "plan": "docs/architecture/M19_PLAN.md"
+      "title": "Compatible objects, components and hierarchies",
+      "plan": "docs/architecture/M20_PLAN.md"
+    },
+    "21": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Mathematics, geometry and utilities",
+      "plan": "docs/architecture/M21_PLAN.md"
+    },
+    "22": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Lifecycle, time, events and asynchrony",
+      "plan": "docs/architecture/M22_PLAN.md"
+    },
+    "23": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Serialization, ScriptableObject and prefabs",
+      "plan": "docs/architecture/M23_PLAN.md"
+    },
+    "24": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Scenes, resources, asynchronous loading and memory",
+      "plan": "docs/architecture/M24_PLAN.md"
+    },
+    "25": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "3D physics geometry, queries and compute infrastructure",
+      "plan": "docs/architecture/M25_PLAN.md"
+    },
+    "26": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "3D CPU/GPU advanced solver and controllers",
+      "plan": "docs/architecture/M26_PLAN.md"
+    },
+    "27": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "2D physics geometry and queries",
+      "plan": "docs/architecture/M27_PLAN.md"
+    },
+    "28": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "2D CPU/GPU joints and advanced simulation",
+      "plan": "docs/architecture/M28_PLAN.md"
+    },
+    "29": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Input and devices",
+      "plan": "docs/architecture/M29_PLAN.md"
+    },
+    "30": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Graphics, shaders and GPU resources",
+      "plan": "docs/architecture/M30_PLAN.md"
+    },
+    "31": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Animation, rigging and Playables",
+      "plan": "docs/architecture/M31_PLAN.md"
+    },
+    "32": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Audio, mixing and processing",
+      "plan": "docs/architecture/M32_PLAN.md"
+    },
+    "33": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "UI, text, layout and events",
+      "plan": "docs/architecture/M33_PLAN.md"
+    },
+    "34": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "2D/3D worlds, particles, terrain and video",
+      "plan": "docs/architecture/M34_PLAN.md"
+    },
+    "35": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "NavMesh and complete navigation",
+      "plan": "docs/architecture/M35_PLAN.md"
+    },
+    "36": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Networking, HTTP and multiplayer",
+      "plan": "docs/architecture/M36_PLAN.md"
+    },
+    "37": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Platforms, native APIs and specialized devices",
+      "plan": "docs/architecture/M37_PLAN.md"
+    },
+    "38": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Editor APIs, assets, extensions and builds",
+      "plan": "docs/architecture/M38_PLAN.md"
+    },
+    "39": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Remaining modules, packages and full conformance",
+      "plan": "docs/architecture/M39_PLAN.md"
+    },
+    "40": {
+      "status": "not_started",
+      "percent": 0,
+      "title": "Final stabilization, product and end-to-end acceptance",
+      "plan": "docs/architecture/M40_PLAN.md"
     },
     "13.1": {
       "status": "complete",
@@ -117,138 +243,13 @@
       "status": "complete",
       "percent": 100,
       "report": "docs/reports/M18_4_CURRENT_REPORT.md",
-      "scopeDecision": "docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md"
+      "scopeDecision": "docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md",
+      "title": "GitHub integration for game projects"
     },
     "18.3.10": {
       "status": "complete",
       "percent": 100,
       "scope": "Correction acceptance only; Unity API categories remain partial"
-    },
-    "20": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Objetos, componentes y jerarquÃ­as compatibles",
-      "plan": "docs/architecture/M20_PLAN.md"
-    },
-    "21": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "MatemÃ¡ticas, geometrÃ­a y utilidades",
-      "plan": "docs/architecture/M21_PLAN.md"
-    },
-    "22": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Ciclo de vida, tiempo, eventos y asincronÃ­a",
-      "plan": "docs/architecture/M22_PLAN.md"
-    },
-    "23": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "SerializaciÃ³n, ScriptableObject y prefabs",
-      "plan": "docs/architecture/M23_PLAN.md"
-    },
-    "24": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Escenas, recursos, carga asÃ­ncrona y memoria",
-      "plan": "docs/architecture/M24_PLAN.md"
-    },
-    "25": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "FÃ­sica 3D: geometrÃ­as, consultas e infraestructura compute",
-      "plan": "docs/architecture/M25_PLAN.md"
-    },
-    "26": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "FÃ­sica 3D CPU/GPU: solver avanzado y controladores",
-      "plan": "docs/architecture/M26_PLAN.md"
-    },
-    "27": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "FÃ­sica 2D: geometrÃ­as y consultas",
-      "plan": "docs/architecture/M27_PLAN.md"
-    },
-    "28": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "FÃ­sica 2D CPU/GPU: joints y simulaciÃ³n avanzada",
-      "plan": "docs/architecture/M28_PLAN.md"
-    },
-    "29": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Input y dispositivos",
-      "plan": "docs/architecture/M29_PLAN.md"
-    },
-    "30": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "GrÃ¡ficos, shaders y recursos GPU",
-      "plan": "docs/architecture/M30_PLAN.md"
-    },
-    "31": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "AnimaciÃ³n, rigging y Playables",
-      "plan": "docs/architecture/M31_PLAN.md"
-    },
-    "32": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Audio, mezcla y procesamiento",
-      "plan": "docs/architecture/M32_PLAN.md"
-    },
-    "33": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "UI, texto, layout y eventos",
-      "plan": "docs/architecture/M33_PLAN.md"
-    },
-    "34": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Mundos 2D/3D, partÃ­culas, terreno y vÃ­deo",
-      "plan": "docs/architecture/M34_PLAN.md"
-    },
-    "35": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "NavMesh y navegaciÃ³n completa",
-      "plan": "docs/architecture/M35_PLAN.md"
-    },
-    "36": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Networking, HTTP y multijugador",
-      "plan": "docs/architecture/M36_PLAN.md"
-    },
-    "37": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "Plataformas, APIs nativas y dispositivos especializados",
-      "plan": "docs/architecture/M37_PLAN.md"
-    },
-    "38": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "API de editor, assets, extensiones y builds",
-      "plan": "docs/architecture/M38_PLAN.md"
-    },
-    "39": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "MÃ³dulos restantes, paquetes y conformidad integral",
-      "plan": "docs/architecture/M39_PLAN.md"
-    },
-    "40": {
-      "status": "not_started",
-      "percent": 0,
-      "title": "EstabilizaciÃ³n final, producto y aceptaciÃ³n integral",
-      "plan": "docs/architecture/M40_PLAN.md"
     }
   },
   "implementation": {
@@ -1728,22 +1729,27 @@
     "docs/reports/M18_4_1_REPORT.md",
     "docs/adr/0035-hub-and-github-project-workflow.md",
     "docs/architecture/PLATFORM_P4.md",
-    "docs/reports/PLATFORM_P4_REPORT.md"
+    "docs/reports/PLATFORM_P4_REPORT.md",
+    "docs/compatibility/README.md",
+    "docs/compatibility/CONTRACT.md",
+    "docs/compatibility/PROFILES_AND_GPU.md",
+    "docs/reports/M19_REPORT.md",
+    "demos/M19_GUIDE.md"
   ],
-  "nextTask": "Review Platform P2/P3/P4 stacked candidates and their CI; complete P4 native/fresh-machine/standalone-game-export gates without conflating direct editor startup. P5 unstarted; Engine M19 audit remains planned, Unity/shader/GPU scope unchanged. Preserve recovery and older CI issues; no automatic merge.",
-  "activeRevision": "Platform P4 candidate",
+  "nextTask": "Review and integrate M19 after exact-head CI, then M20: object equality/identity, deferred Destroy, component/hierarchy overload batches. Preserve Platform authority, user projects and recovery refs; do not auto-merge.",
+  "activeRevision": "M19 compatibility audit review candidate",
   "roadmap": {
     "version": 2,
     "manifest": "docs/architecture/roadmap-v2.json",
     "document": "docs/architecture/ROADMAP_M19_M40.md",
-    "nextPlannedMilestone": "M19",
+    "nextPlannedMilestone": "M20",
     "compatibilityAudit": "M19",
     "finalMilestone": "M40",
-    "pendingMainMilestones": 22,
+    "pendingMainMilestones": 21,
     "totalMainMilestones": 45,
     "decisionDate": "2026-10-19",
     "formerM19MovedTo": "M40",
-    "status": "planned",
+    "status": "m19_audit_accepted_locally",
     "trackingIssue": "https://github.com/Krozzeo/AxiomGameEngine/issues/40",
     "scopeRevision": "2026-10-19-gpu-physics",
     "gpuPhysicsPlan": "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",

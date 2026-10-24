@@ -33,6 +33,19 @@
     "skipped": 1,
     "skipReason": "Opt-in Windows native Recycle Bin integration, unchanged and not executed in M19"
   },
-  "remoteCi": "not yet dispatched for M19; distinct from local checks",
-  "mainIntegration": "M19 review branch; base consolidation merged"
+  "remoteCi": "See PR60 exact-head GitHub checks; do not infer remote success from this local artifact",
+  "mainIntegration": "M19 review branch; base consolidation merged",
+  "review": "https://github.com/Krozzeo/AxiomGameEngine/pull/60",
+  "jointBrowser": {
+    "products": {
+      "passed": true,
+      "pageErrors": [],
+      "engineVersion": "0.0.57"
+    },
+    "sharedAi": {
+      "passed": true,
+      "pageErrors": [],
+      "transport": "Controlled HTTP; no real-model acceptance"
+    }
+  }
 }

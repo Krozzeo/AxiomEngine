@@ -1,0 +1,11 @@
+{
+  "criteria": [
+    "Real Engine0.0.57 inherits the Hub account/model; account inputs are hidden; project model configuration stays available",
+    "Persistent product storage survives reload; exported diagnostics omit keys and private paths",
+    "Published versions list downloads and verifies a prepared fixture; activation is deferred while real Engine0.0.57 remains open",
+    "Closing flushes the scheduled release; rollback restores the previous real installation; Platform update banner persists across navigation"
+  ],
+  "pageErrors": [],
+  "transport": "controlled release/AI HTTP; no live account or hardware acceptance",
+  "passed": true
+}

@@ -1,3 +1,4 @@
+import {queryCompatibility} from '../../engine/scripting/compatibility.mjs';
 import {listenLoopback} from 'axiom-platform/loopback';
 import {pickFolder} from './folder-picker.mjs';
 import {createAuthoringPort} from '../../platform/authoring.mjs';
@@ -130,6 +131,8 @@ export async function startServer(options = {}) {
           return json(response, 401, { code: "AX_SECURITY_0002", cause: "Session token is invalid" });
         }
       }
+
+      if(request.method==='GET'&&url.pathname==='/v1/compatibility')return json(response,200,await queryCompatibility(url.searchParams));
 
       if(platform&&request.method!=='GET'&&url.pathname==='/v1/hub')return json(response,409,{code:'AX_SCENE_0003',cause:'Manage hosted projects from Axiom Platform.'});
 

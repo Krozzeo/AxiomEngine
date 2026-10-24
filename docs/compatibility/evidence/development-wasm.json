@@ -1,0 +1,58 @@
+{
+  "criteria": [
+    "Real C#/Wasm executes27 named positive, negative and lifecycle observations for objects, hierarchy, mathematics, time, physics, resources and scenes",
+    "Stop restores the complete authored scene; runtime objects, fields and resource handles do not become authoring changes",
+    "Authenticated inventory browser searches real signatures and retains pending editor APIs, assignments, provenance and separate zero verified metrics"
+  ],
+  "pageErrors": [],
+  "profile": "Axiom development C#/Wasm and Null editor; aliased observations, not native Unity conformance",
+  "cases": {
+    "object.component": "pass",
+    "object.missing": "pass",
+    "object.parent": "fail",
+    "object.parent-id": "pass",
+    "object.find": "pass",
+    "object.cycle": "pass",
+    "object.inactive": "pass",
+    "math.vector": "pass",
+    "math.zero": "pass",
+    "physics.hit": "pass",
+    "physics.miss": "pass",
+    "physics.overlap": "pass",
+    "resource.text": "pass",
+    "resource.missing": "pass",
+    "resource.type": "pass",
+    "scene.valid": "pass",
+    "scene.loaded": "pass",
+    "lifecycle.awake-start": "pass",
+    "lifecycle.start-update": "pass",
+    "time.delta": "pass",
+    "time.fixed": "pass",
+    "time.wait": "pass",
+    "time.advance": "pass",
+    "lifecycle.enabled": "pass",
+    "object.destroy-deferred": "fail",
+    "lifecycle.once": "pass",
+    "object.destroy-after": "pass"
+  },
+  "passedChecks": 25,
+  "failedChecks": 2,
+  "conformancePassed": false,
+  "knownDiscrepancies": [
+    {
+      "caseId": "object.parent",
+      "expected": "pass",
+      "observed": "fail",
+      "owner": "M20",
+      "reason": "Transform wrappers do not yet preserve Unity object equality semantics"
+    },
+    {
+      "caseId": "object.destroy-deferred",
+      "expected": "pass",
+      "observed": "fail",
+      "owner": "M20/M22",
+      "reason": "Axiom invalidates the object immediately instead of deferring destruction after the current Update loop"
+    }
+  ],
+  "passed": true
+}

@@ -1,17 +1,17 @@
 {
   "roadmapVersion": 2,
   "decisionDate": "2026-10-19",
-  "status": "planned",
-  "engineBaseline": "0.0.49 / SDK 8",
+  "status": "m19_audit_accepted_locally",
+  "engineBaseline": "0.0.57 / SDK8",
   "unityBaseline": "6000.3 LTS",
   "unityLatestDelta": "6000.6 observed 2026-10-18; separate from the frozen target",
-  "completedMainMilestones": 23,
+  "completedMainMilestones": 24,
   "totalMainMilestones": 45,
-  "pendingMilestones": 22,
+  "pendingMilestones": 21,
   "finalMilestone": "M40",
   "renumbering": {
-    "old": "M19 — MVP Hardening",
-    "new": "M40 — Final stabilization",
+    "old": "M19 \u2014 MVP Hardening",
+    "new": "M40 \u2014 Final stabilization",
     "reusedM19": "Complete audit and compatibility contract"
   },
   "historicalMvp": {
@@ -23,8 +23,9 @@
   "coverageTarget": {
     "coreVerifiedPercent": 95,
     "priorityP0VerifiedPercent": 100,
-    "measuredCurrentPercent": null,
-    "packages": "Separate versioned metrics; names alone never count as implemented"
+    "measuredCurrentPercent": 0,
+    "packages": "Separate versioned metrics; names alone never count as implemented",
+    "measurement": "Strict full native source/behavior signatures; alias observations separate"
   },
   "milestones": [
     {
@@ -43,8 +44,8 @@
       "id": "M19",
       "number": 19,
       "title": "Complete audit and compatibility contract",
-      "status": "not_started",
-      "acceptancePercent": 0,
+      "status": "complete",
+      "acceptancePercent": 100,
       "dependsOn": [
         "M18.3.10"
       ],
@@ -66,7 +67,9 @@
         "Publish CPU/GPU profiles, accelerated/fallback/blocked matrix and reproducible thresholds; rendering, Null and compile-only shaders do not prove GPU physics."
       ],
       "demo": "Compatibility Observatory: inventory browser and executable object/time/physics/resource corpus; harness is not implementation of pending APIs.",
-      "plan": "docs/architecture/M19_PLAN.md"
+      "plan": "docs/architecture/M19_PLAN.md",
+      "report": "docs/reports/M19_REPORT.md",
+      "integration": "Review candidate; local acceptance is distinct from remote CI/main"
     },
     {
       "id": "M20",
@@ -731,12 +734,12 @@
         "40.3 End-to-end sample/AI/docs/release."
       ],
       "acceptance": [
-        "M18.4 and M19–M39 accepted with evidence; pending exclusions cannot masquerade as passed tests.",
+        "M18.4 and M19\u2013M39 accepted with evidence; pending exclusions cannot masquerade as passed tests.",
         "Full sample runs in declared tiers with reproducible builds/stability/representative measures.",
         "Agent inspects/edits/compiles/runs/verifies/repairs/measures and presents reviewable proposal; required account/hardware acceptance uses real evidence.",
         "GPU physics/shaders/CPU fallback have real per-tier evidence; software WebGPU/Null cannot replace hardware or close a hardware blocker."
       ],
-      "demo": "Original Axiom End-to-End Sample from master-spec sections138–139, expanded with SDK conformance.",
+      "demo": "Original Axiom End-to-End Sample from master-spec sections138\u2013139, expanded with SDK conformance.",
       "plan": "docs/architecture/M40_PLAN.md"
     }
   ],
@@ -769,5 +772,6 @@
     ],
     "mainMilestoneCountChanged": false,
     "implementationCredit": 0
-  }
+  },
+  "scopeWeights": "docs/compatibility/SCOPE_WEIGHTS.md"
 }

@@ -1,3 +1,17 @@
+# Current handoff — M19 / Engine0.0.57
+
+Base consolidation is complete: Engine#59 → main791c54a509f759777ecf2266c86fce80d2275920; Platform#9 → main7c03b7fc6f25fdceeda645bd1bf33534751e68e9; Math Lab#2 → main4171441658640a6d8da29dcdcee5b27888a3aa75. Their CI passed before owner-authorized merges. Engine#54/#56/#57/#58 were closed only after verifying their heads were ancestors of main. Recovery refs remain untouched.
+
+M19 is implemented in the0.0.57 review branch, with4/4 local audit criteria passed. [Report](reports/M19_REPORT.md), [exact denominators](compatibility/README.md), [scope weights](compatibility/SCOPE_WEIGHTS.md), [demo](../demos/M19_GUIDE.md).49,471 declared ABI signatures,40,126 overlapping published contracts and75,743 separate package UIDs.1,120 partial ABI alias candidates; formally verified full native source/behavior signatures remain zero. This is strict attribution; useful existing SDK8 APIs still work.29 package inventories remain blocked; other device/platform/AOT/reference-execution profiles are not credited.
+
+Next is M20: fix wrapper equality/identity and deferred Destroy timing first, then audit Object/GameObject/Component/Transform overload batches. The corpus runs27 observations,25 pass and2 expected discrepancies. Do not mark these two as Unity-compatible because the harness detects them correctly. Do not conflate M19 audit acceptance with M20 implementation.
+
+Platform owns hosted OpenAI/GitHub accounts; project defaults use Same as Hub. Engine owns documents/scenes/C#/graphics/physics/audio, semantic tools, isolated proposals and human Apply. SDK8/native formats1 and the pinned Platform SDK are unchanged. Credentials/user projects/raw Unity archives/vendor DLLs are never packaged. Standalone game export remains missing; #47/#51/#55 keep their historical issue scope. GPU/shader work remains M25/M26/M28/M30/M39/M40; no physical GPU credit. Whole-project effort is unknown; historical94% is the original MVP only.
+
+The sections below are historical snapshots, superseded by this handoff and the M19 report. Their older phase/PR status is not current.
+
+---
+
 # Current handoff — Engine0.0.56 / Platform0.1.7 product audit
 
 Owner approved account authority/inheritance, public prepared-release discovery/installations, persistent product storage and diagnostics. Engine0.0.56/native game format1/scripting SDK8 is a review candidate based on P5; earlier Engine P2–P5 stacked branches are not implicitly merged. Platform0.1.6 startup recovery was integrated into main at5fb826792fa58032c932174634bafb3d5f14bc0b; the0.1.7 expansion is separate. Existing protected recovery refs remain unchanged.

@@ -1,12 +1,12 @@
 # Confirmed implementation status
 
-Current branch candidate: **0.0.56 / SDK8 / Platform0.1.7**. [Current audit](../reports/ARCHITECTURE_AUDIT_0_0_56.md) and [product contract](PRODUCT_INTEGRATION_0_0_56.md) supersede older integration snapshots. P1 is accepted; later Engine changes remain stacked review candidates. Main/recovery refs have not been advanced by this delivery.
+Current branch candidate: **0.0.57 / SDK8 / M19**. Integration is merged into all three main branches. M19 audit acceptance passed locally; its own CI/main merge is separate. [M19 report](../reports/M19_REPORT.md), [strict coverage baseline](../compatibility/README.md). Older evidence below retains its historical scope.
 
 | Area | Confirmed behavior | Remaining limits |
 | --- | --- | --- |
 | Editor/Hub |2D/3D scenes/resources/multiple Inspectors/docking; P4 unified project/session Hub/Settings/lifecycle | Older browser CI regressions remain independently tracked |
 | Renderer | WebGPU/Null and first-scene initialization fix from M18.3.12 | Null does not prove physical GPU quality/performance |
-| Scripting | C# runtime, SDK 8, own documented bindings | Not full Unity parity; M19 full member audit/denominator pending |
+| Scripting | C# runtime, SDK 8, own documented bindings | M19 frozen declared/published/package inventories; full native-source and behavior certification remain0% |
 | Physics | CPU/Wasm2D/3D and stress demos | Dense whole-editor performance unresolved; GPU physics not implemented |
 | AI | Semantic tools, isolated proposals, human review/Apply/PMD; P3 generic infrastructure shared | Real-model quality/cost and contract-specific limitations |
 | GitHub | Session account, project destinations/preferences/autosave/review/publication/history | Native real-account acceptance deferred; TestRepo testing-only |
@@ -22,6 +22,6 @@ P4 local final evidence is recorded in [its report](../reports/PLATFORM_P4_REPOR
 
 ## Planning
 
-45 main milestones,23 historically closed,22 pendingM19–M40. M18.4 closed in the explicitly agreed scope with native account validation deferred (ADR0034). M19 audit remains next product expansion, independent of Platform P5 when interfaces allow. The historical94%(122/130) refers only to original MVP weighting; expanded global/complete Unity coverage remains unquantified. [Roadmap](ROADMAP_M19_M40.md), [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md), [handoff](../AI_HANDOFF.md).
+45 main milestones;23 historical closures plus locally accepted M19,21 implementation milestones M20–M40 remain. M18.4 closed in the explicitly agreed scope with native account validation deferred (ADR0034). M20 object/component/hierarchy compatibility is next. The historical94%(122/130) refers only to original MVP weighting; expanded global/complete Unity coverage remains unquantified. [Roadmap](ROADMAP_M19_M40.md), [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md), [handoff](../AI_HANDOFF.md).
 
 P5: negotiated Platform framing, shared public folder lease/native picker, safe file-based import, one hosted editor with disconnection/reconnection. Math Lab is independent and gives no Engine API credit. [Details](PLATFORM_P5.md).

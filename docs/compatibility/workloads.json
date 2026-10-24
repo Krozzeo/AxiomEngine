@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "M19-v1",
+  "seed": 1901,
+  "dimensions": [2, 3],
+  "bodyCounts": [100, 1024, 10000],
+  "layouts": ["separated-grid", "stacked-contacts", "queries-triggers", "lifecycle-churn"],
+  "fixedDeltaSeconds": 0.016666666666666666,
+  "warmupSeconds": 10,
+  "measureSeconds": 60,
+  "runs": 5,
+  "gpuAccepted": false,
+  "autoMinimumMedianImprovement": 0.2,
+  "maximumP99Regression": 0.1,
+  "synchronousQueryReadbackP95Ms": 2,
+  "referenceTierP99SimulationMs": 16.67,
+  "gpuMemoryBudgetMiB": 512,
+  "lifecycleCycles": 10,
+  "status": "Frozen future acceptance contract; hardware results must be recorded separately"
+}

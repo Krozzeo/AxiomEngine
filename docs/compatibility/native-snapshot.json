@@ -1,0 +1,821 @@
+{
+  "schemaVersion": 1,
+  "unityVersion": "6000.3.27f1",
+  "profile": "Windows editor managed exports plus Android/iOS editor extensions; declared public/protected members in Unity namespaces; inherited members and property/event accessors are not duplicated",
+  "sourceMetadataSha256": "7dd5533502c47192de5575b5bf66a1448f09fc0ff107000c94648e61b3413a3b",
+  "inventorySha256": "8b1a6c19f0fa800fbf8c819b3a7bf90a6da7f423927c577f191b2af6d00831bb",
+  "records": 49471,
+  "aliasCandidateRecords": 1120,
+  "nativeSourceVerified": 0,
+  "behaviorSignatureVerified": 0,
+  "nativeSourceVerifiedPercent": 0,
+  "behaviorSignatureVerifiedPercent": 0,
+  "kindCounts": {
+    "method": 19001,
+    "type": 5054,
+    "property": 12113,
+    "enum-value": 6932,
+    "field": 2905,
+    "constructor": 3118,
+    "event": 348
+  },
+  "areas": {
+    "M20": {
+      "records": 311,
+      "partial": 119,
+      "pending": 192,
+      "P0": 311,
+      "P1": 0,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M21": {
+      "records": 1245,
+      "partial": 147,
+      "pending": 1098,
+      "P0": 1100,
+      "P1": 145,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M22": {
+      "records": 1165,
+      "partial": 65,
+      "pending": 1100,
+      "P0": 499,
+      "P1": 666,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M23": {
+      "records": 336,
+      "partial": 16,
+      "pending": 320,
+      "P0": 45,
+      "P1": 291,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M24": {
+      "records": 282,
+      "partial": 53,
+      "pending": 229,
+      "P0": 282,
+      "P1": 0,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M25": {
+      "records": 588,
+      "partial": 153,
+      "pending": 435,
+      "P0": 527,
+      "P1": 61,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M26": {
+      "records": 458,
+      "partial": 64,
+      "pending": 394,
+      "P0": 0,
+      "P1": 458,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M27": {
+      "records": 2565,
+      "partial": 180,
+      "pending": 2385,
+      "P0": 694,
+      "P1": 1871,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M28": {
+      "records": 173,
+      "partial": 0,
+      "pending": 173,
+      "P0": 0,
+      "P1": 173,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M29": {
+      "records": 538,
+      "partial": 95,
+      "pending": 443,
+      "P0": 0,
+      "P1": 538,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M30": {
+      "records": 6339,
+      "partial": 29,
+      "pending": 6310,
+      "P0": 0,
+      "P1": 6339,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M31": {
+      "records": 1387,
+      "partial": 29,
+      "pending": 1358,
+      "P0": 0,
+      "P1": 1387,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M32": {
+      "records": 556,
+      "partial": 13,
+      "pending": 543,
+      "P0": 0,
+      "P1": 556,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M33": {
+      "records": 1551,
+      "partial": 3,
+      "pending": 1548,
+      "P0": 0,
+      "P1": 1551,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M34": {
+      "records": 2260,
+      "partial": 4,
+      "pending": 2256,
+      "P0": 0,
+      "P1": 2260,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M35": {
+      "records": 312,
+      "partial": 30,
+      "pending": 282,
+      "P0": 0,
+      "P1": 312,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M36": {
+      "records": 367,
+      "partial": 67,
+      "pending": 300,
+      "P0": 0,
+      "P1": 367,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M37": {
+      "records": 2848,
+      "partial": 24,
+      "pending": 2824,
+      "P0": 0,
+      "P1": 2848,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M38": {
+      "records": 17285,
+      "partial": 0,
+      "pending": 17285,
+      "P0": 0,
+      "P1": 17285,
+      "P2": 0,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    },
+    "M39": {
+      "records": 8905,
+      "partial": 29,
+      "pending": 8876,
+      "P0": 0,
+      "P1": 0,
+      "P2": 8905,
+      "nativeVerified": 0,
+      "behaviorVerified": 0
+    }
+  },
+  "assemblies": {
+    "android/$INSTDIR$VAR_95/UnityEditor.Android.Extensions.dll": {
+      "assembly": "UnityEditor.Android.Extensions",
+      "version": "1.0.0.0",
+      "sha256": "38ce680a9484981fbaff4b8096a342d0ed2544aa69024bbbc7680a1e81920353",
+      "mvid": "9ea8e93e-7220-41ec-a447-ae07427dd6de"
+    },
+    "editor/$_OUTDIR/Managed/Unity.CecilTools.dll": {
+      "assembly": "Unity.CecilTools",
+      "version": "1.0.0.0",
+      "sha256": "9b0cd5b728ec3a705c2a1002dd470ecc4502c72558ef8149f9669ff36d87087f",
+      "mvid": "f12036f0-1932-45be-9128-dd95bcad54c6"
+    },
+    "editor/$_OUTDIR/Managed/Unity.CompilationPipeline.Common.dll": {
+      "assembly": "Unity.CompilationPipeline.Common",
+      "version": "2022.2.0.1",
+      "sha256": "c446da3b1a58414c06049836537e79e28176d776e6ecaf942063ae837847d12c",
+      "mvid": "d802bc37-4d80-4f98-881d-774b68155dc7"
+    },
+    "editor/$_OUTDIR/Managed/Unity.SerializationLogic.dll": {
+      "assembly": "Unity.SerializationLogic",
+      "version": "1.0.0.0",
+      "sha256": "4edf7cc099528f43a51f6148ce66d3d2a4e7549d927f37e18ac8edd9be6f44cb",
+      "mvid": "a2cd680c-9dd2-4e3c-9332-bf381d61aca6"
+    },
+    "editor/$_OUTDIR/Managed/UnityEditor.dll": {
+      "assembly": "UnityEditor",
+      "version": "0.0.0.0",
+      "sha256": "efa19ffd80240c7781bc306d23278134d3f8a7738b9d9328c806febcf9c1625b",
+      "mvid": "d7c9108b-653f-4641-8565-4fb01f2a2a54"
+    },
+    "editor/$_OUTDIR/Managed/UnityEditor.Graphs.dll": {
+      "assembly": "UnityEditor.Graphs",
+      "version": "0.0.0.0",
+      "sha256": "7a0c1c45095b81d3c6475d806a9b754a70c1aa9acec6e954a5a57a68e476c787",
+      "mvid": "17269f59-aceb-464f-aeca-6365111b7384"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine.dll": {
+      "assembly": "UnityEngine",
+      "version": "0.0.0.0",
+      "sha256": "4b9c606a12fbf2b88e65e1075e298bdb0f4d63897008bdf1c2c40254c07a5530",
+      "mvid": "ba3af2a7-4994-445b-9339-8fb81d061403"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.AdaptivePerformanceModule.dll": {
+      "assembly": "UnityEditor.AdaptivePerformanceModule",
+      "version": "0.0.0.0",
+      "sha256": "d586e88fa8e24a8e12dc3a3d28bbd1198f66f4acb7a9f927703a81ce2e8980ac",
+      "mvid": "d5dbf8eb-d1d7-4f00-ae4e-cf99a8d05ca9"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.BuildProfileModule.dll": {
+      "assembly": "UnityEditor.BuildProfileModule",
+      "version": "0.0.0.0",
+      "sha256": "7bdb0c140955891eb4399c3afed58199dcb6099f2019b7c268dcbded1e406ca6",
+      "mvid": "015603e3-9d53-4072-a78d-7378936b42ec"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.CoreModule.dll": {
+      "assembly": "UnityEditor.CoreModule",
+      "version": "0.0.0.0",
+      "sha256": "32dd96fe34e3d16e9b0b3427722873af5d9f746f706195a36ca1932bf5529239",
+      "mvid": "6719e354-e74c-4c6e-92f6-c272146c0b4b"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.DeviceSimulatorModule.dll": {
+      "assembly": "UnityEditor.DeviceSimulatorModule",
+      "version": "0.0.0.0",
+      "sha256": "e763770e06c198ac04e06de2273bd20d0f84cfd5a090b71fabd3d6b532ef8380",
+      "mvid": "c79e873b-6b3b-42f9-bf3c-74942c6dd9fa"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.EditorToolbarModule.dll": {
+      "assembly": "UnityEditor.EditorToolbarModule",
+      "version": "0.0.0.0",
+      "sha256": "aefc200e1e70a87eb74aa3d6a331a7df0c6b81df615c59c08fa16f44c8c31353",
+      "mvid": "e33c7527-2d37-43fb-b2d4-2ca4234508d1"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.EmbreeModule.dll": {
+      "assembly": "UnityEditor.EmbreeModule",
+      "version": "0.0.0.0",
+      "sha256": "d97cfd985da5ce52d69a2577199b388d63a5be37f1e761ed68b0f304c15391ae",
+      "mvid": "d4713913-9355-4a8d-b8b5-ea1858689c6d"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.GraphViewModule.dll": {
+      "assembly": "UnityEditor.GraphViewModule",
+      "version": "0.0.0.0",
+      "sha256": "4e053c07ed043292ccc10e42a23fdd46e09a69df0ac6c15f544276dc58144fe4",
+      "mvid": "8a64cd88-0b70-4e91-81fe-9f3b210fb450"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.MediaModule.dll": {
+      "assembly": "UnityEditor.MediaModule",
+      "version": "0.0.0.0",
+      "sha256": "c2849c0a2111eb6ad457642a46181315ae0f085a2e7037e29283fa2f18c15f93",
+      "mvid": "0a5a843c-f70c-4f01-8ffa-112d59aa96fa"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.PhysicsModule.dll": {
+      "assembly": "UnityEditor.PhysicsModule",
+      "version": "0.0.0.0",
+      "sha256": "154c58df0bfb6083d858311760220a1cb8f77366de0ac62563e9abbc4a243970",
+      "mvid": "76831fe0-0ba9-4944-acfe-893a74186987"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.PresetsUIModule.dll": {
+      "assembly": "UnityEditor.PresetsUIModule",
+      "version": "0.0.0.0",
+      "sha256": "f96d78efce41b61b09a3569f76b8b22e9437e5d357685720c890439f0a61a58d",
+      "mvid": "13cac8b5-d434-4cd1-84ba-deb10dd02d63"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.QuickSearchModule.dll": {
+      "assembly": "UnityEditor.QuickSearchModule",
+      "version": "0.0.0.0",
+      "sha256": "ee76022a8a0e73bc04f3cf80699c9ded7d22398967dac813944e11451610de0b",
+      "mvid": "ac137bf2-a024-4eab-9de9-b4dd18a18d7d"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.SceneTemplateModule.dll": {
+      "assembly": "UnityEditor.SceneTemplateModule",
+      "version": "0.0.0.0",
+      "sha256": "9e1ba12ca023d4924272f2773791615f521f43d231231466ce4146b7ac3d9bf8",
+      "mvid": "3b3ae165-7874-47a5-aee8-e2888f3dab43"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.SketchUpModule.dll": {
+      "assembly": "UnityEditor.SketchUpModule",
+      "version": "0.0.0.0",
+      "sha256": "aaca1f454eb887fbf274068bce8135c4da4d8daab30c33c4d0e1a9aca20299ad",
+      "mvid": "94fd9d0f-495d-4842-ad78-c0b83d1f1a30"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.TerrainModule.dll": {
+      "assembly": "UnityEditor.TerrainModule",
+      "version": "0.0.0.0",
+      "sha256": "d21e362b217b6d3d9f2b6d024d80a4dbf7c71711818948ca975437a60d5681c7",
+      "mvid": "cdf11812-36a4-4f9b-a221-4c47d61fcafc"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.TextCoreTextEngineModule.dll": {
+      "assembly": "UnityEditor.TextCoreTextEngineModule",
+      "version": "0.0.0.0",
+      "sha256": "821a96b094d6ca38ce429fc7ae9a7ffe06406618cca89b9e8b54b4327aca3564",
+      "mvid": "a7547cf4-acb0-4827-910b-fddf0edbe189"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.TextRenderingModule.dll": {
+      "assembly": "UnityEditor.TextRenderingModule",
+      "version": "0.0.0.0",
+      "sha256": "5c63e877906df8b1e641601f46cc97cd206854fdb8c1127da5f89d28a7ec3ec5",
+      "mvid": "2cb91592-d9fc-4b10-a1ce-2f855e71a68d"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.TilemapModule.dll": {
+      "assembly": "UnityEditor.TilemapModule",
+      "version": "0.0.0.0",
+      "sha256": "716732d174244bf5b3db0ac163d056b26618e885d848fff96cbf68c089f760ad",
+      "mvid": "f22decb3-1aa1-4770-b44d-b93079a9e860"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.UIElementsModule.dll": {
+      "assembly": "UnityEditor.UIElementsModule",
+      "version": "0.0.0.0",
+      "sha256": "7525d499267ea168255cafadcfb8aa98b4dea6831bbb989f47f02e0ce7c2415d",
+      "mvid": "c18ea7b6-0550-4d2a-9522-81231f5d2728"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.UnityConnectModule.dll": {
+      "assembly": "UnityEditor.UnityConnectModule",
+      "version": "0.0.0.0",
+      "sha256": "1d246f9159acea1900ff4573778f99798cd5e4c15b093cccdd0c97cb5129b442",
+      "mvid": "f8c9abdc-a179-4789-a655-211ca3586dfd"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.VectorGraphicsModule.dll": {
+      "assembly": "UnityEditor.VectorGraphicsModule",
+      "version": "0.0.0.0",
+      "sha256": "b0468c4040a8dd230161dd67f3c530b5d477ac1526fb02b82f3c6807bc5e8e4d",
+      "mvid": "fbe447e6-20a3-44c9-bdea-23100d8b196c"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.VideoModule.dll": {
+      "assembly": "UnityEditor.VideoModule",
+      "version": "0.0.0.0",
+      "sha256": "83e4f505e529f10641b7285cd282c7243c67a677129d19ea259f2d0461422c29",
+      "mvid": "e7e5493a-45df-4b7d-a148-59c6808418a8"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEditor.XRModule.dll": {
+      "assembly": "UnityEditor.XRModule",
+      "version": "0.0.0.0",
+      "sha256": "9a3c60517872deb5e4fb66af1483f94ea718b2e51bb4daa0ad3091ad409347f8",
+      "mvid": "37031601-906f-4b72-ac5c-182a110ec0ef"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AccessibilityModule.dll": {
+      "assembly": "UnityEngine.AccessibilityModule",
+      "version": "0.0.0.0",
+      "sha256": "4decb5e529da6e4f5f786b863fd14c7e119dc14f115e989aabaff4b9a93d02e1",
+      "mvid": "df6ee554-8035-4426-b8c0-b4d9d9ebbb3e"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AdaptivePerformanceModule.dll": {
+      "assembly": "UnityEngine.AdaptivePerformanceModule",
+      "version": "0.0.0.0",
+      "sha256": "8f5087262ddbbc84201d1ca7766acc554d37fdc60e98a64899c362bb81127cd1",
+      "mvid": "2e83c392-204e-4b2e-b9a8-8876ad441158"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AIModule.dll": {
+      "assembly": "UnityEngine.AIModule",
+      "version": "0.0.0.0",
+      "sha256": "d13a55156d1093817f1086cbd187178d4990c27b7c5c61023ac301187cef845a",
+      "mvid": "f3eba1fb-d15d-4da7-ad1a-7e502d67d706"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AMDModule.dll": {
+      "assembly": "UnityEngine.AMDModule",
+      "version": "0.0.0.0",
+      "sha256": "4479f0a8df49b57598dc867a4479ddca0293cf048ab08c59cd094419a38c8041",
+      "mvid": "9ff5df33-b33d-4f88-82fd-a98c8cb004cc"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AndroidJNIModule.dll": {
+      "assembly": "UnityEngine.AndroidJNIModule",
+      "version": "0.0.0.0",
+      "sha256": "1aacbd2ff0e512175be3f4e761f5f0ccffa61948e369f30eea2d0a487412ad32",
+      "mvid": "62fe6bc2-ba58-4604-913c-5d739f597f94"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AnimationModule.dll": {
+      "assembly": "UnityEngine.AnimationModule",
+      "version": "0.0.0.0",
+      "sha256": "5fd449e398d678cde6d0cc630bc1b778a2628720ac8548ff77c1b89b62617058",
+      "mvid": "3e488c83-8278-4526-9ee9-a8df8595bac3"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AssetBundleModule.dll": {
+      "assembly": "UnityEngine.AssetBundleModule",
+      "version": "0.0.0.0",
+      "sha256": "34bca105d8b9b57b8b7aa709b27e1c6dbcfb0d70ace7be353966f48b6d1539c0",
+      "mvid": "bc96d8ae-594c-437f-b178-0f608c6b3c66"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.AudioModule.dll": {
+      "assembly": "UnityEngine.AudioModule",
+      "version": "0.0.0.0",
+      "sha256": "509bbf3101a6aae1a3c032c181921d53f4842e96038b3081ba86ffd128150a10",
+      "mvid": "7a74ea22-0832-4e72-9aa1-69855ee4234a"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ClothModule.dll": {
+      "assembly": "UnityEngine.ClothModule",
+      "version": "0.0.0.0",
+      "sha256": "0f44cd699384bff8406d3bb3debe3c0cc7b7a15e83e9d5a181ff92cd8e0b7b36",
+      "mvid": "28a5d923-c6c8-468e-8468-e36d53d260c5"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ClusterInputModule.dll": {
+      "assembly": "UnityEngine.ClusterInputModule",
+      "version": "0.0.0.0",
+      "sha256": "6284b2e749a2ead98d65bd5335e7cd1d88e01e939df57985ca8d5efb54979621",
+      "mvid": "6c5230ce-1608-46e0-a58f-2fce8be0f696"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll": {
+      "assembly": "UnityEngine.ClusterRendererModule",
+      "version": "0.0.0.0",
+      "sha256": "4d80b161419ab5a2064736d60223a9bf1c082999b4b8d8977137250cd7cedacf",
+      "mvid": "aaf4921d-052d-45ed-acd7-7452d0c2ecad"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ContentLoadModule.dll": {
+      "assembly": "UnityEngine.ContentLoadModule",
+      "version": "0.0.0.0",
+      "sha256": "7a0992c6593628243593dacbe2ce81ef86556d81334443c67d1dc1e45bdfe6b1",
+      "mvid": "92e8dc7a-2b3a-411d-bf8a-931033645be2"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.CoreModule.dll": {
+      "assembly": "UnityEngine.CoreModule",
+      "version": "0.0.0.0",
+      "sha256": "42e4b6c8def1193816c79961e31d88df7d53b373d739d9b7b931716a7ca7f737",
+      "mvid": "1da36a9a-f21a-4683-ad40-e96b14222e63"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.CrashReportingModule.dll": {
+      "assembly": "UnityEngine.CrashReportingModule",
+      "version": "0.0.0.0",
+      "sha256": "6032921037be68a34f4bf748ef4f4d64346c67bae687033b106602c88c8c2f33",
+      "mvid": "9a6ea8c0-111c-4bf7-8411-4084e3821fcc"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.DirectorModule.dll": {
+      "assembly": "UnityEngine.DirectorModule",
+      "version": "0.0.0.0",
+      "sha256": "ea4235cf707fc73d6bade828fd15ae00c7f1dce204028ec79848f997b55756e1",
+      "mvid": "cd87db4f-bdfa-413b-848b-757974922dbf"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.GameCenterModule.dll": {
+      "assembly": "UnityEngine.GameCenterModule",
+      "version": "0.0.0.0",
+      "sha256": "a76f6443714bc0acf8c32e40ce9a5be0faf3f8e7c4c1efcc0307a5548176766c",
+      "mvid": "7bf9a8c3-744d-41dd-8436-1a00751ec9d9"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.GridModule.dll": {
+      "assembly": "UnityEngine.GridModule",
+      "version": "0.0.0.0",
+      "sha256": "af70fa42f201165814531a7990c0e8fbca0b6b8fbcc86bcb0ce2124f9e2713d4",
+      "mvid": "691942d3-ffdd-46ac-b293-4e6d2b791376"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.HierarchyCoreModule.dll": {
+      "assembly": "UnityEngine.HierarchyCoreModule",
+      "version": "0.0.0.0",
+      "sha256": "0865657065afdd29fe22471604c84cd8765de7b68a0ffa6113ac22ec2aeeb3af",
+      "mvid": "cffc317f-c1ea-4042-92d7-ee3a77e4703f"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.IdentifiersModule.dll": {
+      "assembly": "UnityEngine.IdentifiersModule",
+      "version": "0.0.0.0",
+      "sha256": "436ab3c28726747700718c592bab06d6a00d2fc8f4e298fd0ec22269fdab2922",
+      "mvid": "6b2c3bb5-77fb-442e-8241-d59f5b170e34"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ImageConversionModule.dll": {
+      "assembly": "UnityEngine.ImageConversionModule",
+      "version": "0.0.0.0",
+      "sha256": "5593d576dccb4ce4e014dbf4795daf3d16f5647bfd9003ba0b32ee502412e5a0",
+      "mvid": "93c3b46e-a8f9-400f-9b66-0ae94eee6c02"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.IMGUIModule.dll": {
+      "assembly": "UnityEngine.IMGUIModule",
+      "version": "0.0.0.0",
+      "sha256": "cfdcb3f1c1acb3ea4615fa7dc9fff4bae10f43e79455a12f9773a1222ef06fe3",
+      "mvid": "15c5ee18-898e-4945-9ab2-dc6d9cd97b90"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.InputLegacyModule.dll": {
+      "assembly": "UnityEngine.InputLegacyModule",
+      "version": "0.0.0.0",
+      "sha256": "1a667f28c7c52f4d245a02bef2a753762cdb0a659150e6b71910e19d494dfe5d",
+      "mvid": "2cf5fb58-f990-458a-a3f2-979aaf8e101b"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll": {
+      "assembly": "UnityEngine.JSONSerializeModule",
+      "version": "0.0.0.0",
+      "sha256": "29205ee6a7ed1edbf4a24fab14af737d2d70b4f060a998099267099c455562dc",
+      "mvid": "d644af9e-30df-4e36-957e-55caa6b89b9c"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.LocalizationModule.dll": {
+      "assembly": "UnityEngine.LocalizationModule",
+      "version": "0.0.0.0",
+      "sha256": "1bac9065705457a9184e6dec6a725c9e1bc4cc795dbb9d85acad12b436766a15",
+      "mvid": "25124d14-a4fe-4cfe-8deb-d28d235d43e5"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.MultiplayerModule.dll": {
+      "assembly": "UnityEngine.MultiplayerModule",
+      "version": "0.0.0.0",
+      "sha256": "beed749ee659128fe3a7a281fa2b821868ec1d7180a2bb5793b861b704fb025f",
+      "mvid": "1ab09e3c-69ea-4ed2-91ea-bd9963e17d58"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.NVIDIAModule.dll": {
+      "assembly": "UnityEngine.NVIDIAModule",
+      "version": "0.0.0.0",
+      "sha256": "fc320e616d3481800cb38418c4a3e477fdd6a8b7e5dd55266a8f767d2cf65ec6",
+      "mvid": "b00bbc1b-52a6-4fbe-905c-db958ebf8963"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll": {
+      "assembly": "UnityEngine.ParticleSystemModule",
+      "version": "0.0.0.0",
+      "sha256": "02dc1113a6428fd1443681be0d4bc07f6246846acf5aab1ce6e6a1fb8ceb170e",
+      "mvid": "385b2faa-c3d9-43d0-bdec-2560fee1a061"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll": {
+      "assembly": "UnityEngine.PerformanceReportingModule",
+      "version": "0.0.0.0",
+      "sha256": "68df38c80a01420c1cac1b33b4129857cbfb222a911026a0f31152773ce010fe",
+      "mvid": "f3ceb7be-44ae-41b3-91a2-fdf04669f2ac"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.Physics2DModule.dll": {
+      "assembly": "UnityEngine.Physics2DModule",
+      "version": "0.0.0.0",
+      "sha256": "b2888649b9d0d06179f46c0ba0de9eeae9e6d15a9a1539eac246cc1cd44f511c",
+      "mvid": "fb480520-ba92-4904-95a3-a995eed980d9"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.PhysicsModule.dll": {
+      "assembly": "UnityEngine.PhysicsModule",
+      "version": "0.0.0.0",
+      "sha256": "cf6187593b324098e8824e23f6971b6300c54e3df062e3f145102a6a190f2e75",
+      "mvid": "7e8a8c48-d67d-48ab-beae-8971655039a8"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.PropertiesModule.dll": {
+      "assembly": "UnityEngine.PropertiesModule",
+      "version": "0.0.0.0",
+      "sha256": "bb31a1159174678fd004161d86f89d43b68d2797ea4f33e737295f38b515861c",
+      "mvid": "a4d8e0b6-1fab-4443-a01c-af390fa764a7"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll": {
+      "assembly": "UnityEngine.ScreenCaptureModule",
+      "version": "0.0.0.0",
+      "sha256": "1d34d256a2eab075b9cbab29b3b547a1291ce57c8b7753f5550e427313b437fa",
+      "mvid": "a9c44348-4c3e-4a8c-958a-cae10828619a"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.ShaderRuntimeModule.dll": {
+      "assembly": "UnityEngine.ShaderRuntimeModule",
+      "version": "0.0.0.0",
+      "sha256": "3d5d5bafddb97a8836a7803c8df91fdd097212801f2eaeedeac210f8484bf4b1",
+      "mvid": "eeb631ef-8dca-411e-a279-ce4e88568127"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll": {
+      "assembly": "UnityEngine.SpriteMaskModule",
+      "version": "0.0.0.0",
+      "sha256": "bc1a2959a3ab9c1312069a2ae651b870bb0d6013879f602aa812c25c100dec16",
+      "mvid": "481a12a4-c668-4f9b-9954-099ab52c6c33"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll": {
+      "assembly": "UnityEngine.SpriteShapeModule",
+      "version": "0.0.0.0",
+      "sha256": "0aff1517ea6a833642d256db9aed62bf717eaf8bafa2ca3647bdfda4aa1403f6",
+      "mvid": "eff22cef-7870-449a-b249-ac255d32b603"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.StreamingModule.dll": {
+      "assembly": "UnityEngine.StreamingModule",
+      "version": "0.0.0.0",
+      "sha256": "04a1bb4cc3a16dbdac9b86213fabb48c93ebcc47f7327f127976ecadf25a87b2",
+      "mvid": "39d5ed66-5800-425d-89f7-d96f1bb63e63"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.SubstanceModule.dll": {
+      "assembly": "UnityEngine.SubstanceModule",
+      "version": "0.0.0.0",
+      "sha256": "93b4a27603afc1ae9b8156c0199054dda63b31980228a8f9de2177d2a1fb1b72",
+      "mvid": "57d54466-072b-42d1-a4d9-7ab12c76fc70"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.SubsystemsModule.dll": {
+      "assembly": "UnityEngine.SubsystemsModule",
+      "version": "0.0.0.0",
+      "sha256": "00aa1473052c11521c92e74e82bf00b109d17f7a150c373ffc40dae343bda39f",
+      "mvid": "9339c73e-c67d-4800-a416-09edf2d1d1c6"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.TerrainModule.dll": {
+      "assembly": "UnityEngine.TerrainModule",
+      "version": "0.0.0.0",
+      "sha256": "37a6fd0a354bf32df0337349e7a505776617b710e9a3bd6892c9c1582ae8a1f5",
+      "mvid": "c6bb6c5a-86d6-42ce-b215-188b917c11fa"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll": {
+      "assembly": "UnityEngine.TerrainPhysicsModule",
+      "version": "0.0.0.0",
+      "sha256": "143b1c176d29101018ce1f21bcf546a84ccc0c63e5084e186457c8580c9993d6",
+      "mvid": "7565acf2-708b-423c-b020-9fe92ce43920"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.TextCoreFontEngineModule.dll": {
+      "assembly": "UnityEngine.TextCoreFontEngineModule",
+      "version": "0.0.0.0",
+      "sha256": "f6ab311526a97e3d8208c13270a5b07b02bf8a9a6665f820d6d5b999c2ce6343",
+      "mvid": "68701bf7-30e7-46ad-bcc5-20af14558891"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.TextCoreTextEngineModule.dll": {
+      "assembly": "UnityEngine.TextCoreTextEngineModule",
+      "version": "0.0.0.0",
+      "sha256": "036c5c8abc79b719965656cc524e57ceee226cec6f6f7ae3bca2626f4726d66e",
+      "mvid": "a3d6e3b4-5e19-4540-9941-cd5a89f8da5e"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.TextRenderingModule.dll": {
+      "assembly": "UnityEngine.TextRenderingModule",
+      "version": "0.0.0.0",
+      "sha256": "f0a7eb9338e772629e7cd3f400b14c09dadd71e0c1316c410c3168ff2e0aa6ff",
+      "mvid": "ed799fc8-2edf-47e5-b513-325ba9177e8a"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.TilemapModule.dll": {
+      "assembly": "UnityEngine.TilemapModule",
+      "version": "0.0.0.0",
+      "sha256": "4c236b88a7953de7058f12e366b5cdbc69a08c47a119de89c562800dd3715c85",
+      "mvid": "286c486f-16c6-4728-a530-1b6b33fc78ac"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UIElementsModule.dll": {
+      "assembly": "UnityEngine.UIElementsModule",
+      "version": "0.0.0.0",
+      "sha256": "c7bd796bc111a4f70d320dcd646ae18366f4498daf065d55ceb8ef33e9a8d2cb",
+      "mvid": "e2e0fc2f-a392-49f7-be02-700ea6857cef"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UIModule.dll": {
+      "assembly": "UnityEngine.UIModule",
+      "version": "0.0.0.0",
+      "sha256": "c33946181303414ada34e3ed03f95e3b3d3fc42510cd9b50f60ba69e90f619a6",
+      "mvid": "c1a3c7f4-1e63-4217-a00c-841d16ccbf49"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityAnalyticsCommonModule.dll": {
+      "assembly": "UnityEngine.UnityAnalyticsCommonModule",
+      "version": "0.0.0.0",
+      "sha256": "83e9500fd8b88b89492186834ef7891a1eeab4e9ce5f185e034f0877a14edeea",
+      "mvid": "ac72992e-340e-4f8d-919b-ea8ad605d5f8"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll": {
+      "assembly": "UnityEngine.UnityAnalyticsModule",
+      "version": "0.0.0.0",
+      "sha256": "06c5185bec00e365368840737aa245e309c0eee03cc6dffa95bab4ee39e7da51",
+      "mvid": "a9760f55-f199-49c3-9fbe-b8b1db3dd4b0"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityConsentModule.dll": {
+      "assembly": "UnityEngine.UnityConsentModule",
+      "version": "0.0.0.0",
+      "sha256": "b3449af5515c2088c45a21c40f62a9f12402765e5817be2200ef24d305b50d3c",
+      "mvid": "1219a285-0a30-4b7b-bc88-f153c9b5921f"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll": {
+      "assembly": "UnityEngine.UnityWebRequestAssetBundleModule",
+      "version": "0.0.0.0",
+      "sha256": "53f4b3d1d442f0a37b4c7705031473848f6cbd792fe1d9fb69edcacfe249b2ba",
+      "mvid": "1a026c99-79f3-4710-b6b4-745b9232e65b"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll": {
+      "assembly": "UnityEngine.UnityWebRequestAudioModule",
+      "version": "0.0.0.0",
+      "sha256": "30c4cca5394cd83d2c95c69fbe976e8c61c8e7cc512652d91f598ab35bf59eac",
+      "mvid": "e14a7963-cf8d-490d-8a72-182e3156db32"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll": {
+      "assembly": "UnityEngine.UnityWebRequestModule",
+      "version": "0.0.0.0",
+      "sha256": "7773859a56ae6efc715de682526a999ce50753ffa7a469ba07231d2129b84b11",
+      "mvid": "0089d177-15a8-48fb-a4d5-ae86c7e3f242"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll": {
+      "assembly": "UnityEngine.UnityWebRequestTextureModule",
+      "version": "0.0.0.0",
+      "sha256": "d331aabf71965b83ad4851bde29dc769efd8338cb0df2600e76fa3bbf50a480f",
+      "mvid": "73a2c132-8c98-4aed-afed-db323cf6f079"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll": {
+      "assembly": "UnityEngine.UnityWebRequestWWWModule",
+      "version": "0.0.0.0",
+      "sha256": "6e26caab56baf54e722ca26b85849cdc467d245ea39f6892f74f85bd31b8223f",
+      "mvid": "82c301a2-b539-405b-9d15-902a2911643a"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.VectorGraphicsModule.dll": {
+      "assembly": "UnityEngine.VectorGraphicsModule",
+      "version": "0.0.0.0",
+      "sha256": "58d7384c8da04e47ae4b09cc03ae76447083478b4a5761eeef0dc4da3e1c2a89",
+      "mvid": "44a357cd-4d79-405f-99a0-a52170f28f92"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.VehiclesModule.dll": {
+      "assembly": "UnityEngine.VehiclesModule",
+      "version": "0.0.0.0",
+      "sha256": "a64528f1fe7de4df6e3f3200c0decd3ca9331c786de43f7d6c148c63be1486c3",
+      "mvid": "702e48cb-6069-465f-ac89-ce364d331252"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.VFXModule.dll": {
+      "assembly": "UnityEngine.VFXModule",
+      "version": "0.0.0.0",
+      "sha256": "fc359efca1f5a246fdf96e0a0f6fdbaef78b970507e69bc103c8ed47fb11a561",
+      "mvid": "ee68d832-3a4c-47b0-bdd0-7f5d0c470968"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.VideoModule.dll": {
+      "assembly": "UnityEngine.VideoModule",
+      "version": "0.0.0.0",
+      "sha256": "89e2a7bcc6056daa8346d8411fc2c0f0db498fa188eedb63abcb0e75dbe56a08",
+      "mvid": "67d41471-aded-4d29-bf53-99b6c91b2661"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.VirtualTexturingModule.dll": {
+      "assembly": "UnityEngine.VirtualTexturingModule",
+      "version": "0.0.0.0",
+      "sha256": "2ffd3e91e0fcd2219e7dec369644d84b499e3ea66e623fdadaf0bae0ab07e49e",
+      "mvid": "c07df71b-1832-4a2c-b159-e9b249fb2f84"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.VRModule.dll": {
+      "assembly": "UnityEngine.VRModule",
+      "version": "0.0.0.0",
+      "sha256": "83752101f191e2b6154a4f007c19cb4554aef81bf0d0211d026ef445fbc1098a",
+      "mvid": "a05dd7bf-5377-4a77-8d59-48251a19a6e3"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.WindModule.dll": {
+      "assembly": "UnityEngine.WindModule",
+      "version": "0.0.0.0",
+      "sha256": "68741aef696305bf0801168e77de5bee1b8e3b0ba385a015af7e8cd7dbf5be47",
+      "mvid": "f4186537-452f-4e56-b6d1-c79dfe22ffdf"
+    },
+    "editor/$_OUTDIR/Managed/UnityEngine/UnityEngine.XRModule.dll": {
+      "assembly": "UnityEngine.XRModule",
+      "version": "0.0.0.0",
+      "sha256": "3e5eeeb49151e0d02de168c586db92a2997bc71bedb4628640838fc58810ed0e",
+      "mvid": "f89486ab-0521-46b7-bc82-918f9474a226"
+    },
+    "ios/$INSTDIR$VAR_95/UnityEditor.Apple.Extensions.Common.dll": {
+      "assembly": "UnityEditor.Apple.Extensions.Common",
+      "version": "1.0.0.0",
+      "sha256": "e42e0c03500c50c8deb8f7ec4b82b66864ac445f3ab88c6151556a7e960aec3d",
+      "mvid": "1da819c2-1dcd-42ae-b1bc-24426100487a"
+    },
+    "ios/$INSTDIR$VAR_95/UnityEditor.iOS.Extensions.dll": {
+      "assembly": "UnityEditor.iOS.Extensions",
+      "version": "1.0.0.0",
+      "sha256": "e33d45daba193b7f3d2848dead795a4fb651fe2a164d5da62a859a35862e63f8",
+      "mvid": "2d264f20-cf29-4a7c-ad5d-b4aadf05af28"
+    },
+    "ios/$INSTDIR$VAR_95/UnityEditor.iOS.Extensions.Xcode.dll": {
+      "assembly": "UnityEditor.iOS.Extensions.Xcode",
+      "version": "1.0.0.0",
+      "sha256": "0ba3a0c795cdab379beae019db8a92bcb154c923e8a9bce077604d5992e71a28",
+      "mvid": "914471d3-4011-4cf6-ac21-f4e168de8365"
+    }
+  },
+  "binarySources": {
+    "editor": {
+      "version": "6000.3.27f1",
+      "url": "https://download.unity3d.com/download_unity/672d562a42a7/Windows64EditorInstaller/UnitySetup64-6000.3.27f1.exe",
+      "bytes": 4235893440,
+      "sha256": "15236d7dbe692ee683cc06e31d5f708ab15439a5c5e8cd5ff5edd82a24434055",
+      "publisherIntegrity": "md5-e5QStPCXCBTa8atkaZRINg=="
+    },
+    "android": {
+      "version": "6000.3.27f1",
+      "url": "https://download.unity3d.com/download_unity/672d562a42a7/TargetSupportInstaller/UnitySetup-Android-Support-for-Editor-6000.3.27f1.exe",
+      "bytes": 1549360256,
+      "sha256": "e7a6f6920fd3c7e012419823930e25fb8a2f15f49d22adae6486c1f7000e7bfe",
+      "publisherIntegrity": "md5-z+RdrwNYaxhAdS1i4HBLiw=="
+    },
+    "ios": {
+      "version": "6000.3.27f1",
+      "url": "https://download.unity3d.com/download_unity/672d562a42a7/TargetSupportInstaller/UnitySetup-iOS-Support-for-Editor-6000.3.27f1.exe",
+      "bytes": 343880288,
+      "sha256": "011400db6ad9f4d9c675dfd289c27163eb71337afca98fbbd71e9741ccf0d83e",
+      "publisherIntegrity": "md5-5bUz7Ik7WyJe37j9phMi4g=="
+    }
+  },
+  "rawDeclaredRecords": 97838,
+  "deduplication": "Canonical owner, kind, name, generic arity, parameter/return types and static flag; all source assembly hashes retained",
+  "scopeLimits": [
+    "Other target-platform assembly deltas remain separate M37 profiles",
+    "External package UIDs have a separate inventory/version registry",
+    "No Unity executable, vendor method body or live account is used by this inventory or shipped with Engine"
+  ],
+  "effortBasis": "Assigned declared-target signature counts; relative scope, not development hours or measured complexity"
+}

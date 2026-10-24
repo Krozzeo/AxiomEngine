@@ -1,3 +1,7 @@
+# Current M19 audit
+
+The strict [M19 baseline](../compatibility/README.md) supersedes old estimates. Alias matches receive no full native-source/behavior certification. [Compatibility Observatory](../../demos/M19_GUIDE.md).
+
 # Current expansion plan
 
 [RoadmapM19–M40](../architecture/ROADMAP_M19_M40.md) covers full audit, family implementation, conformance and final hardening. The following SDK 7 description is a historical release slice; SDK 8 additions are [tracked separately](STATUS_0_0_49.md). Planned milestones do not add executable API coverage.

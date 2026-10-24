@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.57 — M19 compatibility audit
+
+- Consolidated Engine#59, Platform#9 and Math Lab#2 after passing CI and owner approval. Closed superseded Engine#54/#56/#57/#58 after ancestry verification; recovery refs preserved.
+- Froze49,471 declared managed signatures,40,126 overlapping documentation records and75,743 separate package UIDs, with provenance, priorities, ownership and strict zero-certified source/behavior baseline.29 package inventories remain blocked.
+- Added authenticated Compatibility Observatory and editable C#/Wasm corpus:25 observations pass; Transform equality and deferred Destroy timing remain explicit M20/M22 discrepancies. Stop restores authoring.
+- Published numeric/profile/CPU-GPU synchronization/workload thresholds, measured scope weights and separate6.6 type delta. No GPU solver/API implementation credit; SDK8/native formats1 unchanged.
+
 ## 0.0.56 / Platform product audit —2026-10-22
 
 Hosted AI readiness follows the verified Hub account; model/reasoning support Same as Hub and persistent project overrides with a separate model test. Products no longer connect/disconnect OpenAI or GitHub through their UI/HTTP; the host independently enforces account authority. Game repository/publication settings, task budgets, PMD and human review/Apply remain project-owned. Package/descriptor/state agree at0.0.56 and npm version synchronizes metadata. Prepared publishing follows the public Platform release manifest. [Audit, evidence and limits](docs/reports/ARCHITECTURE_AUDIT_0_0_56.md). Native format1/SDK8 and M19–M40 acceptance remain unchanged.

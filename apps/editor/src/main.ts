@@ -182,4 +182,6 @@ document.addEventListener('pointerdown',event=>{for(const menu of document.query
 
 const fpsTimer=setInterval(()=>{const checkbox=document.querySelector('#game-debug'),output=document.querySelector('#game-fps'),status=renderer?.status();if(!output)return;output.hidden=!checkbox?.checked||!status?.playing||activeView!=='game';const text=Number.isFinite(status?.fps)?status.fps.toFixed(1)+' FPS':'Measuring FPS…';if(!output.hidden)output.textContent=text;for(const canvas of document.querySelectorAll('[data-parallel-view=game]')){const panel=canvas.parentElement;let badge=panel.querySelector('.parallel-game-fps');if(!badge){badge=canvas.ownerDocument.createElement('output');badge.className='game-fps parallel-game-fps';panel.append(badge);}badge.hidden=!checkbox?.checked||!status?.playing||canvas.hidden;badge.textContent=text;}},250);addEventListener('pagehide',()=>clearInterval(fpsTimer),{once:true});
 
+const observatory=document.querySelector('#compatibility-open');if(observatory)observatory.addEventListener('click',()=>{observatory.href='/compatibility.html#token='+encodeURIComponent(token);});
+
 boot();

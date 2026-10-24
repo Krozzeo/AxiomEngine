@@ -79,6 +79,7 @@ export async function buildEditor({buildKernel=true}={}) {
     throw new Error("Bootstrap TypeScript must remain directly executable until the compiler toolchain is installed");
   }
   await writeFile(resolve(destination, "main.js"), source);
+  for(const name of ['compatibility.html','compatibility.js','compatibility.css'])await cp(resolve(root,'apps/editor',name),resolve(destination,name));
   await validateEditorImports(destination);
   console.log("Built editor bootstrap → dist/editor");
 }

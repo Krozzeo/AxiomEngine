@@ -6,3 +6,9 @@ DerivedData/
 *.log
 .DS_Store
 
+
+scripts/compatibility/Surface/bin/
+scripts/compatibility/Surface/obj/
+scripts/compatibility/__pycache__/
+scripts/compatibility/Metadata/bin/
+scripts/compatibility/Metadata/obj/

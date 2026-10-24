@@ -1,6 +1,6 @@
 # M19 — Complete audit and compatibility contract
 
-Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
+Implemented in the0.0.57 review candidate. **4/4 audit acceptance criteria passed locally.** SDK8 remains partial; M19 adds no Unity implementation or GPU-solver credit. [Evidence and limitations](../reports/M19_REPORT.md), [frozen baseline](../compatibility/README.md).
 
 Minimum dependencies: M18.3.10.
 
@@ -21,10 +21,10 @@ Minimum dependencies: M18.3.10.
 
 ## Closure criteria
 
-- [ ] Every snapshot record has stable identity, provenance and assignment; do not omit unimplemented members.
-- [ ] Separate declared surface, proven behavior, platform restrictions and packages; partial types do not complete all members.
-- [ ] Harness covers positive, negative and lifecycle cases; publish first measured coverage and revised roadmap weighting.
-- [ ] Publish CPU/GPU profiles, accelerated/fallback/blocked matrix and reproducible thresholds; rendering, Null and compile-only shaders do not prove GPU physics.
+- [x] Every snapshot record has stable identity, provenance and assignment; do not omit unimplemented members.
+- [x] Separate declared surface, proven behavior, platform restrictions and packages; partial types do not complete all members.
+- [x] Harness covers positive, negative and lifecycle cases; publish first measured coverage and revised roadmap weighting.
+- [x] Publish CPU/GPU profiles, accelerated/fallback/blocked matrix and reproducible thresholds; rendering, Null and compile-only shaders do not prove GPU physics.
 
 ## Required editable demo
 

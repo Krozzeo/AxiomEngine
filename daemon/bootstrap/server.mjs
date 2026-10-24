@@ -1,3 +1,4 @@
+import {listenLoopback} from 'axiom-platform/loopback';
 import {pickFolder} from './folder-picker.mjs';
 import {createAuthoringPort} from '../../platform/authoring.mjs';
 import {addLocalProject,githubProjects,importGitHubProject} from './github/import-project.mjs';
@@ -93,8 +94,8 @@ export async function startServer(options = {}) {
   const view={get project(){return proposals.active.project;},get revision(){return proposals.active.revision;},get workspaceId(){return proposals.previewId;},snapshot:()=>proposals.view()};
   const bridge=new EditorBridge(view,error=>bus.recordError(error));
   bus.agentService=new AgentService({workspace,bus,bridge});bus.agentService.proposals=proposals;bus.agentService.github=github;
-  const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,...(!options.projectRoot?{sessionPath:join(hubSettings.settingsRoot,'assistant-session.json')}:{}) ,...(options.assistantOptions??{})});await assistant.ready;bus.agentService.assistant=assistant;
-  const platform=options.platformSession?createAuthoringPort({workspace,bus,proposals}):null;
+  const assistant=new OpenAiAssistant({bus,workspace,proposals,bridge,apiKey:'',...(!options.projectRoot?{sessionPath:join(hubSettings.settingsRoot,'assistant-session.json')}:{}) ,...(options.assistantOptions??{})});await assistant.ready;bus.agentService.assistant=assistant;
+  const platform=options.platformSession?createAuthoringPort({workspace,bus,proposals,integrationStatus:()=>{const s=github.status();return {connected:s.connected,repository:s.repository,branch:s.branch,accountMatches:s.accountMatches};}}):null;
   const runtimeCookie = randomBytes(32).toString("base64url");
   const hash = await schemaHash();
   const startedAt = performance.now();
@@ -103,7 +104,10 @@ export async function startServer(options = {}) {
   let allowedOrigins = new Set();
 
   let closing;
+  let embeddingOrigin;
+  if(options.embeddingOrigin){const u=new URL(options.embeddingOrigin);if(u.protocol!=='http:'||u.hostname!=='127.0.0.1'||u.origin!==options.embeddingOrigin)throw Error('Invalid Platform embedding origin');embeddingOrigin=u.origin;}
   const server = createHttpServer(async (request, response) => {
+    if(embeddingOrigin){const write=response.writeHead;response.writeHead=function(status,headers){return write.call(this,status,{...headers,'Cross-Origin-Resource-Policy':'cross-origin','Content-Security-Policy':SECURITY_HEADERS['Content-Security-Policy'].replace("frame-ancestors 'none'",'frame-ancestors '+embeddingOrigin)});};}
     requestCount += 1;
     const url = new URL(request.url ?? "/", "http://127.0.0.1");
     try {
@@ -166,6 +170,7 @@ export async function startServer(options = {}) {
         if(request.method==='GET'&&action==='repositories')return json(response,200,{items:await github.client.repositories()});
         if(request.method==='POST'){
           const data=await readJson(request);
+          if(['connect','disconnect'].includes(action))throw Object.assign(Error('Manage GitHub accounts in Axiom Platform Settings.'),{code:'AX_GITHUB_0002'});
           const operations={connect:()=>github.connect(data.token),disconnect:()=>github.disconnect(),create:async()=>{if(!workspace.project||workspace.project.id!==data.id)throw Error('Open this project before creating its repository');const repo=await github.client.create(data.name,data.private);await github.record('repository.created',{repository:repo.name});return repo;},draft:()=>github.draft(data),configure:()=>github.configure(data),preferences:()=>github.preferences(data),preview:()=>github.prepare(data),publish:()=>github.publish(data),reconcile:()=>github.reconcile(data),retry:()=>github.retry(data)};
           if(Object.hasOwn(operations,action))return json(response,200,await bus.transaction(async()=>{try{const value=await operations[action]();if(['connect','disconnect'].includes(action))await github.record('account.'+action);return value;}catch(error){await github.record(action+'.failed',{code:error.code??'AX_GITHUB_0001',reason:error.code?String(error.message).slice(0,300):'Operation failed; see the panel error'});throw error;}}));
         }
@@ -190,7 +195,7 @@ export async function startServer(options = {}) {
         }
       }
       if(request.method==='GET'&&url.pathname==='/v1/ai/status')return json(response,200,assistant.status());
-      if(request.method==='POST'&&url.pathname==='/v1/ai/configure')return json(response,200,await assistant.configure(await readJson(request)));
+      if(request.method==='POST'&&url.pathname==='/v1/ai/configure'){const data=await readJson(request);if(['connect','disconnect'].includes(data.action)||data.apiKey)throw Object.assign(Error('Manage OpenAI accounts in Axiom Platform Settings.'),{code:'AX_AI_0001'});return json(response,200,await assistant.configure(data));}
       if(request.method==='POST'&&url.pathname==='/v1/ai/tasks')return json(response,200,assistant.start(await readJson(request)));
       if(request.method==='GET'&&url.pathname==='/v1/ai/tasks')return json(response,200,url.searchParams.has('id')?assistant.task(url.searchParams.get('id')):{items:assistant.tasks()});
       if(request.method==='GET'&&url.pathname==='/v1/ai/proposals')return json(response,200,url.searchParams.has('id')?proposals.review(url.searchParams.get('id')):{items:proposals.list()});
@@ -265,10 +270,7 @@ export async function startServer(options = {}) {
     }
   });
 
-  await new Promise((resolveListen, reject) => {
-    server.once("error", reject);
-    server.listen(options.port ?? 0, "127.0.0.1", resolveListen);
-  });
+  await listenLoopback(server,options.port??0);
   const address = server.address();
   const origin = `http://127.0.0.1:${address.port}`;
   allowedOrigins = new Set([origin, `http://localhost:${address.port}`]);
@@ -280,7 +282,7 @@ export async function startServer(options = {}) {
     editorUrl: `${origin}/#token=${encodeURIComponent(token)}`,
     close: () => closing??=(async()=>{
       const httpClosed=new Promise((resolveClose,reject)=>{server.close(error=>error&&error.code!=='ERR_SERVER_NOT_RUNNING'?reject(error):resolveClose());server.closeAllConnections();});
-      github.disconnect();await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await bus.transaction(async()=>{});
+      if(!github.client.sharedAccount)github.disconnect();else github.client.close();await assistant.close();await bus.agentService.autonomy?.close();bridge.close();await bus.transaction(async()=>{});
       workspace.activeJob?.controller.abort();workspace.activeScriptJob?.controller.abort();
       const deadline=Date.now()+10000;while((workspace.activeJob||workspace.activeScriptJob)&&Date.now()<deadline)await new Promise(r=>setTimeout(r,20));
       if(workspace.activeJob||workspace.activeScriptJob)throw Error('Owned compiler/import job did not stop during shutdown');

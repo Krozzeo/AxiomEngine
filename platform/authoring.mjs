@@ -1,6 +1,6 @@
 const reject=(code,message)=>{throw Object.assign(Error(message),{code});};
 // Product-owned port; no scene model crosses into Platform.
-export function createAuthoringPort({workspace,bus,proposals}) {
+export function createAuthoringPort({workspace,bus,proposals,integrationStatus=()=>({})}) {
   const editors=new Map();
   const run=workspace.run.bind(workspace);
   const lifecycle=['project.create','project.open','project.close','project.save','project.delete'];
@@ -9,7 +9,7 @@ export function createAuthoringPort({workspace,bus,proposals}) {
     return run(type,data,context);
   };
   const buffers=()=>[...editors.values()].some(e=>e.dirty);
-  const status=()=>({projectId:workspace.project?.id??null,name:workspace.project?.name??null,revision:workspace.revision,savedRevision:workspace.project?.revision??null,dirty:workspace.dirty||buffers(),pendingBuffers:buffers(),busy:!!(workspace.activeJob||workspace.activeScriptJob||workspace.playing||proposals.previewId||bus.agentService.assistant?.active)});
+  const status=()=>({projectId:workspace.project?.id??null,name:workspace.project?.name??null,github:integrationStatus(),revision:workspace.revision,savedRevision:workspace.project?.revision??null,dirty:workspace.dirty||buffers(),pendingBuffers:buffers(),busy:!!(workspace.activeJob||workspace.activeScriptJob||workspace.playing||proposals.previewId||bus.agentService.assistant?.active)});
   const idle=()=>{if(status().busy)reject('projectBusy','Stop Play and resolve active jobs or previews before managing the session.');};
   const revision=expected=>{if(!Number.isSafeInteger(expected)||expected!==workspace.revision)reject('revisionConflict','The editor changed. Refresh the session before saving or closing.');};
   return {
@@ -21,7 +21,11 @@ export function createAuthoringPort({workspace,bus,proposals}) {
     },
     status:()=>bus.transaction(async()=>({status:status()})),
     open:id=>bus.transaction(async()=>{await run('project.open',{id});return status();}),
-    create:name=>bus.transaction(async()=>{await run('project.create',{name});return status();}),
+    create:name=>bus.transaction(async()=>{await run('project.create',{name,dimension:3});return status();}),
+    rename:(name,expected)=>bus.transaction(async()=>{
+      idle();revision(expected);if(workspace.dirty||buffers())reject('projectBusy','Save pending changes before renaming this project.');
+      const saved=await workspace.store.run('project.rename',{id:workspace.project.id,expectedRevision:workspace.project.revision,name});workspace.activate(saved.project);return {status:status()};
+    }),
     save:expected=>bus.transaction(async()=>{
       idle();revision(expected);
       if(buffers())reject('projectBusy','Save pending code buffers from the editor before saving this session.');

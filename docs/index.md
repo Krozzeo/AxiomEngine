@@ -1,26 +1,15 @@
-# Documentación de Axiom Game Engine
+# Axiom Game Engine documentation
 
-Estado vigente sobre 0.0.52 / SDK 8. Los informes por milestone y documentos archivados son evidencia de sus respectivas entregas; no sustituyen este estado.
+Current candidate0.0.56/SDK8/Platform0.1.7. Historical reports retain their own release scope; they do not certify this candidate.
 
-| Necesidad | Referencia |
-| --- | --- |
-| Integración funcional P1 | [Contrato/guía](architecture/PLATFORM_P1.md) y [evidencia](reports/PLATFORM_P1_REPORT.md) |
-| Informe de P0 | [Entrega y límites](reports/PLATFORM_P0_REPORT.md) |
-| Familia Axiom y separación P0 | [Transición a Platform](architecture/PLATFORM_TRANSITION.md) |
-| Instalación y arranque | [README](../README.md) |
-| Estado real, límites y pendientes | [Implementación](architecture/IMPLEMENTATION_STATUS.md) |
-| Retomar el desarrollo | [AI handoff](AI_HANDOFF.md) |
-| Recuperación, ramas y flujo de contribución | [Mantenimiento](REPOSITORY_MAINTENANCE.md) |
-| Milestones nativas en GitHub | [Correspondencia y límites](NATIVE_GITHUB_MILESTONES.md) |
-| Plan de compatibilidad | [Roadmap M19–M40](architecture/ROADMAP_M19_M40.md) |
-| Shaders y físicas GPU | [Plan](architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md) |
-| API propia y referencia generada | [Scripting API](scripting-api/README.md) |
-| GitHub de proyectos de juego | [Plan M18.4](architecture/M18_4_PLAN.md) y [guía](../demos/M18_4_GUIDE.md) |
-| Decisiones arquitectónicas | [ADRs](adr/README.md) |
-| Informe de la última entrega | [M18.4.1](reports/M18_4_1_REPORT.md) |
-| Corrección de Inspector/render | [M18.3.12](reports/M18_3_12_REPORT.md) |
-| Cambios publicados | [Changelog](../CHANGELOG.md) |
-| Informes por milestone | [Directorio de informes](reports/) |
-| Estado previo a la consolidación | [Archivo completo](archive/pre-restructure-0.0.52/README.md) |
+- Start with [implementation status](architecture/IMPLEMENTATION_STATUS.md), [handoff](AI_HANDOFF.md), [repository recovery](REPOSITORY_MAINTENANCE.md), then the next phase plan.
+- [Master specification](architecture/AXIOM_MASTER_SPEC.md), [Unity roadmapM19–M40](architecture/ROADMAP_M19_M40.md), [GPU/shaders](architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md), [milestone reporting](architecture/MILESTONE_REPORTING.md), [native GitHub milestones](NATIVE_GITHUB_MILESTONES.md).
+- [Platform transition](architecture/PLATFORM_TRANSITION.md), integration guides [P1](architecture/PLATFORM_P1.md)/[P2](architecture/PLATFORM_P2.md)/[P3](architecture/PLATFORM_P3.md)/[P4](architecture/PLATFORM_P4.md), [P4 evidence](reports/PLATFORM_P4_REPORT.md).
+- [Scripting API/reference](scripting-api/README.md), [Scene/Inspector](architecture/SCENE_EDITOR.md), [ADRs](adr/README.md).
+- [Demos](../demos/README.md), [GitHub demo guide](../demos/M18_4_GUIDE.md), [changelog](../CHANGELOG.md), [reports](reports/), [pre-restructure archive](archive/pre-restructure-0.0.52/README.md).
 
-Orden de lectura para continuar: estado → handoff → mantenimiento → plan de la siguiente entrega. Los contratos específicos del motor, daemon, persistencia y renderer permanecen en `architecture/`; no se eliminan ni se reinterpretan como funciones nuevas.
+Maintained English editions link complete original-language .txt sources in [the reference archive](archive/original-language/README.md), preserving details/provenance without treating historical wording as new instructions. Existing English subsystem contracts remain in architecture and are not reclassified as new implementation.
+
+- [Platform P5 editor lifecycle and independent Math Lab](architecture/PLATFORM_P5.md).
+
+- [Current architecture audit](reports/ARCHITECTURE_AUDIT_0_0_56.md), [product integration contract](architecture/PRODUCT_INTEGRATION_0_0_56.md), [0.0.56 release notes](releases/0.0.56.md).

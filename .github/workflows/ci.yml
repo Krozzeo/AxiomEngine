@@ -43,6 +43,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+      - run: npm ci --no-audit --no-fund
       - run: node --test tests/script-compiler.test.mjs tests/script-files.test.mjs
 
   bootstrap:
@@ -181,6 +182,9 @@ jobs:
         run: xvfb-run -a -s "-screen 0 1700x1100x24" node tests/browser/${{ matrix.milestone }}.mjs
         env:
           AXIOM_HEADLESS: "false"
+      - name: Reference drop survives a concurrent scene snapshot
+        if: matrix.milestone == 'm18-3-10'
+        run: xvfb-run -a -s "-screen 0 1800x1150x24" npm run test:browser:reference-refresh
       - name: Summarize browser evidence
         if: always()
         run: |
@@ -214,6 +218,7 @@ jobs:
             .axiom/browser-m18-4-evidence
             .axiom/browser-m18-3-12-evidence
             .axiom/browser-m18-3-11-evidence
+            .axiom/reference-drag-refresh
             .axiom/browser-m18-3-10-evidence
             .axiom/browser-m18-3-9-evidence
             .axiom/browser-m18-3-8-evidence

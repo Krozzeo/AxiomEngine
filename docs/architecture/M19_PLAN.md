@@ -1,42 +1,39 @@
-# M19 — Auditoría completa y contrato de compatibilidad
+# M19 — Complete audit and compatibility contract
 
-Plan vigente desde 2026-10-19; ampliación explícita de físicas GPU/shaders. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M18.3.10.
+Minimum dependencies: M18.3.10.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [Plan GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- Congelar Unity 6.3 LTS (6000.3), snapshot y hash; inventariar namespaces, tipos, miembros, sobrecargas, herencia, obsoletos, plataformas y módulos. Separar paquetes versionados y el delta 6.6.
-- Mapear cada firma contra SDK y motor, corregir coincidencias ambiguas por nombre y registrar compatible, parcial, pendiente, bloqueada o fuera de alcance explícito.
-- Definir compatibilidad de código y comportamiento, niveles P0/P1/P2, precisión numérica, namespaces, presupuestos y perfiles navegador/daemon/nativo. Diseñar harness de conformidad y corpus de scripts.
-- Definir contrato CPU/GPU, perfiles de hardware, precisión/replay, consultas y callbacks síncronos; congelar workloads, duración y umbrales de rendimiento/estabilidad para físicas y shaders antes de evaluar el prototipo.
+- Freeze Unity 6.3 LTS (6000.3), snapshot/hash; inventory namespaces, types, members, overloads, inheritance, obsolete APIs, platforms and modules. Keep versioned packages and the6.6 delta separate.
+- Map every signature against SDK/engine, resolve ambiguous name matches and classify compatible, partial, pending, blocked or explicitly out of scope.
+- Define code/behavior compatibility, P0/P1/P2 priorities, numeric precision, namespaces, budgets and browser/daemon/native profiles; design conformance harness and script corpus.
+- Define CPU/GPU hardware, precision/replay, synchronous query/callback contracts; freeze workloads, duration and performance/stability thresholds before prototype evaluation.
 
-## Subtandas previstas
+## Planned batches
 
-- 19.1 Inventario reproducible y propiedad de cada miembro por milestone.
-- 19.2 Mapeo SDK/motor, prioridades y registro de dependencias.
-- 19.3 Harness, casos de referencia, métricas y esfuerzo relativo. Incluye matriz CPU/GPU y contratos de sincronización, shaders y rendimiento.
+- 19.1 Reproducible inventory and member ownership.
+- 19.2 SDK/engine mapping, priorities and dependencies.
+- 19.3 Harness, reference cases, metrics and relative effort, including CPU/GPU synchronization/shader/performance contracts.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Todos los registros del snapshot tienen identificador estable, procedencia y asignación; no hay miembros omitidos por falta de implementación.
-- [ ] El informe separa superficie declarada, comportamiento probado, restricciones de plataforma y paquetes; un tipo parcialmente presente no completa sus miembros.
-- [ ] El harness reproduce casos positivos, negativos y de ciclo de vida; se publica la primera cobertura medida y la ponderación revisada del roadmap.
-- [ ] Se publican perfiles CPU/GPU, matriz acelerada/fallback/bloqueada y umbrales reproducibles; no se atribuye cobertura GPU a renderizado, Null ni shaders que solo compilan.
+- [ ] Every snapshot record has stable identity, provenance and assignment; do not omit unimplemented members.
+- [ ] Separate declared surface, proven behavior, platform restrictions and packages; partial types do not complete all members.
+- [ ] Harness covers positive, negative and lifecycle cases; publish first measured coverage and revised roadmap weighting.
+- [ ] Publish CPU/GPU profiles, accelerated/fallback/blocked matrix and reproducible thresholds; rendering, Null and compile-only shaders do not prove GPU physics.
 
-## Demo editable requerida
+## Required editable demo
 
-Compatibility Observatory: navegador del inventario y corpus ejecutable de objetos, tiempo, física y recursos; sin atribuir al harness la implementación de APIs pendientes.
+Compatibility Observatory: inventory browser and executable object/time/physics/resource corpus; harness is not implementation of pending APIs.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 8 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).

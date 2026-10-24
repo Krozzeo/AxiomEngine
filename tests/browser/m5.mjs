@@ -1,3 +1,4 @@
+import {launchEditorBrowser} from './browser-options.mjs';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -25,7 +26,7 @@ try{
  assert.equal((await client.request('tools/call',{name:'shell'})).error.code,-32602);
  await assert.rejects(client.call('renderer.capture',await mutation()),/AX_AGENT_0002/);
  report.criteria.push('create entity, import asset, add component and edit through MCP','stale revision, context limit, unavailable tool and absent renderer rejection');
- browser=await chromium.launch({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
+ browser=await launchEditorBrowser({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
  page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>report.pageErrors.push(e.message));await page.goto(daemon.editorUrl);
  async function ready(){const deadline=Date.now()+30000;while(Date.now()<deadline){const s=await call('runtime.status');if(s.editor.connected&&s.editor.workspaceId===workspaceId&&s.editor.sceneRevision===s.sceneRevision&&s.editor.renderer==='webgpu')return s;await new Promise(r=>setTimeout(r,300));}throw Error('Editor did not reach the current revision');}
  await call('play.start',await mutation());const running=await ready();assert.equal(running.playing,true);assert.equal(running.editor.playing,true);

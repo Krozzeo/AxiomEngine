@@ -1,24 +1,44 @@
 # Architecture Decision Records
 
-ADRs are immutable decision records. Superseded decisions remain in history and
-link to their replacement. Each record uses Context, Decision, Alternatives,
-Consequences and Status.
+Read the numbered ADRs for accepted boundaries and historical scope decisions. Current implementation/status and Platform P4 supersede earlier planning-only states. The English editions retain complete original-language source snapshots for traceability; old wording is reference, not fresh authorization.
 
-
-- [ADR-0019: reviewed proposal publication](0019-reviewed-proposal-publication.md).
-
-- [ADR-0020: translational CPU/Wasm physics](0020-translation-physics-foundation.md).
-
-- [ADR-0023: bounded 2D production](0023-bounded-2d-production.md).
-
-- [ADR-0024: bounded general animation](0024-bounded-general-animation.md).
-- [ADR-0025: bounded Web Audio and PCM streaming](0025-bounded-web-audio-and-pcm-streaming.md).
-
-- [ADR-0026: bounded measured frame profiler](0026-bounded-measured-frame-profiler.md).
-
-- [ADR-0033: planificación de físicas GPU y shaders](0033-gpu-physics-and-shader-roadmap.md).
-
-- [ADR-0036: separación de Axiom Platform](0036-platform-separation.md).
-- [ADR-0037: MIT e identidad de repositorio](0037-mit-license-and-repository-identity.md), sustituye ADR-0013 para nuevas entregas; el registro original se conserva.
-
-- [ADR-0038: adaptador P1 de Platform](0038-platform-p1-adapter.md).
+- [0001-rust-wasm-core](0001-rust-wasm-core.md)
+- [0002-webgpu-and-null-renderer](0002-webgpu-and-null-renderer.md)
+- [0003-browser-editor-local-daemon](0003-browser-editor-local-daemon.md)
+- [0004-hybrid-authoring-runtime-model](0004-hybrid-authoring-runtime-model.md)
+- [0005-csharp-gameplay-runtime](0005-csharp-gameplay-runtime.md)
+- [0006-wgsl-native-shaders](0006-wgsl-native-shaders.md)
+- [0007-command-event-and-causal-protocol](0007-command-event-and-causal-protocol.md)
+- [0008-transactional-workspaces](0008-transactional-workspaces.md)
+- [0009-cpu-first-hybrid-physics](0009-cpu-first-hybrid-physics.md)
+- [0010-versioned-declarative-schema](0010-versioned-declarative-schema.md)
+- [0011-daemon-security-model](0011-daemon-security-model.md)
+- [0012-observability-budgets](0012-observability-budgets.md)
+- [0013-apache-2-license](0013-apache-2-license.md)
+- [0014-bootstrap-ui-dependency-policy](0014-bootstrap-ui-dependency-policy.md)
+- [0015-release-slices](0015-release-slices.md)
+- [0016-wasm-scalar-boundary](0016-wasm-scalar-boundary.md)
+- [0017-stable-asset-source-and-derived-identity](0017-stable-asset-source-and-derived-identity.md)
+- [0018-initial-mcp-and-renderer-capture](0018-initial-mcp-and-renderer-capture.md)
+- [0019-reviewed-proposal-publication](0019-reviewed-proposal-publication.md)
+- [0020-translation-physics-foundation](0020-translation-physics-foundation.md)
+- [0021-editor-camera-and-causal-evidence](0021-editor-camera-and-causal-evidence.md)
+- [0022-bounded-hdr-forward-plus-renderer](0022-bounded-hdr-forward-plus-renderer.md)
+- [0023-bounded-2d-production](0023-bounded-2d-production.md)
+- [0024-bounded-general-animation](0024-bounded-general-animation.md)
+- [0025-bounded-web-audio-and-pcm-streaming](0025-bounded-web-audio-and-pcm-streaming.md)
+- [0026-bounded-measured-frame-profiler](0026-bounded-measured-frame-profiler.md)
+- [0027-modular-editor-and-retained-profiler-captures](0027-modular-editor-and-retained-profiler-captures.md)
+- [0028-isolated-game-tests-and-parallel-view-targets](0028-isolated-game-tests-and-parallel-view-targets.md)
+- [0029-verified-prefix-replay-and-ai-project-context](0029-verified-prefix-replay-and-ai-project-context.md)
+- [0030-entity-cameras-explicit-lighting](0030-entity-cameras-explicit-lighting.md)
+- [0031-portable-authoring-files-and-bounded-low-end-work](0031-portable-authoring-files-and-bounded-low-end-work.md)
+- [0032-editor-source-and-ambient](0032-editor-source-and-ambient.md)
+- [0033-gpu-physics-and-shader-roadmap](0033-gpu-physics-and-shader-roadmap.md)
+- [0034-m18-4-closure-and-deferred-native-account-check](0034-m18-4-closure-and-deferred-native-account-check.md)
+- [0035-hub-and-github-project-workflow](0035-hub-and-github-project-workflow.md)
+- [0036-platform-separation](0036-platform-separation.md)
+- [0037-mit-license-and-repository-identity](0037-mit-license-and-repository-identity.md)
+- [0038-platform-p1-adapter](0038-platform-p1-adapter.md)
+- [0039-platform-p2-services](0039-platform-p2-services.md)
+- [0040-platform-p3-ai](0040-platform-p3-ai.md)

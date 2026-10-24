@@ -23,7 +23,7 @@ export function resolveReferences(value,results,depth=0){
  }
  return value;
 }
-export function usageDetails(response){const u=response.usage??{};return {inputTokens:u.input_tokens??0,cachedInputTokens:u.input_tokens_details?.cached_tokens??0,outputTokens:u.output_tokens??0,reasoningTokens:u.output_tokens_details?.reasoning_tokens??0,totalTokens:u.total_tokens??null};}
+export {usageDetails} from 'axiom-platform/ai/contracts';
 export function compactEntities(result){
  if(!Array.isArray(result?.items))return result;
  return {...result,items:result.items.map(e=>e?.transform?Object.fromEntries(Object.entries(e).filter(([k])=>['id','name','parentId','transform','material','renderable','collider','rigidBody','scriptComponents','camera','light','sprite2D'].includes(k))):e)};

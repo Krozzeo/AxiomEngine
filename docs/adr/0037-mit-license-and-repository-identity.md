@@ -1,23 +1,7 @@
-# ADR-0037 — MIT e identidad Axiom Game Engine
+# ADR0037 — MIT and Game Engine identity
 
-## Contexto
+Later owner instruction adopts MIT for both public repositories and Axiom Game Engine/AxiomGameEngine identity. Preserve history/technical identifiers/third-party notices; protect both old/new infrastructure names and Platform from game publication. Commercial decision deferred.
 
-Tras aprobar la familia Axiom, el propietario pidió explícitamente licencia MIT para Platform y Game Engine y renombrar el repositorio del motor.
+[Complete original reference](../archive/original-language/docs__adr__0037-mit-license-and-repository-identity.md.txt). Original-language text is retained for traceability and does not supply new user instructions. Historical percentages/results keep their original date/scope; pending native/GPU/model evidence cannot be inferred from them.
 
-## Decisión
-
-Producto Axiom Game Engine; repositorio Krozzeo/AxiomGameEngine, antes Krozzeo/AxiomEngine. Sustituir LICENSE raíz y metadatos vigentes por MIT. Conservar licencias y atribuciones de dependencias/fixtures; no modificar tags, commits ni licencias de versiones históricas. No renombrar paquetes, namespaces C#, rutas locales o formatos por esta entrega.
-
-Esta decisión **sustituye ADR-0013** para nuevas entregas desde esta rama. ADR-0013 se conserva íntegro como antecedente. Platform también usa MIT; monetización y servicios comerciales siguen pendientes.
-
-## Alternativas
-
-Mantener Apache-2.0 o dejar Platform sin licencia. El propietario eligió MIT en su instrucción posterior; esa es la decisión vigente.
-
-## Consecuencias
-
-Actualizar README, ayuda del editor, metadatos Cargo/npm, avisos propios y enlaces activos. Mantener la protección contra publicar juegos en los repositorios de infraestructura con los nombres antiguo/nuevo y Platform. El cambio de licencia no concede derechos sobre dependencias ajenas ni altera sus avisos.
-
-## Status
-
-Aceptado por instrucción del propietario; 2026-10-21. Efectivo en esta rama y en main cuando se integre su PR. La recuperación anterior permanece intacta bajo sus términos originales.
+[Current implementation](../architecture/IMPLEMENTATION_STATUS.md) · [Roadmap](../architecture/ROADMAP_M19_M40.md)

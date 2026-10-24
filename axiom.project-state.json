@@ -1,15 +1,15 @@
 {
   "$schema": "./protocol/schema/project-state.schema.json",
   "stateVersion": 1,
-  "updatedAt": "2026-10-20",
-  "engineVersion": "0.0.52",
+  "updatedAt": "2026-10-22",
+  "engineVersion": "0.0.56",
   "activeMilestone": 18.4,
   "milestoneStatus": "complete",
   "completion": {
     "activeMilestonePercent": 100,
     "wholeProjectPercent": null,
     "method": "docs/architecture/MILESTONE_REPORTING.md",
-    "scopeNote": "M18.4 remains closed under ADR-0034. M18.4.1 implements requested Hub/GitHub workflow and default-on preferences, with local controlled acceptance; live-account validation remains deferred. M19–M40 scope unchanged.",
+    "scopeNote": "M18.4 remains closed under ADR-0034. M18.4.1 implements requested Hub/GitHub workflow and default-on preferences, with local controlled acceptance; live-account validation remains deferred. M19â€“M40 scope unchanged.",
     "historicalMvpPercent": 94,
     "historicalMvpCompletedWeight": 122,
     "historicalMvpTotalWeight": 130
@@ -94,7 +94,7 @@
     "19": {
       "status": "not_started",
       "percent": 0,
-      "title": "Auditoría completa y contrato de compatibilidad",
+      "title": "AuditorÃ­a completa y contrato de compatibilidad",
       "plan": "docs/architecture/M19_PLAN.md"
     },
     "13.1": {
@@ -127,55 +127,55 @@
     "20": {
       "status": "not_started",
       "percent": 0,
-      "title": "Objetos, componentes y jerarquías compatibles",
+      "title": "Objetos, componentes y jerarquÃ­as compatibles",
       "plan": "docs/architecture/M20_PLAN.md"
     },
     "21": {
       "status": "not_started",
       "percent": 0,
-      "title": "Matemáticas, geometría y utilidades",
+      "title": "MatemÃ¡ticas, geometrÃ­a y utilidades",
       "plan": "docs/architecture/M21_PLAN.md"
     },
     "22": {
       "status": "not_started",
       "percent": 0,
-      "title": "Ciclo de vida, tiempo, eventos y asincronía",
+      "title": "Ciclo de vida, tiempo, eventos y asincronÃ­a",
       "plan": "docs/architecture/M22_PLAN.md"
     },
     "23": {
       "status": "not_started",
       "percent": 0,
-      "title": "Serialización, ScriptableObject y prefabs",
+      "title": "SerializaciÃ³n, ScriptableObject y prefabs",
       "plan": "docs/architecture/M23_PLAN.md"
     },
     "24": {
       "status": "not_started",
       "percent": 0,
-      "title": "Escenas, recursos, carga asíncrona y memoria",
+      "title": "Escenas, recursos, carga asÃ­ncrona y memoria",
       "plan": "docs/architecture/M24_PLAN.md"
     },
     "25": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 3D: geometrías, consultas e infraestructura compute",
+      "title": "FÃ­sica 3D: geometrÃ­as, consultas e infraestructura compute",
       "plan": "docs/architecture/M25_PLAN.md"
     },
     "26": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 3D CPU/GPU: solver avanzado y controladores",
+      "title": "FÃ­sica 3D CPU/GPU: solver avanzado y controladores",
       "plan": "docs/architecture/M26_PLAN.md"
     },
     "27": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 2D: geometrías y consultas",
+      "title": "FÃ­sica 2D: geometrÃ­as y consultas",
       "plan": "docs/architecture/M27_PLAN.md"
     },
     "28": {
       "status": "not_started",
       "percent": 0,
-      "title": "Física 2D CPU/GPU: joints y simulación avanzada",
+      "title": "FÃ­sica 2D CPU/GPU: joints y simulaciÃ³n avanzada",
       "plan": "docs/architecture/M28_PLAN.md"
     },
     "29": {
@@ -187,13 +187,13 @@
     "30": {
       "status": "not_started",
       "percent": 0,
-      "title": "Gráficos, shaders y recursos GPU",
+      "title": "GrÃ¡ficos, shaders y recursos GPU",
       "plan": "docs/architecture/M30_PLAN.md"
     },
     "31": {
       "status": "not_started",
       "percent": 0,
-      "title": "Animación, rigging y Playables",
+      "title": "AnimaciÃ³n, rigging y Playables",
       "plan": "docs/architecture/M31_PLAN.md"
     },
     "32": {
@@ -211,13 +211,13 @@
     "34": {
       "status": "not_started",
       "percent": 0,
-      "title": "Mundos 2D/3D, partículas, terreno y vídeo",
+      "title": "Mundos 2D/3D, partÃ­culas, terreno y vÃ­deo",
       "plan": "docs/architecture/M34_PLAN.md"
     },
     "35": {
       "status": "not_started",
       "percent": 0,
-      "title": "NavMesh y navegación completa",
+      "title": "NavMesh y navegaciÃ³n completa",
       "plan": "docs/architecture/M35_PLAN.md"
     },
     "36": {
@@ -241,13 +241,13 @@
     "39": {
       "status": "not_started",
       "percent": 0,
-      "title": "Módulos restantes, paquetes y conformidad integral",
+      "title": "MÃ³dulos restantes, paquetes y conformidad integral",
       "plan": "docs/architecture/M39_PLAN.md"
     },
     "40": {
       "status": "not_started",
       "percent": 0,
-      "title": "Estabilización final, producto y aceptación integral",
+      "title": "EstabilizaciÃ³n final, producto y aceptaciÃ³n integral",
       "plan": "docs/architecture/M40_PLAN.md"
     }
   },
@@ -341,13 +341,25 @@
       "copiesIntoProjectStorage": true,
       "preservesSource": true,
       "continuousRemoteSync": false
+    },
+    "platformP4": {
+      "status": "review_candidate_not_closed",
+      "platformVersion": "0.1.3",
+      "engineVersion": "0.0.53",
+      "providerCommit": "149403753092f24a684d0241fe2aa7762abf7bc0",
+      "report": "docs/reports/PLATFORM_P4_REPORT.md",
+      "starter3D": true,
+      "revisionAwareRename": true,
+      "sharedUiPrimitive": true,
+      "standaloneExportGate": "blocked_no_game_export_pipeline",
+      "mainIntegrated": false
     }
   },
   "verified": {
     "nodeTests": {
-      "passed": 438,
+      "passed": 446,
       "failed": 0,
-      "evidenceEnvironment": "Local Windows, 0.0.52; npm run check"
+      "evidenceEnvironment": "Local Windows,0.0.53/P4 candidate; final npm run check; no skipped tests"
     },
     "schemaDocuments": 18,
     "architectureRules": 3,
@@ -1498,6 +1510,17 @@
       "report": "docs/reports/m18-4-1-local.json",
       "githubTransport": "controlled adapter",
       "nativePicker": "Win32 invocation contract and authenticated chooser callback, no real GUI acceptance"
+    },
+    "platformP4": {
+      "platformTestsPassed": 29,
+      "browserFlows": [
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "pageErrors": [],
+      "scope": "Real product processes; controlled GitHub/AI/picker and Null; manual/real hardware gates remain separate"
     }
   },
   "blockedChecks": [
@@ -1703,10 +1726,12 @@
     "demos/M18_3_12_GUIDE.md",
     "docs/reports/m18-3-12-remote.json",
     "docs/reports/M18_4_1_REPORT.md",
-    "docs/adr/0035-hub-and-github-project-workflow.md"
+    "docs/adr/0035-hub-and-github-project-workflow.md",
+    "docs/architecture/PLATFORM_P4.md",
+    "docs/reports/PLATFORM_P4_REPORT.md"
   ],
-  "nextTask": "Review M18.4.1 Hub/GitHub workflow, default-on publication preferences and source-preserving imports. M18.4 remains closed; live PAT/native GUI check remains deferred. Next principal milestone M19 audit; Unity API/shaders/GPU roadmap unchanged. Dense-physics and live-model gates remain. No automatic merge.",
-  "activeRevision": "M18.4.1",
+  "nextTask": "Review Platform P2/P3/P4 stacked candidates and their CI; complete P4 native/fresh-machine/standalone-game-export gates without conflating direct editor startup. P5 unstarted; Engine M19 audit remains planned, Unity/shader/GPU scope unchanged. Preserve recovery and older CI issues; no automatic merge.",
+  "activeRevision": "Platform P4 candidate",
   "roadmap": {
     "version": 2,
     "manifest": "docs/architecture/roadmap-v2.json",
@@ -1719,7 +1744,7 @@
     "decisionDate": "2026-10-19",
     "formerM19MovedTo": "M40",
     "status": "planned",
-    "trackingIssue": "https://github.com/Krozzeo/AxiomEngine/issues/40",
+    "trackingIssue": "https://github.com/Krozzeo/AxiomGameEngine/issues/40",
     "scopeRevision": "2026-10-19-gpu-physics",
     "gpuPhysicsPlan": "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
     "gpuPhysicsStatus": "not_started",

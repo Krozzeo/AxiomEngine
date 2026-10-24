@@ -1,3 +1,4 @@
+import {launchEditorBrowser} from './browser-options.mjs';
 import {control} from './editor-controls.mjs';
 import assert from 'node:assert/strict';
 import {PNG} from 'pngjs';
@@ -14,7 +15,7 @@ try {
  const demos=await createM15Demos(root,{compile:true,requireScript:true,onProgress:console.log});
  daemon=await startServer({projectRoot:root});
  const command=async(type,data={})=>{const r=await fetch(daemon.origin+'/v1/commands',{method:'POST',headers:{Origin:daemon.origin,Authorization:'Bearer '+daemon.token,'Content-Type':'application/json'},body:JSON.stringify(envelope('command',{type,data}))});const v=await r.json();if(v.kind==='error')throw Error(JSON.stringify(v));return v.payload.data;};
- browser=await chromium.launch({headless:process.env.AXIOM_HEADLESS==='true',channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
+ browser=await launchEditorBrowser({headless:process.env.AXIOM_HEADLESS==='true',channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});
  async function next(renderer){if(page){await page.close();await new Promise(r=>setTimeout(r,5200));}page=await browser.newPage({viewport:{width:1700,height:1100}});page.setDefaultTimeout(60000);page.on('pageerror',e=>report.pageErrors.push(e.message));page.on('console',m=>{if(m.type()==='error')report.consoleErrors.push(m.text());});page.on('dialog',d=>d.accept());const url=new URL(daemon.editorUrl);if(renderer)url.searchParams.set('renderer',renderer);await page.goto(url.href);await page.locator('#connection').filter({hasText:'Connected'}).waitFor();}
  async function ready(){await page.waitForFunction(()=>document.querySelector('#editor-workspace').getAttribute('aria-busy')==='false');const s=await command('scene.get'),end=Date.now()+15000;while(Date.now()<end){const status=(await command('runtime.status')).editor;if(status.connected&&status.projectId===s.project.id&&status.sceneRevision===s.sceneRevision)return s;await page.waitForTimeout(100);}throw Error('Renderer did not acknowledge project');}
  async function open(demo){await (await control(page,'#project-list')).selectOption(demo.id);await (await control(page,'#project-open')).click();return ready();}

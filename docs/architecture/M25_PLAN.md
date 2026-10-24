@@ -1,43 +1,40 @@
-# M25 — Física 3D: geometrías, consultas e infraestructura compute
+# M25 — 3D physics geometry, queries and compute infrastructure
 
-Plan vigente desde 2026-10-19; ampliación explícita de físicas GPU/shaders. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M20, M21, M22, M24.
+Minimum dependencies: M20, M21, M22, M24.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [Plan GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- Completar colliders primitivos, cápsulas, compuestos, mallas/convexos y terreno; materiales físicos y transformaciones de colliders.
-- Raycasts, sweeps, overlaps, filtros, contactos y sobrecargas asignadas, incluyendo consultas sobre escenas físicas.
-- Definir backend, unidades, tolerancias y presupuestos; extender o sustituir solver mediante ADR con evidencia.
-- Entregar infraestructura WebGPU compute/WGSL compartida: buffers/layouts, dispatch, sincronización/readback, caché/diagnóstico de shaders, capacidades y pérdida de dispositivo. Medir/reducir sincronización C#/JS; mantener CPU/Wasm como base.
+- Complete primitive/capsule/compound/mesh/convex/terrain colliders, physics materials and collider transforms.
+- Assigned raycasts/sweeps/overlaps/filters/contacts/overloads and physics-scene queries.
+- Choose backend/units/tolerances/budgets; extend/replace solver through an evidence-backed ADR.
+- Shared WebGPU compute/WGSL buffers/layouts/dispatch/synchronization/readback/cache/diagnostics/capabilities/device loss. Measure/reduce C#-JS bridge cost; retain CPU/Wasm.
 
-## Subtandas previstas
+## Planned batches
 
-- 25.0 Infraestructura compute WGSL, contrato de recursos/sincronización y benchmark CPU/puente; no depende de completar M30.
-- 25.1 Backend, geometrías y materiales.
-- 25.2 Consultas y filtros.
-- 25.3 Contactos, escenas y rendimiento.
+- 25.0 Shared WGSL compute resources/synchronization and CPU/bridge benchmark; no dependency on completing M30.
+- 25.1 Backend/geometry/materials.
+- 25.2 Queries/filters.
+- 25.3 Contacts/scenes/performance.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Las consultas verifican distancias, normales, capas y triggers en geometrías de referencia.
-- [ ] Escala/rotación/parenting y límites generan resultados documentados o errores explícitos.
-- [ ] Pruebas nativas, Wasm y C# cubren los mismos casos y registran precisión/coste.
-- [ ] M25.0 ejecuta kernels WGSL reales de prueba con resultados verificados, recursos liberados, fallos explícitos y baseline CPU/C#/JS; su infraestructura se reutiliza en M26/M28/M30 sin ciclo de dependencias.
+- [ ] Queries verify distances/normals/layers/triggers on reference geometry.
+- [ ] Scale/rotation/parenting/limits yield documented results or explicit errors.
+- [ ] Native/Wasm/C# cover the same cases and report precision/cost.
+- [ ] M25.0 runs real verified WGSL kernels, releases resources and exposes failures/baselines; reused by M26/M28/M30 without dependency cycle.
 
-## Demo editable requerida
+## Required editable demo
 
-3D Collider & Query Lab con cápsulas, mallas, compuestos y sweeps.
+3D Collider & Query Lab: capsules, meshes, compounds and sweeps.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 8 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).

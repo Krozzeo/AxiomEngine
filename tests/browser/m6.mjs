@@ -1,3 +1,4 @@
+import {launchEditorBrowser} from './browser-options.mjs';
 import {control} from './editor-controls.mjs';
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,rm,readFile,readdir,writeFile} from 'node:fs/promises';
@@ -14,7 +15,7 @@ try{
  const source=await call('project.create',{name:'M6 protected source'}),id=source.project.id,path=join(root,id.slice(10)+'.json'),original=await readFile(path);
  await assert.rejects(client.call('scene.entity.create',{id,expectedSceneRevision:source.sceneRevision,name:'Forbidden direct edit'}),/AX_WORKSPACE_0001/);
  assert.equal((await client.request('tools/call',{name:'workspace.accept',arguments:{}})).error.code,-32602);
- browser=await chromium.launch({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>report.pageErrors.push(e.message));page.setDefaultTimeout(30000);await page.goto(daemon.editorUrl);
+ browser=await launchEditorBrowser({headless:false,channel:'chromium',args:['--no-sandbox','--enable-gpu','--enable-unsafe-webgpu','--enable-unsafe-swiftshader','--enable-features=Vulkan','--use-angle=vulkan','--use-vulkan=swiftshader','--use-webgpu-adapter=swiftshader','--disable-vulkan-surface','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>report.pageErrors.push(e.message));page.setDefaultTimeout(30000);await page.goto(daemon.editorUrl);
  async function ready(workspaceId=null){const until=Date.now()+30000;while(Date.now()<until){const s=await call('runtime.status',workspaceId?{workspaceId}:{});if(s.editor.connected&&s.editor.renderer==='webgpu'&&s.editor.workspaceId===workspaceId&&s.editor.sceneRevision===s.sceneRevision)return s;await new Promise(r=>setTimeout(r,300));}throw Error('Preview failed to synchronize');}
  await ready();
  async function proposal(name){const main=await call('scene.query',{id});const w=await call('workspace.begin',{id,expectedSceneRevision:main.sceneRevision,name});const scope=async()=>({id,workspaceId:w.id,expectedSceneRevision:(await call('scene.query',{id,workspaceId:w.id})).sceneRevision});await call('asset.import',{...await scope(),name:'proposal.png',base64:imageFixture().toString('base64')});const asset=(await call('asset.query',await scope())).items[0];await call('scene.asset.place',{...await scope(),assetId:asset.id});return{w,scope};}

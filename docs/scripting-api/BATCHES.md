@@ -1,6 +1,6 @@
-# Plan de expansión vigente
+# Current expansion plan
 
-[Roadmap M19–M40](../architecture/ROADMAP_M19_M40.md): auditoría, implementación por familias, conformidad integral y estabilización final. Este documento conserva la descripción de SDK 7; las milestones nuevas siguen planificadas y no amplían por sí mismas su cobertura ejecutable.
+[RoadmapM19–M40](../architecture/ROADMAP_M19_M40.md) covers full audit, family implementation, conformance and final hardening. The following SDK 7 description is a historical release slice; SDK 8 additions are [tracked separately](STATUS_0_0_49.md). Planned milestones do not add executable API coverage.
 
 # Scripting API batches — 0.0.48 / SDK 7
 

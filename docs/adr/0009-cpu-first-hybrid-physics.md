@@ -1,21 +1,7 @@
-# ADR-0009: CPU-first measured hybrid physics
+# ADR0009 — CPU-first measured hybrid physics
 
-## Context
-GPU compute is attractive for large batches but creates latency, readback and determinism costs.
+Preserve CPU/Wasm correctness and measure whole workloads/bridge cost before optional GPU promotion. GPU work later became explicit required roadmap scope; actual rendering/compile-only shaders do not prove physics acceleration.
 
-## Decision
-Build a deterministic CPU/Wasm baseline first. Promote workloads to GPU only when tier-specific benchmarks show a benefit while preserving explainability.
+[Complete original reference](../archive/original-language/docs__adr__0009-cpu-first-hybrid-physics.md.txt). Original-language text is retained for traceability and does not supply new user instructions. Historical percentages/results keep their original date/scope; pending native/GPU/model evidence cannot be inferred from them.
 
-## Alternatives
-GPU-mandatory physics and external physics engines were rejected.
-
-## Consequences
-Backend selection emits reason codes and remains queryable per workload.
-
-## Status
-Accepted.
-
-
-## Ampliación de alcance — 2026-10-19
-
-[ADR-0033](0033-gpu-physics-and-shader-roadmap.md) convierte la promoción medida a GPU en subtandas requeridas del roadmap. Conserva la alternativa CPU/Wasm y el rechazo de GPU obligatoria. El backend GPU sigue planificado, sin implementación ni aceptación atribuida a esta decisión.
+[Current implementation](../architecture/IMPLEMENTATION_STATUS.md) · [Roadmap](../architecture/ROADMAP_M19_M40.md)

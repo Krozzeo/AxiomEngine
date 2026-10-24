@@ -1,17 +1,15 @@
-# Reporting vigente — roadmap ampliado 2026-10-19
+# Current reporting — expanded roadmap
 
-[Roadmap M19–M40](ROADMAP_M19_M40.md) es la decisión de alcance vigente. El antiguo M19 se traslada a M40; M19–M39 son 21 milestones nuevas, todas inicialmente planificadas y sin crédito funcional. M18.4 cerrada según ADR-0034; verificación nativa manual Deferred por decisión explícita del usuario.
+M19–M40 is the approved expanded scope; formerM19 hardening moved in full toM40. M19–M39 are21 new planned milestones with no implementation credit. M18.4 closed under ADR0034 with native real-account acceptance explicitly deferred by the owner.
 
-- Progreso de milestone: aceptación requerida aprobada / aceptación requerida total; no contar documentos como implementación.
-- Cobertura API: firmas objetivo con comportamiento verificado / firmas objetivo del snapshot M19. Declarar parciales, bloqueos, plataformas, paquetes y exclusiones por separado; no deduplicar sobrecargas diferentes ni sumar miembros heredados varias veces.
-- Meta futura M39: >=95% del inventario core objetivo completo y 100% P0; no se reduce el denominador completo por capacidades no soportadas.
-- Progreso global ampliado: no cuantificado hasta que M19 publique la ponderación de alcance/esfuerzo y la auditoría. El 94% (122/130) es una métrica histórica del MVP y no se presenta como progreso de la expansión.
-- Los porcentajes orientativos por áreas discutidos en planificación no son una medición auditada y no alimentan el avance funcional.
-- Toda nueva aceptación conserva las obligaciones de evidencia, demos, handoff y revisión descritas abajo. M40 hereda íntegro el cierre anterior.
+- Milestone progress: passed required acceptance / all required acceptance. Documentation alone is not functional implementation.
+- API coverage: verified behavioral target signatures / complete frozen M19 denominator. Keep partial/blocked/platform/package/excluded categories visible; distinct overloads stay distinct and inherited members are not duplicated.
+- FutureM39 target: >=95% core public target signatures and 100% P0; unsupported capabilities stay in the full denominator.
+- Expanded global progress remains unquantified until M19 publishes scope/effort weighting. Historical94%(122/130) is original MVP only; prior area estimates are not audited coverage.
+- Nine GPU/shader batches preserve main-milestone totals and require separate actual CPU/GPU behavior/performance/hardware evidence. M26/M28/M30/M39/M40 stay open if those gates fail.
+- Platform phases are independent. P4's exported-game gate remains open while Engine has no game build/export pipeline; direct editor startup is not a substitute.
 
-La ampliación de [físicas GPU y shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md) añade nueve subtandas requeridas dentro de las milestones existentes. No cambia el total de principales ni suma aceptación; exigir evidencia CPU/GPU separada, rendimiento completo y hardware físico para los gates de aceleración. M26/M28/M30/M39/M40 permanecen abiertas si sus nuevos criterios no pasan.
-
-La tabla de 130 puntos de abajo se conserva como referencia histórica; no incorpora los pesos todavía desconocidos de M19–M39.
+The130-point table below is historical, excluding unknown M19–M39 weights. New closure still requires demos, current handoff/state/status/API/changelog, exact evidence and honest Passed/Failed/Blocked/Deferred classifications. A required deferred gate needs an explicit scope decision; it cannot be silently waived.
 
 ---
 

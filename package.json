@@ -1,6 +1,6 @@
 {
   "name": "axiom-engine",
-  "version": "0.0.52",
+  "version": "0.0.56",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.9.0",
@@ -78,9 +78,12 @@
     "demo:m18-4": "node demos/create-m18-4-projects.mjs",
     "test:browser:m18-3-12": "node tests/browser/m18-3-12.mjs",
     "test:browser:m18-4-1": "node tests/browser/m18-4-1.mjs",
-    "test:browser:m18-4": "node tests/browser/m18-4.mjs"
+    "test:browser:m18-4": "node tests/browser/m18-4.mjs",
+    "version": "node scripts/sync-product-version.mjs",
+    "test:browser:reference-refresh": "node tests/browser/reference-drag-refresh.mjs"
   },
   "dependencies": {
+    "axiom-platform": "https://codeload.github.com/Krozzeo/AxiomPlatform/tar.gz/6e8e05d3934e649df1fb89228b3bac2965d37018",
     "fflate": "0.8.3",
     "occt-import-js": "0.0.23",
     "pdfjs-dist": "5.4.296",

@@ -1,11 +1,11 @@
-## Problema y comportamiento resultante
+## Problem and resulting behavior
 
-Describir qué lo dispara y qué cambia para el usuario.
+Describe the concrete trigger and behavior after this change.
 
-## Verificación
+## Validation
 
-Indicar checks ejecutados, evidencia y límites (Null/WebGPU, adaptadores/cuenta real). Enlazar la issue y registrar cualquier fallo pendiente.
+List executed checks and results; label controlled providers, Null/GPU and manual acceptance separately.
 
-## Documentación y alcance
+## Compatibility and limits
 
-Indicar documentación actualizada y si modifica contratos, persistencia o planificación.
+State Platform/product pins, document/SDK impacts, recovery and remaining gates. Do not imply integration or milestone closure from local tests alone.

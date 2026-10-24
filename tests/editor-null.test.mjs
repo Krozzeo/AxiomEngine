@@ -26,9 +26,9 @@ import {worldScene} from '../engine/scene/hierarchy.mjs';
 import {renderPlan} from '../engine/renderer/render-plan.mjs';
 import {createProductionGPU} from '../engine/renderer/production-gpu.mjs';
 const bytes = await readFile(new URL("../target/wasm32-unknown-unknown/release/axiom_wasm.wasm", import.meta.url));
-const rendererSource=(await readFile(new URL("../apps/editor/src/scene-renderer.mjs",import.meta.url),"utf8")).replace(/^import .*;\n/gm,"").replace("export async function createSceneRenderer","async function createSceneRenderer");
+const rendererSource=(await readFile(new URL("../apps/editor/src/scene-renderer.mjs",import.meta.url),"utf8")).replace(/^import .*;\r?\n/gm,"").replace("export async function createSceneRenderer","async function createSceneRenderer");
 const source = (await readFile(new URL("../apps/editor/src/main.ts", import.meta.url), "utf8"))
-  .replace(/^import .*;\n/gm, "").replace(/boot\(\);\s*$/, "globalThis.ready = boot();");
+  .replace(/^import .*;\r?\n/gm, "").replace(/boot\(\);\s*$/, "globalThis.ready = boot();");
 
 for (const mode of ["forced", "unavailable"]) {
   test(`editor runs real Wasm Null frames when GPU is ${mode}`, async () => {

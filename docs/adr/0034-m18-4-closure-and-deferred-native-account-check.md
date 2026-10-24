@@ -1,15 +1,9 @@
-# ADR-0034 — Cierre de M18.4 y validación nativa aplazada
+# ADR0034 — M18.4 closure with native account validation deferred
 
-## Decisión explícita del usuario
+The owner explicitly asked to close18.4 without a repository link, to create it manually after receiving the demo, and later authorized Krozzeo/TestRepo for tests **not demos**. Close implementation with nine required accepted groups; defer manual app login/publication against the owner's account until demo use.
 
-El usuario indica: «Cerrá la 18.4 sin el link, el link lo voy a crear manualmente cuando tenga la demo». Luego autoriza usar `Krozzeo/TestRepo` para ejecutar pruebas, **no para las demos**. Se cierra la implementación M18.4 con nueve grupos requeridos aprobados y se aplaza la validación manual del inicio de sesión/publicación desde la app con su cuenta hasta que utilice las demos.
+The original external group is Deferred by scope decision, never Passed. Closure acceptance changes from 9/10 to9/9=100%; this is not full GitHub coverage or verification of native token/production GraphQL against the real account. The guide retains later native acceptance steps.
 
-El grupo externo original se clasifica **Deferred por decisión de alcance**, nunca Passed. La aceptación del alcance de cierre pasa de 9/10 a **9/9 = 100%**. No representa cobertura total de GitHub ni verificación de la autenticación nativa: el token y la mutación GraphQL de producción siguen sin ejercicio contra la cuenta real. La conexión nativa se describe en la guía para esa comprobación posterior.
+Additional evidence used production GitHubPublication with delegated authenticated connector Git transport and a minimal non-demo fixture: durable publication/download/reopen, recovery from lost reply after service reconstruction without duplication and divergence rejection. Conditional tree/commit/ref transport does not substitute for Axiom's native HTTP/GraphQL test. [Report](../reports/M18_4_CONNECTED_TEST_REPORT.md), retained m18-4-connected-test.json receipts.
 
-## Evidencia adicional en el repositorio autorizado
-
-Se ejecuta el servicio de producción `GitHubPublication` con un transporte Git delegado al conector autenticado, usando un fixture mínimo sin demos. Se confirma publicación durable, descarga/reapertura, recuperación de una respuesta perdida sin duplicación tras reconstruir el servicio y detención por divergencia remota. El transporte delegado crea árbol/commit y actualiza la referencia con condición de cabecera; **no sustituye la prueba del cliente HTTP/GraphQL nativo de Axiom**. Informe y recibos: `docs/reports/M18_4_CONNECTED_TEST_REPORT.md` y `m18-4-connected-test.json`.
-
-## Consecuencias
-
-M18.4 figura complete/100 en planificación y estado. M19–M40 conserva íntegro su alcance de Scripting API de Unity, shaders y físicas GPU; M19 no empieza por este cambio. Quedan 22 milestones principales pendientes, de 45, con 23 cerradas. Los pendientes anteriores del editor/render/física densa y modelo real permanecen abiertos por separado. No se fusionan PRs automáticamente. La CI se registra con su resultado real y no se presenta una ejecución fallida como aprobada.
+M18.4 complete/100 is limited to this scope. M19–M40 retains Unity/shaders/GPU; M19 does not start from this change.45 main milestones/23 historically closed/22 pending. Earlier editor/render/dense physics/model issues stay separate. No automatic merges or failed CI described as passed.

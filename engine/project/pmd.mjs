@@ -3,7 +3,7 @@ const clone=value=>structuredClone(value);
 export const pmdPhases=['definition','planning','critique','construction','ready'];
 const fail=message=>{throw Error('PMD: '+message);};
 const size=value=>new TextEncoder().encode(JSON.stringify(value)).length;
-export function newPmd(){return {format:'axiom-pmd',version:1,revision:1,phase:'definition',approvals:{definition:false,planning:false,critique:false},sections:[],decisions:[],questions:[],roadmap:[],chat:[{role:'assistant',text:'¿Qué proyecto tienes en mente?'}],history:[]};}
+export function newPmd(){return {format:'axiom-pmd',version:1,revision:1,phase:'definition',approvals:{definition:false,planning:false,critique:false},sections:[],decisions:[],questions:[],roadmap:[],chat:[{role:'assistant',text:'What project do you have in mind?'}],history:[]};}
 export function validatePmd(p){
  if(!p||p.format!=='axiom-pmd'||p.version!==1||!Number.isSafeInteger(p.revision)||p.revision<1||!pmdPhases.includes(p.phase))fail('invalid format or phase');
  if(!p.approvals||['definition','planning','critique'].some(k=>typeof p.approvals[k]!=='boolean'))fail('invalid approvals');

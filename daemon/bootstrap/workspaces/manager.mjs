@@ -1,3 +1,4 @@
+import {requireHuman,requireReview} from 'axiom-platform/changes';
 import {randomUUID} from 'node:crypto';
 import {join} from 'node:path';
 import {readdir,rm,lstat,rmdir} from 'node:fs/promises';
@@ -48,8 +49,8 @@ export class ProposalManager {
   if(type==='workspace.continue'){if(item.recovered&&!this.main.dirty&&digest(this.main.project)===digest(item.base)){item.baseSceneRevision=this.main.revision;item.recovered=false;}if(this.previewId===item.id){this.previewId=null;await this.persistView();}item.child.playing=false;item.child.revision++;await this.persist(item);return this.summary(item);}
   if(type==='workspace.reject'){if(this.previewId===item.id){this.previewId=null;await this.persistView();}await rm(item.root,{recursive:true,force:true});this.items.delete(item.id);return {id:item.id,status:'rejected'};}
   if(type==='workspace.accept'){
-   if(context?.actor?.kind!=='human')throw fail('Only human review can accept a proposal');
-   if(data.reviewHash!==digest([item.base.scene,item.child.project.scene,item.child.revision]))throw fail('Review is stale; inspect this proposal again');
+   requireHuman(context,fail);
+   requireReview([item.base.scene,item.child.project.scene,item.child.revision],data.reviewHash,()=>fail('Review is stale; inspect this proposal again'));
    if(this.main.project?.id!==item.base.id||this.main.revision!==item.baseSceneRevision||this.main.playing||this.main.activeJob||this.main.activeScriptJob)throw fail('Source changed; proposal cannot overwrite concurrent edits');
    const persisted=await this.main.store.run('project.open',{id:item.base.id});if(persisted.project.revision!==item.base.revision)throw fail('Saved project changed in another daemon');
    validateProject(item.child.project);await item.child.validateResources(item.child.project.scene);
@@ -69,7 +70,7 @@ export class ProposalManager {
  }
  review(id){const item=this.get(id);return {workspace:this.summary(item),reviewHash:digest([item.child.project,item.child.revision]),mainRevision:this.main.revision,mainHash:digest(this.main.project),mainDiverged:digest(this.main.project)!==digest(item.base),changes:changes({scene:item.base.scene,editor:item.base.editor},{scene:item.child.project.scene,editor:item.child.project.editor})};}
  async apply(data,context){
-  if(context?.actor?.kind!=='human')throw fail('Only human review can apply a proposal');
+  requireHuman(context,fail);
   const item=this.get(data.workspaceId);this.check(item,data);
   if(item.failure||this.busy(item)||item.child.playing||this.main.playing||this.main.activeJob||this.main.activeScriptJob)throw fail('Stop Play and finish all jobs before applying');
   if(this.main.project?.id!==item.base.id||data.expectedMainRevision!==this.main.revision||data.mainHash!==digest(this.main.project)||data.reviewHash!==digest([item.child.project,item.child.revision]))throw fail('Review changed; review the current branches again');

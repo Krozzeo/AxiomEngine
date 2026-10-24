@@ -1,29 +1,18 @@
 # Axiom Game Engine
 
-Motor de juegos con editor en navegador, núcleo Rust/WebAssembly, renderizado WebGPU y gameplay C#. Incluye escenas 2D/3D, recursos, físicas CPU/Wasm, herramientas de edición y propuestas de IA aisladas con revisión humana.
+A local browser game editor with Rust/WebAssembly kernel, WebGPU renderer and C# gameplay. Includes2D/3D scenes, resources, CPU/Wasm physics, editing tools and isolated AI proposals with human review.
 
-**Base actual: 0.0.52 / SDK 8.** La última entrega se integró en `main` por decisión del usuario el 2026-10-20, conservando el historial completo. El desarrollo futuro parte de esta base.
+**Current candidate:0.0.56 / scripting SDK8 / Platform0.1.7 product integration.** P1 is accepted; the subsequent Engine adaptation remains on stacked review branches. [Architecture audit](docs/reports/ARCHITECTURE_AUDIT_0_0_56.md), [product contract](docs/architecture/PRODUCT_INTEGRATION_0_0_56.md), [current handoff](docs/AI_HANDOFF.md).
 
-- [Estado confirmado y límites](docs/architecture/IMPLEMENTATION_STATUS.md)
-- [Mapa de documentación](docs/index.md) y [contexto para continuar](docs/AI_HANDOFF.md)
-- [Milestones de GitHub](https://github.com/Krozzeo/AxiomGameEngine/milestones) y [su correspondencia con los planes](docs/NATIVE_GITHUB_MILESTONES.md)
-- [Roadmap M19–M40](docs/architecture/ROADMAP_M19_M40.md): Scripting API compatible con Unity, shaders y físicas GPU
-- [Recuperación y organización de GitHub](docs/REPOSITORY_MAINTENANCE.md)
-- [Cambios por versión](CHANGELOG.md)
+## Axiom family
 
-## Familia Axiom y reestructuración
+This is the first product of [Axiom Platform](https://github.com/Krozzeo/AxiomPlatform). Platform owns Hub/shared infrastructure/SDK; Engine owns specialized editor, scenes/assets/C#/rendering/physics/audio/animation/export and its adapter. [Transition](docs/architecture/PLATFORM_TRANSITION.md). Engine M19–M40 still targets functional Unity API compatibility plus shaders/compute/GPU physics. Platform work does not increase their coverage.
 
-Este es el primer producto de [Axiom Platform](https://github.com/Krozzeo/AxiomPlatform). La [separación aprobada](docs/architecture/PLATFORM_TRANSITION.md) está en P0 documental: el código común aún reside aquí. Platform tendrá Hub/servicios/SDK; el motor conserva dominio y adaptador. M19–M40 mantienen Unity scripting, shaders y físicas GPU. No cambia el arranque ni el formato de proyectos.
+The prepared combined P4 ZIP has a root **Start Axiom.cmd** launcher: extract both sibling folders and double-click. It checks dependencies, installs missing local runtimes/dependencies, opens the browser and retains startup errors. [P4 guide](docs/architecture/PLATFORM_P4.md).
 
-## Primera integración con Platform — P1
+## Direct source startup
 
-La rama P1 añade un adaptador que permite crear/abrir el proyecto desde el Hub de Platform, editarlo en una pestaña independiente y guardar/cerrar con control de revisión y buffers pendientes. [Ejecución y límites](docs/architecture/PLATFORM_P1.md) · [Informe](docs/reports/PLATFORM_P1_REPORT.md). Es una entrega en rama, sin extracción de GitHub/AI ni cambio de formatos.
-
-## Descargar y ejecutar
-
-[Descargar la entrega de recuperación 0.0.52](https://github.com/Krozzeo/AxiomGameEngine/archive/refs/tags/recovery/pre-restructure-0.0.52.zip). Es código fuente; requiere las herramientas siguientes, no es un instalador.
-
-Requisitos: Node.js 24+, Rust 1.90 con `wasm32-unknown-unknown` y, para C#, .NET 10 SDK con `wasm-tools`.
+Requirements: Node 24+, Rust 1.90 with wasm32-unknown-unknown and .NET 10 SDK/wasm-tools for C#.
 
 ```powershell
 npm ci
@@ -33,26 +22,27 @@ npm run demo
 npm run dev
 ```
 
-Abrir la dirección local que indica el daemon. `npm run dev` construye el núcleo Wasm y el editor antes de arrancar. Conservar los proyectos completos y sus recursos al cambiar de versión. Agregar un proyecto desde una carpeta en Hub crea una copia en Project Storage y conserva el original.
+Open the daemon's authenticated local URL. Direct startup remains available; it does not require the Platform Hub. Keep complete projects/resources and never open the same folder concurrently with older pre-lease binaries. Engine consumes a public pinned HTTPS Platform archive with lockfile integrity, not a neighboring checkout link.
 
-## Demos y GitHub
+New3D projects/scenes include Cube, Directional Light and configured Camera. Platform owns hosted lifecycle; use the project row's Open/Edit/Save/Close icons. Pending code buffers must be saved in the editor. Removing a list entry preserves files; permanent deletion is a separate reviewed confirmation.
 
-- `npm run demo`: References & Inspector Lab y demos relacionadas; [guía](demos/M18_3_10_GUIDE.md).
-- `npm run demo:m18-4`: dos proyectos independientes para crear un repositorio o conectar uno existente; [guía paso a paso](demos/M18_4_GUIDE.md).
-- [Inspector, escenas y primera apertura](demos/M18_3_12_GUIDE.md).
-- [Catálogo histórico de demos](demos/README.md).
+## Roadmap and evidence
 
-La cuenta GitHub se conecta por sesión del daemon; destinos y preferencias se guardan por proyecto. Los tokens se mantienen en memoria. `Krozzeo/TestRepo` se reserva para pruebas y no se vincula automáticamente a las demos.
-
-## Verificación
+[RoadmapM19–M40](docs/architecture/ROADMAP_M19_M40.md) keeps45 main milestones/23 historically closed and 22 planned. M19 audits the frozen Unity 6.3 target before percentages can be measured. M40 inherits former M19 hardening. No current audited whole-API percentage or GPU-physics completion is claimed. Standalone game build/export is planned and not currently exposed; direct editor startup is a different capability.
 
 ```powershell
 npm run check
 npm run check:native
 ```
 
-Los recorridos de navegador se ejecutan mediante `test:browser:*`. El candidato de consolidación e2eebc5 aprobó [CI 329, 46/46 trabajos](https://github.com/Krozzeo/AxiomGameEngine/actions/runs/39505502248), incluido Node 441/441; su árbol coincide con la base 871a72f. Es evidencia histórica, no aceptación del nuevo PR. El run posterior sobre main falló M17 y el gate agregado: [pendiente #51](https://github.com/Krozzeo/AxiomGameEngine/issues/51); la base no se declara íntegramente verde. #48/#49 están cerradas; [#47 Inspector intermitente](https://github.com/Krozzeo/AxiomGameEngine/issues/47) sigue abierta. [Estado y límites](docs/architecture/IMPLEMENTATION_STATUS.md).
+Browser suites use test:browser:* and retain separate GPU/Null evidence. Previous P3 check445/445 passed locally, but Engine CI336 passed43/46 with M17/M18.3.11/aggregate failures. #47/#51/#55 and real-account/native-dialog/model evaluation/dense physics remain independent. New PR checks decide integration; historical green runs do not certify later commits.
 
-M18.4 está cerrada en el alcance acordado según ADR-0034. La validación nativa manual con cuenta real continúa aplazada por el usuario. La paridad total con Unity y las físicas GPU siguen pendientes; no hay un porcentaje global auditado antes de M19.
+## Demos and accounts
 
-[MIT](LICENSE). Las dependencias conservan sus licencias y [avisos](THIRD_PARTY_NOTICES.md). Consultar [CONTRIBUTING.md](CONTRIBUTING.md) para cambios y revisión.
+npm run demo creates References & Inspector and related labs; [demo map](demos/README.md). npm run demo:m18-4 creates two independent GitHub demos; [guide](demos/M18_4_GUIDE.md). TestRepo is testing-only and is never auto-linked to demos. Session credentials stay in memory; repository/preferences/history remain per project. Never paste tokens/API keys into chat.
+
+Code/UI/maintained docs use English. Original-language historical snapshots are retained as reference text, not current instructions. [Contributing](CONTRIBUTING.md). [MIT](LICENSE); [third-party notices](THIRD_PARTY_NOTICES.md) remain applicable.
+
+[P5 shared editor lifecycle and second-consumer integration](docs/architecture/PLATFORM_P5.md). Math Lab is an independent product; Unity/shader/GPU coverage and Engine M19–M40 are unchanged.
+
+Account connection is managed exclusively in Platform. Project model/reasoning can use Same as Hub or explicit overrides. Engine software updates are discovered through prepared GitHub releases; game publication destinations remain project-specific. `npm version` synchronizes package/product descriptor/state through the version hook.

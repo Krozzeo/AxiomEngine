@@ -1,0 +1,773 @@
+{
+  "roadmapVersion": 2,
+  "decisionDate": "2026-10-19",
+  "status": "planned",
+  "engineBaseline": "0.0.49 / SDK 8",
+  "unityBaseline": "6000.3 LTS",
+  "unityLatestDelta": "6000.6 observado 2026-10-18; separado del objetivo congelado",
+  "completedMainMilestones": 23,
+  "totalMainMilestones": 45,
+  "pendingMilestones": 22,
+  "finalMilestone": "M40",
+  "renumbering": {
+    "old": "M19 — MVP Hardening",
+    "new": "M40 — Estabilización final",
+    "reusedM19": "Auditoría completa y contrato de compatibilidad"
+  },
+  "historicalMvp": {
+    "completedWeight": 122,
+    "totalWeight": 130,
+    "approximatePercent": 94
+  },
+  "expandedWholeProjectPercent": null,
+  "coverageTarget": {
+    "coreVerifiedPercent": 95,
+    "priorityP0VerifiedPercent": 100,
+    "measuredCurrentPercent": null,
+    "packages": "Métricas separadas por versión; nunca contarlas como implementadas por disponibilidad de nombres"
+  },
+  "milestones": [
+    {
+      "id": "M18.4",
+      "number": 18.4,
+      "title": "Integración con GitHub de proyectos de juegos",
+      "status": "complete",
+      "acceptancePercent": 100,
+      "dependsOn": [
+        "M18.3.10"
+      ],
+      "plan": "docs/architecture/M18_4_PLAN.md",
+      "scopeDecision": "docs/adr/0034-m18-4-closure-and-deferred-native-account-check.md"
+    },
+    {
+      "id": "M19",
+      "number": 19,
+      "title": "Auditoría completa y contrato de compatibilidad",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M18.3.10"
+      ],
+      "scope": [
+        "Congelar Unity 6.3 LTS (6000.3), snapshot y hash; inventariar namespaces, tipos, miembros, sobrecargas, herencia, obsoletos, plataformas y módulos. Separar paquetes versionados y el delta 6.6.",
+        "Mapear cada firma contra SDK y motor, corregir coincidencias ambiguas por nombre y registrar compatible, parcial, pendiente, bloqueada o fuera de alcance explícito.",
+        "Definir compatibilidad de código y comportamiento, niveles P0/P1/P2, precisión numérica, namespaces, presupuestos y perfiles navegador/daemon/nativo. Diseñar harness de conformidad y corpus de scripts.",
+        "Definir contrato CPU/GPU, perfiles de hardware, precisión/replay, consultas y callbacks síncronos; congelar workloads, duración y umbrales de rendimiento/estabilidad para físicas y shaders antes de evaluar el prototipo."
+      ],
+      "batches": [
+        "19.1 Inventario reproducible y propiedad de cada miembro por milestone.",
+        "19.2 Mapeo SDK/motor, prioridades y registro de dependencias.",
+        "19.3 Harness, casos de referencia, métricas y esfuerzo relativo. Incluye matriz CPU/GPU y contratos de sincronización, shaders y rendimiento."
+      ],
+      "acceptance": [
+        "Todos los registros del snapshot tienen identificador estable, procedencia y asignación; no hay miembros omitidos por falta de implementación.",
+        "El informe separa superficie declarada, comportamiento probado, restricciones de plataforma y paquetes; un tipo parcialmente presente no completa sus miembros.",
+        "El harness reproduce casos positivos, negativos y de ciclo de vida; se publica la primera cobertura medida y la ponderación revisada del roadmap.",
+        "Se publican perfiles CPU/GPU, matriz acelerada/fallback/bloqueada y umbrales reproducibles; no se atribuye cobertura GPU a renderizado, Null ni shaders que solo compilan."
+      ],
+      "demo": "Compatibility Observatory: navegador del inventario y corpus ejecutable de objetos, tiempo, física y recursos; sin atribuir al harness la implementación de APIs pendientes.",
+      "plan": "docs/architecture/M19_PLAN.md"
+    },
+    {
+      "id": "M20",
+      "number": 20,
+      "title": "Objetos, componentes y jerarquías compatibles",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M19"
+      ],
+      "scope": [
+        "Completar Object, GameObject, Component, Behaviour y Transform: búsquedas, tags/layers, activación, parenting, clonación, destrucción y sobrecargas del inventario.",
+        "Resolver igualdad/null de objetos destruidos, identidad, orden de componentes, referencias y vida útil; compatibilidad de código UnityEngine preservando Axiom.Gameplay.",
+        "Corregir diferencias de transformaciones, espacios, convenciones y tipos numéricos según el contrato M19."
+      ],
+      "batches": [
+        "20.1 Identidad, null, creación y destrucción.",
+        "20.2 Consultas/componentes y clonación de grafos.",
+        "20.3 Transformaciones, namespaces y corpus de migración."
+      ],
+      "acceptance": [
+        "Los scripts del corpus usan las firmas Unity asignadas sin adaptaciones ocultas.",
+        "Jerarquías, referencias, destrucción diferida y activación producen el comportamiento de referencia y no filtran recursos.",
+        "Stop, Undo y proyectos existentes conservan su contrato; todos los miembros asignados tienen pruebas o un bloqueo explícito que impide el cierre."
+      ],
+      "demo": "Object Lifecycle Lab con jerarquías, referencias destruidas, clones y cambios de activación.",
+      "plan": "docs/architecture/M20_PLAN.md"
+    },
+    {
+      "id": "M21",
+      "number": 21,
+      "title": "Matemáticas, geometría y utilidades",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M19",
+        "M20"
+      ],
+      "scope": [
+        "Completar vectores, quaternions, matrices, colores, rectángulos, bounds, planos y rayos; tipos enteros y conversiones presentes en el inventario.",
+        "Mathf, Random reproducible, interpolaciones, curvas, gradients y utilidades geométricas asignadas; igualdad, tolerancias y float/double conforme al contrato.",
+        "Validar extremos: cero, singularidades, grandes coordenadas, NaN/infinito según semántica documentada."
+      ],
+      "batches": [
+        "21.1 Tipos y operadores.",
+        "21.2 Matrices, espacios y geometría.",
+        "21.3 Curvas, random y precisión."
+      ],
+      "acceptance": [
+        "Vectores de referencia y propiedades algebraicas cubren operaciones normales y degeneradas.",
+        "Semillas, curvas y conversiones se reproducen entre configuraciones .NET/Wasm soportadas.",
+        "Las diferencias numéricas toleradas están cuantificadas por miembro; no se declara equivalencia por igualdad de nombres."
+      ],
+      "demo": "Math & Geometry Lab con inspección visual de matrices, rayos, curvas y secuencias aleatorias.",
+      "plan": "docs/architecture/M21_PLAN.md"
+    },
+    {
+      "id": "M22",
+      "number": 22,
+      "title": "Ciclo de vida, tiempo, eventos y asincronía",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M20",
+        "M21"
+      ],
+      "scope": [
+        "Completar mensajes y orden de ejecución de MonoBehaviour, activación, destrucción, pausa/foco y sincronización física; mensajes Unity privados conforme al contrato.",
+        "Ampliar Time, paso fijo configurable, corutinas, waits/timeouts, Invoke, Awaitable/cancelación y puente async requerido por las firmas objetivo.",
+        "UnityEvent/delegados y orden/reentrada; propagación de excepciones, cancelación y limpieza tras descarga de escena o Stop."
+      ],
+      "batches": [
+        "22.1 Mensajes y scheduling.",
+        "22.2 Corutinas, tiempos y cancelación.",
+        "22.3 Eventos, asincronía y limpieza."
+      ],
+      "acceptance": [
+        "Trazas de orden coinciden con casos de referencia a distintas tasas de render/física y timeScale.",
+        "Desactivar/destruir/descargar/Stop termina únicamente el trabajo que corresponda sin callbacks tardíos.",
+        "Errores y cancelaciones tienen estados observables y no se confunden con éxito."
+      ],
+      "demo": "Lifecycle Timeline Lab con ejecución por fotograma, eventos y tareas canceladas.",
+      "plan": "docs/architecture/M22_PLAN.md"
+    },
+    {
+      "id": "M23",
+      "number": 23,
+      "title": "Serialización, ScriptableObject y prefabs",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M20",
+        "M22"
+      ],
+      "scope": [
+        "ScriptableObject, atributos de serialización y callbacks; campos, arrays/listas, estructuras, referencias y grafos admitidos por Unity.",
+        "Serialización polimórfica/managed references y JsonUtility según su semántica real; identidad de assets, ciclos y referencias faltantes.",
+        "Prefabs, instancias, overrides y variantes asignadas; persistencia y migración de proyectos sin perder referencias ni Undo."
+      ],
+      "batches": [
+        "23.1 Modelo serializado y ScriptableObject.",
+        "23.2 Grafos, callbacks y JSON.",
+        "23.3 Prefabs, overrides y migración."
+      ],
+      "acceptance": [
+        "Guardar/reabrir conserva valores, identidad y relaciones; se verifican casos anidados y polimórficos.",
+        "Datos inválidos o incompatibles no corrompen el proyecto; versiones previas tienen migración probada.",
+        "Las limitaciones de JsonUtility no se sustituyen por un serializador con comportamiento diferente sin declararlo."
+      ],
+      "demo": "Save Graph & Prefab Lab con ScriptableObjects compartidos, overrides y reapertura.",
+      "plan": "docs/architecture/M23_PLAN.md"
+    },
+    {
+      "id": "M24",
+      "number": 24,
+      "title": "Escenas, recursos, carga asíncrona y memoria",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M22",
+        "M23"
+      ],
+      "scope": [
+        "Completar Scene/SceneManager, escenas aditivas, ownership, activación, eventos y objetos persistentes.",
+        "Resources, AsyncOperation y recursos binarios; carga asíncrona real, progreso y dependencias; gestión de bundles incluida en el inventario base.",
+        "Descarga, handles, liberación de CPU/GPU/audio y reapertura; contratos de I/O navegador/daemon. Addressables se registra como paquete separado en M39."
+      ],
+      "batches": [
+        "24.1 Escenas y ownership.",
+        "24.2 I/O asíncrono y formatos de recursos.",
+        "24.3 Descarga, fallos y memoria."
+      ],
+      "acceptance": [
+        "Carga y descarga repetidas ejercitan I/O real; no se cuenta LoadAsync residente como streaming.",
+        "Referencias, eventos y objetos persistentes sobreviven o se invalidan en el momento correcto.",
+        "Cancelación/fallo y presupuestos de memoria están probados sin assets huérfanos ni pérdida de authoring."
+      ],
+      "demo": "Streaming Scenes Lab con cambios de escena, recursos grandes y medición de memoria.",
+      "plan": "docs/architecture/M24_PLAN.md"
+    },
+    {
+      "id": "M25",
+      "number": 25,
+      "title": "Física 3D: geometrías, consultas e infraestructura compute",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M20",
+        "M21",
+        "M22",
+        "M24"
+      ],
+      "scope": [
+        "Completar colliders primitivos, cápsulas, compuestos, mallas/convexos y terreno; materiales físicos y transformaciones de colliders.",
+        "Raycasts, sweeps, overlaps, filtros, contactos y sobrecargas asignadas, incluyendo consultas sobre escenas físicas.",
+        "Definir backend, unidades, tolerancias y presupuestos; extender o sustituir solver mediante ADR con evidencia.",
+        "Entregar infraestructura WebGPU compute/WGSL compartida: buffers/layouts, dispatch, sincronización/readback, caché/diagnóstico de shaders, capacidades y pérdida de dispositivo. Medir/reducir sincronización C#/JS; mantener CPU/Wasm como base."
+      ],
+      "batches": [
+        "25.0 Infraestructura compute WGSL, contrato de recursos/sincronización y benchmark CPU/puente; no depende de completar M30.",
+        "25.1 Backend, geometrías y materiales.",
+        "25.2 Consultas y filtros.",
+        "25.3 Contactos, escenas y rendimiento."
+      ],
+      "acceptance": [
+        "Las consultas verifican distancias, normales, capas y triggers en geometrías de referencia.",
+        "Escala/rotación/parenting y límites generan resultados documentados o errores explícitos.",
+        "Pruebas nativas, Wasm y C# cubren los mismos casos y registran precisión/coste.",
+        "M25.0 ejecuta kernels WGSL reales de prueba con resultados verificados, recursos liberados, fallos explícitos y baseline CPU/C#/JS; su infraestructura se reutiliza en M26/M28/M30 sin ciclo de dependencias."
+      ],
+      "demo": "3D Collider & Query Lab con cápsulas, mallas, compuestos y sweeps.",
+      "plan": "docs/architecture/M25_PLAN.md"
+    },
+    {
+      "id": "M26",
+      "number": 26,
+      "title": "Física 3D CPU/GPU: solver avanzado y controladores",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M25"
+      ],
+      "scope": [
+        "Completar Rigidbody, centros de masa, inercia, interpolación, sleep automático, CCD y configuración del solver.",
+        "Joints y articulaciones del inventario, CharacterController y WheelCollider/vehículos con comportamiento real.",
+        "Separar creación/topología de simulación estable, medir estabilidad y throughput; Cloth se implementa en M34 con integración física.",
+        "Implementar backend físico WebGPU opcional con kernels WGSL propios, desde cuerpos simples hasta broadphase, contactos, solver y constraints del contrato. Integrar C#, consultas/eventos y render con selección medida CPU/GPU/Auto y fallback explícito."
+      ],
+      "batches": [
+        "26.1 Dinámica e interpolación/CCD.",
+        "26.2 Joints y articulaciones.",
+        "26.3 Personajes, vehículos y estrés.",
+        "26.4 Prototipo GPU 3D: gravedad, integración, rotación y cuerpos simples; consume M25.0.",
+        "26.5 Broadphase/narrowphase GPU, parejas/contactos, filtros y presupuestos para formas 3D del contrato.",
+        "26.6 Solver GPU 3D, fricción/inercia/sleep/islas/constraints, integración API y benchmark estable CPU/GPU."
+      ],
+      "acceptance": [
+        "Escenarios de joints/controladores/vehículos tienen aserciones de comportamiento y estabilidad.",
+        "Los casos rápidos y angulares validan los modos CCD implementados y sus límites.",
+        "El estrés mide simulación estable, memoria y regresiones; no deduce FPS universal de la capacidad máxima.",
+        "El alcance 3D acelerado ejecuta física real en GPU y coincide con el corpus CPU dentro de tolerancias, incluyendo consultas, eventos, activación y cambios de topología; fallback y límites son visibles.",
+        "La demo compara el mismo escenario CPU/GPU, muestra backend/motivo y aporta mediana/P95 del sistema completo y evidencia en hardware físico según el contrato M19; el mínimo GPU no se sustituye íntegramente por CPU."
+      ],
+      "demo": "3D Mechanics Lab con ragdoll, personaje, vehículo y banco de estrés. Extender Stress Physics 3D y CPU/GPU Physics & Shader Lab con selección CPU/GPU/Auto y mediciones reproducibles.",
+      "plan": "docs/architecture/M26_PLAN.md"
+    },
+    {
+      "id": "M27",
+      "number": 27,
+      "title": "Física 2D: geometrías y consultas",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M20",
+        "M21",
+        "M22"
+      ],
+      "scope": [
+        "Capsule, Polygon, Edge, Composite y demás Collider2D asignados; materiales y geometría de TilemapCollider coordinada con M34.",
+        "Completar Physics2D, ContactFilter2D, casts, overlaps, distancias, contactos y escenas físicas.",
+        "Alinear escala, rotación, profundidad, normales y unidades; representación nativa y puente C#.",
+        "Preparar el corpus CPU 2D que servirá como referencia del backend GPU M28: plano, geometrías, filtros, triggers y consultas; documentar los contratos de snapshot/readback sin devolver datos atrasados ocultos."
+      ],
+      "batches": [
+        "27.1 Geometrías y materiales.",
+        "27.2 Consultas/filtros y contactos.",
+        "27.3 Integración y precisión."
+      ],
+      "acceptance": [
+        "Polígonos, bordes y cápsulas colisionan y se consultan con resultados medidos.",
+        "Filtros de capa/profundidad/normal/triggers y sobrecargas tienen cobertura.",
+        "Casos degenerados y límites preservan el estado y reportan errores útiles.",
+        "El corpus de consultas/contactos 2D y sus tolerancias queda reutilizable para comparación CPU/GPU en M28; esto no equivale a implementar el backend GPU."
+      ],
+      "demo": "2D Collider & Query Lab con polígonos, bordes, filtros y sweeps.",
+      "plan": "docs/architecture/M27_PLAN.md"
+    },
+    {
+      "id": "M28",
+      "number": 28,
+      "title": "Física 2D CPU/GPU: joints y simulación avanzada",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M27",
+        "M25"
+      ],
+      "scope": [
+        "Completar Rigidbody2D, interpolación, sleeping, CCD, efectores y configuración de simulación.",
+        "Implementar familias Joint2D del inventario, motores, límites, roturas y colisiones conectadas.",
+        "Validar plataformas, vehículos y cadenas 2D, integración con animación/tiles y rendimiento estable.",
+        "Implementar backend GPU 2D con shaders WGSL propios sobre la infraestructura M25.0, solver/constraints 2D e integración Physics2D/Rigidbody2D; selección CPU/GPU/Auto, fallback y comparación funcional/rendimiento. No depende de cerrar GPU 3D en M26."
+      ],
+      "batches": [
+        "28.1 Solver y efectores.",
+        "28.2 Joints, motores y límites.",
+        "28.3 Mecánicas y estrés.",
+        "28.4 Integración, broadphase y contactos GPU 2D para el conjunto de formas acordado.",
+        "28.5 Solver GPU 2D, fricción/restitución, sleeping, joints, motores y efectores del alcance.",
+        "28.6 Integración API/consultas/eventos, lifecycle y estrés CPU/GPU con métricas y diagnósticos."
+      ],
+      "acceptance": [
+        "Cada familia asignada tiene un escenario de fuerzas/limitación/rotura y resultados verificables.",
+        "Pausa, cambio de body type, desactivación y destrucción no dejan constraints huérfanas.",
+        "La simulación y las consultas mantienen consistencia entre C# y kernel a diferentes pasos fijos.",
+        "Los shaders físicos 2D producen resultados reales y consistentes con la CPU dentro de tolerancias, conservan el plano 2D y cubren consultas/eventos/constraints del contrato.",
+        "La comparación CPU/GPU y la recuperación/fallback pasan en la matriz de hardware M19 con demos y mediana/P95; las funciones no aceleradas siguen visibles y no completan el alcance GPU mínimo."
+      ],
+      "demo": "2D Mechanics Lab con plataformas, péndulos, cadenas y suspensión. Extender Stress Physics 2D y CPU/GPU Physics & Shader Lab, sin solver especial de demo.",
+      "plan": "docs/architecture/M28_PLAN.md"
+    },
+    {
+      "id": "M29",
+      "number": 29,
+      "title": "Input y dispositivos",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M20",
+        "M22"
+      ],
+      "scope": [
+        "Completar Input/KeyCode/Touch y estado de mouse, teclado y gamepad; perfiles, zonas muertas y hotplug.",
+        "Sensores, pen, haptics, orientación y APIs de dispositivos con backends y hardware identificados.",
+        "Remapeo interactivo, persistencia y foco entre Game principal/desacoplado; Input System se versiona como paquete en M39."
+      ],
+      "batches": [
+        "29.1 Estados y perfiles.",
+        "29.2 Dispositivos, sensores y haptics.",
+        "29.3 Remapeo y foco."
+      ],
+      "acceptance": [
+        "Eventos edge/held, hotplug y pérdida de foco tienen pruebas deterministas.",
+        "Las capacidades físicas solo cuentan como verificadas con un backend real y evidencia del dispositivo; emulación se etiqueta.",
+        "Los controles funcionan en ventanas principales y desacopladas sin acciones duplicadas."
+      ],
+      "demo": "Device & Rebinding Lab con perfiles, hotplug y remapeo persistente.",
+      "plan": "docs/architecture/M29_PLAN.md"
+    },
+    {
+      "id": "M30",
+      "number": 30,
+      "title": "Gráficos, shaders y recursos GPU",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M21",
+        "M23",
+        "M24",
+        "M25"
+      ],
+      "scope": [
+        "Completar Renderer, Mesh, Material, Shader, Texture/RenderTexture, cámaras y conversiones de coordenadas.",
+        "Luces, sombras, command buffers, dibujo y compute/readback asignados; decidir compatibilidad de shaders/pipelines mediante ADR y corpus.",
+        "Propiedad y liberación GPU, layouts/formatos, capacidades/tier y comportamiento Null explícito.",
+        "Consolidar la infraestructura WGSL compartida iniciada en M25.0: fuentes, layouts/reflexión necesaria, variantes/caché, validación/diagnóstico, recompilación segura y recursos render/compute; shaders físicos productivos y APIs Shader/ComputeShader del inventario, sin prometer traducción universal de HLSL/ShaderLab."
+      ],
+      "batches": [
+        "30.1 Mesh/texturas/materiales y cámaras.",
+        "30.2 Shaders, dibujo, luces y render targets.",
+        "30.3 Compute/readback, recursos y tiers.",
+        "30.4 Sistema compartido de shaders gráficos/compute, integración física/render, variantes, diagnóstico y corpus de API."
+      ],
+      "acceptance": [
+        "Pruebas visuales y de datos comprueban resultados del render y no solo propiedades del Inspector.",
+        "Crear/reemplazar/liberar recursos y perder capacidades no producen fugas ni éxito ficticio.",
+        "Cada modo de shader/pipeline tiene soporte, traducción o bloqueo declarado; las diferencias impiden contar equivalencia completa.",
+        "Las rutas de shaders gráficos y físicos reutilizan recursos y diagnóstico verificables; las APIs Shader/ComputeShader asignadas ejecutan resultados observables, con tests de recompilación, invalidación, límites y fallos."
+      ],
+      "demo": "Rendering Conformance Lab con materiales, cámaras, render textures y compute.",
+      "plan": "docs/architecture/M30_PLAN.md"
+    },
+    {
+      "id": "M31",
+      "number": 31,
+      "title": "Animación, rigging y Playables",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M22",
+        "M23",
+        "M30"
+      ],
+      "scope": [
+        "Animation/AnimationClip, Animator/controllers, parámetros, estados, transiciones, eventos y root motion.",
+        "Skinning, Avatar/humanoid, retargeting, IK y constraints asignados con evaluación real.",
+        "Playables/graphs, sincronización, blending y ciclo de vida; Timeline se versiona como paquete en M39."
+      ],
+      "batches": [
+        "31.1 Clips/controllers y eventos.",
+        "31.2 Rigging, root motion y humanoid/IK.",
+        "31.3 Playables y mezclas."
+      ],
+      "acceptance": [
+        "Poses, transiciones y eventos coinciden con resultados de referencia a tiempos definidos.",
+        "Pausa, mezcla, cambio de escena y destrucción liberan grafos y recursos.",
+        "La aceptación comprueba movimiento/pose renderizada y coste de evaluación, además de parámetros."
+      ],
+      "demo": "Animation & Playables Lab con personaje, IK, root motion y mezclas de clips.",
+      "plan": "docs/architecture/M31_PLAN.md"
+    },
+    {
+      "id": "M32",
+      "number": 32,
+      "title": "Audio, mezcla y procesamiento",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M22",
+        "M24"
+      ],
+      "scope": [
+        "Completar AudioSource/Listener/Clip, programación temporal, carga/streaming y dispositivos.",
+        "AudioMixer, grupos, snapshots, efectos/filtros y procesamiento DSP asignado con backends reales.",
+        "Espacialización, prioridades, virtualización y liberación; distinguir Null de sonido efectivo."
+      ],
+      "batches": [
+        "32.1 Clips, streaming y scheduling.",
+        "32.2 Mixer, efectos y DSP.",
+        "32.3 Espacialización, dispositivos y memoria."
+      ],
+      "acceptance": [
+        "Se verifica salida de audio mediante muestras/medidas y programación temporal, no solo flags.",
+        "Cambio de dispositivo, activación del navegador, underruns y fallos tienen estados observables.",
+        "Runtime/Stop/restauración no contaminan los datos authored y liberan voces/buffers."
+      ],
+      "demo": "Audio Conformance Lab con scheduling, mezcla, filtros y streaming.",
+      "plan": "docs/architecture/M32_PLAN.md"
+    },
+    {
+      "id": "M33",
+      "number": 33,
+      "title": "UI, texto, layout y eventos",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M22",
+        "M23",
+        "M29",
+        "M30"
+      ],
+      "scope": [
+        "Canvas/RectTransform, controles/layout y sistema de eventos del alcance uGUI fijado; navegación y raycasting UI.",
+        "UI Toolkit: árbol visual, estilos, binding, foco, paneles y controles asignados; texto y fuentes con edición/selección.",
+        "Persistencia y extensibilidad de UI, escalado/DPI, accesibilidad y uso por scripts; paquetes de texto se fijan en M39."
+      ],
+      "batches": [
+        "33.1 Canvas, layout y eventos.",
+        "33.2 UI Toolkit y data binding.",
+        "33.3 Texto, fuentes, accesibilidad y escalado."
+      ],
+      "acceptance": [
+        "Un menú y HUD se construyen mediante APIs públicas y responden a teclado/mouse/touch/gamepad.",
+        "Layout, foco, captura, navegación y destrucción se verifican en varias resoluciones y ventanas.",
+        "La UI del propio editor no se usa como evidencia de una API de UI de gameplay inexistente."
+      ],
+      "demo": "UI Application Lab con menú, HUD, inventario y formularios accesibles.",
+      "plan": "docs/architecture/M33_PLAN.md"
+    },
+    {
+      "id": "M34",
+      "number": 34,
+      "title": "Mundos 2D/3D, partículas, terreno y vídeo",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M24",
+        "M25",
+        "M27",
+        "M30",
+        "M31",
+        "M32"
+      ],
+      "scope": [
+        "Completar Sprite, atlases, tilemaps y colisión de tiles; LOD/culling y construcción de mundos.",
+        "ParticleSystem, trails/lines, Terrain y vegetación, viento y Cloth asignados, con simulación/render real.",
+        "VideoPlayer y sincronización audiovisual; separar paquetes VFX/Terrain externos cuando corresponda al inventario."
+      ],
+      "batches": [
+        "34.1 Sprites, tilemaps y LOD.",
+        "34.2 Partículas, Terrain, viento y Cloth.",
+        "34.3 Vídeo, sincronización y presupuesto."
+      ],
+      "acceptance": [
+        "Editar y consultar tiles/terreno/partículas desde C# modifica la simulación y los píxeles esperados.",
+        "Cloth y colisión, LOD y recursos se verifican en cargas representativas sin ocultar sus límites.",
+        "Vídeo y audio respetan reproducción/seek/pausa/descarga; formatos dependen de backends declarados."
+      ],
+      "demo": "World Systems Lab con mapa 2D, terreno 3D, partículas, tela y vídeo sincronizado.",
+      "plan": "docs/architecture/M34_PLAN.md"
+    },
+    {
+      "id": "M35",
+      "number": 35,
+      "title": "NavMesh y navegación completa",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M21",
+        "M24",
+        "M25"
+      ],
+      "scope": [
+        "Construcción/horneado de NavMesh triangular, superficies, regiones, costes y consultas.",
+        "NavMeshAgent, obstáculos/carving, avoidance, links y rutas completas/parciales con ownership de escenas.",
+        "Actualizaciones, concurrencia, depuración visual y escalabilidad; la grilla existente conserva su identidad."
+      ],
+      "batches": [
+        "35.1 NavMesh y queries.",
+        "35.2 Agentes, links y obstáculos.",
+        "35.3 Actualización y multitudes."
+      ],
+      "acceptance": [
+        "La aceptación usa malla de navegación real, pendientes y varios pisos, además de obstáculos.",
+        "Agentes, rutas parciales, cambios de destino y descargas de escena tienen resultados verificables.",
+        "Los presupuestos de horneado y multitudes se miden; una grilla no cuenta como equivalencia de NavMesh."
+      ],
+      "demo": "Navigation Crowd Lab con varios pisos, links, obstáculos dinámicos y agentes.",
+      "plan": "docs/architecture/M35_PLAN.md"
+    },
+    {
+      "id": "M36",
+      "number": 36,
+      "title": "Networking, HTTP y multijugador",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M22",
+        "M23",
+        "M24"
+      ],
+      "scope": [
+        "Completar UnityWebRequest, handlers, uploads/formularios, streaming, progreso, errores y cancelación según plataforma.",
+        "WebSockets y transportes reales entre procesos; protocolo, ownership/autoridad, RPC/replicación y reconexión del perfil multijugador elegido.",
+        "Versionar cualquier compatibilidad de paquetes Netcode/Transport separadamente; CORS, cookies y sockets requieren contratos explícitos de backend."
+      ],
+      "batches": [
+        "36.1 HTTP/handlers y errores.",
+        "36.2 Transportes y sesiones.",
+        "36.3 Replicación, autoridad y fallos de red."
+      ],
+      "acceptance": [
+        "Pruebas con servidor separado verifican datos, cancelación y errores; no se cuenta HTTP como multijugador.",
+        "Dos clientes y servidor intercambian estado/juego real con latencia/pérdida/reconexión controladas.",
+        "Credenciales y autoridad se conservan; capacidades imposibles en navegador se atienden mediante backend real o quedan bloqueadas."
+      ],
+      "demo": "Network Arena Lab con dos clientes, servidor y condiciones de red reproducibles.",
+      "plan": "docs/architecture/M36_PLAN.md"
+    },
+    {
+      "id": "M37",
+      "number": 37,
+      "title": "Plataformas, APIs nativas y dispositivos especializados",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M19",
+        "M22",
+        "M24",
+        "M29",
+        "M30",
+        "M32"
+      ],
+      "scope": [
+        "Completar Application, SystemInfo, Screen, Cursor, paths/archivos, ventanas, display y ciclo de aplicación por backend.",
+        "Backends nativos y adaptadores para capacidades no disponibles en navegador; sensores/cámara/micrófono/XR y plataformas móviles o especializadas del inventario.",
+        "Matriz de SDK/hardware/permisos y evidencia por plataforma; APIs de consola o servicios externos mantienen dependencias visibles."
+      ],
+      "batches": [
+        "37.1 Contratos plataforma y backend nativo.",
+        "37.2 Dispositivos, móvil y XR.",
+        "37.3 Matriz de capacidades y verificación."
+      ],
+      "acceptance": [
+        "Valores y operaciones provienen del sistema real; hints o valores por defecto no completan capacidades.",
+        "Cada plataforma objetivo tiene evidencia de hardware/backend; un emulador no certifica un dispositivo físico.",
+        "La ausencia de SDK, servicio o hardware figura como bloqueo y no como implementación completa ni exclusión silenciosa."
+      ],
+      "demo": "Platform Capability Lab con operaciones reales de archivos, ventanas y dispositivos disponibles.",
+      "plan": "docs/architecture/M37_PLAN.md"
+    },
+    {
+      "id": "M38",
+      "number": 38,
+      "title": "API de editor, assets, extensiones y builds",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M20",
+        "M23",
+        "M24",
+        "M30",
+        "M33",
+        "M37"
+      ],
+      "scope": [
+        "Puente UnityEditor para Editor/EditorWindow, SerializedObject/Property, CustomEditor, PropertyDrawer, Undo y herramientas asignadas.",
+        "AssetDatabase/importadores, inspección, selección, gizmos/handles, prefabs y callbacks; extensiones reales sobre Axiom.",
+        "BuildPipeline/settings, pruebas, profiling/diagnóstico y gestión de paquetes; producir builds de Axiom según el contrato de compatibilidad."
+      ],
+      "batches": [
+        "38.1 Extensiones y serialización del editor.",
+        "38.2 AssetDatabase/importadores y herramientas.",
+        "38.3 Builds, pruebas y paquetes."
+      ],
+      "acceptance": [
+        "Un paquete de extensiones crea ventana, Inspector y herramientas desde código público compatible.",
+        "Importar/reimportar, Undo/Redo, renombrar y guardar preservan referencias y proyectos.",
+        "Un proyecto se exporta/construye y ejecuta fuera del editor; no se confunde igualdad de API con producir binarios de Unity."
+      ],
+      "demo": "Editor SDK Lab con custom Inspector, importador y build reproducible.",
+      "plan": "docs/architecture/M38_PLAN.md"
+    },
+    {
+      "id": "M39",
+      "number": 39,
+      "title": "Módulos restantes, paquetes y conformidad integral",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M19",
+        "M20",
+        "M21",
+        "M22",
+        "M23",
+        "M24",
+        "M25",
+        "M26",
+        "M27",
+        "M28",
+        "M29",
+        "M30",
+        "M31",
+        "M32",
+        "M33",
+        "M34",
+        "M35",
+        "M36",
+        "M37",
+        "M38"
+      ],
+      "scope": [
+        "Cerrar el registro residual de miembros de M19, incluyendo accesibilidad, utilidades, servicios y módulos que no pertenecen a las familias anteriores.",
+        "Implementar adaptadores/versiones de paquetes seleccionados en M19: Input System, Addressables, Timeline, texto/UI, Transport/Netcode, Jobs/Collections/Burst/ECS y otros; medirlos por separado del core.",
+        "Ejecutar corpus amplio de migración y auditoría final por firma/plataforma; reparar diferencias, sobrecargas y regresiones.",
+        "Auditar conformidad CPU/GPU de física y shaders, incluyendo matriz de aceleración/fallback, precisión, replay y capacidades por plataforma; no contar una ruta CPU como aceleración GPU."
+      ],
+      "batches": [
+        "39.1 Cierre de módulos residuales con propietario explícito.",
+        "39.2 Paquetes versionados y sus backends.",
+        "39.3 Auditoría integral y publicación de cobertura.",
+        "39.4 Conformidad cruzada CPU/GPU de física y shaders y publicación de restricciones por perfil."
+      ],
+      "acceptance": [
+        "La meta es >=95% de firmas públicas objetivo verificadas del snapshot core fijado en M19 y 100% del nivel P0; son metas futuras, no cobertura actual.",
+        "Denominador completo, obsoletos, exclusiones, parciales y bloqueos permanecen visibles; no se quitan APIs del total para alcanzar la meta.",
+        "Paquetes y plataformas tienen métricas propias, corpus funcional y lista exacta de diferencias; si las dependencias impiden la meta, la milestone sigue abierta.",
+        "M26/M28/M30 aportan evidencia de los alcances GPU requeridos y CPU fallback; funciones parciales/bloqueadas permanecen visibles e impiden cerrar los gates afectados."
+      ],
+      "demo": "Compatibility Gallery: proyectos de referencia migrados y corpus reproducible por familia/paquete.",
+      "plan": "docs/architecture/M39_PLAN.md"
+    },
+    {
+      "id": "M40",
+      "number": 40,
+      "title": "Estabilización final, producto y aceptación integral",
+      "status": "not_started",
+      "acceptancePercent": 0,
+      "dependsOn": [
+        "M18.4",
+        "M19",
+        "M20",
+        "M21",
+        "M22",
+        "M23",
+        "M24",
+        "M25",
+        "M26",
+        "M27",
+        "M28",
+        "M29",
+        "M30",
+        "M31",
+        "M32",
+        "M33",
+        "M34",
+        "M35",
+        "M36",
+        "M37",
+        "M38",
+        "M39"
+      ],
+      "scope": [
+        "Trasladar íntegramente el antiguo M19: estabilidad, performance, documentación, ejemplos, onboarding, safe mode, crash recovery, migraciones, project health y tiers.",
+        "Cerrar regresiones de toda la expansión, incluyendo el timeout intermitente de Apply observado en M18.2; instalaciones limpias, datos dañados/interrumpidos y recuperación.",
+        "Ejecutar la aceptación integral del documento maestro: sample 2D/3D y propuesta IA revisada de enemigo que sigue/recibe daño/emite feedback, con tests y evidencia de principio a fin.",
+        "Hardening CPU/GPU: ausencia/pérdida de dispositivo, recursos y memoria, sesiones prolongadas, migración segura de backend y replay; rendimiento físico/editor completo en integrada y dedicada de fabricantes diferentes según perfiles M19."
+      ],
+      "batches": [
+        "40.1 Instalación, recuperación y migraciones.",
+        "40.2 Rendimiento, estabilidad y matriz multiplataforma. Incluye física CPU/GPU, shaders, device loss y transferencia/readback.",
+        "40.3 Sample integral, flujo IA, documentación y release."
+      ],
+      "acceptance": [
+        "M18.4 y M19–M39 están aceptadas con evidencia; ninguna exclusión pendiente se disfraza de prueba aprobada.",
+        "El sample completo funciona en capacidades/tiers declarados, con builds reproducibles, estabilidad y mediciones representativas.",
+        "El agente inspecciona/edita/compila/ejecuta/verifica/repara/mide y presenta una propuesta revisable; las verificaciones de cuenta/hardware necesarias tienen evidencia real.",
+        "Los gates físicos GPU, shaders y alternativa CPU tienen evidencia real por tier; WebGPU de software/Null no sustituyen GPU física ni permiten cerrar un bloqueo de hardware."
+      ],
+      "demo": "Axiom End-to-End Sample original de las secciones 138–139 del documento maestro, ampliado con conformidad del SDK.",
+      "plan": "docs/architecture/M40_PLAN.md"
+    }
+  ],
+  "trackingIssue": "https://github.com/Krozzeo/AxiomEngine/issues/40",
+  "previousEngineBaseline": "0.0.48 / SDK 7",
+  "scopeRevision": "2026-10-19-gpu-physics",
+  "gpuPhysics": {
+    "status": "not_started",
+    "acceptancePercent": 0,
+    "plan": "docs/architecture/GPU_PHYSICS_AND_SHADERS_PLAN.md",
+    "adr": "docs/adr/0033-gpu-physics-and-shader-roadmap.md",
+    "plannedBackend": "WebGPU compute / WGSL",
+    "cpuFallback": "Rust/Wasm retained",
+    "foundation": "M25.0",
+    "newBatches": [
+      "M25.0",
+      "M26.4",
+      "M26.5",
+      "M26.6",
+      "M28.4",
+      "M28.5",
+      "M28.6",
+      "M30.4",
+      "M39.4"
+    ],
+    "additionalGates": [
+      "M19.3",
+      "M27",
+      "M40.2"
+    ],
+    "mainMilestoneCountChanged": false,
+    "implementationCredit": 0
+  }
+}

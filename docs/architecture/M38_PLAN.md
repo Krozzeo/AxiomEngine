@@ -1,40 +1,37 @@
-# M38 — API de editor, assets, extensiones y builds
+# M38 — Editor APIs, assets, extensions and builds
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M20, M23, M24, M30, M33, M37.
+Minimum dependencies: M20, M23, M24, M30, M33, M37.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- Puente UnityEditor para Editor/EditorWindow, SerializedObject/Property, CustomEditor, PropertyDrawer, Undo y herramientas asignadas.
-- AssetDatabase/importadores, inspección, selección, gizmos/handles, prefabs y callbacks; extensiones reales sobre Axiom.
-- BuildPipeline/settings, pruebas, profiling/diagnóstico y gestión de paquetes; producir builds de Axiom según el contrato de compatibilidad.
+- UnityEditor bridge for Editor/EditorWindow/SerializedObject/Property/CustomEditor/PropertyDrawer/Undo and assigned tools.
+- AssetDatabase/importers/inspection/selection/gizmos/handles/prefabs/callbacks with real Axiom extensions.
+- BuildPipeline/settings/tests/profiling/diagnostics/package management; produce Axiom builds under the compatibility contract.
 
-## Subtandas previstas
+## Planned batches
 
-- 38.1 Extensiones y serialización del editor.
-- 38.2 AssetDatabase/importadores y herramientas.
-- 38.3 Builds, pruebas y paquetes.
+- 38.1 Editor extensions/serialization.
+- 38.2 AssetDatabase/importers/tools.
+- 38.3 Builds/tests/packages.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Un paquete de extensiones crea ventana, Inspector y herramientas desde código público compatible.
-- [ ] Importar/reimportar, Undo/Redo, renombrar y guardar preservan referencias y proyectos.
-- [ ] Un proyecto se exporta/construye y ejecuta fuera del editor; no se confunde igualdad de API con producir binarios de Unity.
+- [ ] Compatible public extension code creates a window/Inspector/tools.
+- [ ] Import/reimport/Undo/Redo/rename/save preserve references/projects.
+- [ ] A project builds/exports and runs outside the editor; compatible APIs do not imply producing Unity binaries.
 
-## Demo editable requerida
+## Required editable demo
 
-Editor SDK Lab con custom Inspector, importador y build reproducible.
+Editor SDK Lab: custom Inspector, importer and reproducible build.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).

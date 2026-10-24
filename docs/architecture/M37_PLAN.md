@@ -1,40 +1,37 @@
-# M37 — Plataformas, APIs nativas y dispositivos especializados
+# M37 — Platforms, native APIs and specialized devices
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M19, M22, M24, M29, M30, M32.
+Minimum dependencies: M19, M22, M24, M29, M30, M32.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- Completar Application, SystemInfo, Screen, Cursor, paths/archivos, ventanas, display y ciclo de aplicación por backend.
-- Backends nativos y adaptadores para capacidades no disponibles en navegador; sensores/cámara/micrófono/XR y plataformas móviles o especializadas del inventario.
-- Matriz de SDK/hardware/permisos y evidencia por plataforma; APIs de consola o servicios externos mantienen dependencias visibles.
+- Complete Application/SystemInfo/Screen/Cursor/paths/files/windows/display/application lifecycle by backend.
+- Native adapters for browser-unavailable capabilities; sensors/camera/microphone/XR/mobile/specialized inventoried platforms.
+- SDK/hardware/permissions matrix and per-platform evidence; consoles/external services retain explicit dependencies.
 
-## Subtandas previstas
+## Planned batches
 
-- 37.1 Contratos plataforma y backend nativo.
-- 37.2 Dispositivos, móvil y XR.
-- 37.3 Matriz de capacidades y verificación.
+- 37.1 Platform contracts/native backend.
+- 37.2 Devices/mobile/XR.
+- 37.3 Capability matrix/verification.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Valores y operaciones provienen del sistema real; hints o valores por defecto no completan capacidades.
-- [ ] Cada plataforma objetivo tiene evidencia de hardware/backend; un emulador no certifica un dispositivo físico.
-- [ ] La ausencia de SDK, servicio o hardware figura como bloqueo y no como implementación completa ni exclusión silenciosa.
+- [ ] Actual system values/operations, not hints/defaults as completed capability.
+- [ ] Each target has backend/hardware evidence; emulators do not certify physical devices.
+- [ ] Missing SDK/service/hardware is blocked, not complete or silently excluded.
 
-## Demo editable requerida
+## Required editable demo
 
-Platform Capability Lab con operaciones reales de archivos, ventanas y dispositivos disponibles.
+Platform Capability Lab: real file/window/available-device operations.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).

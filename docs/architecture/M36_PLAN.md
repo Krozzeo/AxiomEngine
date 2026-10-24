@@ -1,40 +1,37 @@
-# M36 — Networking, HTTP y multijugador
+# M36 — Networking, HTTP and multiplayer
 
-Plan vigente desde 2026-10-19. **No iniciada; 0% de aceptación nueva.**
+Approved plan since 2026-10-19. **Not started; 0% new acceptance.** Existing SDK 8 coverage remains partial; this plan adds no functional credit.
 
-Dependencias mínimas: M22, M23, M24.
+Minimum dependencies: M22, M23, M24.
 
-[Roadmap general](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json)
+[Roadmap](ROADMAP_M19_M40.md) · [Manifest](roadmap-v2.json) · [GPU/shaders](GPU_PHYSICS_AND_SHADERS_PLAN.md)
 
-## Alcance requerido
+## Required scope
 
-- Completar UnityWebRequest, handlers, uploads/formularios, streaming, progreso, errores y cancelación según plataforma.
-- WebSockets y transportes reales entre procesos; protocolo, ownership/autoridad, RPC/replicación y reconexión del perfil multijugador elegido.
-- Versionar cualquier compatibilidad de paquetes Netcode/Transport separadamente; CORS, cookies y sockets requieren contratos explícitos de backend.
+- Complete UnityWebRequest/handlers/uploads/forms/streaming/progress/errors/cancellation per platform.
+- WebSockets and real interprocess transports, protocol/ownership/authority/RPC/replication/reconnect for chosen multiplayer profile.
+- Separate Netcode/Transport package versions; explicit CORS/cookie/socket backend contracts.
 
-## Subtandas previstas
+## Planned batches
 
-- 36.1 HTTP/handlers y errores.
-- 36.2 Transportes y sesiones.
-- 36.3 Replicación, autoridad y fallos de red.
+- 36.1 HTTP/handlers/errors.
+- 36.2 Transports/sessions.
+- 36.3 Replication/authority/network failures.
 
-## Criterios de cierre
+## Closure criteria
 
-- [ ] Pruebas con servidor separado verifican datos, cancelación y errores; no se cuenta HTTP como multijugador.
-- [ ] Dos clientes y servidor intercambian estado/juego real con latencia/pérdida/reconexión controladas.
-- [ ] Credenciales y autoridad se conservan; capacidades imposibles en navegador se atienden mediante backend real o quedan bloqueadas.
+- [ ] Separate-server tests verify data/cancel/errors; HTTP is not multiplayer.
+- [ ] Two clients and server exchange actual game state under controlled latency/loss/reconnection.
+- [ ] Preserve credentials/authority; browser-unavailable capabilities need real backends or visible blockers.
 
-## Demo editable requerida
+## Required editable demo
 
-Network Arena Lab con dos clientes, servidor y condiciones de red reproducibles.
+Network Arena Lab: two clients, server and reproducible network conditions.
 
-## Reglas comunes de ejecución y cierre
+## Shared execution rules
 
-- Estado inicial: **planificada, no iniciada, 0% de aceptación nueva**. La base SDK 7 conserva su cobertura parcial; este plan no implementa las APIs.
-- Antes de implementar: anexar la lista exacta de firmas/overloads del inventario M19, su propietario, dependencias, contratos y pruebas. Las listas de familias de este plan definen alcance; no sustituyen el inventario de miembros.
-- Ejecutar subtandas verticales coherentes (orientativamente 20–40 firmas cuando sea razonable). Cada subtanda incluye implementación del motor/puente C#, pruebas, demo y documentación. Una fase puede necesitar varias versiones.
-- Verificar comportamiento real, errores, referencias/recursos, Play/Stop, persistencia, compatibilidad y regresiones. C# desarrollo/AOT/Windows y kernel nativo/Wasm según capacidades; render/audio/dispositivos requieren evidencia de su resultado efectivo.
-- Un wrapper vacío, una propiedad con valor ficticio o una firma que solo compila no cuentan como implementados. Una restricción real sigue visible como parcial/bloqueada.
-- Mantener las invariantes de propuestas aisladas, Apply revisado, proyectos del usuario, credenciales fuera del proyecto y publicación explícita. No fusionar PRs automáticamente.
-- Cerrar únicamente con criterios aprobados, demo editable y evidencia retenida. Actualizar README, handoff, estado, changelog, matriz y GitHub. [Reglas de cierre](MILESTONE_REPORTING.md).
-- No hay fechas ni esfuerzo comprometidos: M19 debe medir alcance y dependencias. Cada replanificación conserva el historial y exige una decisión de alcance explícita.
+Before implementing, attach exact M19 signatures/overloads, ownership, dependencies, contracts and tests. Family lists do not replace the member inventory. Work in coherent vertical batches (roughly20–40 signatures when useful), including engine/C# bridge behavior, tests, editable demo and documentation; a phase may require several releases.
+
+Verify actual behavior/errors/references/resources/Play-Stop/persistence/compatibility and regression across supported C# development/AOT/Windows and native/Wasm profiles. Rendering/audio/devices need observable output evidence. Empty wrappers, fake values or compile-only signatures do not count. Keep partial/blocked capabilities visible.
+
+Preserve isolated proposals, reviewed Apply, user projects, external credentials and explicit publication. Do not auto-merge PRs. Close only with accepted criteria, editable demos and retained evidence; update README/handoff/status/changelog/matrix/GitHub. No invented dates or effort; M19 measures scope/weighting and replanning requires explicit scope decisions. [Reporting rules](MILESTONE_REPORTING.md).
